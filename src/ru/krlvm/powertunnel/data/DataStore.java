@@ -2,6 +2,7 @@ package ru.krlvm.powertunnel.data;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -70,7 +71,7 @@ public class DataStore {
      * @param lines - data store contents
      * @throws IOException - write failure
      */
-    public void write(List<String> lines) throws IOException {
+    public void write(Collection<String> lines) throws IOException {
         write(getFile(), lines);
     }
 
@@ -81,7 +82,7 @@ public class DataStore {
      * @param lines - data store contents
      * @throws IOException - write failure
      */
-    public void write(File file, List<String> lines) throws IOException {
+    public void write(File file, Collection<String> lines) throws IOException {
         if(file.exists()) {
             file.delete();
         }

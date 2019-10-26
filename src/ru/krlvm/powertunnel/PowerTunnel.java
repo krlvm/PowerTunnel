@@ -48,7 +48,7 @@ public class PowerTunnel {
     private static final SimpleDateFormat JOURNAL_DATE_FORMAT = new SimpleDateFormat("[HH:mm]: ");
 
     private static final Set<String> GOVERNMENT_BLACKLIST = new HashSet<>();
-    private static final Set<String> ISP_STUB_LIST = new LinkedHashSet<>();
+    private static final Set<String> ISP_STUB_LIST = new HashSet<>();
     private static final Set<String> USER_BLACKLIST = new LinkedHashSet<>();
     private static final Set<String> USER_WHITELIST = new LinkedHashSet<>();
 
@@ -278,8 +278,8 @@ public class PowerTunnel {
      * @see DataStore
      */
     public static void saveUserLists() throws IOException {
-        new DataStore(DataStore.USER_BLACKLIST).write(new ArrayList<>(USER_BLACKLIST));
-        new DataStore(DataStore.USER_WHITELIST).write(new ArrayList<>(USER_WHITELIST));
+        new DataStore(DataStore.USER_BLACKLIST).write(USER_BLACKLIST);
+        new DataStore(DataStore.USER_WHITELIST).write(USER_WHITELIST);
     }
 
     /**
