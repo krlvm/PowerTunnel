@@ -176,6 +176,7 @@ public class PowerTunnel {
         stopServer();
         try {
             saveUserLists();
+            Utility.print("[#] User blacklist and whitelist saved");
         } catch (IOException ex) {
             Utility.print("[x] Failed to save data: " + ex.getMessage());
             ex.printStackTrace();
@@ -277,8 +278,8 @@ public class PowerTunnel {
      * @see DataStore
      */
     public static void saveUserLists() throws IOException {
-        new DataStore(DataStore.USER_BLACKLIST).write(new ArrayList<String>(USER_BLACKLIST));
-        new DataStore(DataStore.USER_WHITELIST).write(new ArrayList<String>(USER_WHITELIST));
+        new DataStore(DataStore.USER_BLACKLIST).write(new ArrayList<>(USER_BLACKLIST));
+        new DataStore(DataStore.USER_WHITELIST).write(new ArrayList<>(USER_WHITELIST));
     }
 
     /**
