@@ -22,7 +22,7 @@ public class URLUtility {
      */
     public static boolean checkIsHostContainsInList(String host, Collection<String> collection) {
         for (String s : collection) {
-            if(host.endsWith(s)) {
+            if(host.endsWith(s) || host.startsWith(s)) {
                 return true;
             }
         }
