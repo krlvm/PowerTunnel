@@ -14,7 +14,7 @@ Nowadays many governments introducing censorship in the Internet and situation w
 
 This force the people to use ways to bypass locks like Proxy and VPN, that send your Internet traffic to the third parties and may be unstable.
 
-PowerTunnel is active DPI circumvention utility, that works only on your PC and don't send your traffic to third-party servers.
+PowerTunnel is active DPI circumvention utility, that works only on your PC and don't send your traffic to third-party servers, respecting your privacy and isn't slowing down your internet connection.
 
 ### How it works?
 PowerTunnel establishes a HTTP/HTTPS-proxy on the your PC and directs your traffic through it.
