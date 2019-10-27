@@ -7,6 +7,7 @@ import org.littleshoot.proxy.HttpFiltersSourceAdapter;
 import org.littleshoot.proxy.HttpProxyServer;
 import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
 import ru.krlvm.powertunnel.data.DataStore;
+import ru.krlvm.powertunnel.data.DataStoreException;
 import ru.krlvm.powertunnel.filter.ProxyFilter;
 import ru.krlvm.powertunnel.frames.*;
 import ru.krlvm.powertunnel.system.MirroredOutputStream;
@@ -34,8 +35,9 @@ import java.util.*;
  */
 public class PowerTunnel {
 
-    public static String NAME = "PowerTunnel";
-    public static String VERSION = "1.1";
+    public static final String NAME = "PowerTunnel";
+    public static final String VERSION = "1.2";
+    public static final int VERSION_CODE = 1;
 
     private static HttpProxyServer SERVER;
     private static boolean RUNNING = false;
@@ -111,7 +113,7 @@ public class PowerTunnel {
     /**
      * PowerTunnel bootstrap
      */
-    public static void bootstrap() {
+    public static void bootstrap() throws DataStoreException, UnknownHostException {
         //Load data
         try {
             GOVERNMENT_BLACKLIST.addAll(new DataStore(DataStore.GOVERNMENT_BLACKLIST).load());
@@ -120,11 +122,10 @@ public class PowerTunnel {
             ISP_STUB_LIST.addAll(new DataStore(DataStore.ISP_STUB_LIST).load());
             Utility.print("[i] Loaded '%s' government blocked sites, '%s' user blocked sites, '%s' user whitelisted sites",
                     GOVERNMENT_BLACKLIST.size(), USER_BLACKLIST.size(), USER_WHITELIST.size());
+            Utility.print();
         } catch (IOException ex) {
-            Utility.print("[x] Failed to load data store: " + ex.getMessage());
-            ex.printStackTrace();
+            throw new DataStoreException(ex.getMessage(), ex);
         }
-        Utility.print();
 
         //Start server
         startServer();
@@ -133,22 +134,15 @@ public class PowerTunnel {
     /**
      * Starts LittleProxy server
      */
-    private static void startServer() {
+    private static void startServer() throws UnknownHostException {
         Utility.print("[.] Starting LittleProxy server on %s:%s", SERVER_IP_ADDRESS, SERVER_PORT);
-        try {
-            SERVER = DefaultHttpProxyServer.bootstrap().withFiltersSource(new HttpFiltersSourceAdapter() {
-                @Override
-                public HttpFilters filterRequest(HttpRequest originalRequest, ChannelHandlerContext ctx) {
-                    return new ProxyFilter(originalRequest);
-                }
-            }).withAddress(new InetSocketAddress(InetAddress.getByName(SERVER_IP_ADDRESS), SERVER_PORT)).start();
-            RUNNING = true;
-        } catch (UnknownHostException ex) {
-            Utility.print("[?] Cannot use IP-Address '%s': %s", SERVER_IP_ADDRESS, ex.getMessage());
-            ex.printStackTrace();
-            System.out.println();
-            Utility.print("[!] Program halted");
-        }
+        SERVER = DefaultHttpProxyServer.bootstrap().withFiltersSource(new HttpFiltersSourceAdapter() {
+            @Override
+            public HttpFilters filterRequest(HttpRequest originalRequest, ChannelHandlerContext ctx) {
+                return new ProxyFilter(originalRequest);
+            }
+        }).withAddress(new InetSocketAddress(InetAddress.getByName(SERVER_IP_ADDRESS), SERVER_PORT)).start();
+        RUNNING = true;
         Utility.print("[.] Server started");
         Utility.print();
 
