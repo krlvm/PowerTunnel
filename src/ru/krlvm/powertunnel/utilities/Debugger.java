@@ -48,4 +48,15 @@ public class Debugger {
             Utility.print("[Debug] " + message, args);
         }
     }
+
+    /**
+     * Debug an exception - print stacktrace
+     *
+     * @param ex - exception
+     */
+    public static void debug(Exception ex) {
+        if(debug) {
+            ex.printStackTrace();
+        }
+    }
 }

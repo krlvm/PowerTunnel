@@ -19,6 +19,10 @@ public class Utility {
      * @param args - arguments to format
      */
     public static void print(String message, Object... args) {
+        if(message == null) {
+            print();
+            return;
+        }
         String print = String.format(message, args);
         System.out.println(print);
         if(!PowerTunnel.FULL_OUTPUT_MIRRORING) {

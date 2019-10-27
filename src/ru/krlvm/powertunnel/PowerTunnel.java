@@ -11,6 +11,7 @@ import ru.krlvm.powertunnel.data.DataStoreException;
 import ru.krlvm.powertunnel.filter.ProxyFilter;
 import ru.krlvm.powertunnel.frames.*;
 import ru.krlvm.powertunnel.system.MirroredOutputStream;
+import ru.krlvm.powertunnel.updater.UpdateNotifier;
 import ru.krlvm.powertunnel.utilities.URLUtility;
 import ru.krlvm.powertunnel.utilities.Utility;
 import ru.krlvm.swingdpi.SwingDPI;
@@ -38,6 +39,7 @@ public class PowerTunnel {
     public static final String NAME = "PowerTunnel";
     public static final String VERSION = "1.2";
     public static final int VERSION_CODE = 1;
+    public static final String REPOSITORY_URL = "https://github.com/krlvm/PowerTunnel";
 
     private static HttpProxyServer SERVER;
     private static boolean RUNNING = false;
@@ -81,7 +83,7 @@ public class PowerTunnel {
 
         Utility.print(NAME + " version " + VERSION);
         Utility.print("Simple, scalable, cross-platform and effective solution against government censorship");
-        Utility.print("https://github.com/krlvm/PowerTunnel");
+        Utility.print(REPOSITORY_URL);
         Utility.print("(c) krlvm, 2019");
         Utility.print();
         Utility.print("[#] You can specify IP and port: java -jar JAR_FILE_NAME.jar [IP] [PORT]");
@@ -108,6 +110,8 @@ public class PowerTunnel {
         USER_FRAMES = new UserListFrame[] {
                 new BlacklistFrame(), new WhitelistFrame()
         };
+
+        UpdateNotifier.checkAndNotify();
     }
 
     /**

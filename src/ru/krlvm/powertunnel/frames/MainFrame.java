@@ -2,6 +2,7 @@ package ru.krlvm.powertunnel.frames;
 
 import ru.krlvm.powertunnel.PowerTunnel;
 import ru.krlvm.powertunnel.data.DataStoreException;
+import ru.krlvm.powertunnel.utilities.UIUtility;
 import ru.krlvm.powertunnel.utilities.Utility;
 import ru.krlvm.swingdpi.SwingDPI;
 
@@ -49,7 +50,7 @@ public class MainFrame extends ControlFrame {
                         try {
                             PowerTunnel.bootstrap();
                         } catch (UnknownHostException ex) {
-                            JOptionPane.showMessageDialog(MainFrame.this, "Cannot use IP Address '" + PowerTunnel.SERVER_IP_ADDRESS + "': " + ex.getMessage(),
+                            JOptionPane.showMessageDialog(MainFrame.this, "Cannot use IP Address '" + PowerTunnel.SERVER_IP_ADDRESS,
                                     "Error", JOptionPane.ERROR_MESSAGE);
                             Utility.print("[?] Cannot use IP-Address '%s': %s", PowerTunnel.SERVER_IP_ADDRESS, ex.getMessage());
                             ex.printStackTrace();
@@ -125,7 +126,8 @@ public class MainFrame extends ControlFrame {
         mainPanel.add(panel, "Last");
 
         panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panel.add(new JLabel(getCenteredLabel("<b>https://github.com/krlvm/PowerTunnel</b><br>(c) krlvm, 2019")));
+        panel.add(UIUtility.getLabelWithHyperlinkSupport("<b><a href=\"" + PowerTunnel.REPOSITORY_URL + "\">" + PowerTunnel.REPOSITORY_URL + "</a></b><br>(c) krlvm, 2019", "text-align: center"));
+        //panel.add(new JLabel(getCenteredLabel("<b>https://github.com/krlvm/PowerTunnel</b><br>(c) krlvm, 2019")));
         mainPanel.add(panel, "Last");
 
         getRootPane().setDefaultButton(stateButton);

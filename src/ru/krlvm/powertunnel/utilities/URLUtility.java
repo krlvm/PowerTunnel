@@ -1,5 +1,9 @@
 package ru.krlvm.powertunnel.utilities;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.net.URL;
 import java.util.Collection;
 
 /**
@@ -38,5 +42,24 @@ public class URLUtility {
     public static String clearHost(String host) {
         return host.replace("https://", "").replace("http://", "").replace("www.", "")
                 .replace(":443", "");
+    }
+
+    /**
+     * Retrieves URL address content
+     *
+     * @param address - URL address
+     * @return - content
+     *
+     * @throws IOException - read/connect failure
+     */
+    public static String load(String address) throws IOException {
+        LineNumberReader reader = new LineNumberReader(new InputStreamReader(new URL(address).openStream()));
+        StringBuilder builder = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            builder.append(line);
+        }
+        reader.close();
+        return builder.toString();
     }
 }
