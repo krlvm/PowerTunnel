@@ -7,7 +7,7 @@ package ru.krlvm.powertunnel.utilities;
  */
 public class Debugger {
 
-    private static boolean debug = false;
+    private static boolean DEBUG_ENABLED = false;
 
     /**
      * Enable or disable debug
@@ -15,7 +15,7 @@ public class Debugger {
      * @param debug - true/false
      */
     public static void setDebug(boolean debug) {
-        if(Debugger.debug == debug) {
+        if(Debugger.DEBUG_ENABLED == debug) {
             return;
         }
         String state;
@@ -25,7 +25,7 @@ public class Debugger {
             state = "enabled";
         }
         Utility.print("[Debug] Debug is %s now", state);
-        Debugger.debug = debug;
+        Debugger.DEBUG_ENABLED = debug;
     }
 
     /**
@@ -34,7 +34,7 @@ public class Debugger {
      * @return true if debug enabled or false if it isn't
      */
     public static boolean isDebug() {
-        return debug;
+        return DEBUG_ENABLED;
     }
 
     /**
@@ -44,7 +44,7 @@ public class Debugger {
      * @param args - arguments for formatting
      */
     public static void debug(String message, Object... args) {
-        if(debug) {
+        if(DEBUG_ENABLED) {
             Utility.print("[Debug] " + message, args);
         }
     }
@@ -55,7 +55,7 @@ public class Debugger {
      * @param ex - exception
      */
     public static void debug(Exception ex) {
-        if(debug) {
+        if(DEBUG_ENABLED) {
             ex.printStackTrace();
         }
     }

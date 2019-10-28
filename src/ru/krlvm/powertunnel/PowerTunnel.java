@@ -37,8 +37,8 @@ import java.util.*;
 public class PowerTunnel {
 
     public static final String NAME = "PowerTunnel";
-    public static final String VERSION = "1.2";
-    public static final int VERSION_CODE = 1;
+    public static final String VERSION = "1.2.1";
+    public static final int VERSION_CODE = 2;
     public static final String REPOSITORY_URL = "https://github.com/krlvm/PowerTunnel";
 
     private static HttpProxyServer SERVER;

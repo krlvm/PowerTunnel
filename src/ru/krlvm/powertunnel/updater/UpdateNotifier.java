@@ -12,7 +12,7 @@ import java.io.IOException;
 public class UpdateNotifier {
 
     private static final String LOG_TAG = "[Updater] ";
-    private static final String URL = "https://github.com/krlvm/PowerTunnel/blob/master/version.txt";
+    private static final String URL = "https://raw.githubusercontent.com/krlvm/PowerTunnel/master/version.txt";
 
     public static void checkAndNotify() {
         new Thread(new Runnable() {
