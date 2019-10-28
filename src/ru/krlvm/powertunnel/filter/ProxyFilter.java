@@ -46,6 +46,10 @@ public class ProxyFilter extends HttpFiltersAdapter {
                 return HttpUtility.getStub("This website is blocked by user");
             }
 
+            if(request.headers().contains("Via")) {
+                request.headers().remove("Via");
+            }
+
             if(PowerTunnel.isBlockedByGovernment(host)) {
                 circumventDPI(request);
                 Utility.print(" [+] Trying to bypass DPI: " + host);
