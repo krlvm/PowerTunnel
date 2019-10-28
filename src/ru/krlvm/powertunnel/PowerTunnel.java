@@ -38,8 +38,8 @@ import java.util.*;
 public class PowerTunnel {
 
     public static final String NAME = "PowerTunnel";
-    public static final String VERSION = "1.2.1";
-    public static final int VERSION_CODE = 2;
+    public static final String VERSION = "1.3";
+    public static final int VERSION_CODE = 3;
     public static final String REPOSITORY_URL = "https://github.com/krlvm/PowerTunnel";
 
     private static HttpProxyServer SERVER;
@@ -47,7 +47,7 @@ public class PowerTunnel {
     public static String SERVER_IP_ADDRESS = "127.0.0.1";
     public static int SERVER_PORT = 8085;
 
-    public static final int DEFAULT_CHUNK_SIZE = 1;
+    public static int DEFAULT_CHUNK_SIZE = 1;
 
     public static final boolean FULL_OUTPUT_MIRRORING = false;
 
@@ -89,7 +89,7 @@ public class PowerTunnel {
         Utility.print(REPOSITORY_URL);
         Utility.print("(c) krlvm, 2019");
         Utility.print();
-        Utility.print("[#] You can specify IP and port: java -jar JAR_FILE_NAME.jar [IP] [PORT]");
+        Utility.print("[#] You can specify some params from CLI: java -jar PowerTunnel.jar [CHUNK_SIZE] {IP} {PORT}");
 
         //Allow us to modify 'HOST' request header
         System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
@@ -98,11 +98,17 @@ public class PowerTunnel {
         Utility.print("[#] Loaded '%s' patches", PatchManager.load());
 
         //Parse launch arguments
-        if(args.length > 0 && args.length < 3) {
-            SERVER_IP_ADDRESS = args[0];
-            if(args.length == 2) {
+        if(args.length > 0 && args.length < 4) {
+            try {
+                DEFAULT_CHUNK_SIZE = Integer.parseInt(args[0]);
+                Utility.print("[#] Chunk size set to '%s'", DEFAULT_CHUNK_SIZE);
+            } catch (NumberFormatException ex) {
+                Utility.print("[x] Invalid chunk size number, using default");
+            }
+            if(args.length == 3) {
+                SERVER_IP_ADDRESS = args[1];
                 try {
-                    SERVER_PORT = Integer.parseInt(args[1]);
+                    SERVER_PORT = Integer.parseInt(args[2]);
                 } catch (NumberFormatException ex) {
                     Utility.print("[x] Invalid port number, using default");
                 }
