@@ -19,16 +19,16 @@ PowerTunnel is active DPI circumvention utility, that works only on your PC and 
 ### How it works?
 PowerTunnel establishes a HTTP/HTTPS-proxy on the your PC and directs your traffic through it.
 
-More info on wiki: https://github.com/krlvm/PowerTunnel/wiki/How-it-works%3F
+More details on the Wiki: https://github.com/krlvm/PowerTunnel/wiki/How-it-works%3F
 
 ## How I can get it?
 You can compile yourself or download prepared binary from the `Releases` tab.
 
 ## Setup
-Please, look into Wiki: https://github.com/krlvm/PowerTunnel/wiki/Installation
+Please, look at the Wiki: https://github.com/krlvm/PowerTunnel/wiki/Installation
 
 ## Not working
-It's sad but true - your ISP using another blocking method, that PowerTunnel cannot bypass right now.
+Your ISP using another blocking method, that PowerTunnel cannot bypass right now.
 
 If you have offers, improvements or find bug you can leave an issue.
 
