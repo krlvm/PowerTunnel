@@ -477,7 +477,7 @@ abstract class ProxyConnection<I extends HttpObject> extends
             for (byte[] byteChunk : PacketUtility.chunk(buf, chunkSize)) {
                 writeToChannel(Unpooled.wrappedBuffer(byteChunk));
             }
-            alreadyChunked = true;
+            //alreadyChunked = true;
         } else {
             writeToChannel(buf);
         }
