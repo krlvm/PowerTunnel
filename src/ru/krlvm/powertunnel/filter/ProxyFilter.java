@@ -37,12 +37,13 @@ public class ProxyFilter extends HttpFiltersAdapter {
         if (httpObject instanceof HttpRequest) {
             HttpRequest request = (HttpRequest) httpObject;
             String host = HttpUtility.formatHost(request.headers().get("Host"));
+
             PowerTunnel.addToJournal(host);
             Utility.print("[i] %s / %s", request.getMethod(), host);
 
             if(!PowerTunnel.isUserWhitelisted(host) && PowerTunnel.isUserBlacklisted(host)) {
                 Utility.print(" [!] Access denied by user: " + host);
-                return HttpUtility.getStub("This website blocked by user");
+                return HttpUtility.getStub("This website is blocked by user");
             }
 
             if(PowerTunnel.isBlockedByGovernment(host)) {
@@ -58,6 +59,7 @@ public class ProxyFilter extends HttpFiltersAdapter {
     public HttpObject serverToProxyResponse(HttpObject httpObject) {
         if (httpObject instanceof DefaultHttpResponse) {
             DefaultHttpResponse response = (DefaultHttpResponse) httpObject;
+            //Utility.print("\n\n----------------------------\n" + request.toString() + "\n----------------------------\n\n");
             if(response.getStatus().code() == 302 && PowerTunnel.isIspStub(response.headers().get("Location"))) {
                 Utility.print(" [!] Detected ISP 302-redirect to the stub");
                 return HttpUtility.getStub("Thrown out ISP redirect to the stub");
