@@ -215,10 +215,9 @@ import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import org.littleshoot.proxy.HttpFilters;
 import ru.krlvm.powertunnel.utilities.Debugger;
+import ru.krlvm.powertunnel.utilities.PacketUtility;
 
 import javax.net.ssl.SSLEngine;
-import java.util.Arrays;
-import java.util.LinkedList;
 
 import static org.littleshoot.proxy.impl.ConnectionState.*;
 
@@ -473,26 +472,13 @@ abstract class ProxyConnection<I extends HttpObject> extends
     private boolean alreadyChunked = false;
     protected void writeRaw(ByteBuf buf) {
         if(!alreadyChunked && isShouldBeFragmented()) {
-            for (byte[] byteChunk : chunk(buf)) {
+            for (byte[] byteChunk : PacketUtility.chunk(buf)) {
                 writeToChannel(Unpooled.wrappedBuffer(byteChunk));
             }
             alreadyChunked = true;
         } else {
             writeToChannel(buf);
         }
-    }
-
-    private static LinkedList<byte[]> chunk(ByteBuf buf) {
-        byte[] bytes = new byte[buf.readableBytes()];
-        buf.readBytes(bytes);
-        LinkedList<byte[]> byteChunks = new LinkedList<>();
-        int len = bytes.length;
-        int chunkSize = 1;
-        int i = 0;
-        while (i < len) {
-            byteChunks.add(Arrays.copyOfRange(bytes, i, i += chunkSize));
-        }
-        return byteChunks;
     }
 
     public boolean isShouldBeFragmented() {
@@ -646,7 +632,7 @@ abstract class ProxyConnection<I extends HttpObject> extends
                 return encrypt(sslEngine, !runsAsSslClient);
             }
         };
-    };
+    }
 
     /**
      * Enables decompression and aggregation of content, which is useful for
@@ -726,7 +712,7 @@ abstract class ProxyConnection<I extends HttpObject> extends
                             promise.setFailure(future
                                     .cause());
                         }
-                    };
+                    }
                 });
     }
 
