@@ -10,6 +10,7 @@ import ru.krlvm.powertunnel.data.DataStore;
 import ru.krlvm.powertunnel.data.DataStoreException;
 import ru.krlvm.powertunnel.filter.ProxyFilter;
 import ru.krlvm.powertunnel.frames.*;
+import ru.krlvm.powertunnel.patches.PatchManager;
 import ru.krlvm.powertunnel.system.MirroredOutputStream;
 import ru.krlvm.powertunnel.updater.UpdateNotifier;
 import ru.krlvm.powertunnel.utilities.URLUtility;
@@ -45,6 +46,8 @@ public class PowerTunnel {
     private static boolean RUNNING = false;
     public static String SERVER_IP_ADDRESS = "127.0.0.1";
     public static int SERVER_PORT = 8085;
+
+    public static final int DEFAULT_CHUNK_SIZE = 1;
 
     public static final boolean FULL_OUTPUT_MIRRORING = false;
 
@@ -90,6 +93,9 @@ public class PowerTunnel {
 
         //Allow us to modify 'HOST' request header
         System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
+
+        //Load patches
+        Utility.print("[#] Loaded '%s' patches", PatchManager.load());
 
         //Parse launch arguments
         if(args.length > 0 && args.length < 3) {

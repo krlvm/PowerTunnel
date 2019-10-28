@@ -219,13 +219,13 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.littleshoot.proxy.*;
 import ru.krlvm.powertunnel.PowerTunnel;
+import ru.krlvm.powertunnel.patches.PatchManager;
 import ru.krlvm.powertunnel.utilities.Debugger;
 import ru.krlvm.powertunnel.utilities.HttpUtility;
 import ru.krlvm.powertunnel.utilities.Utility;
 
 import javax.net.ssl.SSLProtocolException;
 import javax.net.ssl.SSLSession;
-import javax.swing.text.Utilities;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
@@ -384,11 +384,17 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
 
     @Override
     public boolean isShouldBeFragmented() {
-        boolean is = PowerTunnel.isBlockedByGovernment(HttpUtility.formatHost(serverHostAndPort));
+        String addr = HttpUtility.formatHost(serverHostAndPort);
+        boolean is = PowerTunnel.isBlockedByGovernment(addr);
         if(is) {
-            Utility.print(" [+] Will be fragmented: %s", serverHostAndPort);
+            Utility.print(" [+] Will be fragmented: %s", addr);
         }
         return is;
+    }
+
+    @Override
+    public int getPTFragmentSize() {
+        return PatchManager.getChunkSize(HttpUtility.formatHost(serverHostAndPort));
     }
 
     /***************************************************************************
@@ -485,7 +491,7 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
                 return ProxyUtils.isHEAD(currentHttpRequest) || super.isContentAlwaysEmpty(httpMessage);
             }
         }
-    };
+    }
 
     /***************************************************************************
      * Writing
@@ -541,7 +547,7 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
             LOG.debug("Using existing connection to: {}", remoteAddress);
             doWrite(msg);
         }
-    };
+    }
 
     @Override
     protected void writeHttp(HttpObject httpObject) {
@@ -815,7 +821,7 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
             cb.handler(new ChannelInitializer<Channel>() {
                 protected void initChannel(Channel ch) throws Exception {
                     initChannelPipeline(ch.pipeline(), initialRequest);
-                };
+                }
             });
             cb.option(ChannelOption.CONNECT_TIMEOUT_MILLIS,
                     proxyServer.getConnectTimeout());

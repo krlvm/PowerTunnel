@@ -2,6 +2,7 @@ package ru.krlvm.powertunnel.utilities;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import ru.krlvm.powertunnel.PowerTunnel;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -21,7 +22,7 @@ public class PacketUtility {
      * @return - ByteBuf chunks
      */
     public static LinkedList<ByteBuf> bufferChunk(ByteBuf buf) {
-        return bufferChunk(buf, 1);
+        return bufferChunk(buf, PowerTunnel.DEFAULT_CHUNK_SIZE);
     }
 
     /**
@@ -47,7 +48,7 @@ public class PacketUtility {
      * @return - ByteBuf chunks (byte[])
      */
     public static LinkedList<byte[]> chunk(ByteBuf buf) {
-        return chunk(buf, 1);
+        return chunk(buf, PowerTunnel.DEFAULT_CHUNK_SIZE);
     }
 
     /**

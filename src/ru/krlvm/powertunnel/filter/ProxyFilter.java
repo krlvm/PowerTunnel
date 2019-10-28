@@ -47,6 +47,7 @@ public class ProxyFilter extends HttpFiltersAdapter {
 
             if(PowerTunnel.isBlockedByGovernment(host)) {
                 circumventDPI(request);
+                Utility.print(" [+] Trying to bypass DPI: " + host);
             }
         }
 
@@ -75,6 +76,5 @@ public class ProxyFilter extends HttpFiltersAdapter {
         String host = request.headers().get("Host");
         request.headers().remove("Host");
         request.headers().add("hOSt", host + ".");
-        Utility.print(" [+] Trying to bypass DPI: " + host);
     }
 }
