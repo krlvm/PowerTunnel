@@ -3,12 +3,15 @@ package ru.krlvm.powertunnel.frames;
 import ru.krlvm.powertunnel.PowerTunnel;
 import ru.krlvm.powertunnel.utilities.Debugger;
 import ru.krlvm.powertunnel.utilities.UIUtility;
+import ru.krlvm.powertunnel.utilities.Utility;
 import ru.krlvm.swingdpi.SwingDPI;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class MainFrame extends ControlFrame {
 
@@ -18,9 +21,9 @@ public class MainFrame extends ControlFrame {
 
     public MainFrame() {
         super(PowerTunnel.NAME + " v" + PowerTunnel.VERSION);
-        double multiplier = SwingDPI.isScaleApplied() ? (SwingDPI.getScaleFactor()/(SwingDPI.getScaleFactor()-0.25))+0.05 : 1.3;
+        double multiplier = SwingDPI.isScaleApplied() ? (SwingDPI.getScaleFactor() / (SwingDPI.getScaleFactor() - 0.25)) + 0.05 : 1.3;
         Debugger.debug("Scale multiplier: " + multiplier);
-        setSize((int)(325*(SwingDPI.getScaleFactor()*multiplier)), (int)(150*(SwingDPI.getScaleFactor()*multiplier)));
+        setSize((int) (325 * (SwingDPI.getScaleFactor() * multiplier)), (int) (150 * (SwingDPI.getScaleFactor() * multiplier)));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         header = new JLabel(getHeaderText());
@@ -35,20 +38,20 @@ public class MainFrame extends ControlFrame {
         portInput.setToolTipText("Port");
         portInput.setText(String.valueOf(PowerTunnel.SERVER_PORT));
 
-        inputs = new JTextField[] { ipInput, portInput };
+        inputs = new JTextField[]{ipInput, portInput};
 
         stateButton = new JButton("Start server");
         stateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(PowerTunnel.isRunning()) {
+                if (PowerTunnel.isRunning()) {
                     PowerTunnel.stopServer();
                 } else {
                     try {
                         PowerTunnel.SERVER_IP_ADDRESS = ipInput.getText();
                         PowerTunnel.SERVER_PORT = Integer.parseInt(portInput.getText());
                         String error = PowerTunnel.safeBootstrap();
-                        if(error != null) {
+                        if (error != null) {
                             JOptionPane.showMessageDialog(MainFrame.this, error,
                                     "Error", JOptionPane.ERROR_MESSAGE);
                         }
@@ -124,6 +127,15 @@ public class MainFrame extends ControlFrame {
         setResizable(false);
         controlFrameInitialized();
         setVisible(true);
+
+        //save data
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                PowerTunnel.stop();
+                Utility.print("[#] Goodbye :(");
+            }
+        });
     }
 
     public void update() {
