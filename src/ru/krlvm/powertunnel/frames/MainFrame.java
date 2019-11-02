@@ -21,7 +21,7 @@ public class MainFrame extends ControlFrame {
 
     public MainFrame() {
         super(PowerTunnel.NAME + " v" + PowerTunnel.VERSION);
-        double multiplier = SwingDPI.isScaleApplied() ? (SwingDPI.getScaleFactor()/(SwingDPI.getScaleFactor()-0.25))+0.05 : 1.2;
+        double multiplier = SwingDPI.isScaleApplied() ? (SwingDPI.getScaleFactor()/(SwingDPI.getScaleFactor()-0.25))+0.05 : 1.25;
         Debugger.debug("Scale multiplier: " + multiplier);
         setSize((int)(325*(SwingDPI.getScaleFactor()*multiplier)), (int)(150*(SwingDPI.getScaleFactor()*multiplier)));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
