@@ -13,6 +13,7 @@ import ru.krlvm.powertunnel.frames.*;
 import ru.krlvm.powertunnel.patches.PatchManager;
 import ru.krlvm.powertunnel.system.MirroredOutputStream;
 import ru.krlvm.powertunnel.updater.UpdateNotifier;
+import ru.krlvm.powertunnel.utilities.Debugger;
 import ru.krlvm.powertunnel.utilities.URLUtility;
 import ru.krlvm.powertunnel.utilities.Utility;
 import ru.krlvm.swingdpi.SwingDPI;
@@ -63,8 +64,69 @@ public class PowerTunnel {
     public static LogFrame logFrame;
     public static JournalFrame journalFrame;
     public static UserListFrame[] USER_FRAMES;
+    
+    public static boolean CONSOLE_MODE = false;
 
     public static void main(String[] args) {
+        //Parse launch arguments
+        //java -jar PowerTunnel.jar (-args)
+        if(args.length > 0) {
+            for (int i = 0; i < args.length; i++) {
+                String arg = args[i];
+                if (!arg.startsWith("-")) {
+                    continue;
+                }
+                arg = arg.replaceFirst("-", "").toLowerCase();
+                switch (arg) {
+                    case "debug": {
+                        Debugger.setDebug(true);
+                        break;
+                    }
+                    case "console": {
+                        CONSOLE_MODE = true;
+                        break;
+                    }
+                    default: {
+                        if (args.length < i + 1) {
+                            Utility.print("[!] Invalid input for option '%s'", arg);
+                        } else {
+                            String value = args[i + 1];
+                            switch (arg) {
+                                case "ip": {
+                                    SERVER_IP_ADDRESS = value;
+                                    Utility.print("[#] IP address set to '%s'", SERVER_IP_ADDRESS);
+                                    break;
+                                }
+                                case "port": {
+                                    try {
+                                        SERVER_PORT = Integer.parseInt(value);
+                                        Utility.print("[#] Port set to '%s'", SERVER_PORT);
+                                    } catch (NumberFormatException ex) {
+                                        Utility.print("[x] Invalid chunk size number, using default");
+                                    }
+                                    break;
+                                }
+                                case "chunksize": {
+                                    try {
+                                        DEFAULT_CHUNK_SIZE = Integer.parseInt(value);
+                                        Utility.print("[#] Chunk size set to '%s'", DEFAULT_CHUNK_SIZE);
+                                    } catch (NumberFormatException ex) {
+                                        Utility.print("[x] Invalid chunk size number, using default");
+                                    }
+                                    break;
+                                }
+                                default: {
+                                    //it is an argument
+                                    //Utility.print("[?] Unknown option: '%s'", arg);
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }
         //Initialize UI
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -96,24 +158,6 @@ public class PowerTunnel {
 
         //Load patches
         Utility.print("[#] Loaded '%s' patches", PatchManager.load());
-
-        //Parse launch arguments
-        if(args.length > 0 && args.length < 4) {
-            try {
-                DEFAULT_CHUNK_SIZE = Integer.parseInt(args[0]);
-                Utility.print("[#] Chunk size set to '%s'", DEFAULT_CHUNK_SIZE);
-            } catch (NumberFormatException ex) {
-                Utility.print("[x] Invalid chunk size number, using default");
-            }
-            if(args.length == 3) {
-                SERVER_IP_ADDRESS = args[1];
-                try {
-                    SERVER_PORT = Integer.parseInt(args[2]);
-                } catch (NumberFormatException ex) {
-                    Utility.print("[x] Invalid port number, using default");
-                }
-            }
-        }
 
         journalFrame = new JournalFrame();
         frame = new MainFrame();

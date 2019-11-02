@@ -24,7 +24,7 @@ public class Debugger {
         } else {
             state = "enabled";
         }
-        Utility.print("[Debug] Debug is %s now", state);
+        Utility.print("[Debug] Debug %s", state);
         Debugger.DEBUG_ENABLED = debug;
     }
 
