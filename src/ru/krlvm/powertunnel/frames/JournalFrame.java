@@ -1,7 +1,6 @@
 package ru.krlvm.powertunnel.frames;
 
 import ru.krlvm.powertunnel.PowerTunnel;
-import ru.krlvm.swingdpi.SwingDPI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,8 +27,11 @@ public class JournalFrame extends ControlFrame {
         addToWhitelist.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PowerTunnel.addToUserWhitelist(swingList.getSelectedValue().split(": ")[1]);
-                refill();
+                String value = swingList.getSelectedValue();
+                if(value != null) {
+                    PowerTunnel.addToUserWhitelist(value.split(": ")[1]);
+                    refill();
+                }
             }
         });
 
@@ -37,8 +39,11 @@ public class JournalFrame extends ControlFrame {
         addToBlacklist.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PowerTunnel.addToUserBlacklist(swingList.getSelectedValue().split(": ")[1]);
-                refill();
+                String value = swingList.getSelectedValue();
+                if(value != null) {
+                    PowerTunnel.addToUserBlacklist(value.split(": ")[1]);
+                    refill();
+                }
             }
         });
 
