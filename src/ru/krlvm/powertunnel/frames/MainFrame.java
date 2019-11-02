@@ -2,6 +2,7 @@ package ru.krlvm.powertunnel.frames;
 
 import ru.krlvm.powertunnel.PowerTunnel;
 import ru.krlvm.powertunnel.data.DataStoreException;
+import ru.krlvm.powertunnel.utilities.Debugger;
 import ru.krlvm.powertunnel.utilities.UIUtility;
 import ru.krlvm.powertunnel.utilities.Utility;
 import ru.krlvm.swingdpi.SwingDPI;
@@ -20,7 +21,9 @@ public class MainFrame extends ControlFrame {
 
     public MainFrame() {
         super(PowerTunnel.NAME + " v" + PowerTunnel.VERSION);
-        setSize(500, 250);
+        double multiplier = SwingDPI.isScaleApplied() ? (SwingDPI.getScaleFactor()/(SwingDPI.getScaleFactor()-0.25))+0.05 : 1.2;
+        Debugger.debug("Scale multiplier: " + multiplier);
+        setSize((int)(325*(SwingDPI.getScaleFactor()*multiplier)), (int)(150*(SwingDPI.getScaleFactor()*multiplier)));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         header = new JLabel(getHeaderText());
