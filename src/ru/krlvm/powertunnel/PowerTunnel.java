@@ -254,6 +254,14 @@ public class PowerTunnel {
      */
     public static void stop() {
         stopServer();
+        safeUserListSave();
+        GOVERNMENT_BLACKLIST.clear();
+        USER_BLACKLIST.clear();
+        USER_WHITELIST.clear();
+        ISP_STUB_LIST.clear();
+    }
+
+    public static void safeUserListSave() {
         try {
             saveUserLists();
             Utility.print("[#] User blacklist and whitelist saved");
@@ -262,12 +270,7 @@ public class PowerTunnel {
             ex.printStackTrace();
             Utility.print();
         }
-        GOVERNMENT_BLACKLIST.clear();
-        USER_BLACKLIST.clear();
-        USER_WHITELIST.clear();
-        ISP_STUB_LIST.clear();
     }
-
     /**
      * Retrieve is LittleProxy server is running
      *

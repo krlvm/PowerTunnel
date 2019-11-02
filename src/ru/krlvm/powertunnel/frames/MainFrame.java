@@ -132,7 +132,11 @@ public class MainFrame extends ControlFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                PowerTunnel.stop();
+                if(PowerTunnel.isRunning()) {
+                    PowerTunnel.stop();
+                } else {
+                    PowerTunnel.safeUserListSave();
+                }
                 Utility.print("[#] Goodbye :(");
             }
         });
