@@ -48,6 +48,7 @@ public class UIUtility {
 
         pane.setEditable(false);
         pane.setBackground(label.getBackground());
+        pane.setHighlighter(null);
 
         return pane;
     }
