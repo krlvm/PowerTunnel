@@ -1,7 +1,7 @@
 # PowerTunnel
 Simple, scalable, cross-platform and effective solution against government censorship
 
-Designed for use in Russia, but can used but can be used in other countries.
+Designed for use in Russia, but can be used in other countries.
 
 Wiki: https://github.com/krlvm/PowerTunnel/wiki/
 
@@ -26,6 +26,18 @@ You can compile yourself or download prepared binary from the `Releases` tab.
 
 ## Setup
 Please, look at the Wiki: https://github.com/krlvm/PowerTunnel/wiki/Installation
+
+## Launch arguments
+You can specify a few params through the CLI (v1.4+):
+
+```
+java -jar PowerTunnel.jar
+-ip [IP Address]
+-port [Port]
+-chunksize [Size of one HTTPS chunk, be careful]
+-console
+-debug
+```
 
 ## Not working
 Your ISP using another blocking method, that PowerTunnel cannot bypass right now.
