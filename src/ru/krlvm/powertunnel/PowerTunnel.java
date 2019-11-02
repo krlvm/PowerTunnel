@@ -65,7 +65,7 @@ public class PowerTunnel {
     public static JournalFrame journalFrame;
     public static UserListFrame[] USER_FRAMES;
     
-    public static boolean CONSOLE_MODE = false;
+    private static boolean CONSOLE_MODE = false;
 
     public static void main(String[] args) {
         //Parse launch arguments
@@ -127,23 +127,33 @@ public class PowerTunnel {
                 }
             }
         }
-        //Initialize UI
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ex) {
-            System.out.println("Failed to set native Look and Feel: " + ex.getMessage());
-            ex.printStackTrace();
-            System.out.println();
-        }
-        SwingDPI.applyScalingAutomatically();
+        if(!CONSOLE_MODE) {
+            //Initialize UI
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (Exception ex) {
+                System.out.println("Failed to set native Look and Feel: " + ex.getMessage());
+                ex.printStackTrace();
+                System.out.println();
+            }
+            SwingDPI.applyScalingAutomatically();
 
-        //Initializing main frame and system outputs mirroring
-        logFrame = new LogFrame();
-        if(FULL_OUTPUT_MIRRORING) {
-            PrintStream systemOutput = System.out;
-            PrintStream systemErr = System.err;
-            System.setOut(new PrintStream(new MirroredOutputStream(new ByteArrayOutputStream(), logFrame, systemOutput)));
-            System.setErr(new PrintStream(new MirroredOutputStream(new ByteArrayOutputStream(), logFrame, systemErr)));
+            //Initializing main frame and system outputs mirroring
+            logFrame = new LogFrame();
+            if (FULL_OUTPUT_MIRRORING) {
+                PrintStream systemOutput = System.out;
+                PrintStream systemErr = System.err;
+                System.setOut(new PrintStream(new MirroredOutputStream(new ByteArrayOutputStream(), logFrame, systemOutput)));
+                System.setErr(new PrintStream(new MirroredOutputStream(new ByteArrayOutputStream(), logFrame, systemErr)));
+            }
+
+            journalFrame = new JournalFrame();
+            frame = new MainFrame();
+
+            //Initialize UI
+            USER_FRAMES = new UserListFrame[] {
+                    new BlacklistFrame(), new WhitelistFrame()
+            };
         }
 
         Utility.print(NAME + " version " + VERSION);
@@ -159,15 +169,27 @@ public class PowerTunnel {
         //Load patches
         Utility.print("[#] Loaded '%s' patches", PatchManager.load());
 
-        journalFrame = new JournalFrame();
-        frame = new MainFrame();
-
-        //Initialize UI
-        USER_FRAMES = new UserListFrame[] {
-                new BlacklistFrame(), new WhitelistFrame()
-        };
+        if(CONSOLE_MODE) {
+            safeBootstrap();
+        }
 
         UpdateNotifier.checkAndNotify();
+    }
+
+    public static String safeBootstrap() {
+        try {
+            PowerTunnel.bootstrap();
+        } catch (UnknownHostException ex) {
+            Utility.print("[x] Cannot use IP-Address '%s': %s", SERVER_IP_ADDRESS, ex.getMessage());
+            Debugger.debug(ex);
+            Utility.print("[!] Program halted");
+            return "Cannot use IP Address '" + PowerTunnel.SERVER_IP_ADDRESS + "'";
+        } catch (DataStoreException ex) {
+            Utility.print("[x] Failed to load data store: " + ex.getMessage());
+            ex.printStackTrace();
+            return "Failed to load data store: " + ex.getMessage();
+        }
+        return null;
     }
 
     /**
@@ -206,7 +228,9 @@ public class PowerTunnel {
         Utility.print("[.] Server started");
         Utility.print();
 
-        frame.update();
+        if(!CONSOLE_MODE) {
+            frame.update();
+        }
     }
 
     /**
@@ -214,13 +238,15 @@ public class PowerTunnel {
      */
     public static void stopServer() {
         Utility.print();
-        System.out.println("[.] Stopping server...");
+        Utility.print("[.] Stopping server...");
         SERVER.stop();
-        System.out.println("[.] Server stopped");
+        Utility.print("[.] Server stopped");
         Utility.print();
         RUNNING = false;
 
-        frame.update();
+        if(!CONSOLE_MODE) {
+            frame.update();
+        }
     }
 
     /**
@@ -249,6 +275,15 @@ public class PowerTunnel {
      */
     public static boolean isRunning() {
         return RUNNING;
+    }
+
+    /**
+     * Retrieves is console mode disabled (therefore is the UI enabled)
+     *
+     * @return is UI enabled
+     */
+    public static boolean isUIEnabled() {
+        return !CONSOLE_MODE;
     }
 
     /*
@@ -340,6 +375,9 @@ public class PowerTunnel {
      * Refills user list frames
      */
     public static void updateUserListFrames() {
+        if(CONSOLE_MODE) {
+            return;
+        }
         for (UserListFrame frame : USER_FRAMES) {
             frame.refill();
         }

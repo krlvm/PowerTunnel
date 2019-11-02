@@ -1,17 +1,14 @@
 package ru.krlvm.powertunnel.frames;
 
 import ru.krlvm.powertunnel.PowerTunnel;
-import ru.krlvm.powertunnel.data.DataStoreException;
 import ru.krlvm.powertunnel.utilities.Debugger;
 import ru.krlvm.powertunnel.utilities.UIUtility;
-import ru.krlvm.powertunnel.utilities.Utility;
 import ru.krlvm.swingdpi.SwingDPI;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.UnknownHostException;
 
 public class MainFrame extends ControlFrame {
 
@@ -50,20 +47,10 @@ public class MainFrame extends ControlFrame {
                     try {
                         PowerTunnel.SERVER_IP_ADDRESS = ipInput.getText();
                         PowerTunnel.SERVER_PORT = Integer.parseInt(portInput.getText());
-                        try {
-                            PowerTunnel.bootstrap();
-                        } catch (UnknownHostException ex) {
-                            JOptionPane.showMessageDialog(MainFrame.this, "Cannot use IP Address '" + PowerTunnel.SERVER_IP_ADDRESS,
+                        String error = PowerTunnel.safeBootstrap();
+                        if(error != null) {
+                            JOptionPane.showMessageDialog(MainFrame.this, error,
                                     "Error", JOptionPane.ERROR_MESSAGE);
-                            Utility.print("[?] Cannot use IP-Address '%s': %s", PowerTunnel.SERVER_IP_ADDRESS, ex.getMessage());
-                            ex.printStackTrace();
-                            System.out.println();
-                            Utility.print("[!] Program halted");
-                        } catch (DataStoreException ex) {
-                            JOptionPane.showMessageDialog(MainFrame.this, "Failed to load data store: " + ex.getMessage(),
-                                "Error", JOptionPane.ERROR_MESSAGE);
-                            Utility.print("[x] Failed to load data store: " + ex.getMessage());
-                            ex.printStackTrace();
                         }
                     } catch (NumberFormatException ex) {
                         JOptionPane.showMessageDialog(MainFrame.this, "Invalid port",

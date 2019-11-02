@@ -36,7 +36,7 @@ public class Utility {
             return;
         }
         System.out.println(message);
-        if(!PowerTunnel.FULL_OUTPUT_MIRRORING) {
+        if(PowerTunnel.isUIEnabled() && !PowerTunnel.FULL_OUTPUT_MIRRORING) {
             LogFrame.print(message);
         }
     }

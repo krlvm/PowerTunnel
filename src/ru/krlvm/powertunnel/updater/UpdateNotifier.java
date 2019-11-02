@@ -31,7 +31,7 @@ public class UpdateNotifier {
                             failure("Invalid version code: '" + data[0] + "'");
                             return;
                         }
-                        if(newVersionCode <= PowerTunnel.VERSION_CODE) {
+                        if (newVersionCode <= PowerTunnel.VERSION_CODE) {
                             info("You're running the latest version of PowerTunnel!");
                             return;
                         }
@@ -41,22 +41,24 @@ public class UpdateNotifier {
                                 "Changelog: https://github.com/krlvm/PowerTunnel/releases/tag/v" + version,
                                 "Download: https://github.com/krlvm/PowerTunnel/releases/download/v" + version + "/PowerTunnel.jar",
                                 "Visit GitHub repository: " + PowerTunnel.REPOSITORY_URL);
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                JEditorPane message = UIUtility.getLabelWithHyperlinkSupport("PowerTunnel is ready to update!" +
-                                        "<br><br>" +
-                                        "Version: " + version + "<br>" +
-                                        "<br>" +
-                                        "Changelog: <a href=\"https://github.com/krlvm/PowerTunnel/releases/tag/v" + version + "\">view</a>" +
-                                        "<br>" +
-                                        "Download: <a href=\"https://github.com/krlvm/PowerTunnel/releases/download/v" + version + "/PowerTunnel.jar\">click here</a>" +
-                                        "<br><br>" +
-                                        "Visit <a href=\"" + PowerTunnel.REPOSITORY_URL + "\">GitHub repository</a>" +
-                                        "</body></html>", null);
-                                JOptionPane.showMessageDialog(null, message, "PowerTunnel Updater", JOptionPane.INFORMATION_MESSAGE);
-                            }
-                        });
+                        if (PowerTunnel.isUIEnabled()) {
+                            SwingUtilities.invokeLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    JEditorPane message = UIUtility.getLabelWithHyperlinkSupport("PowerTunnel is ready to update!" +
+                                            "<br><br>" +
+                                            "Version: " + version + "<br>" +
+                                            "<br>" +
+                                            "Changelog: <a href=\"https://github.com/krlvm/PowerTunnel/releases/tag/v" + version + "\">view</a>" +
+                                            "<br>" +
+                                            "Download: <a href=\"https://github.com/krlvm/PowerTunnel/releases/download/v" + version + "/PowerTunnel.jar\">click here</a>" +
+                                            "<br><br>" +
+                                            "Visit <a href=\"" + PowerTunnel.REPOSITORY_URL + "\">GitHub repository</a>" +
+                                            "</body></html>", null);
+                                    JOptionPane.showMessageDialog(null, message, "PowerTunnel Updater", JOptionPane.INFORMATION_MESSAGE);
+                                }
+                            });
+                        }
                     }
                 } catch (IOException ex) {
                     failure("Cannot connect to the server: " + ex.getMessage());
