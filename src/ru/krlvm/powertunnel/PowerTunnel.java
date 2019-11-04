@@ -69,11 +69,6 @@ public class PowerTunnel {
     private static boolean CONSOLE_MODE = false;
 
     public static void main(String[] args) {
-        Utility.print(NAME + " version " + VERSION);
-        Utility.print("Simple, scalable, cross-platform and effective solution against government censorship");
-        Utility.print(REPOSITORY_URL);
-        Utility.print("(c) krlvm, 2019");
-        Utility.print();
         //Parse launch arguments
         //java -jar PowerTunnel.jar (-args)
         boolean startNow = false;
@@ -183,6 +178,12 @@ public class PowerTunnel {
                     new BlacklistFrame(), new WhitelistFrame()
             };
         }
+
+        Utility.print(NAME + " version " + VERSION);
+        Utility.print("Simple, scalable, cross-platform and effective solution against government censorship");
+        Utility.print(REPOSITORY_URL);
+        Utility.print("(c) krlvm, 2019");
+        Utility.print();
 
         //Allow us to modify 'HOST' request header
         System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
