@@ -49,7 +49,7 @@ public class PowerTunnel {
     public static int SERVER_PORT = 8085;
 
     public static boolean FULL_CHUNKING = false;
-    public static int DEFAULT_CHUNK_SIZE = 1;
+    public static int DEFAULT_CHUNK_SIZE = 2;
 
     public static final boolean FULL_OUTPUT_MIRRORING = false;
 

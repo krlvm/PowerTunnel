@@ -72,7 +72,6 @@ public class PacketUtility {
             byteChunks.add(Arrays.copyOfRange(bytes, 0, chunkSize));
             byteChunks.add(Arrays.copyOfRange(bytes, chunkSize, len));
         }
-        System.out.println(byteChunks.size());
         return byteChunks;
     }
 }
