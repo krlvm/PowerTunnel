@@ -84,12 +84,13 @@ public class PowerTunnel {
                         Utility.print("Available params:\n" +
                                 " -help - display help\n" +
                                 " -start - starts server right after load\n" +
-                                " -console - console mode, UI disabled\n" +
+                                " -console - console mode, without UI\n" +
                                 " -full-chunking - enables chunking the whole packets\n" +
                                 " -chunk-size [size] - sets size of one chunk\n" +
                                 " -ip [IP Address] - sets IP Address\n" +
                                 " -port [Port] - sets port\n" +
-                                " -disable-updater for disabling the update notifier");
+                                " -disable-updater - disables the update notifier\n" +
+                                " -debug - enable debug");
                         System.exit(0);
                         break;
                     }
