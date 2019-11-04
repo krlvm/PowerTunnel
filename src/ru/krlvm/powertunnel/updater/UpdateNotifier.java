@@ -11,10 +11,15 @@ import java.io.IOException;
 
 public class UpdateNotifier {
 
+    public static boolean ENABLED = true;
+
     private static final String LOG_TAG = "[Updater] ";
     private static final String URL = "https://raw.githubusercontent.com/krlvm/PowerTunnel/master/version.txt";
 
     public static void checkAndNotify() {
+        if(!ENABLED) {
+            return;
+        }
         new Thread(new Runnable() {
             @Override
             public void run() {

@@ -88,7 +88,8 @@ public class PowerTunnel {
                                 " -full-chunking - enables chunking the whole packets\n" +
                                 " -chunk-size [size] - sets size of one chunk\n" +
                                 " -ip [IP Address] - sets IP Address\n" +
-                                " -port [Port] - sets port");
+                                " -port [Port] - sets port\n" +
+                                " -disable-updater for disabling the update notifier");
                         System.exit(0);
                         break;
                     }
@@ -107,6 +108,10 @@ public class PowerTunnel {
                     case "full-chunking": {
                         FULL_CHUNKING = true;
                         Utility.print("[#] Full-chunking mode enabled");
+                        break;
+                    }
+                    case "disable-updater": {
+                        UpdateNotifier.ENABLED = false;
                         break;
                     }
                     default: {
