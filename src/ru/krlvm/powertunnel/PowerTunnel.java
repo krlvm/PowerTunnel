@@ -39,8 +39,8 @@ import java.util.*;
 public class PowerTunnel {
 
     public static final String NAME = "PowerTunnel";
-    public static final String VERSION = "1.4";
-    public static final int VERSION_CODE = 5;
+    public static final String VERSION = "1.5";
+    public static final int VERSION_CODE = 6;
     public static final String REPOSITORY_URL = "https://github.com/krlvm/PowerTunnel";
 
     private static HttpProxyServer SERVER;
@@ -48,6 +48,7 @@ public class PowerTunnel {
     public static String SERVER_IP_ADDRESS = "127.0.0.1";
     public static int SERVER_PORT = 8085;
 
+    public static boolean FULL_CHUNKING = false;
     public static int DEFAULT_CHUNK_SIZE = 1;
 
     public static final boolean FULL_OUTPUT_MIRRORING = false;
@@ -68,8 +69,14 @@ public class PowerTunnel {
     private static boolean CONSOLE_MODE = false;
 
     public static void main(String[] args) {
+        Utility.print(NAME + " version " + VERSION);
+        Utility.print("Simple, scalable, cross-platform and effective solution against government censorship");
+        Utility.print(REPOSITORY_URL);
+        Utility.print("(c) krlvm, 2019");
+        Utility.print();
         //Parse launch arguments
         //java -jar PowerTunnel.jar (-args)
+        boolean startNow = false;
         if(args.length > 0) {
             for (int i = 0; i < args.length; i++) {
                 String arg = args[i];
@@ -78,12 +85,33 @@ public class PowerTunnel {
                 }
                 arg = arg.replaceFirst("-", "").toLowerCase();
                 switch (arg) {
+                    case "help": {
+                        Utility.print("Available params:\n" +
+                                " -help - display help\n" +
+                                " -start - starts server right after load\n" +
+                                " -console - console mode, UI disabled\n" +
+                                " -full-chunking - enables chunking the whole packets\n" +
+                                " -chunk-size [size] - sets size of one chunk\n" +
+                                " -ip [IP Address] - sets IP Address\n" +
+                                " -port [Port] - sets port");
+                        System.exit(0);
+                        break;
+                    }
+                    case "start": {
+                        startNow = true;
+                        break;
+                    }
                     case "debug": {
                         Debugger.setDebug(true);
                         break;
                     }
                     case "console": {
                         CONSOLE_MODE = true;
+                        break;
+                    }
+                    case "full-chunking": {
+                        FULL_CHUNKING = true;
+                        Utility.print("[#] Full-chunking mode enabled");
                         break;
                     }
                     default: {
@@ -106,7 +134,7 @@ public class PowerTunnel {
                                     }
                                     break;
                                 }
-                                case "chunksize": {
+                                case "chunk-size": {
                                     try {
                                         DEFAULT_CHUNK_SIZE = Integer.parseInt(value);
                                         Utility.print("[#] Chunk size set to '%s'", DEFAULT_CHUNK_SIZE);
@@ -156,20 +184,13 @@ public class PowerTunnel {
             };
         }
 
-        Utility.print(NAME + " version " + VERSION);
-        Utility.print("Simple, scalable, cross-platform and effective solution against government censorship");
-        Utility.print(REPOSITORY_URL);
-        Utility.print("(c) krlvm, 2019");
-        Utility.print();
-        Utility.print("[#] You can specify some params from CLI: java -jar PowerTunnel.jar [CHUNK_SIZE] {IP} {PORT}");
-
         //Allow us to modify 'HOST' request header
         System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
 
         //Load patches
         Utility.print("[#] Loaded '%s' patches", PatchManager.load());
 
-        if(CONSOLE_MODE) {
+        if(CONSOLE_MODE || startNow) {
             safeBootstrap();
         }
 

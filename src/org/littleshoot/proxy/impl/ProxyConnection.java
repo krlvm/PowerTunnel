@@ -473,7 +473,6 @@ abstract class ProxyConnection<I extends HttpObject> extends
     protected void writeRaw(ByteBuf buf) {
         if(!alreadyChunked && isShouldBeFragmented()) {
             int chunkSize = getPTFragmentSize();
-            Debugger.debug("Chunk size = '%s'", chunkSize);
             for (byte[] byteChunk : PacketUtility.chunk(buf, chunkSize)) {
                 writeToChannel(Unpooled.wrappedBuffer(byteChunk));
             }

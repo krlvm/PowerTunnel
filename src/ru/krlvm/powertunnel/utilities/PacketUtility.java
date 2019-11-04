@@ -61,12 +61,18 @@ public class PacketUtility {
     public static LinkedList<byte[]> chunk(ByteBuf buf, int chunkSize) {
         byte[] bytes = new byte[buf.readableBytes()];
         buf.readBytes(bytes);
-        LinkedList<byte[]> byteChunks = new LinkedList<>();
         int len = bytes.length;
-        int i = 0;
-        while (i < len) {
-            byteChunks.add(Arrays.copyOfRange(bytes, i, i += chunkSize));
+        LinkedList<byte[]> byteChunks = new LinkedList<>();
+        if(PowerTunnel.FULL_CHUNKING) {
+            int i = 0;
+            while (i < len) {
+                byteChunks.add(Arrays.copyOfRange(bytes, i, i += chunkSize));
+            }
+        } else {
+            byteChunks.add(Arrays.copyOfRange(bytes, 0, chunkSize));
+            byteChunks.add(Arrays.copyOfRange(bytes, chunkSize, len));
         }
+        System.out.println(byteChunks.size());
         return byteChunks;
     }
 }
