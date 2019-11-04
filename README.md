@@ -32,15 +32,21 @@ You can specify a few params through the CLI (v1.4+):
 
 ```
 java -jar PowerTunnel.jar
+-help - displays help
+-start - starts server right after load
+-console - console mode, without UI
+-full-chunking - enables chunking the whole packets
+-chunk-size [Size] - sets chunk size, minimum is 1, default is 5
 -ip [IP Address]
 -port [Port]
--chunksize [Size of one HTTPS chunk, be careful]
--console
+-disable-updater - disables the update notifier
 -debug
 ```
 
 ## Not working
 Your ISP using another blocking method, that PowerTunnel cannot bypass right now.
+
+Also, you can try launching the program with `-full-chunking` argument.
 
 If you have offers, improvements or find bug you can leave an issue.
 
