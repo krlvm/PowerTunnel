@@ -251,7 +251,8 @@ public class PowerTunnel {
             public HttpFilters filterRequest(HttpRequest originalRequest, ChannelHandlerContext ctx) {
                 return new ProxyFilter(originalRequest);
             }
-        }).withAddress(new InetSocketAddress(InetAddress.getByName(SERVER_IP_ADDRESS), SERVER_PORT)).start();
+        }).withAddress(new InetSocketAddress(InetAddress.getByName(SERVER_IP_ADDRESS), SERVER_PORT))
+                .withTransparent(true).start();
         RUNNING = true;
         Utility.print("[.] Server started");
         Utility.print();
