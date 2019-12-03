@@ -1,5 +1,6 @@
 package ru.krlvm.powertunnel.frames;
 
+import ru.krlvm.powertunnel.utilities.UIUtility;
 import ru.krlvm.swingdpi.ScalableJFrame;
 
 import javax.swing.*;
@@ -24,5 +25,10 @@ public abstract class ControlFrame extends ScalableJFrame {
      */
     protected void controlFrameInitialized() {
         setLocationRelativeTo(null);
+    }
+
+    @Override
+    public void setSize(int width, int height) {
+        super.setSize(UIUtility.correct(width), UIUtility.correct(height));
     }
 }

@@ -13,6 +13,23 @@ import java.awt.*;
 public class UIUtility {
 
     /**
+     * Retrieves corrected value a window width/height
+     * Needed for properly UI behavior on non-Windows operating systems
+     *
+     * 1,06 - is experimentally discovered Pi for UI scaling
+     * in non-Windows guest, such as Linux/macOS
+     *
+     * @param value - dimension
+     * @return corrected dimension
+     */
+    public static int correct(int value) {
+        if(System.getProperty("os.name").toLowerCase().contains("windows")) {
+            return value;
+        }
+        return (int)(value*1.06);
+    }
+
+    /**
      * Retrieves JEditorPane with hyperlink action support
      *
      * @param html - HTML code
