@@ -40,6 +40,8 @@ java -jar PowerTunnel.jar
 -chunk-size [Size] - sets chunk size, minimum is 1, default is 5
 -ip [IP Address]
 -port [Port]
+-disable-native-lf - disables native L&F (when UI enabled)
+-disable-ui-scaling - disables UI scaling (when UI enabled)
 -disable-updater - disables the update notifier
 -debug
 ```

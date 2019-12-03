@@ -74,6 +74,7 @@ public class PowerTunnel {
         //Parse launch arguments
         //java -jar PowerTunnel.jar (-args)
         boolean startNow = false;
+        boolean[] uiSettings = { true, true };
         if(args.length > 0) {
             for (int i = 0; i < args.length; i++) {
                 String arg = args[i];
@@ -92,6 +93,8 @@ public class PowerTunnel {
                                 " -chunk-size [size] - sets size of one chunk\n" +
                                 " -ip [IP Address] - sets IP Address\n" +
                                 " -port [Port] - sets port\n" +
+                                " -disable-native-lf - disables native L&F (when UI enabled)\n" +
+                                " -disable-ui-scaling - disables UI scaling (when UI enabled)\n" +
                                 " -disable-updater - disables the update notifier\n" +
                                 " -debug - enable debug");
                         System.exit(0);
@@ -112,6 +115,14 @@ public class PowerTunnel {
                     case "full-chunking": {
                         FULL_CHUNKING = true;
                         Utility.print("[#] Full-chunking mode enabled");
+                        break;
+                    }
+                    case "disable-ui-scaling": {
+                        uiSettings[0] = false;
+                        break;
+                    }
+                    case "disable-native-lf": {
+                        uiSettings[1] = false;
                         break;
                     }
                     case "disable-updater": {
@@ -166,14 +177,18 @@ public class PowerTunnel {
         }
         if(!CONSOLE_MODE) {
             //Initialize UI
-            try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (Exception ex) {
-                System.out.println("Failed to set native Look and Feel: " + ex.getMessage());
-                ex.printStackTrace();
-                System.out.println();
+            if(uiSettings[1]) {
+                try {
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                } catch (Exception ex) {
+                    System.out.println("Failed to set native Look and Feel: " + ex.getMessage());
+                    ex.printStackTrace();
+                    System.out.println();
+                }
             }
-            SwingDPI.applyScalingAutomatically();
+            if(uiSettings[0]) {
+                SwingDPI.applyScalingAutomatically();
+            }
 
             //Initializing main frame and system outputs mirroring
             logFrame = new LogFrame();
