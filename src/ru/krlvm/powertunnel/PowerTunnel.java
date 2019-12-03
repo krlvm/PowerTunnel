@@ -117,6 +117,11 @@ public class PowerTunnel {
                         Utility.print("[#] Full-chunking mode enabled");
                         break;
                     }
+                    case "mix-host-case": {
+                        MIX_HOST_CASE = true;
+                        Utility.print("[#] Enabled case mix for 'Host' header");
+                        break;
+                    }
                     case "disable-ui-scaling": {
                         uiSettings[0] = false;
                         break;
@@ -127,11 +132,6 @@ public class PowerTunnel {
                     }
                     case "disable-updater": {
                         UpdateNotifier.ENABLED = false;
-                        break;
-                    }
-                    case "mix-host-case": {
-                        MIX_HOST_CASE = true;
-                        Utility.print("[#] Enabled case mix for 'Host' header");
                         break;
                     }
                     default: {
