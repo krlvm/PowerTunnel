@@ -36,6 +36,7 @@ java -jar PowerTunnel.jar
 -start - starts server right after load
 -console - console mode, without UI
 -full-chunking - enables chunking the whole packets
+-mix-host-case - enables 'Host' header case mix (unstable)
 -chunk-size [Size] - sets chunk size, minimum is 1, default is 5
 -ip [IP Address]
 -port [Port]

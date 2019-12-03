@@ -51,6 +51,8 @@ public class PowerTunnel {
     public static boolean FULL_CHUNKING = false;
     public static int DEFAULT_CHUNK_SIZE = 2;
 
+    public static boolean MIX_HOST_CASE = false;
+
     public static final boolean FULL_OUTPUT_MIRRORING = false;
 
     private static final Map<String, String> JOURNAL = new LinkedHashMap<>();
@@ -86,6 +88,7 @@ public class PowerTunnel {
                                 " -start - starts server right after load\n" +
                                 " -console - console mode, without UI\n" +
                                 " -full-chunking - enables chunking the whole packets\n" +
+                                " -mix-host-case - enables 'Host' header case mix (unstable)\n" +
                                 " -chunk-size [size] - sets size of one chunk\n" +
                                 " -ip [IP Address] - sets IP Address\n" +
                                 " -port [Port] - sets port\n" +
@@ -113,6 +116,11 @@ public class PowerTunnel {
                     }
                     case "disable-updater": {
                         UpdateNotifier.ENABLED = false;
+                        break;
+                    }
+                    case "mix-host-case": {
+                        MIX_HOST_CASE = true;
+                        Utility.print("[#] Enabled case mix for 'Host' header");
                         break;
                     }
                     default: {
