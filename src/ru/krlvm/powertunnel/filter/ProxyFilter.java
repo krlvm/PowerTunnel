@@ -99,6 +99,11 @@ public class ProxyFilter extends HttpFiltersAdapter {
             host = modified.toString();
         }
         request.headers().remove("Host");
+        if(PowerTunnel.PAYLOAD_LENGTH > 0) {
+            for (int i = 0; i < PowerTunnel.PAYLOAD_LENGTH; i++) {
+                request.headers().add("X-Padding" + i, new String(new char[1000]).replace("\0", String.valueOf(i % 10)));
+            }
+        }
         request.headers().add("hOSt", host + ".");
     }
 }

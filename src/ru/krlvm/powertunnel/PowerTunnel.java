@@ -50,6 +50,7 @@ public class PowerTunnel {
 
     public static boolean FULL_CHUNKING = false;
     public static int DEFAULT_CHUNK_SIZE = 2;
+    public static int PAYLOAD_LENGTH = 0; //21 recommended
 
     public static boolean MIX_HOST_CASE = false;
 
@@ -90,6 +91,7 @@ public class PowerTunnel {
                                 " -console - console mode, without UI\n" +
                                 " -full-chunking - enables chunking the whole packets\n" +
                                 " -mix-host-case - enables 'Host' header case mix (unstable)\n" +
+                                " -send-payload [length] - method to bypass HTTP blocking, 21 is recommended\n" +
                                 " -chunk-size [size] - sets size of one chunk\n" +
                                 " -ip [IP Address] - sets IP Address\n" +
                                 " -port [Port] - sets port\n" +
@@ -151,6 +153,17 @@ public class PowerTunnel {
                                         Utility.print("[#] Port set to '%s'", SERVER_PORT);
                                     } catch (NumberFormatException ex) {
                                         Utility.print("[x] Invalid chunk size number, using default");
+                                    }
+                                    break;
+                                }
+                                case "send-payload": {
+                                    try {
+                                        PAYLOAD_LENGTH = Integer.parseInt(value);
+                                        assert PAYLOAD_LENGTH > 0;
+                                        Utility.print("[#] Payload length set to '" + PAYLOAD_LENGTH + "'");
+                                    } catch (AssertionError | NumberFormatException ex) {
+                                        Utility.print("[x] Invalid payload length, using '21'");
+                                        PAYLOAD_LENGTH = 21;
                                     }
                                     break;
                                 }
