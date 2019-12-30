@@ -31,7 +31,7 @@ import java.util.*;
 /**
  * PowerTunnel Bootstrap class
  *
- * This class initialized PowerTunnel, load government blacklist,
+ * This class initializes PowerTunnel, loads government blacklist,
  * user lists, holds journal and controlling a LittleProxy Server
  *
  * @author krlvm
