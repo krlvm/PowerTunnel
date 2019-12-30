@@ -25,7 +25,7 @@ public class URLUtility {
      * @return true if contains or false if it isn't
      */
     public static boolean checkIsHostContainsInList(String host, Collection<String> collection) {
-        if(host.equals("*")) {
+        if(collection.contains("*")) {
             return true;
         }
         for (String s : collection) {
