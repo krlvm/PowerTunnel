@@ -152,7 +152,7 @@ public class PowerTunnel {
                                         SERVER_PORT = Integer.parseInt(value);
                                         Utility.print("[#] Port set to '%s'", SERVER_PORT);
                                     } catch (NumberFormatException ex) {
-                                        Utility.print("[x] Invalid chunk size number, using default");
+                                        Utility.print("[x] Invalid port, using default");
                                     }
                                     break;
                                 }
