@@ -37,30 +37,30 @@ public class UpdateNotifier {
                             return;
                         }
                         if (newVersionCode <= PowerTunnel.VERSION_CODE) {
-                            info("You're running the latest version of PowerTunnel!");
+                            info("You're running the latest version of " + PowerTunnel.NAME + "!");
                             return;
                         }
                         final String version = data[1];
-                        info("PowerTunnel is ready to update!",
+                        info("" + PowerTunnel.NAME + " is ready to update!",
                                 "Version: " + version,
-                                "Changelog: https://github.com/krlvm/PowerTunnel/releases/tag/v" + version,
-                                "Download: https://github.com/krlvm/PowerTunnel/releases/download/v" + version + "/PowerTunnel.jar",
+                                "Changelog: " + PowerTunnel.REPOSITORY_URL + "/releases/tag/v" + version,
+                                "Download: " + PowerTunnel.REPOSITORY_URL + "/releases/download/v" + version + "/" + PowerTunnel.NAME + ".jar",
                                 "Visit GitHub repository: " + PowerTunnel.REPOSITORY_URL);
                         if (PowerTunnel.isUIEnabled()) {
                             SwingUtilities.invokeLater(new Runnable() {
                                 @Override
                                 public void run() {
-                                    JEditorPane message = UIUtility.getLabelWithHyperlinkSupport("PowerTunnel is ready to update!" +
+                                    JEditorPane message = UIUtility.getLabelWithHyperlinkSupport("" + PowerTunnel.NAME + " is ready to update!" +
                                             "<br><br>" +
                                             "Version: " + version + "<br>" +
                                             "<br>" +
-                                            "Changelog: <a href=\"https://github.com/krlvm/PowerTunnel/releases/tag/v" + version + "\">view</a>" +
+                                            "Changelog: <a href=\"" + PowerTunnel.REPOSITORY_URL + "/releases/tag/v" + version + "\">view</a>" +
                                             "<br>" +
-                                            "Download: <a href=\"https://github.com/krlvm/PowerTunnel/releases/download/v" + version + "/PowerTunnel.jar\">click here</a>" +
+                                            "Download: <a href=\"" + PowerTunnel.REPOSITORY_URL + "/releases/download/v" + version + "/" + PowerTunnel.NAME + ".jar\">click here</a>" +
                                             "<br><br>" +
                                             "Visit <a href=\"" + PowerTunnel.REPOSITORY_URL + "\">GitHub repository</a>" +
                                             "</body></html>", null);
-                                    JOptionPane.showMessageDialog(null, message, "PowerTunnel Updater", JOptionPane.INFORMATION_MESSAGE);
+                                    JOptionPane.showMessageDialog(null, message, "" + PowerTunnel.NAME + " Updater", JOptionPane.INFORMATION_MESSAGE);
                                 }
                             });
                         }
