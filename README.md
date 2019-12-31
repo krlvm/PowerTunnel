@@ -60,6 +60,4 @@ If you have offers, improvements or find bug you can leave an issue.
 [Invader](https://github.com/krlvm/Invader) - an effective MITM utility and script injector
 
 ## Dependencies
-We're using patched LittleProxy (`org.littleshoot:littleproxy:1.1.2`, https://github.com/adamfisk/LittleProxy) as a Proxy Server.
-
-We're using SwingDPI (https://github.com/krlvm/SwingDPI) for scaling UI on a HiDPI screens.
+We're using patched [LittleProxy](https://github.com/adamfisk/LittleProxy) as a Proxy Server and [SwingDPI](https://github.com/krlvm/SwingDPI) for scaling UI on a HiDPI screens.
