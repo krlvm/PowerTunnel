@@ -70,6 +70,7 @@ public class PowerTunnel {
     public static UserListFrame[] USER_FRAMES;
     
     private static boolean CONSOLE_MODE = false;
+    public static boolean ENABLE_WEB_UI = true;
 
     public static void main(String[] args) {
         //Parse launch arguments
@@ -97,6 +98,7 @@ public class PowerTunnel {
                                 " -port [Port] - sets port\n" +
                                 " -disable-native-lf - disables native L&F (when UI enabled)\n" +
                                 " -disable-ui-scaling - disables UI scaling (when UI enabled)\n" +
+                                " -disable-web-ui - disables Web UI (powertunnelmonitor.info)\n" +
                                 " -disable-updater - disables the update notifier\n" +
                                 " -debug - enable debug");
                         System.exit(0);
@@ -130,6 +132,10 @@ public class PowerTunnel {
                     }
                     case "disable-native-lf": {
                         uiSettings[1] = false;
+                        break;
+                    }
+                    case "disable-web-ui": {
+                        ENABLE_WEB_UI = false;
                         break;
                     }
                     case "disable-updater": {

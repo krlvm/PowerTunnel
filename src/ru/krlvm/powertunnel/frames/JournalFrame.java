@@ -87,7 +87,7 @@ public class JournalFrame extends ControlFrame {
         }
     }
 
-    private String[] getVisited() {
+    public static String[] getVisited() {
         LinkedList<String> list = new LinkedList<>();
         for (Map.Entry<String, String> entry : PowerTunnel.getJournal().entrySet()) {
             list.add(entry.getValue() + entry.getKey());

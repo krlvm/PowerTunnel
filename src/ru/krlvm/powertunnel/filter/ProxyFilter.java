@@ -9,6 +9,7 @@ import org.littleshoot.proxy.HttpFiltersAdapter;
 import ru.krlvm.powertunnel.PowerTunnel;
 import ru.krlvm.powertunnel.utilities.HttpUtility;
 import ru.krlvm.powertunnel.utilities.Utility;
+import ru.krlvm.powertunnel.webui.PowerTunnelMonitor;
 
 /**
  * Implementation of LittleProxy filter
@@ -36,6 +37,9 @@ public class ProxyFilter extends HttpFiltersAdapter {
     public HttpResponse clientToProxyRequest(HttpObject httpObject) {
         if (httpObject instanceof HttpRequest) {
             HttpRequest request = (HttpRequest) httpObject;
+            if(PowerTunnel.ENABLE_WEB_UI && PowerTunnelMonitor.checkUri(request.getUri())) {
+                return PowerTunnelMonitor.getResponse(request.getUri());
+            }
             String host = HttpUtility.formatHost(request.headers().get("Host"));
 
             PowerTunnel.addToJournal(host);
