@@ -158,14 +158,14 @@ public class PowerTunnelMonitor {
             if(uriArray.length < 2) {
                 return HttpUtility.getResponse("Invalid request");
             }
-            String query = uriArray[1];
+            String query = uriArray[1].toLowerCase();
             String[] queryArray = query.split("-");
             if(queryArray.length < 2) {
                 return HttpUtility.getResponse("Invalid query");
             }
-            String action = queryArray[0];
+            String action = queryArray[0].toLowerCase();
             String address = queryArray[1];
-            switch (action.toLowerCase()) {
+            switch (action) {
                 case "unblock": {
                     PowerTunnel.removeFromUserBlacklist(address);
                     break;
