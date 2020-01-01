@@ -48,7 +48,7 @@ public class HttpUtility {
      * @return HttpResponse with HTML code
      */
     public static HttpResponse getResponse(String html) {
-        String body = "<!DOCTYPE HTML \"-//IETF//DTD HTML 2.0//EN\">\n" + html;
+        String body = "<!DOCTYPE html>\n" + html;
         byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
         ByteBuf content = Unpooled.copiedBuffer(bytes);
         HttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_GATEWAY, content);
