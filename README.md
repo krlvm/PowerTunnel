@@ -29,6 +29,9 @@ You can compile yourself or download prepared binary from the `Releases` tab.
 ## Setup
 Please, look at the Wiki: https://github.com/krlvm/PowerTunnel/wiki/Installation
 
+## User interface
+You can monitor network activity, block and whitelist websites through Java Swing-based user interface when console mode is off or through PowerTunnel Monitor - a new Web-based user interface (v1.7+), available from fake URL http://powertunnelmonitor.info if you aren't disabled it using argument `-disable-web-ui`.
+
 ## Launch arguments
 You can specify a few params through the CLI (v1.4+):
 
@@ -43,6 +46,7 @@ java -jar PowerTunnel.jar
 -chunk-size [Size] - sets chunk size, minimum is 1, default is 5
 -ip [IP Address]
 -port [Port]
+-disable-web-ui - disables Web UI at http://powertunnelmonitor.info
 -disable-native-lf - disables native L&F (when UI enabled)
 -disable-ui-scaling - disables UI scaling (when UI enabled)
 -disable-updater - disables the update notifier

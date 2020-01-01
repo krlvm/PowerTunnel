@@ -99,7 +99,7 @@ public class PowerTunnel {
                                 " -port [Port] - sets port\n" +
                                 " -disable-native-lf - disables native L&F (when UI enabled)\n" +
                                 " -disable-ui-scaling - disables UI scaling (when UI enabled)\n" +
-                                " -disable-web-ui - disables Web UI (powertunnelmonitor.info)\n" +
+                                " -disable-web-ui - disables Web UI at http://powertunnelmonitor.info\n" +
                                 " -disable-updater - disables the update notifier\n" +
                                 " -debug - enable debug");
                         System.exit(0);
