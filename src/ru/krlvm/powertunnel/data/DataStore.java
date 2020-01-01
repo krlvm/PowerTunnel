@@ -3,6 +3,7 @@ package ru.krlvm.powertunnel.data;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -42,6 +43,17 @@ public class DataStore {
     public DataStore(String fileName, List<String> defaults) {
         this.fileName = fileName;
         this.defaults = defaults;
+    }
+
+    /**
+     * DataStore constructor
+     *
+     * @param fileName - data store file name
+     * @param defaultLine - default line
+     */
+    public DataStore(String fileName, String defaultLine) {
+        this.fileName = fileName;
+        this.defaults = Collections.singletonList(defaultLine);
     }
 
     /**
