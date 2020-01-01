@@ -2,14 +2,16 @@ package ru.krlvm.powertunnel.webui;
 
 import io.netty.handler.codec.http.HttpResponse;
 import ru.krlvm.powertunnel.PowerTunnel;
+import ru.krlvm.powertunnel.data.DataStore;
 import ru.krlvm.powertunnel.frames.JournalFrame;
 import ru.krlvm.powertunnel.utilities.HttpUtility;
+import ru.krlvm.powertunnel.utilities.Utility;
 
-import java.util.Arrays;
+import java.io.IOException;
 
 public class PowerTunnelMonitor {
 
-    private static final String HTML = "<html>\n" +
+    private static final String DEFAULT_HTML = "<html>\n" +
             "<head>\n" +
             "    <title>PowerTunnel Monitor</title>\n" +
             "    <style>\n" +
@@ -28,7 +30,7 @@ public class PowerTunnelMonitor {
             "            display: flex;\n" +
             "            flex-direction: row;\n" +
             "            justify-content: space-between;\n" +
-            "            height: 75vh;\n" +
+            "            height: 74vh;\n" +
             "        }\n" +
             "        \n" +
             "        .list {\n" +
@@ -103,15 +105,29 @@ public class PowerTunnelMonitor {
             "    <div id=\"about\">\n" +
             "        <b>PowerTunnel v" + PowerTunnel.VERSION + "<br><a href=\"" + PowerTunnel.REPOSITORY_URL + "\">" + PowerTunnel.REPOSITORY_URL + "</a></b>\n" +
             "        <br>\n" +
-            "        (c) krlvm, 2019\n" +
+            "        (c) krlvm, 2019-2020\n" +
             "    </div>\n" +
             "</body>\n" +
             "</html>";
+    private static String HTML = DEFAULT_HTML;
 
     public static final String FAKE_ADDRESS = "powertunnelmonitor.info";
     private static final String[] FORMAT = new String[] {
             "http://", "www."
     };
+
+    private static final DataStore HTML_STORE = new DataStore("webui", DEFAULT_HTML) {
+        @Override
+        public String getFileFormat() {
+            return "html";
+        }
+    };
+
+    public static void load() throws IOException {
+        HTML_STORE.load();
+        HTML = HTML_STORE.inline();
+        Utility.print("[i] Web UI loaded: http://" + FAKE_ADDRESS);
+    }
 
     public static boolean checkUri(String uri) {
         return formatUri(uri).startsWith(FAKE_ADDRESS);

@@ -16,6 +16,7 @@ import ru.krlvm.powertunnel.updater.UpdateNotifier;
 import ru.krlvm.powertunnel.utilities.Debugger;
 import ru.krlvm.powertunnel.utilities.URLUtility;
 import ru.krlvm.powertunnel.utilities.Utility;
+import ru.krlvm.powertunnel.webui.PowerTunnelMonitor;
 import ru.krlvm.swingdpi.SwingDPI;
 
 import javax.swing.*;
@@ -230,7 +231,7 @@ public class PowerTunnel {
         Utility.print(NAME + " version " + VERSION);
         Utility.print("Simple, scalable, cross-platform and effective solution against government censorship");
         Utility.print(REPOSITORY_URL);
-        Utility.print("(c) krlvm, 2019");
+        Utility.print("(c) krlvm, 2019-2020");
         Utility.print();
 
         //Allow us to modify 'HOST' request header
@@ -239,6 +240,15 @@ public class PowerTunnel {
         //Load patches
         Utility.print("[#] Loaded '%s' patches", PatchManager.load());
 
+        if(ENABLE_WEB_UI) {
+            try {
+                PowerTunnelMonitor.load();
+            } catch (IOException ex) {
+                Utility.print("[x] Cannot load Web UI, now it is disabled: " + ex.getMessage());
+                Debugger.debug(ex);
+                ENABLE_WEB_UI = false;
+            }
+        }
         if(CONSOLE_MODE || startNow) {
             safeBootstrap();
         }
