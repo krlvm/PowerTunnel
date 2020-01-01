@@ -127,9 +127,9 @@ public class DataStore {
     }
 
     /**
-     * Retrieves data store file format
+     * Retrieves data store file extension
      *
-     * @return data store file format
+     * @return data store file extension
      */
     public String getFileFormat() {
         return "txt";
