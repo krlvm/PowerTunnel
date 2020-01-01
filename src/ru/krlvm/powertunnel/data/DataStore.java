@@ -22,6 +22,7 @@ public class DataStore {
 
     private final String fileName;
     protected List<String> loadedLines;
+    protected List<String> defaults;
 
     /**
      * DataStore constructor
@@ -30,6 +31,17 @@ public class DataStore {
      */
     public DataStore(String fileName) {
         this.fileName = fileName;
+    }
+
+    /**
+     * DataStore constructor
+     *
+     * @param fileName - data store file name
+     * @param defaults - default lines
+     */
+    public DataStore(String fileName, List<String> defaults) {
+        this.fileName = fileName;
+        this.defaults = defaults;
     }
 
     /**
@@ -51,6 +63,10 @@ public class DataStore {
             return loadedLines;
         } else {
             create(file);
+            if(defaults != null) {
+                write(defaults);
+            }
+            loadedLines = defaults;
             return loadedLines;
         }
     }
@@ -114,6 +130,19 @@ public class DataStore {
      */
     public List<String> getLoadedLines() {
         return loadedLines;
+    }
+
+    /**
+     * Retrieves data store contents (in one line)
+     *
+     * @return data store contents
+     */
+    public String inline() {
+        StringBuilder builder = new StringBuilder();
+        for (String line : loadedLines) {
+            builder.append(line);
+        }
+        return builder.toString();
     }
 
     /**
