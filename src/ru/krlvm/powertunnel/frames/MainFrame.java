@@ -119,7 +119,7 @@ public class MainFrame extends ControlFrame {
         mainPanel.add(panel, "Last");
 
         panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panel.add(UIUtility.getLabelWithHyperlinkSupport("<b><a href=\"" + PowerTunnel.REPOSITORY_URL + "\">" + PowerTunnel.REPOSITORY_URL + "</a></b><br>(c) krlvm, 2019", "text-align: center"));
+        panel.add(UIUtility.getLabelWithHyperlinkSupport("<b><a href=\"" + PowerTunnel.REPOSITORY_URL + "\">" + PowerTunnel.REPOSITORY_URL + "</a></b><br>(c) krlvm, 2019-2020", "text-align: center"));
         //panel.add(new JLabel(getCenteredLabel("<b>https://github.com/krlvm/PowerTunnel</b><br>(c) krlvm, 2019")));
         mainPanel.add(panel, "Last");
 
