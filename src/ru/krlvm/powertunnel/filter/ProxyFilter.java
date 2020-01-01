@@ -38,6 +38,7 @@ public class ProxyFilter extends HttpFiltersAdapter {
         if (httpObject instanceof HttpRequest) {
             HttpRequest request = (HttpRequest) httpObject;
             if(PowerTunnel.ENABLE_WEB_UI && PowerTunnelMonitor.checkUri(request.getUri())) {
+                Utility.print("[i] Accepted Web UI connection");
                 return PowerTunnelMonitor.getResponse(request.getUri());
             }
             String host = HttpUtility.formatHost(request.headers().get("Host"));
