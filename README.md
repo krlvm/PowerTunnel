@@ -46,7 +46,7 @@ java -jar PowerTunnel.jar
 -chunk-size [Size] - sets chunk size, minimum is 1, default is 5
 -ip [IP Address]
 -port [Port]
--disable-web-ui - disables Web UI at http://powertunnelmonitor.info
+-with-web-ui [appendix] - enables Web UI at http://powertunnelmonitor[appendix].info
 -disable-native-lf - disables native L&F (when UI enabled)
 -disable-ui-scaling - disables UI scaling (when UI enabled)
 -disable-updater - disables the update notifier

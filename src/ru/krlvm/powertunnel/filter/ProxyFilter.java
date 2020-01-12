@@ -37,7 +37,7 @@ public class ProxyFilter extends HttpFiltersAdapter {
     public HttpResponse clientToProxyRequest(HttpObject httpObject) {
         if (httpObject instanceof HttpRequest) {
             HttpRequest request = (HttpRequest) httpObject;
-            if(PowerTunnel.ENABLE_WEB_UI && PowerTunnelMonitor.checkUri(request.getUri())) {
+            if(PowerTunnel.isWebUIEnabled() && PowerTunnelMonitor.checkUri(request.getUri())) {
                 Utility.print("[i] Accepted Web UI connection");
                 return PowerTunnelMonitor.getResponse(request.getUri());
             }

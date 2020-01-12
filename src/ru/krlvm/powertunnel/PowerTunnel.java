@@ -40,8 +40,8 @@ import java.util.*;
 public class PowerTunnel {
 
     public static final String NAME = "PowerTunnel";
-    public static final String VERSION = "1.7.1";
-    public static final int VERSION_CODE = 9;
+    public static final String VERSION = "1.7.2";
+    public static final int VERSION_CODE = 10;
     public static final String REPOSITORY_URL = "https://github.com/krlvm/PowerTunnel";
 
     private static HttpProxyServer SERVER;
@@ -71,7 +71,6 @@ public class PowerTunnel {
     public static UserListFrame[] USER_FRAMES;
     
     private static boolean CONSOLE_MODE = false;
-    public static boolean ENABLE_WEB_UI = true;
 
     public static void main(String[] args) {
         //Parse launch arguments
@@ -97,9 +96,9 @@ public class PowerTunnel {
                                 " -chunk-size [size] - sets size of one chunk\n" +
                                 " -ip [IP Address] - sets IP Address\n" +
                                 " -port [Port] - sets port\n" +
+                                " -with-web-ui [appendix] - enables Web UI at http://" + String.format(PowerTunnelMonitor.FAKE_ADDRESS_TEMPLATE, "[appendix]") + "\n" +
                                 " -disable-native-lf - disables native L&F (when UI enabled)\n" +
                                 " -disable-ui-scaling - disables UI scaling (when UI enabled)\n" +
-                                " -disable-web-ui - disables Web UI at http://powertunnelmonitor.info\n" +
                                 " -disable-updater - disables the update notifier\n" +
                                 " -debug - enable debug");
                         System.exit(0);
@@ -135,10 +134,6 @@ public class PowerTunnel {
                         uiSettings[1] = false;
                         break;
                     }
-                    case "disable-web-ui": {
-                        ENABLE_WEB_UI = false;
-                        break;
-                    }
                     case "disable-updater": {
                         UpdateNotifier.ENABLED = false;
                         break;
@@ -161,6 +156,10 @@ public class PowerTunnel {
                                     } catch (NumberFormatException ex) {
                                         Utility.print("[x] Invalid port, using default");
                                     }
+                                    break;
+                                }
+                                case "with-web-ui": {
+                                    PowerTunnelMonitor.FAKE_ADDRESS = String.format(PowerTunnelMonitor.FAKE_ADDRESS_TEMPLATE, value);
                                     break;
                                 }
                                 case "send-payload": {
@@ -240,13 +239,14 @@ public class PowerTunnel {
         //Load patches
         Utility.print("[#] Loaded '%s' patches", PatchManager.load());
 
-        if(ENABLE_WEB_UI) {
+        if(isWebUIEnabled()) {
             try {
                 PowerTunnelMonitor.load();
+                Utility.print("[x] WebUI is available at http://%s", PowerTunnelMonitor.FAKE_ADDRESS);
             } catch (IOException ex) {
                 Utility.print("[x] Cannot load Web UI, now it is disabled: " + ex.getMessage());
                 Debugger.debug(ex);
-                ENABLE_WEB_UI = false;
+                PowerTunnelMonitor.FAKE_ADDRESS = null;
             }
         }
         if(CONSOLE_MODE || startNow) {
@@ -340,6 +340,10 @@ public class PowerTunnel {
         USER_BLACKLIST.clear();
         USER_WHITELIST.clear();
         ISP_STUB_LIST.clear();
+    }
+
+    public static boolean isWebUIEnabled() {
+        return PowerTunnelMonitor.FAKE_ADDRESS != null;
     }
 
     public static void safeUserListSave() {
