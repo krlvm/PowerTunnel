@@ -62,6 +62,7 @@ If you have offers, improvements or find bug you can leave an issue.
 
 ## Spin-off projects
 [Invader](https://github.com/krlvm/Invader) - an effective MITM utility and script injector
+[LibertyTunnel](https://github.com/krlvm/PowerTunnel/tree/libertytunnel) - a lightweight edition of PowerTunnel 
 
 ## Dependencies
 We're using patched [LittleProxy](https://github.com/adamfisk/LittleProxy) as a Proxy Server and [SwingDPI](https://github.com/krlvm/SwingDPI) for scaling UI on a HiDPI screens.
