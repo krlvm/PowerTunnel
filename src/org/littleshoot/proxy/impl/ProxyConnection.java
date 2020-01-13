@@ -214,7 +214,6 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
 import org.littleshoot.proxy.HttpFilters;
-import ru.krlvm.powertunnel.utilities.Debugger;
 import ru.krlvm.powertunnel.utilities.PacketUtility;
 
 import javax.net.ssl.SSLEngine;
@@ -1065,6 +1064,6 @@ abstract class ProxyConnection<I extends HttpObject> extends
     }
 
     static {
-        Debugger.debug(ProxyConnection.class.getSimpleName() + " is patched");
+        System.out.println(ProxyConnection.class.getSimpleName() + " is patched");
     }
 }

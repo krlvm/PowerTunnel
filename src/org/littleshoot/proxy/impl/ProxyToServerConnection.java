@@ -220,9 +220,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 import org.littleshoot.proxy.*;
 import ru.krlvm.powertunnel.PowerTunnel;
 import ru.krlvm.powertunnel.patches.PatchManager;
-import ru.krlvm.powertunnel.utilities.Debugger;
 import ru.krlvm.powertunnel.utilities.HttpUtility;
-import ru.krlvm.powertunnel.utilities.Utility;
 
 import javax.net.ssl.SSLProtocolException;
 import javax.net.ssl.SSLSession;
@@ -384,12 +382,7 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
 
     @Override
     public boolean isShouldBeFragmented() {
-        String addr = HttpUtility.formatHost(serverHostAndPort);
-        boolean is = PowerTunnel.isBlockedByGovernment(addr);
-        if(is) {
-            Utility.print(" [+] Will be fragmented: %s", addr);
-        }
-        return is;
+        return PowerTunnel.isBlockedByGovernment(HttpUtility.formatHost(serverHostAndPort));
     }
 
     @Override
@@ -1235,6 +1228,6 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
     };
 
     static {
-        Debugger.debug(ProxyToServerConnection.class.getSimpleName() + " is patched");
+        System.out.println(ProxyToServerConnection.class.getSimpleName() + " is patched");
     }
 }

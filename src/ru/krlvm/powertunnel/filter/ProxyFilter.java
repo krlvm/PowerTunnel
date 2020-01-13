@@ -8,8 +8,6 @@ import io.netty.handler.codec.http.HttpResponse;
 import org.littleshoot.proxy.HttpFiltersAdapter;
 import ru.krlvm.powertunnel.PowerTunnel;
 import ru.krlvm.powertunnel.utilities.HttpUtility;
-import ru.krlvm.powertunnel.utilities.Utility;
-import ru.krlvm.powertunnel.webui.PowerTunnelMonitor;
 
 /**
  * Implementation of LittleProxy filter
@@ -28,32 +26,15 @@ public class ProxyFilter extends HttpFiltersAdapter {
 
     /**
      * Filtering client to proxy request:
-     * 1) Check if website is in the user whitelist - GOTO 3)
-     * 2) Check if website is in the user blacklist - block request
-     * 3) Check if website is in the government blacklist - if it's true goto 4)
-     * 4) Try to circumvent DPI
+     * 1) Check if website is in the government blacklist - if it's true goto 2)
+     * 2) Try to circumvent DPI
      */
     @Override
     public HttpResponse clientToProxyRequest(HttpObject httpObject) {
         if (httpObject instanceof HttpRequest) {
             HttpRequest request = (HttpRequest) httpObject;
-            if(PowerTunnel.isWebUIEnabled() && PowerTunnelMonitor.checkUri(request.getUri())) {
-                Utility.print("[i] Accepted Web UI connection");
-                return PowerTunnelMonitor.getResponse(request.getUri());
-            }
-            String host = HttpUtility.formatHost(request.headers().get("Host"));
-
-            PowerTunnel.addToJournal(host);
-            Utility.print("[i] %s / %s", request.getMethod(), host);
-
-            if(!PowerTunnel.isUserWhitelisted(host) && PowerTunnel.isUserBlacklisted(host)) {
-                Utility.print(" [!] Access denied by user: " + host);
-                return HttpUtility.getStub("This website is blocked by user");
-            }
-
-            if(PowerTunnel.isBlockedByGovernment(host)) {
+            if(PowerTunnel.isBlockedByGovernment(HttpUtility.formatHost(request.headers().get("Host")))) {
                 circumventDPI(request);
-                Utility.print(" [+] Trying to bypass DPI: " + host);
             }
         }
 
@@ -75,9 +56,7 @@ public class ProxyFilter extends HttpFiltersAdapter {
     public HttpObject serverToProxyResponse(HttpObject httpObject) {
         if (httpObject instanceof DefaultHttpResponse) {
             DefaultHttpResponse response = (DefaultHttpResponse) httpObject;
-            //Utility.print("\n\n----------------------------\n" + request.toString() + "\n----------------------------\n\n");
             if(response.getStatus().code() == 302 && PowerTunnel.isIspStub(response.headers().get("Location"))) {
-                Utility.print(" [!] Detected ISP 302-redirect to the stub");
                 return HttpUtility.getStub("Thrown out ISP redirect to the stub");
             }
         }
