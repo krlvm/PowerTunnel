@@ -44,22 +44,27 @@ public class MainFrame extends ControlFrame {
         stateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (PowerTunnel.isRunning()) {
-                    PowerTunnel.stopServer();
-                } else {
-                    try {
-                        PowerTunnel.SERVER_IP_ADDRESS = ipInput.getText();
-                        PowerTunnel.SERVER_PORT = Integer.parseInt(portInput.getText());
-                        String error = PowerTunnel.safeBootstrap();
-                        if (error != null) {
-                            JOptionPane.showMessageDialog(MainFrame.this, error,
-                                    "Error", JOptionPane.ERROR_MESSAGE);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (PowerTunnel.getStatus() == ServerStatus.RUNNING) {
+                            PowerTunnel.stopServer();
+                        } else {
+                            try {
+                                PowerTunnel.SERVER_IP_ADDRESS = ipInput.getText();
+                                PowerTunnel.SERVER_PORT = Integer.parseInt(portInput.getText());
+                                String error = PowerTunnel.safeBootstrap();
+                                if (error != null) {
+                                    JOptionPane.showMessageDialog(MainFrame.this, error,
+                                            "Error", JOptionPane.ERROR_MESSAGE);
+                                }
+                            } catch (NumberFormatException ex) {
+                                JOptionPane.showMessageDialog(MainFrame.this, "Invalid port",
+                                        "Error", JOptionPane.ERROR_MESSAGE);
+                            }
                         }
-                    } catch (NumberFormatException ex) {
-                        JOptionPane.showMessageDialog(MainFrame.this, "Invalid port",
-                                "Error", JOptionPane.ERROR_MESSAGE);
                     }
-                }
+                }).start();
             }
         });
 
@@ -132,27 +137,38 @@ public class MainFrame extends ControlFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                if(PowerTunnel.isRunning()) {
-                    PowerTunnel.stop();
-                } else {
-                    PowerTunnel.safeUserListSave();
-                }
-                Utility.print("[#] Goodbye :(");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(PowerTunnel.getStatus() == ServerStatus.RUNNING) {
+                            PowerTunnel.stop();
+                        } else {
+                            PowerTunnel.safeUserListSave();
+                        }
+                        Utility.print("[#] Goodbye :(");
+                    }
+                }).start();
             }
         });
     }
 
     public void update() {
-        boolean running = PowerTunnel.isRunning();
-        stateButton.setText((running ? "Stop" : "Start") + " server");
-        for (JTextField input : inputs) {
-            input.setEnabled(!running);
-        }
-        header.setText(getHeaderText());
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                boolean running = PowerTunnel.getStatus() == ServerStatus.RUNNING;
+                stateButton.setText((running ? "Stop" : "Start") + " server");
+                for (JTextField input : inputs) {
+                    input.setEnabled(!running);
+                }
+                header.setText(getHeaderText());
+                stateButton.setEnabled(!(PowerTunnel.getStatus() == ServerStatus.STARTING || PowerTunnel.getStatus() == ServerStatus.STOPPING));
+            }
+        });
     }
 
     private String getHeaderText() {
-        return getCenteredLabel("<b>" + PowerTunnel.NAME + " v" + PowerTunnel.VERSION + "</b><br>Server is" + (PowerTunnel.isRunning() ? " running" : "n't running") + "</div></html>");
+        return getCenteredLabel("<b>" + PowerTunnel.NAME + " v" + PowerTunnel.VERSION + "</b><br>Server is" + PowerTunnel.getStatus() + "</div></html>");
     }
 
     private String getCenteredLabel(String text) {

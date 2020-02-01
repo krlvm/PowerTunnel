@@ -40,12 +40,12 @@ import java.util.*;
 public class PowerTunnel {
 
     public static final String NAME = "PowerTunnel";
-    public static final String VERSION = "1.7.2";
-    public static final int VERSION_CODE = 10;
+    public static final String VERSION = "1.7.3";
+    public static final int VERSION_CODE = 11;
     public static final String REPOSITORY_URL = "https://github.com/krlvm/PowerTunnel";
 
     private static HttpProxyServer SERVER;
-    private static boolean RUNNING = false;
+    private static ServerStatus STATUS = ServerStatus.NOT_RUNNING;
     public static String SERVER_IP_ADDRESS = "127.0.0.1";
     public static int SERVER_PORT = 8085;
 
@@ -75,6 +75,8 @@ public class PowerTunnel {
     public static void main(String[] args) {
         //Parse launch arguments
         //java -jar PowerTunnel.jar (-args)
+        System.setProperty("sun.net.spi.nameservice.nameservers", "8.8.8.8");
+        System.setProperty("sun.net.spi.nameservice.provider.1", "dns,sun");
         boolean startNow = false;
         boolean[] uiSettings = { true, true };
         if(args.length > 0) {
@@ -297,6 +299,7 @@ public class PowerTunnel {
      * Starts LittleProxy server
      */
     private static void startServer() throws UnknownHostException {
+        setStatus(ServerStatus.STARTING);
         Utility.print("[.] Starting LittleProxy server on %s:%s", SERVER_IP_ADDRESS, SERVER_PORT);
         SERVER = DefaultHttpProxyServer.bootstrap().withFiltersSource(new HttpFiltersSourceAdapter() {
             @Override
@@ -305,7 +308,7 @@ public class PowerTunnel {
             }
         }).withAddress(new InetSocketAddress(InetAddress.getByName(SERVER_IP_ADDRESS), SERVER_PORT))
                 .withTransparent(true).start();
-        RUNNING = true;
+        setStatus(ServerStatus.RUNNING);
         Utility.print("[.] Server started");
         Utility.print();
 
@@ -318,16 +321,13 @@ public class PowerTunnel {
      * Stops LittleProxy server
      */
     public static void stopServer() {
+        setStatus(ServerStatus.STOPPING);
         Utility.print();
         Utility.print("[.] Stopping server...");
         SERVER.stop();
         Utility.print("[.] Server stopped");
         Utility.print();
-        RUNNING = false;
-
-        if(!CONSOLE_MODE) {
-            frame.update();
-        }
+        setStatus(ServerStatus.NOT_RUNNING);
     }
 
     /**
@@ -340,6 +340,13 @@ public class PowerTunnel {
         USER_BLACKLIST.clear();
         USER_WHITELIST.clear();
         ISP_STUB_LIST.clear();
+    }
+
+    public static void setStatus(ServerStatus status) {
+        STATUS = status;
+        if(!CONSOLE_MODE) {
+            frame.update();
+        }
     }
 
     public static boolean isWebUIEnabled() {
@@ -356,13 +363,14 @@ public class PowerTunnel {
             Utility.print();
         }
     }
+
     /**
-     * Retrieve is LittleProxy server is running
+     * Retrieves proxy server status
      *
-     * @return true if it is or false if it isn't
+     * @return proxy server status
      */
-    public static boolean isRunning() {
-        return RUNNING;
+    public static ServerStatus getStatus() {
+        return STATUS;
     }
 
     /**
@@ -495,7 +503,7 @@ public class PowerTunnel {
     }
 
     /**
-     * Retrieve if user blocked website
+     * Retrieves if user blocked website
      *
      * @param address - website address
      * @return true if user blocked website or false if he isn't
