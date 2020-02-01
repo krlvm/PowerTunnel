@@ -75,8 +75,6 @@ public class PowerTunnel {
     public static void main(String[] args) {
         //Parse launch arguments
         //java -jar PowerTunnel.jar (-args)
-        System.setProperty("sun.net.spi.nameservice.nameservers", "8.8.8.8");
-        System.setProperty("sun.net.spi.nameservice.provider.1", "dns,sun");
         boolean startNow = false;
         boolean[] uiSettings = { true, true };
         if(args.length > 0) {
