@@ -43,8 +43,12 @@ public class URLUtility {
      * @return cleared host
      */
     public static String clearHost(String host) {
-        return host.replace("https://", "").replace("http://", "").replace("www.", "")
+        host = host.replace("https://", "").replace("http://", "").replace("www.", "")
                 .replace(":443", "");
+        if(host.contains("/")) {
+            host = host.substring(0, host.indexOf("/"));
+        }
+        return host;
     }
 
     /**

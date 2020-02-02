@@ -278,12 +278,19 @@ public class PowerTunnel {
     public static void bootstrap() throws DataStoreException, UnknownHostException {
         //Load data
         try {
+            for (String address : DataStore.GOVERNMENT_BLACKLIST.load()) {
+                GOVERNMENT_BLACKLIST.add(URLUtility.clearHost(address));
+            }
             GOVERNMENT_BLACKLIST.addAll(DataStore.GOVERNMENT_BLACKLIST.load());
-            USER_BLACKLIST.addAll(DataStore.USER_BLACKLIST.load());
+            for (String address : DataStore.USER_BLACKLIST.load()) {
+                addToUserBlacklist(address);
+            }
             if(!CONSOLE_MODE) {
                 USER_FRAMES[0].refill();
             }
-            USER_WHITELIST.addAll(DataStore.USER_WHITELIST.load());
+            for (String address : DataStore.USER_WHITELIST.load()) {
+                addToUserWhitelist(address);
+            }
             if(!CONSOLE_MODE) {
                 USER_FRAMES[1].refill();
             }
@@ -495,7 +502,7 @@ public class PowerTunnel {
      * @return true if address doesn't already contains in the user blacklist or false if it is
      */
     public static boolean addToUserBlacklist(String address) {
-        address = address.toLowerCase();
+        address = URLUtility.clearHost(address.toLowerCase());
         if(USER_BLACKLIST.contains(address)) {
             return false;
         }
@@ -524,7 +531,7 @@ public class PowerTunnel {
      * @return true if address contained in the user blacklist (and removed) or false if it isn't
      */
     public static boolean removeFromUserBlacklist(String address) {
-        address = address.toLowerCase();
+        address = URLUtility.clearHost(address.toLowerCase());
         if(!USER_BLACKLIST.contains(address)) {
             return false;
         }
@@ -555,7 +562,7 @@ public class PowerTunnel {
      * @return true if address doesn't already contains in the user whitelist or false if it is
      */
     public static boolean addToUserWhitelist(String address) {
-        address = address.toLowerCase();
+        address = URLUtility.clearHost(address.toLowerCase());
         if(USER_WHITELIST.contains(address)) {
             return false;
         }
@@ -584,7 +591,7 @@ public class PowerTunnel {
      * @return true if address contained in the user whitelist (and removed) or false if it isn't
      */
     public static boolean removeFromUserWhitelist(String address) {
-        address = address.toLowerCase();
+        address = URLUtility.clearHost(address.toLowerCase());
         if(!USER_WHITELIST.contains(address)) {
             return false;
         }
