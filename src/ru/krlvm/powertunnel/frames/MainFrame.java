@@ -23,7 +23,7 @@ public class MainFrame extends ControlFrame {
         super(PowerTunnel.NAME + " v" + PowerTunnel.VERSION);
         double multiplier = SwingDPI.isScaleApplied() ? (SwingDPI.getScaleFactor() / (SwingDPI.getScaleFactor() - 0.25)) + 0.05 : 1.3;
         Debugger.debug("Scale multiplier: " + multiplier);
-        setSize((int) (325 * (SwingDPI.getScaleFactor() * multiplier)), (int) (150 * (SwingDPI.getScaleFactor() * multiplier)));
+        setSize((int) (325 * (SwingDPI.getScaleFactor() * multiplier)), (int) (175 * (SwingDPI.getScaleFactor() * multiplier)));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         header = new JLabel(getHeaderText());
@@ -124,8 +124,9 @@ public class MainFrame extends ControlFrame {
         mainPanel.add(panel, "Last");
 
         panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panel.add(UIUtility.getLabelWithHyperlinkSupport("<b><a href=\"" + PowerTunnel.REPOSITORY_URL + "\">" + PowerTunnel.REPOSITORY_URL + "</a></b><br>(c) krlvm, 2019-2020", "text-align: center"));
-        //panel.add(new JLabel(getCenteredLabel("<b>https://github.com/krlvm/PowerTunnel</b><br>(c) krlvm, 2019")));
+        panel.add(UIUtility.getLabelWithHyperlinkSupport("<a href=\"" + PowerTunnel.REPOSITORY_URL + "/issues\">Submit a bug</a> | " + "<a href=\"" + PowerTunnel.REPOSITORY_URL + "/wiki\">Help</a><br>" +
+                "<b><a style=\"color: black\" href=\"" + PowerTunnel.REPOSITORY_URL + "\">" + PowerTunnel.REPOSITORY_URL + "</a>" +
+                "</b><br><br>(c) krlvm, 2019-2020", "text-align: center"));
         mainPanel.add(panel, "Last");
 
         getRootPane().setDefaultButton(stateButton);
