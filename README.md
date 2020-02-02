@@ -1,12 +1,14 @@
 # PowerTunnel
-[![License](https://img.shields.io/github/license/krlvm/PowerTunnel?style=flat-square)](https://github.com/krlvm/PowerTunnel/blob/master/LICENSE)
-[![Latest release](https://img.shields.io/github/v/release/krlvm/PowerTunnel?style=flat-square)](https://github.com/krlvm/PowerTunnel/releases)
-[![Downloads](https://img.shields.io/github/downloads/krlvm/PowerTunnel/total?style=flat-square)](https://github.com/krlvm/PowerTunnel/releases)
-[![Help](https://img.shields.io/badge/help-wiki-yellow?style=flat-square)](https://github.com/krlvm/PowerTunnel/wiki)
 
-Simple, scalable, cross-platform and effective solution against government censorship
 <p align="center">
 <img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/images/logo.png" />
+<br>
+Simple, scalable, cross-platform and effective solution against government censorship
+<br>
+<a href="https://github.com/krlvm/PowerTunnel/blob/master/LICENSE"><img src="https://img.shields.io/github/license/krlvm/PowerTunnel?style=flat-square" alt="License"/></a>
+<a href="https://github.com/krlvm/PowerTunnel/releases"><img src="https://img.shields.io/github/v/release/krlvm/PowerTunnel?style=flat-square" alt="Latest release"/></a>
+<a href="https://github.com/krlvm/PowerTunnel/releases"><img src="https://img.shields.io/github/downloads/krlvm/PowerTunnel/total?style=flat-square" alt="Downloads"/></a>
+<a href="https://github.com/krlvm/PowerTunnel/wiki"><img src="https://img.shields.io/badge/help-wiki-yellow?style=flat-square" alt="Help on the Wiki"/></a>
 <br>
 <img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/images/ui.png" alt="PowerTunnel User Interface" />
 </p>
