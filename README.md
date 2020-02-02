@@ -25,7 +25,7 @@ PowerTunnel establishes a transparent proxy server on your PC and directs your t
 You can compile a binary yourself or download prepared binary [here](https://github.com/krlvm/PowerTunnel/releases).
 
 ### Setup
-Please, look at the Wiki: https://github.com/krlvm/PowerTunnel/wiki/Installation
+The installation process is described in detail [on the Wiki](https://github.com/krlvm/PowerTunnel/wiki/Installation).
 
 ### Doesn't work
 Most likely your ISP blocked the website you need by IP address, so only encrypted tunnel (VPN/Tor) can help you.
@@ -36,7 +36,7 @@ Also, you can try launching PowerTunnel with `-full-chunking` argument.
 You can monitor network activity, block and whitelist websites through Java Swing-based user interface when console mode is off or through [PowerTunnel Monitor](https://github.com/krlvm/PowerTunnel/wiki/PowerTunnel-Monitor).
 
 ## Launch arguments
-You can specify a few params through the CLI:
+You can specify some params through the CLI:
 
 ```
 java -jar PowerTunnel.jar
@@ -61,5 +61,5 @@ java -jar PowerTunnel.jar
 * [LibertyTunnel](https://github.com/krlvm/PowerTunnel/tree/libertytunnel) - a lightweight edition of PowerTunnel 
 
 ## Dependencies
-* [LittleProxy](https://github.com/adamfisk/LittleProxy) with some patches - proxy server
+* [LittleProxy](https://github.com/adamfisk/LittleProxy) with some [patches](https://github.com/krlvm/PowerTunnel/tree/master/src/org/littleshoot/proxy/impl) - proxy server
 * [SwingDPI](https://github.com/krlvm/SwingDPI) - HiDPI scaling
