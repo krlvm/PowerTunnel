@@ -553,7 +553,7 @@ public class PowerTunnel {
         USER_WHITELIST.remove(address);
         USER_BLACKLIST.add(address);
         updateUserListFrames();
-        Utility.print("\n[@] Blacklisted: '%s'\n", address);
+        Utility.print("\n[@] Blacklisted: '%s'", address);
         return true;
     }
 
@@ -581,7 +581,7 @@ public class PowerTunnel {
         }
         USER_BLACKLIST.remove(address);
         updateUserListFrames();
-        Utility.print("\n[@] Removed from the blacklist: '%s'\n", address);
+        Utility.print("\n[@] Removed from the blacklist: '%s'", address);
         return true;
     }
 
@@ -613,7 +613,7 @@ public class PowerTunnel {
         USER_BLACKLIST.remove(address);
         USER_WHITELIST.add(address);
         updateUserListFrames();
-        Utility.print("\n[@] Whitelisted: '%s'\n", address);
+        Utility.print("\n[@] Whitelisted: '%s'", address);
         return true;
     }
 
@@ -641,7 +641,7 @@ public class PowerTunnel {
         }
         USER_WHITELIST.remove(address);
         updateUserListFrames();
-        Utility.print("\n[@] Removed from the whitelist: '%s'\n", address);
+        Utility.print("\n[@] Removed from the whitelist: '%s'", address);
         return true;
     }
 
