@@ -5,8 +5,9 @@
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/images/logo.png" />
+
 Simple, scalable, cross-platform and effective solution against government censorship
-<br>
+
 <img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/images/ui.png" alt="PowerTunnel User Interface" />
 </p>
 
