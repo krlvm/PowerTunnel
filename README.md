@@ -1,15 +1,17 @@
 # PowerTunnel
 Simple, scalable, cross-platform and effective solution against government censorship
 
+<p align="center">
+<img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/images/logo.png" />
+<br>
+<img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/images/ui.png" alt="PowerTunnel User Interface" />
+</p>
+
 PowerTunnel is more than a regular anti-censorship utility - using it, you can control your traffic and block any connections, for example, for advertising.
 
 Designed for use in Russia, but can be used in other countries.
 
 Wiki: https://github.com/krlvm/PowerTunnel/wiki/
-
-###### PowerTunnel in action
-![PowerTunnel in action: UI](https://raw.githubusercontent.com/krlvm/PowerTunnel/master/ui.png "User Interface")
-![PowerTunnel in action: Logs](https://raw.githubusercontent.com/krlvm/PowerTunnel/master/log.png "Logs")
 
 ### What is it
 Nowadays many governments introducing censorship in the Internet and situation with Internet freedom becomes worse every day. DPI - Deep Packet Inspection systems - helps them do this.
