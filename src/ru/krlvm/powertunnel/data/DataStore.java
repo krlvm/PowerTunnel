@@ -14,10 +14,10 @@ import java.util.List;
 public class DataStore {
 
     //Constants
-    public static final String GOVERNMENT_BLACKLIST = "government-blacklist";
-    public static final String ISP_STUB_LIST = "isp-stub";
-    public static final String USER_BLACKLIST = "user-blacklist";
-    public static final String USER_WHITELIST = "user-whitelist";
+    public static final DataStore GOVERNMENT_BLACKLIST = new DataStore("government-blacklist");
+    public static final DataStore ISP_STUB_LIST = new DataStore("isp-stub");
+    public static final DataStore USER_BLACKLIST = new DataStore("user-blacklist");
+    public static final DataStore USER_WHITELIST = new DataStore("user-whitelist");
 
     private static final char EXTENSION_SEPARATOR = '.';
 

@@ -278,10 +278,16 @@ public class PowerTunnel {
     public static void bootstrap() throws DataStoreException, UnknownHostException {
         //Load data
         try {
-            GOVERNMENT_BLACKLIST.addAll(new DataStore(DataStore.GOVERNMENT_BLACKLIST).load());
-            USER_BLACKLIST.addAll(new DataStore(DataStore.USER_BLACKLIST).load());
-            USER_WHITELIST.addAll(new DataStore(DataStore.USER_WHITELIST).load());
-            ISP_STUB_LIST.addAll(new DataStore(DataStore.ISP_STUB_LIST).load());
+            GOVERNMENT_BLACKLIST.addAll(DataStore.GOVERNMENT_BLACKLIST.load());
+            USER_BLACKLIST.addAll(DataStore.USER_BLACKLIST.load());
+            if(!CONSOLE_MODE) {
+                USER_FRAMES[0].refill();
+            }
+            USER_WHITELIST.addAll(DataStore.USER_WHITELIST.load());
+            if(!CONSOLE_MODE) {
+                USER_FRAMES[1].refill();
+            }
+            ISP_STUB_LIST.addAll(DataStore.ISP_STUB_LIST.load());
             Utility.print("[i] Loaded '%s' government blocked sites, '%s' user blocked sites, '%s' user whitelisted sites",
                     GOVERNMENT_BLACKLIST.size(), USER_BLACKLIST.size(), USER_WHITELIST.size());
             Utility.print();
@@ -461,8 +467,8 @@ public class PowerTunnel {
      * @see DataStore
      */
     public static void saveUserLists() throws IOException {
-        new DataStore(DataStore.USER_BLACKLIST).write(USER_BLACKLIST);
-        new DataStore(DataStore.USER_WHITELIST).write(USER_WHITELIST);
+        DataStore.USER_BLACKLIST.write(USER_BLACKLIST);
+        DataStore.USER_WHITELIST.write(USER_WHITELIST);
     }
 
     /**
