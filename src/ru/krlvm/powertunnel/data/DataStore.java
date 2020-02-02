@@ -23,7 +23,7 @@ public class DataStore {
 
     private final String fileName;
     protected List<String> loadedLines;
-    protected List<String> defaults;
+    protected List<String> defaults = new ArrayList<>();
 
     /**
      * DataStore constructor
