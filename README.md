@@ -1,8 +1,8 @@
 # PowerTunnel
-![License](https://img.shields.io/github/license/krlvm/PowerTunnel?style=flat-square)
-![Latest release](https://img.shields.io/github/v/release/krlvm/PowerTunnel?style=flat-square)
-![Downloads](https://img.shields.io/github/downloads/krlvm/PowerTunnel/total?style=flat-square)
-![Help](https://img.shields.io/badge/help-wiki-yellow?style=flat-square)
+[![License](https://img.shields.io/github/license/krlvm/PowerTunnel?style=flat-square)](https://github.com/krlvm/PowerTunnel/blob/master/LICENSE)
+[![Latest release](https://img.shields.io/github/v/release/krlvm/PowerTunnel?style=flat-square)](https://github.com/krlvm/PowerTunnel/releases)
+[![Downloads](https://img.shields.io/github/downloads/krlvm/PowerTunnel/total?style=flat-square)](https://github.com/krlvm/PowerTunnel/releases)
+[![Help](https://img.shields.io/badge/help-wiki-yellow?style=flat-square)](https://github.com/krlvm/PowerTunnel/wiki)
 
 Simple, scalable, cross-platform and effective solution against government censorship
 <p align="center">
