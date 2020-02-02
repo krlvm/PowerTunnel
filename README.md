@@ -2,35 +2,27 @@
 ![License](https://img.shields.io/github/license/krlvm/PowerTunnel?style=flat-square)
 ![Latest release](https://img.shields.io/github/v/release/krlvm/PowerTunnel?style=flat-square)
 ![Downloads](https://img.shields.io/github/downloads/krlvm/PowerTunnel/total?style=flat-square)
-
-<p align="center">
-<img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/images/logo.png" />
+![Help](https://img.shields.io/badge/help-wiki-yellow?style=flat-square)
 
 Simple, scalable, cross-platform and effective solution against government censorship
-
+<p align="center">
+<img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/images/logo.png" />
+<br>
 <img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/images/ui.png" alt="PowerTunnel User Interface" />
 </p>
 
-PowerTunnel is more than a regular anti-censorship utility - using it, you can control your traffic and block any connections, for example, for advertising.
-
-Designed for use in Russia, but can be used in other countries.
-
-Wiki: https://github.com/krlvm/PowerTunnel/wiki/
-
 ### What is it
-Nowadays many governments introducing censorship in the Internet and situation with Internet freedom becomes worse every day. DPI - Deep Packet Inspection systems - helps them do this.
+Nowadays Internet censorship is introducing in many countries: governments analyze and block traffic to this sites using DPI - Deep Packet Inspection systems, forcing you using circumvention utilities like VPN, for example. That approach have many disadvantages, most noticeable - connection speed slowdown. In addition, these services cannot guarantee work stability and your data confidence.
 
-This force the people to use ways to bypass locks like Proxy and VPN, that send your Internet traffic to the third parties and may be unstable.
+PowerTunnel is active DPI circumvention utility, that works only on your PC and don't send your traffic to third-party servers, respecting your privacy and do not slowing down your internet connection.
 
-PowerTunnel is active DPI circumvention utility, that works only on your PC and don't send your traffic to third-party servers, respecting your privacy and isn't slowing down your internet connection.
+PowerTunnel is more than a regular anti-censorship utility - using it, you can monitor your traffic and block any connection, advertising, for example.
 
-### How it works?
-PowerTunnel establishes a HTTP/HTTPS-proxy on the your PC and directs your traffic through it.
+### How does it work?
+PowerTunnel establishes a transparent proxy server on your PC and directs your traffic through it, applying DPI circumvention tricks.
 
-More details on the Wiki: https://github.com/krlvm/PowerTunnel/wiki/How-it-works%3F
-
-## How I can get it?
-You can compile yourself or download prepared binary from the `Releases` tab.
+## How can I get it?
+You can compile a binary yourself or download prepared binary [here](https://github.com/krlvm/PowerTunnel/releases).
 
 ## Setup
 Please, look at the Wiki: https://github.com/krlvm/PowerTunnel/wiki/Installation
@@ -39,7 +31,7 @@ Please, look at the Wiki: https://github.com/krlvm/PowerTunnel/wiki/Installation
 You can monitor network activity, block and whitelist websites through Java Swing-based user interface when console mode is off or through PowerTunnel Monitor - a new Web-based user interface (v1.7+), available from fake URL http://powertunnelmonitor.info if you aren't disabled it using argument `-disable-web-ui`.
 
 ## Launch arguments
-You can specify a few params through the CLI (v1.4+):
+You can specify a few params through the CLI:
 
 ```
 java -jar PowerTunnel.jar
@@ -59,16 +51,15 @@ java -jar PowerTunnel.jar
 -debug
 ```
 
-## Not working
-Your ISP using another blocking method, that PowerTunnel cannot bypass right now.
+## Doesn't work
+Most likely your ISP blocked the website you need by IP address, so only encrypted tunnel (VPN/Tor) can help you.
 
-Also, you can try launching the program with `-full-chunking` argument.
-
-If you have offers, improvements or find bug you can leave an issue.
+Also, you can try launching PowerTunnel with `-full-chunking` argument.
 
 ## Spin-off projects
 * [Invader](https://github.com/krlvm/Invader) - an effective MITM utility and script injector
 * [LibertyTunnel](https://github.com/krlvm/PowerTunnel/tree/libertytunnel) - a lightweight edition of PowerTunnel 
 
 ## Dependencies
-We're using patched [LittleProxy](https://github.com/adamfisk/LittleProxy) as a Proxy Server and [SwingDPI](https://github.com/krlvm/SwingDPI) for scaling UI on a HiDPI screens.
+* [LittleProxy](https://github.com/adamfisk/LittleProxy) with some patches - proxy server
+* [SwingDPI](https://github.com/krlvm/SwingDPI) - HiDPI scaling
