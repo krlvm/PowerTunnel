@@ -24,8 +24,13 @@ PowerTunnel establishes a transparent proxy server on your PC and directs your t
 ## How can I get it?
 You can compile a binary yourself or download prepared binary [here](https://github.com/krlvm/PowerTunnel/releases).
 
-## Setup
+### Setup
 Please, look at the Wiki: https://github.com/krlvm/PowerTunnel/wiki/Installation
+
+### Doesn't work
+Most likely your ISP blocked the website you need by IP address, so only encrypted tunnel (VPN/Tor) can help you.
+
+Also, you can try launching PowerTunnel with `-full-chunking` argument.
 
 ## User interface
 You can monitor network activity, block and whitelist websites through Java Swing-based user interface when console mode is off or through PowerTunnel Monitor - a new Web-based user interface (v1.7+), available from fake URL http://powertunnelmonitor.info if you aren't disabled it using argument `-disable-web-ui`.
@@ -50,11 +55,6 @@ java -jar PowerTunnel.jar
 -disable-updater - disables the update notifier
 -debug
 ```
-
-## Doesn't work
-Most likely your ISP blocked the website you need by IP address, so only encrypted tunnel (VPN/Tor) can help you.
-
-Also, you can try launching PowerTunnel with `-full-chunking` argument.
 
 ## Spin-off projects
 * [Invader](https://github.com/krlvm/Invader) - an effective MITM utility and script injector
