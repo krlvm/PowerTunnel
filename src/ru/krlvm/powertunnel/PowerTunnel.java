@@ -22,9 +22,11 @@ import ru.krlvm.swingdpi.SwingDPI;
 import javax.swing.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -33,7 +35,7 @@ import java.util.*;
  * PowerTunnel Bootstrap class
  *
  * This class initializes PowerTunnel, loads government blacklist,
- * user lists, holds journal and controlling a LittleProxy Server
+ * user lists, holds journal and controls the LittleProxy Server
  *
  * @author krlvm
  */
@@ -59,6 +61,8 @@ public class PowerTunnel {
 
     private static final Map<String, String> JOURNAL = new LinkedHashMap<>();
     private static final SimpleDateFormat JOURNAL_DATE_FORMAT = new SimpleDateFormat("[HH:mm]: ");
+
+    private static String GOVERNMENT_BLACKLIST_MIRROR = null;
 
     private static final Set<String> GOVERNMENT_BLACKLIST = new HashSet<>();
     private static final Set<String> ISP_STUB_LIST = new HashSet<>();
@@ -90,6 +94,7 @@ public class PowerTunnel {
                                 " -help - display help\n" +
                                 " -start - starts server right after load\n" +
                                 " -console - console mode, without UI\n" +
+                                " -government-blacklist-from [URL] - automatically fill government blacklist from URL\n" +
                                 " -full-chunking - enables chunking the whole packets\n" +
                                 " -mix-host-case - enables 'Host' header case mix (unstable)\n" +
                                 " -send-payload [length] - method to bypass HTTP blocking, 21 is recommended\n" +
@@ -144,6 +149,11 @@ public class PowerTunnel {
                         } else {
                             String value = args[i + 1];
                             switch (arg) {
+                                case "government-blacklist-from": {
+                                    GOVERNMENT_BLACKLIST_MIRROR = value;
+                                    Utility.print("[#] Government blacklist mirror: '%s'", GOVERNMENT_BLACKLIST_MIRROR);
+                                    break;
+                                }
                                 case "ip": {
                                     SERVER_IP_ADDRESS = value;
                                     Utility.print("[#] IP address set to '%s'", SERVER_IP_ADDRESS);
@@ -279,9 +289,26 @@ public class PowerTunnel {
         //Load data
         try {
             for (String address : DataStore.GOVERNMENT_BLACKLIST.load()) {
-                GOVERNMENT_BLACKLIST.add(URLUtility.clearHost(address));
+                addToGovernmentBlacklist(address);
             }
-            GOVERNMENT_BLACKLIST.addAll(DataStore.GOVERNMENT_BLACKLIST.load());
+            if(GOVERNMENT_BLACKLIST_MIRROR != null) {
+                Utility.print("[#] Loading government blacklist from the mirror...");
+                try {
+                    URL url = new URL(GOVERNMENT_BLACKLIST_MIRROR);
+                    InputStream in = url.openStream();
+                    Scanner scanner = new Scanner(in);
+                    int before = GOVERNMENT_BLACKLIST.size();
+                    while (scanner.hasNext()) {
+                        addToGovernmentBlacklist(scanner.next());
+                    }
+                    in.close();
+                    scanner.close();
+                    Utility.print("[#] Loaded '%s' government-blocked websites from the mirror", (GOVERNMENT_BLACKLIST.size() - before));
+                } catch (Exception ex) {
+                    Utility.print("[#] Failed to load government-blocked websites from the mirror: " + ex.getMessage());
+                    Debugger.debug(ex);
+                }
+            }
             for (String address : DataStore.USER_BLACKLIST.load()) {
                 addToUserBlacklist(address);
             }
@@ -425,6 +452,22 @@ public class PowerTunnel {
     /*
     Government blacklist block
      */
+
+    /**
+     * Adds website to the government blacklist
+     * and removes from the user whitelist if it's contains in it
+     *
+     * @param address - website address
+     * @return true if address doesn't already contains in the government blacklist or false if it is
+     */
+    public static boolean addToGovernmentBlacklist(String address) {
+        address = URLUtility.clearHost(address.toLowerCase());
+        if(GOVERNMENT_BLACKLIST.contains(address)) {
+            return false;
+        }
+        GOVERNMENT_BLACKLIST.add(address);
+        return true;
+    }
 
     /**
      * Retrieves the government blacklist

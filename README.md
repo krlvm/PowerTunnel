@@ -43,6 +43,7 @@ java -jar PowerTunnel.jar
 -help - displays help
 -start - starts server right after load
 -console - console mode, without UI
+-government-blacklist-from [URL] - automatically fill government blacklist from URL
 -full-chunking - enables chunking the whole packets
 -mix-host-case - enables 'Host' header case mix (unstable)
 -send-payload [length] - method to bypass HTTP blocking, 21 is recommended
