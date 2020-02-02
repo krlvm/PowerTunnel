@@ -159,11 +159,12 @@ public class MainFrame extends ControlFrame {
             public void run() {
                 boolean running = PowerTunnel.getStatus() == ServerStatus.RUNNING;
                 stateButton.setText((running ? "Stop" : "Start") + " server");
-                for (JTextField input : inputs) {
-                    input.setEnabled(!running);
-                }
                 header.setText(getHeaderText());
-                stateButton.setEnabled(!(PowerTunnel.getStatus() == ServerStatus.STARTING || PowerTunnel.getStatus() == ServerStatus.STOPPING));
+                boolean activateUI = !(PowerTunnel.getStatus() == ServerStatus.STARTING || PowerTunnel.getStatus() == ServerStatus.STOPPING);
+                stateButton.setEnabled(activateUI);
+                for (JTextField input : inputs) {
+                    input.setEnabled(activateUI);
+                }
             }
         });
     }

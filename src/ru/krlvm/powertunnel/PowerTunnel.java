@@ -286,6 +286,7 @@ public class PowerTunnel {
      * PowerTunnel bootstrap
      */
     public static void bootstrap() throws DataStoreException, UnknownHostException {
+        setStatus(ServerStatus.STARTING);
         //Load data
         try {
             for (String address : DataStore.GOVERNMENT_BLACKLIST.load()) {
