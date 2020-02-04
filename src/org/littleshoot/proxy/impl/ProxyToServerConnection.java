@@ -219,7 +219,6 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.littleshoot.proxy.*;
 import ru.krlvm.powertunnel.PowerTunnel;
-import ru.krlvm.powertunnel.patches.PatchManager;
 import ru.krlvm.powertunnel.utilities.Debugger;
 import ru.krlvm.powertunnel.utilities.HttpUtility;
 import ru.krlvm.powertunnel.utilities.Utility;
@@ -394,7 +393,7 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
 
     @Override
     public int getPTFragmentSize() {
-        return PatchManager.getChunkSize(HttpUtility.formatHost(serverHostAndPort));
+        return PowerTunnel.DEFAULT_CHUNK_SIZE;
     }
 
     /***************************************************************************
