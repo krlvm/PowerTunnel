@@ -87,7 +87,7 @@ public class LogFrame extends ControlFrame {
         if(instance == null) {
             return;
         }
-        instance.logArea.append(s + "\n");
+        instance.logArea.append(s);
         instance.logArea.setCaretPosition(instance.logArea.getDocument().getLength());
     }
 }

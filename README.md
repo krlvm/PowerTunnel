@@ -53,6 +53,7 @@ java -jar PowerTunnel.jar
 -ip [IP Address]
 -port [Port]
 -with-web-ui [appendix] - enables Web UI at http://powertunnelmonitor[appendix].info
+-full-output-mirroring - fully mirrors system output to the log
 -disable-native-lf - disables native L&F (when UI enabled)
 -disable-ui-scaling - disables UI scaling (when UI enabled)
 -disable-updater - disables the update notifier

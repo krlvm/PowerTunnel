@@ -57,7 +57,7 @@ public class PowerTunnel {
 
     public static boolean MIX_HOST_CASE = false;
 
-    public static final boolean FULL_OUTPUT_MIRRORING = false;
+    public static boolean FULL_OUTPUT_MIRRORING = false;
 
     private static final Map<String, String> JOURNAL = new LinkedHashMap<>();
     private static final SimpleDateFormat JOURNAL_DATE_FORMAT = new SimpleDateFormat("[HH:mm]: ");
@@ -102,6 +102,7 @@ public class PowerTunnel {
                                 " -ip [IP Address] - sets IP Address\n" +
                                 " -port [Port] - sets port\n" +
                                 " -with-web-ui [appendix] - enables Web UI at http://" + String.format(PowerTunnelMonitor.FAKE_ADDRESS_TEMPLATE, "[appendix]") + "\n" +
+                                " -full-output-mirroring - fully mirrors system output to the log\n" +
                                 " -disable-native-lf - disables native L&F (when UI enabled)\n" +
                                 " -disable-ui-scaling - disables UI scaling (when UI enabled)\n" +
                                 " -disable-updater - disables the update notifier\n" +
@@ -111,6 +112,10 @@ public class PowerTunnel {
                     }
                     case "start": {
                         startNow = true;
+                        break;
+                    }
+                    case "full-output-mirroring": {
+                        FULL_OUTPUT_MIRRORING = true;
                         break;
                     }
                     case "debug": {
@@ -224,8 +229,8 @@ public class PowerTunnel {
             if (FULL_OUTPUT_MIRRORING) {
                 PrintStream systemOutput = System.out;
                 PrintStream systemErr = System.err;
-                System.setOut(new PrintStream(new MirroredOutputStream(new ByteArrayOutputStream(), logFrame, systemOutput)));
-                System.setErr(new PrintStream(new MirroredOutputStream(new ByteArrayOutputStream(), logFrame, systemErr)));
+                System.setOut(new PrintStream(new MirroredOutputStream(new ByteArrayOutputStream(), systemOutput)));
+                System.setErr(new PrintStream(new MirroredOutputStream(new ByteArrayOutputStream(), systemErr)));
             }
 
             journalFrame = new JournalFrame();

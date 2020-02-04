@@ -9,16 +9,14 @@ import java.io.PrintStream;
 
 /**
  * This class is used to mirror system outputs
- * to LogFrame and back to terminal (console)
+ * to the log and back to the terminal (console)
  */
 public class MirroredOutputStream extends FilterOutputStream {
 
-    private LogFrame LOG;
     private PrintStream SYSTEM_OUTPUT;
 
-    public MirroredOutputStream(OutputStream out, LogFrame log, PrintStream systemOutput) {
+    public MirroredOutputStream(OutputStream out, PrintStream systemOutput) {
         super(out);
-        LOG = log;
         SYSTEM_OUTPUT = systemOutput;
     }
 
