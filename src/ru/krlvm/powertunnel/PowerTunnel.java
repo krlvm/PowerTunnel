@@ -393,6 +393,20 @@ public class PowerTunnel {
         ISP_STUB_LIST.clear();
     }
 
+    public static void handleClosing() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (PowerTunnel.getStatus() == ServerStatus.RUNNING) {
+                    PowerTunnel.stop();
+                } else {
+                    PowerTunnel.safeUserListSave();
+                }
+                System.exit(0);
+            }
+        }).start();
+    }
+
     public static void showMainFrame() {
         frame.setVisible(true);
     }

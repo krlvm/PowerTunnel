@@ -137,16 +137,7 @@ public class MainFrame extends ControlFrame {
             windowListener = new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (PowerTunnel.getStatus() == ServerStatus.RUNNING) {
-                                PowerTunnel.stop();
-                            } else {
-                                PowerTunnel.safeUserListSave();
-                            }
-                        }
-                    }).start();
+                    PowerTunnel.handleClosing();
                 }
             };
         } else {
