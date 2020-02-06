@@ -176,7 +176,7 @@ public class MainFrame extends ControlFrame {
                 boolean activateUI = !(PowerTunnel.getStatus() == ServerStatus.STARTING || PowerTunnel.getStatus() == ServerStatus.STOPPING);
                 stateButton.setEnabled(activateUI);
                 for (JTextField input : inputs) {
-                    input.setEnabled(activateUI);
+                    input.setEditable(PowerTunnel.getStatus() == ServerStatus.NOT_RUNNING);
                 }
             }
         });
