@@ -1,8 +1,6 @@
-# PowerTunnel
-
 <p align="center">
 <img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/images/logo.png" />
-<br><br>
+<br><h1>PowerTunnel</h1><br>
 Simple, scalable, cross-platform and effective solution against government censorship
 <br><br>
 <a href="https://github.com/krlvm/PowerTunnel/blob/master/LICENSE"><img src="https://img.shields.io/github/license/krlvm/PowerTunnel?style=flat-square" alt="License"/></a>
