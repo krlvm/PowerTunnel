@@ -1,4 +1,4 @@
-<p align="center">
+<div align="center">
 <img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/images/logo.png" />
 <br><h1>PowerTunnel</h1><br>
 Simple, scalable, cross-platform and effective solution against government censorship
@@ -9,7 +9,7 @@ Simple, scalable, cross-platform and effective solution against government censo
 <a href="https://github.com/krlvm/PowerTunnel/wiki"><img src="https://img.shields.io/badge/help-wiki-yellow?style=flat-square" alt="Help on the Wiki"/></a>
 <br>
 <img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/images/ui.png" alt="PowerTunnel User Interface" />
-</p>
+</div>
 
 ### What is it
 Nowadays Internet censorship is introducing in many countries: governments analyze and block traffic to this sites using DPI - Deep Packet Inspection systems, forcing you using circumvention utilities like VPN, for example. That approach have many disadvantages, most noticeable - connection speed slowdown. In addition, these services cannot guarantee work stability and your data confidence.
