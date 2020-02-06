@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/images/logo.png" />
+<img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/images/logo.png" height="192px" width="192px" />
 <br><h1>PowerTunnel</h1><br>
 Simple, scalable, cross-platform and effective solution against government censorship
 <br><br>
