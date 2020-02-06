@@ -1,5 +1,7 @@
 package ru.krlvm.powertunnel.utilities;
 
+import ru.krlvm.powertunnel.frames.ControlFrame;
+
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
@@ -11,6 +13,9 @@ import java.awt.*;
  * @author krlvm
  */
 public class UIUtility {
+
+    public static final Image UI_ICON
+            = Toolkit.getDefaultToolkit().getImage(ControlFrame.class.getResource("/icon.png"));
 
     /**
      * Retrieves corrected value a window width/height

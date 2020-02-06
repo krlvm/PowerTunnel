@@ -11,6 +11,7 @@ import ru.krlvm.powertunnel.data.DataStoreException;
 import ru.krlvm.powertunnel.filter.ProxyFilter;
 import ru.krlvm.powertunnel.frames.*;
 import ru.krlvm.powertunnel.system.MirroredOutputStream;
+import ru.krlvm.powertunnel.system.TrayManager;
 import ru.krlvm.powertunnel.updater.UpdateNotifier;
 import ru.krlvm.powertunnel.utilities.Debugger;
 import ru.krlvm.powertunnel.utilities.URLUtility;
@@ -19,6 +20,7 @@ import ru.krlvm.powertunnel.webui.PowerTunnelMonitor;
 import ru.krlvm.swingdpi.SwingDPI;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,6 +70,7 @@ public class PowerTunnel {
     private static final Set<String> USER_BLACKLIST = new LinkedHashSet<>();
     private static final Set<String> USER_WHITELIST = new LinkedHashSet<>();
 
+    private static TrayManager trayManager;
     private static MainFrame frame;
     public static LogFrame logFrame;
     public static JournalFrame journalFrame;
@@ -221,6 +224,14 @@ public class PowerTunnel {
             }
             if(uiSettings[0]) {
                 SwingDPI.applyScalingAutomatically();
+            }
+
+            trayManager = new TrayManager();
+            try {
+                trayManager.load();
+            } catch (AWTException ex) {
+                Utility.print("[x] Tray icon initialization failed");
+                Debugger.debug(ex);
             }
 
             //Initializing main frame and system outputs mirroring
@@ -382,11 +393,19 @@ public class PowerTunnel {
         ISP_STUB_LIST.clear();
     }
 
+    public static void showMainFrame() {
+        frame.setVisible(true);
+    }
+
     public static void setStatus(ServerStatus status) {
         STATUS = status;
         if(!CONSOLE_MODE) {
             frame.update();
         }
+    }
+
+    public static TrayManager getTray() {
+        return trayManager;
     }
 
     public static boolean isWebUIEnabled() {

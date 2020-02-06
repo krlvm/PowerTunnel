@@ -4,11 +4,13 @@ import ru.krlvm.powertunnel.utilities.UIUtility;
 import ru.krlvm.swingdpi.ScalableJFrame;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Base implementation of JFrame (SwingDPI/ScalableJFrame)
  */
 public abstract class ControlFrame extends ScalableJFrame {
+
 
     public ControlFrame() {
         this(null);
@@ -17,6 +19,7 @@ public abstract class ControlFrame extends ScalableJFrame {
     public ControlFrame(String title) {
         super(title);
         setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        setIconImage(UIUtility.UI_ICON);
     }
 
     /**

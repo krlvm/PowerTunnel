@@ -3,15 +3,11 @@ package ru.krlvm.powertunnel.frames;
 import ru.krlvm.powertunnel.PowerTunnel;
 import ru.krlvm.powertunnel.utilities.Debugger;
 import ru.krlvm.powertunnel.utilities.UIUtility;
-import ru.krlvm.powertunnel.utilities.Utility;
 import ru.krlvm.swingdpi.SwingDPI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 
 public class MainFrame extends ControlFrame {
 
@@ -19,12 +15,13 @@ public class MainFrame extends ControlFrame {
     private JButton stateButton;
     private JTextField[] inputs;
 
+    private WindowListener windowListener;
+
     public MainFrame() {
         super(PowerTunnel.NAME + " v" + PowerTunnel.VERSION);
         double multiplier = SwingDPI.isScaleApplied() ? (SwingDPI.getScaleFactor() / (SwingDPI.getScaleFactor() - 0.25)) + 0.05 : 1.3;
         Debugger.debug("Scale multiplier: " + multiplier);
         setSize((int) (325 * (SwingDPI.getScaleFactor() * multiplier)), (int) (175 * (SwingDPI.getScaleFactor() * multiplier)));
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         header = new JLabel(getHeaderText());
 
@@ -135,22 +132,38 @@ public class MainFrame extends ControlFrame {
         setVisible(true);
 
         //save data
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(PowerTunnel.getStatus() == ServerStatus.RUNNING) {
-                            PowerTunnel.stop();
-                        } else {
-                            PowerTunnel.safeUserListSave();
+        if(!PowerTunnel.getTray().isLoaded()) {
+            setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+            windowListener = new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (PowerTunnel.getStatus() == ServerStatus.RUNNING) {
+                                PowerTunnel.stop();
+                            } else {
+                                PowerTunnel.safeUserListSave();
+                            }
                         }
-                        Utility.print("[#] Goodbye :(");
-                    }
-                }).start();
-            }
-        });
+                    }).start();
+                }
+            };
+        } else {
+            windowListener = new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            PowerTunnel.getTray().showNotification(PowerTunnel.NAME + " is still working in tray mode");
+                            removeWindowListener(windowListener);
+                        }
+                    }).start();
+                }
+            };
+        }
+        addWindowListener(windowListener);
     }
 
     public void update() {
