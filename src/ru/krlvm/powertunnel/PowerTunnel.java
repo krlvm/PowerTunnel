@@ -64,6 +64,7 @@ public class PowerTunnel {
 
     private static final Map<String, String> JOURNAL = new LinkedHashMap<>();
     private static final SimpleDateFormat JOURNAL_DATE_FORMAT = new SimpleDateFormat("[HH:mm]: ");
+    private static boolean DISABLE_JOURNAL = false;
 
     private static String GOVERNMENT_BLACKLIST_MIRROR = null;
 
@@ -108,6 +109,7 @@ public class PowerTunnel {
                                 " -with-web-ui [appendix] - enables Web UI at http://" + String.format(PowerTunnelMonitor.FAKE_ADDRESS_TEMPLATE, "[appendix]") + "\n" +
                                 " -disable-auto-proxy-setup - disables auto proxy setup on Windows\n" +
                                 " -full-output-mirroring - fully mirrors system output to the log\n" +
+                                " -disable-journal - disables journal\n" +
                                 " -disable-native-lf - disables native L&F (when UI enabled)\n" +
                                 " -disable-ui-scaling - disables UI scaling (when UI enabled)\n" +
                                 " -disable-updater - disables the update notifier\n" +
@@ -139,6 +141,10 @@ public class PowerTunnel {
                     case "mix-host-case": {
                         MIX_HOST_CASE = true;
                         Utility.print("[#] Enabled case mix for 'Host' header");
+                        break;
+                    }
+                    case "disable-journal": {
+                        DISABLE_JOURNAL = true;
                         break;
                     }
                     case "disable-auto-proxy-setup": {
@@ -480,6 +486,9 @@ public class PowerTunnel {
      * @param address - website address
      */
     public static void addToJournal(String address) {
+        if(!DISABLE_JOURNAL) {
+            return;
+        }
         JOURNAL.put(address, JOURNAL_DATE_FORMAT.format(new Date()));
     }
 
