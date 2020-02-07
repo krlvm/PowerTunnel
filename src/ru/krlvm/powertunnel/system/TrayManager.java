@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 
 public class TrayManager {
 
-    private boolean loaded = false;
     private TrayIcon trayIcon;
 
     public void load() throws AWTException {
@@ -44,12 +43,11 @@ public class TrayManager {
             }
         });
         SystemTray.getSystemTray().add(trayIcon);
-        loaded = true;
     }
 
     public void unload() {
         SystemTray.getSystemTray().remove(trayIcon);
-        loaded = false;
+        trayIcon = null;
     }
 
     public void showNotification(String message) {
@@ -58,6 +56,6 @@ public class TrayManager {
     }
 
     public boolean isLoaded() {
-        return loaded;
+        return trayIcon != null;
     }
 }
