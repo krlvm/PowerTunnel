@@ -16,7 +16,7 @@ public class JournalFrame extends ControlFrame {
 
     public JournalFrame() {
         super(PowerTunnel.NAME + " | Journal");
-        setSize(1200, 700);
+        setSize(1000, 500);
 
         final JList<String> swingList = new JList<>(getVisited());
         swingList.setModel(new DefaultListModel<String>());
