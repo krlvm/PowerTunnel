@@ -17,9 +17,10 @@ public class MainFrame extends ControlFrame {
 
     public MainFrame() {
         super(PowerTunnel.NAME + " v" + PowerTunnel.VERSION);
-        double multiplier = SwingDPI.isScaleApplied() ? (SwingDPI.getScaleFactor() / (SwingDPI.getScaleFactor() - 0.25)) + 0.05 : 1.3;
+        float multiplier = SwingDPI.isScaleApplied() ? (SwingDPI.getScaleFactor() / (SwingDPI.getScaleFactor() - 0.25F)) + 0.05F : 1.3F;
         Debugger.debug("Scale multiplier: " + multiplier);
-        setSize((int) (325 * (SwingDPI.getScaleFactor() * multiplier)), (int) (175 * (SwingDPI.getScaleFactor() * multiplier)));
+        setSize((int) (324 * (UIUtility.getResidualScaleFactor() * multiplier)),
+                (int) (182 * (UIUtility.getResidualScaleFactor() * multiplier)));
 
         header = new JLabel(getHeaderText());
 
@@ -29,7 +30,7 @@ public class MainFrame extends ControlFrame {
         ipInput.setText(String.valueOf(PowerTunnel.SERVER_IP_ADDRESS));
 
         final JTextField portInput = new JTextField();
-        portInput.setPreferredSize(SwingDPI.scale(75, 22));
+        portInput.setPreferredSize(SwingDPI.scale(76, 22));
         portInput.setToolTipText("Port");
         portInput.setText(String.valueOf(PowerTunnel.SERVER_PORT));
 
