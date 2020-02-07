@@ -164,7 +164,7 @@ public class PowerTunnel {
                         break;
                     }
                     default: {
-                        if (args.length < i + 1) {
+                        if (args.length < i + 2) {
                             Utility.print("[!] Invalid input for option '%s'", arg);
                         } else {
                             String value = args[i + 1];
