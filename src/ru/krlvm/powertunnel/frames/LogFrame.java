@@ -88,6 +88,11 @@ public class LogFrame extends ControlFrame {
             return;
         }
         instance.logArea.append(s);
+        if(JAVA_7) {
+            instance.logArea.append("\r\n");
+        }
         instance.logArea.setCaretPosition(instance.logArea.getDocument().getLength());
     }
+
+    private static final boolean JAVA_7 = System.getProperty("java.version").startsWith("1.7");
 }
