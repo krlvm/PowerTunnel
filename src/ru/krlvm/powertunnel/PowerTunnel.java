@@ -11,6 +11,7 @@ import ru.krlvm.powertunnel.data.DataStoreException;
 import ru.krlvm.powertunnel.filter.ProxyFilter;
 import ru.krlvm.powertunnel.frames.*;
 import ru.krlvm.powertunnel.system.MirroredOutputStream;
+import ru.krlvm.powertunnel.system.SystemProxy;
 import ru.krlvm.powertunnel.system.TrayManager;
 import ru.krlvm.powertunnel.updater.UpdateNotifier;
 import ru.krlvm.powertunnel.utilities.Debugger;
@@ -51,6 +52,7 @@ public class PowerTunnel {
     private static ServerStatus STATUS = ServerStatus.NOT_RUNNING;
     public static String SERVER_IP_ADDRESS = "127.0.0.1";
     public static int SERVER_PORT = 8085;
+    private static boolean AUTO_PROXY_SETUP_ENABLED = true;
 
     public static boolean FULL_CHUNKING = false;
     public static int DEFAULT_CHUNK_SIZE = 2;
@@ -104,6 +106,7 @@ public class PowerTunnel {
                                 " -ip [IP Address] - sets IP Address\n" +
                                 " -port [Port] - sets port\n" +
                                 " -with-web-ui [appendix] - enables Web UI at http://" + String.format(PowerTunnelMonitor.FAKE_ADDRESS_TEMPLATE, "[appendix]") + "\n" +
+                                " -disable-auto-proxy-setup - disables auto proxy setup on Windows\n" +
                                 " -full-output-mirroring - fully mirrors system output to the log\n" +
                                 " -disable-native-lf - disables native L&F (when UI enabled)\n" +
                                 " -disable-ui-scaling - disables UI scaling (when UI enabled)\n" +
@@ -136,6 +139,10 @@ public class PowerTunnel {
                     case "mix-host-case": {
                         MIX_HOST_CASE = true;
                         Utility.print("[#] Enabled case mix for 'Host' header");
+                        break;
+                    }
+                    case "disable-auto-proxy-setup": {
+                        AUTO_PROXY_SETUP_ENABLED = false;
                         break;
                     }
                     case "disable-ui-scaling": {
@@ -363,6 +370,10 @@ public class PowerTunnel {
         Utility.print("[.] Server started");
         Utility.print();
 
+        if(AUTO_PROXY_SETUP_ENABLED) {
+            SystemProxy.enableProxy();
+        }
+
         if(!CONSOLE_MODE) {
             frame.update();
         }
@@ -379,6 +390,10 @@ public class PowerTunnel {
         Utility.print("[.] Server stopped");
         Utility.print();
         setStatus(ServerStatus.NOT_RUNNING);
+
+        if(AUTO_PROXY_SETUP_ENABLED) {
+            SystemProxy.disableProxy();
+        }
     }
 
     /**
