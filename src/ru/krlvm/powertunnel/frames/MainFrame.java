@@ -15,8 +15,6 @@ public class MainFrame extends ControlFrame {
     private JButton stateButton;
     private JTextField[] inputs;
 
-    private WindowListener windowListener;
-
     public MainFrame() {
         super(PowerTunnel.NAME + " v" + PowerTunnel.VERSION);
         double multiplier = SwingDPI.isScaleApplied() ? (SwingDPI.getScaleFactor() / (SwingDPI.getScaleFactor() - 0.25)) + 0.05 : 1.3;
@@ -132,29 +130,17 @@ public class MainFrame extends ControlFrame {
         setVisible(true);
 
         //save data
-        if(!PowerTunnel.getTray().isLoaded()) {
-            setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-            windowListener = new WindowAdapter() {
-                @Override
-                public void windowClosing(WindowEvent e) {
-                    PowerTunnel.handleClosing();
+        setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if(PowerTunnel.getStatus() != ServerStatus.NOT_RUNNING && PowerTunnel.getTray().isLoaded()) {
+                    PowerTunnel.getTray().showNotification(PowerTunnel.NAME + " is still working in tray mode");
+                    return;
                 }
-            };
-        } else {
-            windowListener = new WindowAdapter() {
-                @Override
-                public void windowClosing(WindowEvent e) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            PowerTunnel.getTray().showNotification(PowerTunnel.NAME + " is still working in tray mode");
-                            removeWindowListener(windowListener);
-                        }
-                    }).start();
-                }
-            };
-        }
-        addWindowListener(windowListener);
+                PowerTunnel.handleClosing();
+            }
+        });
     }
 
     public void update() {
