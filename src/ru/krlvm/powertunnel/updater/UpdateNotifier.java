@@ -50,17 +50,21 @@ public class UpdateNotifier {
                             SwingUtilities.invokeLater(new Runnable() {
                                 @Override
                                 public void run() {
-                                    JEditorPane message = UIUtility.getLabelWithHyperlinkSupport("" + PowerTunnel.NAME + " is ready to update!" +
-                                            "<br><br>" +
-                                            "Version: " + version + "<br>" +
-                                            "<br>" +
-                                            "Changelog: <a href=\"" + PowerTunnel.REPOSITORY_URL + "/releases/tag/v" + version + "\">view</a>" +
-                                            "<br>" +
-                                            "Download: <a href=\"" + PowerTunnel.REPOSITORY_URL + "/releases/download/v" + version + "/" + PowerTunnel.NAME + ".jar\">click here</a>" +
-                                            "<br><br>" +
-                                            "Visit <a href=\"" + PowerTunnel.REPOSITORY_URL + "\">GitHub repository</a>" +
-                                            "</body></html>", null);
-                                    JOptionPane.showMessageDialog(null, message, "" + PowerTunnel.NAME + " Updater", JOptionPane.INFORMATION_MESSAGE);
+                                    if(PowerTunnel.isMainFrameVisible()) {
+                                        JEditorPane message = UIUtility.getLabelWithHyperlinkSupport("" + PowerTunnel.NAME + " is ready to update!" +
+                                                "<br><br>" +
+                                                "Version: " + version + "<br>" +
+                                                "<br>" +
+                                                "Changelog: <a href=\"" + PowerTunnel.REPOSITORY_URL + "/releases/tag/v" + version + "\">view</a>" +
+                                                "<br>" +
+                                                "Download: <a href=\"" + PowerTunnel.REPOSITORY_URL + "/releases/download/v" + version + "/" + PowerTunnel.NAME + ".jar\">click here</a>" +
+                                                "<br><br>" +
+                                                "Visit <a href=\"" + PowerTunnel.REPOSITORY_URL + "\">GitHub repository</a>" +
+                                                "</body></html>", null);
+                                        JOptionPane.showMessageDialog(null, message, "" + PowerTunnel.NAME + " Updater", JOptionPane.INFORMATION_MESSAGE);
+                                    } else {
+                                        PowerTunnel.getTray().showNotification("An PowerTunnel update available");
+                                    }
                                 }
                             });
                         }

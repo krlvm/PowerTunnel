@@ -432,6 +432,10 @@ public class PowerTunnel {
         frame.setVisible(true);
     }
 
+    public static boolean isMainFrameVisible() {
+        return frame.isVisible();
+    }
+
     public static void setStatus(ServerStatus status) {
         STATUS = status;
         if(!CONSOLE_MODE) {
