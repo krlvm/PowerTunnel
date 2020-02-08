@@ -42,7 +42,7 @@ public class TrayManager {
         item.setEnabled(false);
         popup.add(item);
 
-        item = new MenuItem("Open PowerTunnel");
+        item = new MenuItem("Open " + PowerTunnel.NAME);
         item.setFont(font);
         item.addActionListener(new ActionListener() {
             @Override
