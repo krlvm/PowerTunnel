@@ -292,21 +292,22 @@ public class PowerTunnel {
     }
 
     public static String safeBootstrap() {
+        String error = null;
         try {
             PowerTunnel.bootstrap();
         } catch (UnknownHostException ex) {
             Utility.print("[x] Cannot use IP-Address '%s': %s", SERVER_IP_ADDRESS, ex.getMessage());
             Debugger.debug(ex);
             Utility.print("[!] Program halted");
-            return "Cannot use IP Address '" + PowerTunnel.SERVER_IP_ADDRESS + "'";
+            error = "Cannot use IP Address '" + PowerTunnel.SERVER_IP_ADDRESS + "'";
         } catch (DataStoreException ex) {
             Utility.print("[x] Failed to load data store: " + ex.getMessage());
             ex.printStackTrace();
-            return "Failed to load data store: " + ex.getMessage();
-        } finally {
+            error = "Failed to load data store: " + ex.getMessage();
+        } catch (Exception ex) {
             setStatus(ServerStatus.NOT_RUNNING);
         }
-        return null;
+        return error;
     }
 
     /**
