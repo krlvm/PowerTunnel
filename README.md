@@ -7,6 +7,8 @@ A lightweight edition of <a href="https://github.com/krlvm/PowerTunnel">PowerTun
 <a href="https://github.com/krlvm/PowerTunnel/releases"><img src="https://img.shields.io/github/v/release/krlvm/PowerTunnel?style=flat-square" alt="Latest release"/></a>
 <a href="https://github.com/krlvm/PowerTunnel/releases"><img src="https://img.shields.io/github/downloads/krlvm/PowerTunnel/total?style=flat-square" alt="Downloads"/></a>
 <a href="https://github.com/krlvm/PowerTunnel/wiki"><img src="https://img.shields.io/badge/help-wiki-yellow?style=flat-square" alt="Help on the Wiki"/></a>
+<br>
+<img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/libertytunnel/images/ui.png" alt="LibertyTunnel CLI" />
 </div>
 
 ### What is it
