@@ -1,31 +1,38 @@
-# [PowerTunnel](https://github.com/krlvm/PowerTunnel): LibertyTunnel
-Simple, scalable, cross-platform and effective solution against government censorship
-
-LibertyTunnel is just a regular anti-censorship utility - if you want to control your traffic too, use [PowerTunnel](https://github.com/krlvm/PowerTunnel)
-
-Designed for use in Russia, but can be used in other countries.
-
-LibertyTunnel is PowerTunnel with accent on speed and simplicity, that's achieving by rejecting UI, traffic filter and additional output. Nothing extra.
-
-PowerTunnel Wiki: https://github.com/krlvm/PowerTunnel/wiki/
+<div align="center">
+<img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/libertytunnel/images/logo.png" height="192px" width="192px" />
+<br><h1>LibertyTunnel</h1><br>
+A lightweight edition of <a href="https://github.com/krlvm/PowerTunnel">PowerTunnel</a> - simple, scalable, cross-platform and effective solution against government censorship
+<br><br>
+<a href="https://github.com/krlvm/PowerTunnel/blob/master/LICENSE"><img src="https://img.shields.io/github/license/krlvm/PowerTunnel?style=flat-square" alt="License"/></a>
+<a href="https://github.com/krlvm/PowerTunnel/releases"><img src="https://img.shields.io/github/v/release/krlvm/PowerTunnel?style=flat-square" alt="Latest release"/></a>
+<a href="https://github.com/krlvm/PowerTunnel/releases"><img src="https://img.shields.io/github/downloads/krlvm/PowerTunnel/total?style=flat-square" alt="Downloads"/></a>
+<a href="https://github.com/krlvm/PowerTunnel/wiki"><img src="https://img.shields.io/badge/help-wiki-yellow?style=flat-square" alt="Help on the Wiki"/></a>
+</div>
 
 ### What is it
-Nowadays many governments introducing censorship in the Internet and situation with Internet freedom becomes worse every day. DPI - Deep Packet Inspection systems - helps them do this.
+LibertyTunnel is a lightweight and debloated version of <a href="https://github.com/krlvm/PowerTunnel">PowerTunnel</a>, focused only on anti-censorship and speed.
 
-This force the people to use ways to bypass locks like Proxy and VPN, that send your Internet traffic to the third parties and may be unstable.
+Nowadays Internet censorship is introducing in many countries: governments analyze and block traffic to this sites using DPI - Deep Packet Inspection systems, forcing you using circumvention utilities like VPN, for example. That approach have many disadvantages, most noticeable - connection speed slowdown. In addition, these services cannot guarantee work stability and your data confidence.
 
-LibertyTunnel is active DPI circumvention utility, that works only on your PC and don't send your traffic to third-party servers, respecting your privacy and isn't slowing down your internet connection.
+LibertyTunnel is active DPI circumvention utility, that works only on your PC and don't send your traffic to third-party servers, respecting your privacy and do not slowing down your internet connection.
 
-### How it works?
-LibertyTunnel establishes a HTTP/HTTPS-proxy on the your PC and directs your traffic through it.
+LibertyTunnel is more than a regular anti-censorship utility - using it, you can monitor your traffic and block any connection, advertising, for example.
 
-More details on the Wiki: https://github.com/krlvm/PowerTunnel/wiki/How-it-works%3F
+### How does it work?
+LibertyTunnel establishes a transparent proxy server on your PC and directs your traffic through it, applying DPI circumvention tricks.
 
-## How I can get it?
-You have to compile a binary yourself
+## How can I get it?
+You have to compile a binary yourself - you need Java JDK 7+
 
-## Setup
-LibertyTunnel setup is identical with PowerTunnel's, please, look at the Wiki: https://github.com/krlvm/PowerTunnel/wiki/Installation
+### Setup
+The installation process, mostly, is identical to the PowerTunnel installation process and described in detail [on the Wiki](https://github.com/krlvm/PowerTunnel/wiki/Installation).
+
+The only difference is that you have to launch LibertyTunnel via command line/terminal.
+
+### Doesn't work
+Most likely your ISP blocked the website you need by IP address, so only encrypted tunnel (VPN/Tor) can help you.
+
+Also, you can try launching LibertyTunnel with `-full-chunking` argument.
 
 ## Launch arguments
 You can specify a few params through the CLI:
@@ -42,13 +49,13 @@ java -jar LibertyTunnel.jar
 ```
 
 ## Not working
-Your ISP using another blocking method, that PowerTunnel cannot bypass right now.
+Your ISP using another blocking method, that LibertyTunnel cannot bypass right now.
 
 Also, you can try launching the program with `-full-chunking` argument.
 
 If you have offers, improvements or find bug you can leave an issue.
 
 ## Dependencies
-We're using patched [LittleProxy](https://github.com/adamfisk/LittleProxy) as a Proxy Server.
+* [LittleProxy](https://github.com/adamfisk/LittleProxy) with some [patches](https://github.com/krlvm/PowerTunnel/tree/libertytunnel/src/org/littleshoot/proxy/impl) - proxy server
 
 Base PowerTunnel version is 1.7.2.
