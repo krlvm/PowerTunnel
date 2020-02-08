@@ -303,6 +303,8 @@ public class PowerTunnel {
             Utility.print("[x] Failed to load data store: " + ex.getMessage());
             ex.printStackTrace();
             return "Failed to load data store: " + ex.getMessage();
+        } finally {
+            setStatus(ServerStatus.NOT_RUNNING);
         }
         return null;
     }
