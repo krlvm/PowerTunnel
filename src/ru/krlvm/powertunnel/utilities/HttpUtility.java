@@ -66,11 +66,11 @@ public class HttpUtility {
      * @param headers - response headers
      * @return HttpResponse with HTML code
      */
-    public static HttpResponse getResponse(String html, Map<String, String> headers) {
+    public static HttpResponse getResponse(String html, int status, Map<String, String> headers) {
         String body = "<!DOCTYPE html>\n" + html;
         byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
         ByteBuf content = Unpooled.copiedBuffer(bytes);
-        HttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_GATEWAY, content);
+        HttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.valueOf(status), content);
         response.headers().set(HttpHeaders.Names.CONTENT_LENGTH, bytes.length);
         response.headers().set("Content-Type", "text/html; charset=UTF-8");
         response.headers().set("Date", ProxyUtils.formatDate(new Date()));
