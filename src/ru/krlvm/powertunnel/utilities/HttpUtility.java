@@ -7,6 +7,7 @@ import org.littleshoot.proxy.impl.ProxyUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Utility for working with HTTP requests and responses
@@ -55,6 +56,27 @@ public class HttpUtility {
         response.headers().set(HttpHeaders.Names.CONTENT_LENGTH, bytes.length);
         response.headers().set("Content-Type", "text/html; charset=UTF-8");
         response.headers().set("Date", ProxyUtils.formatDate(new Date()));
+        return response;
+    }
+
+    /**
+     * Retrieves response with HTML code
+     *
+     * @param html - HTML code
+     * @param headers - response headers
+     * @return HttpResponse with HTML code
+     */
+    public static HttpResponse getResponse(String html, Map<String, String> headers) {
+        String body = "<!DOCTYPE html>\n" + html;
+        byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
+        ByteBuf content = Unpooled.copiedBuffer(bytes);
+        HttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_GATEWAY, content);
+        response.headers().set(HttpHeaders.Names.CONTENT_LENGTH, bytes.length);
+        response.headers().set("Content-Type", "text/html; charset=UTF-8");
+        response.headers().set("Date", ProxyUtils.formatDate(new Date()));
+        for (Map.Entry<String, String> header : headers.entrySet()) {
+            response.headers().set(header.getKey(), header.getValue());
+        }
         return response;
     }
 
