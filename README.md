@@ -44,6 +44,7 @@ java -jar PowerTunnel.jar
 -start - starts server right after load
 -console - console mode, without UI
 -government-blacklist-from [URL] - automatically fill government blacklist from URL
+-use-dns-sec - enables DNSSec mode with the Google DNS servers
 -full-chunking - enables chunking the whole packets
 -mix-host-case - enables 'Host' header case mix (unstable)
 -send-payload [length] - method to bypass HTTP blocking, 21 is recommended
@@ -66,4 +67,5 @@ java -jar PowerTunnel.jar
 
 ## Dependencies
 * [LittleProxy](https://github.com/adamfisk/LittleProxy) with some [patches](https://github.com/krlvm/PowerTunnel/tree/master/src/org/littleshoot/proxy/impl) - proxy server
+* [DNSSEC4J](https://github.com/adamfisk/DNSSEC4J) - DNSSec realization for LittleProxy
 * [SwingDPI](https://github.com/krlvm/SwingDPI) - HiDPI scaling

@@ -58,6 +58,7 @@ public class PowerTunnel {
     public static int DEFAULT_CHUNK_SIZE = 2;
     public static int PAYLOAD_LENGTH = 0; //21 recommended
 
+    private static boolean USE_DNS_SEC = false;
     public static boolean MIX_HOST_CASE = false;
 
     public static boolean FULL_OUTPUT_MIRRORING = false;
@@ -100,6 +101,7 @@ public class PowerTunnel {
                                 " -start - starts server right after load\n" +
                                 " -console - console mode, without UI\n" +
                                 " -government-blacklist-from [URL] - automatically fill government blacklist from URL\n" +
+                                " -use-dns-sec - enables DNSSec mode with the Google DNS servers\n" +
                                 " -full-chunking - enables chunking the whole packets\n" +
                                 " -mix-host-case - enables 'Host' header case mix (unstable)\n" +
                                 " -send-payload [length] - method to bypass HTTP blocking, 21 is recommended\n" +
@@ -119,6 +121,10 @@ public class PowerTunnel {
                     }
                     case "start": {
                         startNow = true;
+                        break;
+                    }
+                    case "use-dns-sec": {
+                        USE_DNS_SEC = true;
                         break;
                     }
                     case "full-output-mirroring": {
@@ -375,7 +381,7 @@ public class PowerTunnel {
                 return new ProxyFilter(originalRequest);
             }
         }).withAddress(new InetSocketAddress(InetAddress.getByName(SERVER_IP_ADDRESS), SERVER_PORT))
-                .withTransparent(true).start();
+                .withTransparent(true).withUseDnsSec(USE_DNS_SEC).start();
         setStatus(ServerStatus.RUNNING);
         Utility.print("[.] Server started");
         Utility.print();
