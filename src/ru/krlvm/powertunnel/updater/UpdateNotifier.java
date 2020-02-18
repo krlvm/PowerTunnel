@@ -50,7 +50,8 @@ public class UpdateNotifier {
                             SwingUtilities.invokeLater(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if(PowerTunnel.isMainFrameVisible()) {
+                                    PowerTunnel.optionsFrame.updateAvailable(version);
+                                    if(PowerTunnel.isMainFrameVisible() || PowerTunnel.optionsFrame.isVisible()) {
                                         JEditorPane message = UIUtility.getLabelWithHyperlinkSupport("" + PowerTunnel.NAME + " is ready to update!" +
                                                 "<br><br>" +
                                                 "Version: " + version + "<br>" +

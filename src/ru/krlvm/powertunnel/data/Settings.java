@@ -26,7 +26,12 @@ public class Settings extends DataStore {
             if(line.contains(KEY_VALUE_SEPARATOR)) {
                 String[] array = line.split(KEY_VALUE_SEPARATOR);
                 String key = array[0];
-                String value = array[1];
+                String value;
+                if(array.length > 1) {
+                    value = array[1];
+                } else {
+                    value = "";
+                }
                 if(key.endsWith(".int")) {
                     try {
                         Integer.parseInt(value);
@@ -79,7 +84,18 @@ public class Settings extends DataStore {
     }
 
     public void setOption(String key, String value) {
+        if(temporaryValues.containsKey(key)) {
+            return;
+        }
         options.put(key, value);
+    }
+
+    public void setIntOption(String key, int value) {
+        options.put(key, String.valueOf(value));
+    }
+
+    public void setBooleanOption(String key, boolean value) {
+        options.put(key, String.valueOf(value));
     }
 
     public void save() throws IOException {
@@ -111,7 +127,7 @@ public class Settings extends DataStore {
     static {
         defaultValues.put(SERVER_IP_ADDRESS, "127.0.0.1");
         defaultValues.put(SERVER_PORT, "8085");
-        defaultValues.put(AUTO_PROXY_SETUP_ENABLED, "false");
+        defaultValues.put(AUTO_PROXY_SETUP_ENABLED, "true");
         defaultValues.put(FULL_CHUNKING, "false");
         defaultValues.put(CHUNK_SIZE, "2");
         defaultValues.put(PAYLOAD_LENGTH, "0");
