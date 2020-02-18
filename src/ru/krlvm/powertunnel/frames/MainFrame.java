@@ -95,6 +95,14 @@ public class MainFrame extends ControlFrame {
             }
         });
 
+        JButton options = new JButton("Options");
+        options.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PowerTunnel.optionsFrame.setVisible(true);
+            }
+        });
+
         JPanel mainPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         setContentPane(mainPanel);
 
@@ -116,6 +124,7 @@ public class MainFrame extends ControlFrame {
         panel.add(journalButton);
         panel.add(userBlacklist);
         panel.add(userWhitelist);
+        panel.add(options);
         mainPanel.add(panel, "Last");
 
         panel = new JPanel(new FlowLayout(FlowLayout.CENTER));

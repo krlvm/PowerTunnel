@@ -393,7 +393,7 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
 
     @Override
     public int getPTFragmentSize() {
-        return PowerTunnel.DEFAULT_CHUNK_SIZE;
+        return PowerTunnel.CHUNK_SIZE;
     }
 
     /***************************************************************************

@@ -47,7 +47,7 @@ java -jar PowerTunnel.jar
 -use-dns-sec - enables DNSSec mode with the Google DNS servers
 -full-chunking - enables chunking the whole packets
 -mix-host-case - enables 'Host' header case mix (unstable)
--send-payload [length] - method to bypass HTTP blocking, 21 is recommended
+-send-payload [length] - to bypass HTTP blocking, 21 is recommended
 -chunk-size [Size] - sets chunk size, minimum is 1, default is 5
 -ip [IP Address]
 -port [Port]

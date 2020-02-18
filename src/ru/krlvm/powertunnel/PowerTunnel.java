@@ -8,6 +8,7 @@ import org.littleshoot.proxy.HttpProxyServer;
 import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
 import ru.krlvm.powertunnel.data.DataStore;
 import ru.krlvm.powertunnel.data.DataStoreException;
+import ru.krlvm.powertunnel.data.Settings;
 import ru.krlvm.powertunnel.filter.ProxyFilter;
 import ru.krlvm.powertunnel.frames.*;
 import ru.krlvm.powertunnel.system.MirroredOutputStream;
@@ -54,20 +55,21 @@ public class PowerTunnel {
     public static int SERVER_PORT = 8085;
     private static boolean AUTO_PROXY_SETUP_ENABLED = true;
 
+    private static final Settings settings = new Settings();
+    /** Optional settings */
     public static boolean FULL_CHUNKING = false;
-    public static int DEFAULT_CHUNK_SIZE = 2;
+    public static int CHUNK_SIZE = 2;
     public static int PAYLOAD_LENGTH = 0; //21 recommended
-
-    private static boolean USE_DNS_SEC = false;
+    public static boolean USE_DNS_SEC = false;
     public static boolean MIX_HOST_CASE = false;
+    private static String GOVERNMENT_BLACKLIST_MIRROR = null;
+    /** ----------------- */
 
     public static boolean FULL_OUTPUT_MIRRORING = false;
 
     private static final Map<String, String> JOURNAL = new LinkedHashMap<>();
     private static final SimpleDateFormat JOURNAL_DATE_FORMAT = new SimpleDateFormat("[HH:mm]: ");
-    private static boolean DISABLE_JOURNAL = false;
-
-    private static String GOVERNMENT_BLACKLIST_MIRROR = null;
+    public static boolean DISABLE_JOURNAL = false;
 
     private static final Set<String> GOVERNMENT_BLACKLIST = new HashSet<>();
     private static final Set<String> ISP_STUB_LIST = new HashSet<>();
@@ -78,6 +80,7 @@ public class PowerTunnel {
     private static MainFrame frame;
     public static LogFrame logFrame;
     public static JournalFrame journalFrame;
+    public static OptionsFrame optionsFrame;
     public static UserListFrame[] USER_FRAMES;
     
     private static boolean CONSOLE_MODE = false;
@@ -104,7 +107,7 @@ public class PowerTunnel {
                                 " -use-dns-sec - enables DNSSec mode with the Google DNS servers\n" +
                                 " -full-chunking - enables chunking the whole packets\n" +
                                 " -mix-host-case - enables 'Host' header case mix (unstable)\n" +
-                                " -send-payload [length] - method to bypass HTTP blocking, 21 is recommended\n" +
+                                " -send-payload [length] - to bypass HTTP blocking, 21 is recommended\n" +
                                 " -chunk-size [size] - sets size of one chunk\n" +
                                 " -ip [IP Address] - sets IP Address\n" +
                                 " -port [Port] - sets port\n" +
@@ -124,7 +127,8 @@ public class PowerTunnel {
                         break;
                     }
                     case "use-dns-sec": {
-                        USE_DNS_SEC = true;
+                        settings.setTemporaryValue(Settings.USE_DNS_SEC, "true");
+                        Utility.print("[#] Enabled DNSSec mode");
                         break;
                     }
                     case "full-output-mirroring": {
@@ -140,21 +144,21 @@ public class PowerTunnel {
                         break;
                     }
                     case "full-chunking": {
-                        FULL_CHUNKING = true;
+                        settings.setTemporaryValue(Settings.FULL_CHUNKING, "true");
                         Utility.print("[#] Full-chunking mode enabled");
                         break;
                     }
                     case "mix-host-case": {
-                        MIX_HOST_CASE = true;
-                        Utility.print("[#] Enabled case mix for 'Host' header");
+                        settings.setTemporaryValue(Settings.MIX_HOST_CASE, "true");
+                        Utility.print("[#] Enabled case mix for the 'Host' header");
                         break;
                     }
                     case "disable-journal": {
-                        DISABLE_JOURNAL = true;
+                        settings.setTemporaryValue(Settings.DISABLE_JOURNAL, "true");
                         break;
                     }
                     case "disable-auto-proxy-setup": {
-                        AUTO_PROXY_SETUP_ENABLED = false;
+                        settings.setTemporaryValue(Settings.AUTO_PROXY_SETUP_ENABLED, "false");
                         break;
                     }
                     case "disable-ui-scaling": {
@@ -176,19 +180,19 @@ public class PowerTunnel {
                             String value = args[i + 1];
                             switch (arg) {
                                 case "government-blacklist-from": {
-                                    GOVERNMENT_BLACKLIST_MIRROR = value;
-                                    Utility.print("[#] Government blacklist mirror: '%s'", GOVERNMENT_BLACKLIST_MIRROR);
+                                    settings.setTemporaryValue(Settings.GOVERNMENT_BLACKLIST_MIRROR, value);
+                                    Utility.print("[#] Government blacklist mirror: '%s'", value);
                                     break;
                                 }
                                 case "ip": {
-                                    SERVER_IP_ADDRESS = value;
-                                    Utility.print("[#] IP address set to '%s'", SERVER_IP_ADDRESS);
+                                    settings.setTemporaryValue(Settings.SERVER_IP_ADDRESS, value);
+                                    Utility.print("[#] IP address set to '%s'", value);
                                     break;
                                 }
                                 case "port": {
                                     try {
-                                        SERVER_PORT = Integer.parseInt(value);
-                                        Utility.print("[#] Port set to '%s'", SERVER_PORT);
+                                        settings.setTemporaryValue(Settings.SERVER_PORT, value);
+                                        Utility.print("[#] Port set to '%s'", value);
                                     } catch (NumberFormatException ex) {
                                         Utility.print("[x] Invalid port, using default");
                                     }
@@ -200,9 +204,10 @@ public class PowerTunnel {
                                 }
                                 case "send-payload": {
                                     try {
-                                        PAYLOAD_LENGTH = Integer.parseInt(value);
-                                        assert PAYLOAD_LENGTH > 0;
-                                        Utility.print("[#] Payload length set to '" + PAYLOAD_LENGTH + "'");
+                                        int payloadLength = Integer.parseInt(value);
+                                        assert payloadLength > 0;
+                                        settings.setTemporaryValue(Settings.PAYLOAD_LENGTH, value);
+                                        Utility.print("[#] Payload length set to '" + value + "'");
                                     } catch (AssertionError | NumberFormatException ex) {
                                         Utility.print("[x] Invalid payload length, using '21'");
                                         PAYLOAD_LENGTH = 21;
@@ -211,8 +216,8 @@ public class PowerTunnel {
                                 }
                                 case "chunk-size": {
                                     try {
-                                        DEFAULT_CHUNK_SIZE = Integer.parseInt(value);
-                                        Utility.print("[#] Chunk size set to '%s'", DEFAULT_CHUNK_SIZE);
+                                        settings.setTemporaryValue(Settings.CHUNK_SIZE, value);
+                                        Utility.print("[#] Chunk size set to '%s'", value);
                                     } catch (NumberFormatException ex) {
                                         Utility.print("[x] Invalid chunk size number, using default");
                                     }
@@ -231,6 +236,13 @@ public class PowerTunnel {
             }
         }
         if(!CONSOLE_MODE) {
+            try {
+                settings.loadSettings();
+                loadSettings();
+            } catch (IOException ex) {
+                Utility.print("[!] Failed to load settings: " + ex.getMessage());
+                Debugger.debug(ex);
+            }
             //Initialize UI
             if(uiSettings[1]) {
                 try {
@@ -263,6 +275,7 @@ public class PowerTunnel {
             }
 
             journalFrame = new JournalFrame();
+            optionsFrame = new OptionsFrame();
             frame = new MainFrame();
 
             //Initialize UI
@@ -453,6 +466,21 @@ public class PowerTunnel {
         }
     }
 
+    public static void loadSettings() {
+        DISABLE_JOURNAL = Boolean.parseBoolean(settings.getOption(Settings.DISABLE_JOURNAL, String.valueOf(DISABLE_JOURNAL)));
+        GOVERNMENT_BLACKLIST_MIRROR = settings.getOption(Settings.GOVERNMENT_BLACKLIST_MIRROR, GOVERNMENT_BLACKLIST_MIRROR);
+
+        SERVER_IP_ADDRESS = settings.getOption(Settings.SERVER_IP_ADDRESS, SERVER_IP_ADDRESS);
+        SERVER_PORT = Integer.parseInt(settings.getOption(Settings.SERVER_PORT, String.valueOf(SERVER_PORT)));
+        AUTO_PROXY_SETUP_ENABLED = Boolean.parseBoolean(settings.getOption(Settings.AUTO_PROXY_SETUP_ENABLED, String.valueOf(AUTO_PROXY_SETUP_ENABLED)));
+
+        FULL_CHUNKING = Boolean.parseBoolean(settings.getOption(Settings.FULL_CHUNKING, String.valueOf(FULL_CHUNKING)));
+        CHUNK_SIZE = Integer.parseInt(settings.getOption(Settings.CHUNK_SIZE, String.valueOf(CHUNK_SIZE)));
+        PAYLOAD_LENGTH = Integer.parseInt(settings.getOption(Settings.PAYLOAD_LENGTH, String.valueOf(PAYLOAD_LENGTH)));
+        MIX_HOST_CASE = Boolean.parseBoolean(settings.getOption(Settings.MIX_HOST_CASE, String.valueOf(MIX_HOST_CASE)));
+        USE_DNS_SEC = Boolean.parseBoolean(settings.getOption(Settings.USE_DNS_SEC, String.valueOf(USE_DNS_SEC)));
+    }
+
     public static TrayManager getTray() {
         return trayManager;
     }
@@ -464,7 +492,7 @@ public class PowerTunnel {
     public static void safeUserListSave() {
         try {
             saveUserLists();
-            Utility.print("[#] User blacklist and whitelist saved");
+            Utility.print("[#] Configuration files has been saved");
         } catch (IOException ex) {
             Utility.print("[x] Failed to save data: " + ex.getMessage());
             ex.printStackTrace();
@@ -592,6 +620,7 @@ public class PowerTunnel {
     public static void saveUserLists() throws IOException {
         DataStore.USER_BLACKLIST.write(USER_BLACKLIST);
         DataStore.USER_WHITELIST.write(USER_WHITELIST);
+        settings.save();
     }
 
     /**

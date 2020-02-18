@@ -22,7 +22,7 @@ public class PacketUtility {
      * @return - ByteBuf chunks
      */
     public static LinkedList<ByteBuf> bufferChunk(ByteBuf buf) {
-        return bufferChunk(buf, PowerTunnel.DEFAULT_CHUNK_SIZE);
+        return bufferChunk(buf, PowerTunnel.CHUNK_SIZE);
     }
 
     /**
@@ -48,7 +48,7 @@ public class PacketUtility {
      * @return - ByteBuf chunks (byte[])
      */
     public static LinkedList<byte[]> chunk(ByteBuf buf) {
-        return chunk(buf, PowerTunnel.DEFAULT_CHUNK_SIZE);
+        return chunk(buf, PowerTunnel.CHUNK_SIZE);
     }
 
     /**
