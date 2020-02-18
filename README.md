@@ -38,6 +38,7 @@ You can monitor network activity, block and whitelist websites through Java Swin
 ## Configuring PowerTunnel
 ### From User Interface
 ![User Interface for configuring the program](https://raw.githubusercontent.com/krlvm/PowerTunnel/master/images/options.png "User Interface for configuring the program")
+Hover over option to get more info
 ### Launch arguments
 You can specify some params that will override settings through the CLI:
 
