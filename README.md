@@ -35,8 +35,11 @@ Also, you can try launching PowerTunnel with `-full-chunking` argument.
 ## User interface
 You can monitor network activity, block and whitelist websites through Java Swing-based user interface when console mode is off or through [PowerTunnel Monitor](https://github.com/krlvm/PowerTunnel/wiki/PowerTunnel-Monitor).
 
-## Launch arguments
-You can specify some params through the CLI:
+## Configuring PowerTunnel
+### From User Interface
+![User Interface for configuring the program](https://raw.githubusercontent.com/krlvm/PowerTunnel/master/images/options.png "User Interface for configuring the program")
+### Launch arguments
+You can specify some params that will override settings through the CLI:
 
 ```
 java -jar PowerTunnel.jar
