@@ -1,5 +1,6 @@
 package ru.krlvm.powertunnel.frames;
 
+import ru.krlvm.powertunnel.PowerTunnel;
 import ru.krlvm.powertunnel.utilities.UIUtility;
 import ru.krlvm.swingdpi.ScalableJFrame;
 
@@ -11,13 +12,12 @@ import java.awt.*;
  */
 public abstract class ControlFrame extends ScalableJFrame {
 
-
     public ControlFrame() {
         this(null);
     }
 
     public ControlFrame(String title) {
-        super(title);
+        super(title == null ? PowerTunnel.NAME + " v" + PowerTunnel.VERSION : "PowerTunnel - " + title);
         setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         setIconImage(UIUtility.UI_ICON);
     }

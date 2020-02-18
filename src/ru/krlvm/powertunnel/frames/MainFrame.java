@@ -16,7 +16,6 @@ public class MainFrame extends ControlFrame {
     private JTextField[] inputs;
 
     public MainFrame() {
-        super(PowerTunnel.NAME + " v" + PowerTunnel.VERSION);
         float multiplier = SwingDPI.isScaleApplied() ? (SwingDPI.getScaleFactor() / (SwingDPI.getScaleFactor() - 0.25F)) + 0.05F : 1.3F;
         Debugger.debug("Scale multiplier: " + multiplier);
         setSize((int) (324 * (UIUtility.getResidualScaleFactor() * multiplier)),

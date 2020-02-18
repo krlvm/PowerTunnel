@@ -1,8 +1,5 @@
 package ru.krlvm.powertunnel.frames;
 
-import ru.krlvm.powertunnel.PowerTunnel;
-import ru.krlvm.swingdpi.SwingDPI;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -10,10 +7,12 @@ import java.awt.event.ActionListener;
 
 public abstract class UserListFrame extends ControlFrame {
 
+    private final String type;
     private DefaultListModel<String> model;
 
-    public UserListFrame() {
-        setTitle(PowerTunnel.NAME + " | " + type());
+    public UserListFrame(String type) {
+        super(type);
+        this.type = type;
         setSize(1000, 500);
 
         final JList<String> swingList = new JList<>(getElements());
@@ -47,7 +46,9 @@ public abstract class UserListFrame extends ControlFrame {
         }
     }
 
-    public abstract String type();
+    public final String type() {
+        return type;
+    }
     protected abstract void userActed(String address);
     protected abstract String[] getElements();
 }

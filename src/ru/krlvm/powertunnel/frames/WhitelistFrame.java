@@ -4,9 +4,8 @@ import ru.krlvm.powertunnel.PowerTunnel;
 
 public class WhitelistFrame extends UserListFrame {
 
-    @Override
-    public String type() {
-        return "Whitelist";
+    public WhitelistFrame() {
+        super("Whitelist");
     }
 
     @Override

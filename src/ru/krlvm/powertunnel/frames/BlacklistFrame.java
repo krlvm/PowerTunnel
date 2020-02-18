@@ -4,9 +4,8 @@ import ru.krlvm.powertunnel.PowerTunnel;
 
 public class BlacklistFrame extends UserListFrame {
 
-    @Override
-    public String type() {
-        return "Blacklist";
+    public BlacklistFrame() {
+        super("Blacklist");
     }
 
     @Override

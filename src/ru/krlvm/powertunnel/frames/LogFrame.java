@@ -21,7 +21,7 @@ public class LogFrame extends ControlFrame {
     private JButton addToWhiteList;
 
     public LogFrame() {
-        super(PowerTunnel.NAME + " | Log");
+        super("Log");
         setSize(900, 450);
 
         logArea = new JTextArea();
