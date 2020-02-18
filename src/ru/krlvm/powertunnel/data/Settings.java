@@ -1,6 +1,5 @@
 package ru.krlvm.powertunnel.data;
 
-import ru.krlvm.powertunnel.PowerTunnel;
 import ru.krlvm.powertunnel.utilities.Debugger;
 import ru.krlvm.powertunnel.utilities.Utility;
 
@@ -46,6 +45,11 @@ public class Settings extends DataStore {
                 Debugger.debug("Malformed settings line: '%s'", line);
             }
         }
+        for (Map.Entry<String, String> entry : defaultValues.entrySet()) {
+            if(!options.containsKey(entry.getKey())) {
+                options.put(entry.getKey(), entry.getValue());
+            }
+        }
     }
 
     public boolean isTemporary(String key) {
@@ -56,14 +60,22 @@ public class Settings extends DataStore {
         temporaryValues.put(key, value);
     }
 
-    public String getOption(String key, String defaultValue) {
+    public String getOption(String key) {
         if(temporaryValues.containsKey(key)) {
             return temporaryValues.get(key);
         }
         if(options.containsKey(key)) {
             return options.get(key);
         }
-        return defaultValue;
+        return "undefined"; //better to return null though
+    }
+
+    public int getIntOption(String key) {
+        return Integer.parseInt(getOption(key));
+    }
+
+    public boolean getBooleanOption(String key) {
+        return Boolean.parseBoolean(getOption(key));
     }
 
     public void setOption(String key, String value) {
@@ -94,4 +106,18 @@ public class Settings extends DataStore {
     public static final String USE_DNS_SEC = "dns-sec.enabled.bool";
     public static final String GOVERNMENT_BLACKLIST_MIRROR = "powertunnel.government-blacklist-mirror";
     public static final String DISABLE_JOURNAL = "powertunnel.journal.enabled";
+
+    private static final Map<String, String> defaultValues = new HashMap<>();
+    static {
+        defaultValues.put(SERVER_IP_ADDRESS, "127.0.0.1");
+        defaultValues.put(SERVER_PORT, "8085");
+        defaultValues.put(AUTO_PROXY_SETUP_ENABLED, "false");
+        defaultValues.put(FULL_CHUNKING, "false");
+        defaultValues.put(CHUNK_SIZE, "2");
+        defaultValues.put(PAYLOAD_LENGTH, "0");
+        defaultValues.put(MIX_HOST_CASE, "false");
+        defaultValues.put(USE_DNS_SEC, "false");
+        defaultValues.put(GOVERNMENT_BLACKLIST_MIRROR, "");
+        defaultValues.put(DISABLE_JOURNAL, "false");
+    }
 }
