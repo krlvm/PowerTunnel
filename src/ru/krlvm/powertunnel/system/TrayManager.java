@@ -97,6 +97,16 @@ public class TrayManager {
         });
         popup.add(item);
 
+        item = new MenuItem("Options");
+        item.setFont(font);
+        item.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PowerTunnel.optionsFrame.setVisible(true);
+            }
+        });
+        popup.add(item);
+
         item = new MenuItem("");
         item.setFont(font);
         item.setEnabled(false);
