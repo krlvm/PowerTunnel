@@ -171,7 +171,7 @@ public class OptionsFrame extends ControlFrame {
 
     @Override
     public void setVisible(boolean b) {
-        if(b) {
+        if(!isVisible() && b) {
             adjustSettings();
         }
         super.setVisible(b);
