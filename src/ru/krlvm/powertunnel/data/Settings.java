@@ -11,7 +11,10 @@ import java.util.Map;
 
 public class Settings extends DataStore {
 
-    private final String KEY_VALUE_SEPARATOR = "=";
+
+    private static final String KEY_VALUE_SEPARATOR = "=";
+
+    private boolean hasChanged = false;
     private Map<String, String> temporaryValues = new HashMap<>();
     private Map<String, String> options = new HashMap<>();
 
@@ -88,6 +91,7 @@ public class Settings extends DataStore {
             return;
         }
         options.put(key, value);
+        hasChanged = true;
     }
 
     public void setIntOption(String key, int value) {
@@ -99,6 +103,7 @@ public class Settings extends DataStore {
     }
 
     public void save() throws IOException {
+        if(!hasChanged) return;
         List<String> lines = new ArrayList<>();
         for (Map.Entry<String, String> entry : options.entrySet()) {
             lines.add(entry.getKey() + KEY_VALUE_SEPARATOR + entry.getValue());
