@@ -387,6 +387,8 @@ public class PowerTunnel {
      */
     private static void startServer() throws UnknownHostException {
         setStatus(ServerStatus.STARTING);
+        SETTINGS.setOption(Settings.SERVER_IP_ADDRESS, SERVER_IP_ADDRESS);
+        SETTINGS.setOption(Settings.SERVER_PORT, String.valueOf(SERVER_PORT));
         Utility.print("[.] Starting LittleProxy server on %s:%s", SERVER_IP_ADDRESS, SERVER_PORT);
         SERVER = DefaultHttpProxyServer.bootstrap().withFiltersSource(new HttpFiltersSourceAdapter() {
             @Override
