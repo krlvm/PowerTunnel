@@ -271,7 +271,7 @@ public class PowerTunnel {
                 } else {
                     SwingDPI.applyScalingAutomatically();
                 }
-                Debugger.debug("Scale factor: " + SwingDPI.getScaleFactor());
+                Debugger.debug("SwingDPI v" + SwingDPI.VERSION + " | Scale factor: " + SwingDPI.getScaleFactor());
             }
 
             trayManager = new TrayManager();

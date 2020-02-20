@@ -16,11 +16,6 @@ public class MainFrame extends ControlFrame {
     private JTextField[] inputs;
 
     public MainFrame() {
-        float multiplier = SwingDPI.isScaleApplied() ? (SwingDPI.getScaleFactor() / (SwingDPI.getScaleFactor() - 0.25F)) + 0.05F : 1.3F;
-        Debugger.debug("Scale multiplier: " + multiplier);
-        setSize((int) (324 * (UIUtility.getResidualScaleFactor() * multiplier)),
-                (int) (182 * (UIUtility.getResidualScaleFactor() * multiplier)));
-
         header = new JLabel(getHeaderText());
 
         final JTextField ipInput = new JTextField();
