@@ -1,7 +1,6 @@
 package ru.krlvm.powertunnel.frames;
 
 import ru.krlvm.powertunnel.PowerTunnel;
-import ru.krlvm.powertunnel.utilities.Debugger;
 import ru.krlvm.powertunnel.utilities.UIUtility;
 import ru.krlvm.swingdpi.SwingDPI;
 
@@ -16,6 +15,16 @@ public class MainFrame extends ControlFrame {
     private JTextField[] inputs;
 
     public MainFrame() {
+        JRootPane root = getRootPane();
+        root.setLayout(new BorderLayout());
+        root.setBorder(BorderFactory.createEmptyBorder(0, 8, 0, 8));
+
+        JPanel pane = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(8,0,0,0);
+
         header = new JLabel(getHeaderText());
 
         final JTextField ipInput = new JTextField();
@@ -98,37 +107,28 @@ public class MainFrame extends ControlFrame {
             }
         });
 
-        JPanel mainPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        setContentPane(mainPanel);
-
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panel.add(header);
-        mainPanel.add(panel, "First");
-
-        panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         panel.add(ipInput);
         panel.add(portInput);
-        mainPanel.add(panel, "Center");
-
-        panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         panel.add(stateButton);
-        mainPanel.add(panel, "Center");
+        pane.add(header, gbc);
+        pane.add(panel, gbc);
+        root.add(pane, BorderLayout.NORTH);
 
         panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         panel.add(logButton);
         panel.add(journalButton);
         panel.add(userBlacklist);
         panel.add(userWhitelist);
-        panel.add(options);
-        mainPanel.add(panel, "Last");
-
-        panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panel.add(UIUtility.getLabelWithHyperlinkSupport("<a href=\"" + PowerTunnel.REPOSITORY_URL + "/issues\">Submit a bug</a> | " + "<a href=\"" + PowerTunnel.REPOSITORY_URL + "/wiki\">Help</a><br>" +
+        pane.add(panel, gbc);
+        pane.add(UIUtility.getLabelWithHyperlinkSupport("<a href=\"" + PowerTunnel.REPOSITORY_URL + "/issues\">Submit a bug</a> | " + "<a href=\"" + PowerTunnel.REPOSITORY_URL + "/wiki\">Help</a><br>" +
                 "<b><a style=\"color: black\" href=\"" + PowerTunnel.REPOSITORY_URL + "\">" + PowerTunnel.REPOSITORY_URL + "</a>" +
-                "</b><br><br>(c) krlvm, 2019-2020", "text-align: center"));
-        mainPanel.add(panel, "Last");
+                "</b><br><br>(c) krlvm, 2019-2020", "text-align: center"), gbc);
 
-        getRootPane().setDefaultButton(stateButton);
+        root.setDefaultButton(stateButton);
+        stateButton.requestFocus();
+
+        pack();
         setResizable(false);
         controlFrameInitialized();
         setVisible(true);
