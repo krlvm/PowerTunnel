@@ -120,6 +120,7 @@ public class MainFrame extends ControlFrame {
         panel.add(journalButton);
         panel.add(userBlacklist);
         panel.add(userWhitelist);
+        panel.add(options);
         pane.add(panel, gbc);
         pane.add(UIUtility.getLabelWithHyperlinkSupport("<a href=\"" + PowerTunnel.REPOSITORY_URL + "/issues\">Submit a bug</a> | " + "<a href=\"" + PowerTunnel.REPOSITORY_URL + "/wiki\">Help</a><br>" +
                 "<b><a style=\"color: black\" href=\"" + PowerTunnel.REPOSITORY_URL + "\">" + PowerTunnel.REPOSITORY_URL + "</a>" +
