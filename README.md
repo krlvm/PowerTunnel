@@ -59,6 +59,7 @@ java -jar PowerTunnel.jar
 -with-web-ui [appendix] - enables Web UI at http://powertunnelmonitor[appendix].info
 -disable-auto-proxy-setup - disables auto proxy setup on Windows
 -full-output-mirroring - fully mirrors system output to the log
+-set-scale-factor [n] - sets DPI scale factor (for testing purposes)
 -disable-journal - disables journal
 -disable-native-lf - disables native L&F (when UI enabled)
 -disable-ui-scaling - disables UI scaling (when UI enabled)

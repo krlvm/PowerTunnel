@@ -90,6 +90,7 @@ public class PowerTunnel {
         //java -jar PowerTunnel.jar (-args)
         boolean startNow = false;
         boolean[] uiSettings = { true, true };
+        float scaleFactor = -1F;
         if(args.length > 0) {
             for (int i = 0; i < args.length; i++) {
                 String arg = args[i];
@@ -114,6 +115,7 @@ public class PowerTunnel {
                                 " -with-web-ui [appendix] - enables Web UI at http://" + String.format(PowerTunnelMonitor.FAKE_ADDRESS_TEMPLATE, "[appendix]") + "\n" +
                                 " -disable-auto-proxy-setup - disables auto proxy setup on Windows\n" +
                                 " -full-output-mirroring - fully mirrors system output to the log\n" +
+                                " -set-scale-factor [n] - sets DPI scale factor (for testing purposes)\n" +
                                 " -disable-journal - disables journal\n" +
                                 " -disable-native-lf - disables native L&F (when UI enabled)\n" +
                                 " -disable-ui-scaling - disables UI scaling (when UI enabled)\n" +
@@ -223,6 +225,16 @@ public class PowerTunnel {
                                     }
                                     break;
                                 }
+                                case "set-scale-factor": {
+                                    try {
+                                        scaleFactor = Float.parseFloat(value);
+                                        assert scaleFactor < 0;
+                                    } catch (AssertionError | NumberFormatException ex) {
+                                        Utility.print("[x] Invalid scale factor, will be detected automatically");
+                                        scaleFactor = -1F;
+                                    }
+                                    break;
+                                }
                                 default: {
                                     //it is an argument
                                     //Utility.print("[?] Unknown option: '%s'", arg);
@@ -254,7 +266,12 @@ public class PowerTunnel {
                 }
             }
             if(uiSettings[0]) {
-                SwingDPI.applyScalingAutomatically();
+                if(scaleFactor != -1) {
+                    SwingDPI.setScaleFactor(scaleFactor);
+                } else {
+                    SwingDPI.applyScalingAutomatically();
+                }
+                Debugger.debug("Scale factor: " + SwingDPI.getScaleFactor());
             }
 
             trayManager = new TrayManager();
