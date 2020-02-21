@@ -58,6 +58,7 @@ java -jar PowerTunnel.jar
 -port [Port]
 -with-web-ui [appendix] - enables Web UI at http://powertunnelmonitor[appendix].info
 -disable-auto-proxy-setup - disables auto proxy setup on Windows
+-auto-proxy-setup-win-ie - auto proxy setup using IE instead of native API on Windows
 -full-output-mirroring - fully mirrors system output to the log
 -set-scale-factor [n] - sets DPI scale factor (for testing purposes)
 -disable-journal - disables journal
@@ -74,4 +75,5 @@ java -jar PowerTunnel.jar
 ## Dependencies
 * [LittleProxy](https://github.com/adamfisk/LittleProxy) with some [patches](https://github.com/krlvm/PowerTunnel/tree/master/src/org/littleshoot/proxy/impl) - proxy server
 * [DNSSEC4J](https://github.com/adamfisk/DNSSEC4J) - DNSSec realization for LittleProxy
+* [Java Native Access](https://github.com/java-native-access/jna) - changing the system's proxy server using the native APIs
 * [SwingDPI](https://github.com/krlvm/SwingDPI) - HiDPI scaling

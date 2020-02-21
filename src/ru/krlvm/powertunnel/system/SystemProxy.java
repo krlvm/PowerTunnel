@@ -1,6 +1,7 @@
 package ru.krlvm.powertunnel.system;
 
 import ru.krlvm.powertunnel.PowerTunnel;
+import ru.krlvm.powertunnel.system.windows.Wininet;
 import ru.krlvm.powertunnel.utilities.Debugger;
 import ru.krlvm.powertunnel.utilities.SystemUtility;
 import ru.krlvm.powertunnel.utilities.Utility;
@@ -16,6 +17,8 @@ import java.io.IOException;
 public class SystemProxy {
 
     private static final String OS = System.getProperty("os.name").toLowerCase();
+
+    public static boolean USE_WINDOWS_NATIVE_API = true;
 
     public static void enableProxy() {
         if (OS.contains("windows")) {
@@ -39,13 +42,17 @@ public class SystemProxy {
                     for (String command : commands) {
                         SystemUtility.executeWindowsCommand(command);
                     }
-                    //we need to Internet Explorer started for apply these changes
-                    try {
-                        SystemUtility.executeWindowsCommand("start iexplore && ping -n 5 127.0.0.1 > NUL && taskkill /f /im iexplore.exe").waitFor();
-                        Utility.print("[*] System proxy setup has finished");
-                    } catch (InterruptedException ex) {
-                        throw new IOException(ex);
+                    if (USE_WINDOWS_NATIVE_API) {
+                        Wininet wininet = Wininet.INSTANCE;
+                        wininet.InternetSetOptionW(0,
+                                wininet.INTERNET_OPTION_SETTINGS_CHANGED, null, 0);
+                        wininet.InternetSetOptionW(0,
+                                wininet.INTERNET_OPTION_REFRESH, null, 0);
+                    } else {
+                        //we need to Internet Explorer started for apply these changes
+                        SystemUtility.executeWindowsCommand("start iexplore && ping -n 5 127.0.0.1 > NUL && taskkill /f /im iexplore.exe");
                     }
+                    Utility.print("[*] System proxy setup has finished");
                 } catch (IOException ex) {
                     Utility.print("[x] Failed to setup system proxy: " + ex.getMessage());
                     Debugger.debug(ex);

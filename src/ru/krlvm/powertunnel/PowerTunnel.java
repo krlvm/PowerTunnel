@@ -114,6 +114,7 @@ public class PowerTunnel {
                                 " -port [Port] - sets port\n" +
                                 " -with-web-ui [appendix] - enables Web UI at http://" + String.format(PowerTunnelMonitor.FAKE_ADDRESS_TEMPLATE, "[appendix]") + "\n" +
                                 " -disable-auto-proxy-setup - disables auto proxy setup on Windows\n" +
+                                " -auto-proxy-setup-win-ie - auto proxy setup using IE instead of native API on Windows\n" +
                                 " -full-output-mirroring - fully mirrors system output to the log\n" +
                                 " -set-scale-factor [n] - sets DPI scale factor (for testing purposes)\n" +
                                 " -disable-journal - disables journal\n" +
@@ -161,6 +162,10 @@ public class PowerTunnel {
                     }
                     case "disable-auto-proxy-setup": {
                         SETTINGS.setTemporaryValue(Settings.AUTO_PROXY_SETUP_ENABLED, "false");
+                        break;
+                    }
+                    case "auto-proxy-setup-win-ie": {
+                        SystemProxy.USE_WINDOWS_NATIVE_API = false;
                         break;
                     }
                     case "disable-ui-scaling": {
