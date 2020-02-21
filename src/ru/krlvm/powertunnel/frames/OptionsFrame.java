@@ -52,7 +52,8 @@ public class OptionsFrame extends ControlFrame {
             updateLabel.setText("<html><b>Update checking is disabled</b></html>");
         }
 
-        JPanel buttonsPanel = new JPanel(new FlowLayout());
+        JPanel buttonsPanel = new JPanel(new BorderLayout());
+        JPanel actionButtonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton cancel = new JButton("Cancel");
         cancel.addActionListener(new ActionListener() {
             @Override
@@ -68,8 +69,23 @@ public class OptionsFrame extends ControlFrame {
                 setVisible(false);
             }
         });
-        buttonsPanel.add(cancel);
-        buttonsPanel.add(ok);
+        actionButtonsPanel.add(cancel);
+        actionButtonsPanel.add(ok);
+
+        JPanel resetPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JButton reset = new JButton("Reset");
+        reset.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PowerTunnel.SETTINGS.reset();
+                adjustSettings();
+                JOptionPane.showMessageDialog(OptionsFrame.this, "Settings has been successfully reset",
+                        "PowerTunnel", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        resetPane.add(reset);
+        buttonsPanel.add(resetPane, BorderLayout.WEST);
+        buttonsPanel.add(actionButtonsPanel, BorderLayout.EAST);
 
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();

@@ -53,11 +53,20 @@ public class Settings extends DataStore {
                 Debugger.debug("Malformed settings line: '%s'", line);
             }
         }
+        addDefaults();
+    }
+
+    private void addDefaults() {
         for (Map.Entry<String, String> entry : defaultValues.entrySet()) {
             if(!options.containsKey(entry.getKey())) {
                 options.put(entry.getKey(), entry.getValue());
             }
         }
+    }
+
+    public void reset() {
+        options.clear();
+        addDefaults();
     }
 
     public boolean isTemporary(String key) {
