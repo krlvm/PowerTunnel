@@ -282,7 +282,7 @@ public class PowerTunnel {
             trayManager = new TrayManager();
             try {
                 trayManager.load();
-            } catch (AWTException ex) {
+            } catch (Exception ex) {
                 Utility.print("[x] Tray icon initialization failed");
                 Debugger.debug(ex);
             }
