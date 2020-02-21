@@ -79,8 +79,4 @@ public class UIUtility {
 
         return pane;
     }
-
-    //Java Swing looks perfectly with Windows 2000/XP
-    public static final boolean OLD_STYLE = System.getProperty("os.name").toLowerCase().contains("xp") ||
-            System.getProperty("os.name").toLowerCase().contains("2000");
 }

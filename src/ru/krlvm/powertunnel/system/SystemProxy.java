@@ -18,7 +18,7 @@ public class SystemProxy {
 
     private static final String OS = System.getProperty("os.name").toLowerCase();
 
-    public static boolean USE_WINDOWS_NATIVE_API = true;
+    public static boolean USE_WINDOWS_NATIVE_API = !SystemUtility.OLD_OS;
 
     public static void enableProxy() {
         if (OS.contains("windows")) {
