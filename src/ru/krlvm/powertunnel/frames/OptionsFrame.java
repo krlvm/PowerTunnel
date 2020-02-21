@@ -99,8 +99,8 @@ public class OptionsFrame extends ControlFrame {
                 "When it enabled, PowerTunnel mixing case of the host of the website you're trying to connect.<br>Some websites, especially working on the old webservers, may not accept connection.");
         panel.add(mixHostCase, gbc);
 
-        useDnsSec = new TooltipCheckBox("Use DNSSec mode",
-                "Enables validating DNS server responses with<br>the Google DNS servers and protects you from the DNS substitution.<br>Can slow down your connection a bit.");
+        useDnsSec = new TooltipCheckBox("Use DNSSec mode (server restart needed)",
+                "Enables validating DNS server responses with<br>the Google DNS servers and protects you from the DNS substitution.<br>Can slow down your connection a bit.<br>Make sure you restart the server<br>after changing this option.");
         panel.add(useDnsSec, gbc);
 
         JPanel mirrorPane = new JPanel(new FlowLayout());
