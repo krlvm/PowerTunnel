@@ -16,12 +16,10 @@ import java.io.IOException;
  */
 public class SystemProxy {
 
-    private static final String OS = System.getProperty("os.name").toLowerCase();
-
     public static boolean USE_WINDOWS_NATIVE_API = !SystemUtility.OLD_OS;
 
     public static void enableProxy() {
-        if (OS.contains("windows")) {
+        if (SystemUtility.OS.contains("windows")) {
             setupProxy("reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\" /v ProxyEnable /t REG_DWORD /d 1 /f",
                     "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\" /v ProxyServer /t REG_SZ /d " + PowerTunnel.SERVER_IP_ADDRESS + ":" + PowerTunnel.SERVER_PORT + " /f");
 
@@ -29,7 +27,7 @@ public class SystemProxy {
     }
 
     public static void disableProxy() {
-        if (OS.contains("windows")) {
+        if (SystemUtility.OS.contains("windows")) {
             setupProxy("reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\" /v ProxyEnable /t REG_DWORD /d 0 /f");
         }
     }
