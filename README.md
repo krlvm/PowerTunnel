@@ -62,10 +62,11 @@ java -jar PowerTunnel.jar
 -full-output-mirroring - fully mirrors system output to the log
 -set-scale-factor [n] - sets DPI scale factor (for testing purposes)
 -disable-journal - disables journal
+-disable-tray - disables tray icon
 -disable-native-lf - disables native L&F (when UI enabled)
 -disable-ui-scaling - disables UI scaling (when UI enabled)
 -disable-updater - disables the update notifier
--debug
+-debug - enables debug
 ```
 
 ## Spin-off projects

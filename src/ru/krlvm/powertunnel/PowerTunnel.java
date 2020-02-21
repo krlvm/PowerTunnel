@@ -89,7 +89,7 @@ public class PowerTunnel {
         //Parse launch arguments
         //java -jar PowerTunnel.jar (-args)
         boolean startNow = false;
-        boolean[] uiSettings = { true, true };
+        boolean[] uiSettings = { true, true, true };
         float scaleFactor = -1F;
         if(args.length > 0) {
             for (int i = 0; i < args.length; i++) {
@@ -118,10 +118,11 @@ public class PowerTunnel {
                                 " -full-output-mirroring - fully mirrors system output to the log\n" +
                                 " -set-scale-factor [n] - sets DPI scale factor (for testing purposes)\n" +
                                 " -disable-journal - disables journal\n" +
+                                " -disable-tray - disables tray icon\n" +
                                 " -disable-native-lf - disables native L&F (when UI enabled)\n" +
                                 " -disable-ui-scaling - disables UI scaling (when UI enabled)\n" +
                                 " -disable-updater - disables the update notifier\n" +
-                                " -debug - enable debug");
+                                " -debug - enables debug");
                         System.exit(0);
                         break;
                     }
@@ -166,6 +167,10 @@ public class PowerTunnel {
                     }
                     case "auto-proxy-setup-win-ie": {
                         SystemProxy.USE_WINDOWS_NATIVE_API = false;
+                        break;
+                    }
+                    case "disable-tray": {
+                        uiSettings[2] = false;
                         break;
                     }
                     case "disable-ui-scaling": {
@@ -280,11 +285,13 @@ public class PowerTunnel {
             }
 
             trayManager = new TrayManager();
-            try {
-                trayManager.load();
-            } catch (Exception ex) {
-                Utility.print("[x] Tray icon initialization failed");
-                Debugger.debug(ex);
+            if(uiSettings[2]) {
+                try {
+                    trayManager.load();
+                } catch (Exception ex) {
+                    Utility.print("[x] Tray icon initialization failed");
+                    Debugger.debug(ex);
+                }
             }
 
             //Initializing main frame and system outputs mirroring
