@@ -34,6 +34,8 @@ public abstract class UserListFrame extends ControlFrame {
         panel.add(new JScrollPane(swingList));
         getContentPane().add(panel);
         getContentPane().add(removeButton, "Last");
+        getRootPane().setDefaultButton(removeButton);
+        removeButton.requestFocus();
 
         refill();
         controlFrameInitialized();
