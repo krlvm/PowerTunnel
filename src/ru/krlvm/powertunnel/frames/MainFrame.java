@@ -28,18 +28,23 @@ public class MainFrame extends ControlFrame {
         header = new JLabel(getHeaderText());
 
         final JTextField ipInput = new JTextField();
-        ipInput.setPreferredSize(SwingDPI.scale(200, 22));
+        Insets insets = ipInput.getInsets();
+        ipInput.setPreferredSize(new Dimension(SwingDPI.scale(200)+insets.left+insets.right,
+                SwingDPI.scale(22)+insets.top+insets.bottom));
         ipInput.setToolTipText("IP Address");
         ipInput.setText(String.valueOf(PowerTunnel.SERVER_IP_ADDRESS));
 
         final JTextField portInput = new JTextField();
-        portInput.setPreferredSize(SwingDPI.scale(76, 22));
+        insets = portInput.getInsets();
+        portInput.setPreferredSize(SwingDPI.scale(76+insets.left+insets.right,
+                22+insets.top+insets.bottom));
         portInput.setToolTipText("Port");
         portInput.setText(String.valueOf(PowerTunnel.SERVER_PORT));
 
         inputs = new JTextField[]{ipInput, portInput};
 
         stateButton = new JButton("Start server");
+        stateButton.setPreferredSize(new Dimension((int)stateButton.getPreferredSize().getWidth(), (int)portInput.getPreferredSize().getHeight()));
         stateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
