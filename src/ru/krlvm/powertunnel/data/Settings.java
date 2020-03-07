@@ -129,6 +129,7 @@ public class Settings extends DataStore {
     public static final String SERVER_IP_ADDRESS = "server.ip";
     public static final String SERVER_PORT = "server.port.int";
     public static final String AUTO_PROXY_SETUP_ENABLED = "server.auto-setup.bool";
+    public static final String ALLOW_INVALID_HTTP_PACKETS = "http.invalid-packets.allow";
     public static final String FULL_CHUNKING = "https.chunking.full.bool";
     public static final String CHUNK_SIZE = "https.chunking.size.int";
     public static final String PAYLOAD_LENGTH = "http.payload.length.int";
@@ -142,6 +143,7 @@ public class Settings extends DataStore {
         defaultValues.put(SERVER_IP_ADDRESS, "127.0.0.1");
         defaultValues.put(SERVER_PORT, "8085");
         defaultValues.put(AUTO_PROXY_SETUP_ENABLED, "true");
+        defaultValues.put(ALLOW_INVALID_HTTP_PACKETS, "true");
         defaultValues.put(FULL_CHUNKING, "false");
         defaultValues.put(CHUNK_SIZE, "2");
         defaultValues.put(PAYLOAD_LENGTH, "0");

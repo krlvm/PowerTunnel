@@ -21,6 +21,7 @@ public class OptionsFrame extends ControlFrame {
     private JCheckBox fullChunking;
     private JTextField chunkSize;
     private JCheckBox payload;
+    private JCheckBox allowInvalidPackets;
     private JCheckBox mixHostCase;
     private JCheckBox useDnsSec;
     private JTextField blacklistMirror;
@@ -111,6 +112,10 @@ public class OptionsFrame extends ControlFrame {
                 "When it enabled, PowerTunnel adding 21KB of useless data before the Host header");
         panel.add(payload, gbc);
 
+        allowInvalidPackets = new TooltipCheckBox("HTTP: Allow invalid packets (recommended)",
+                "When this option is disabled, HTTP packets without Host header are throwing out");
+        panel.add(allowInvalidPackets, gbc);
+
         mixHostCase = new TooltipCheckBox("HTTP: Mix host case",
                 "When it enabled, PowerTunnel mixing case of the host of the website you're trying to connect.<br>Some websites, especially working on the old webservers, may not accept connection.");
         panel.add(mixHostCase, gbc);
@@ -155,6 +160,9 @@ public class OptionsFrame extends ControlFrame {
         payload.setSelected(PowerTunnel.SETTINGS.getIntOption(Settings.PAYLOAD_LENGTH) != 0);
         payload.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.FULL_CHUNKING));
 
+        allowInvalidPackets.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.ALLOW_INVALID_HTTP_PACKETS));
+        allowInvalidPackets.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.ALLOW_INVALID_HTTP_PACKETS));
+
         mixHostCase.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.MIX_HOST_CASE));
         mixHostCase.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.MIX_HOST_CASE));
 
@@ -170,6 +178,7 @@ public class OptionsFrame extends ControlFrame {
 
     private void save() {
         PowerTunnel.SETTINGS.setBooleanOption(Settings.AUTO_PROXY_SETUP_ENABLED, autoSetup.isSelected());
+        PowerTunnel.SETTINGS.setBooleanOption(Settings.ALLOW_INVALID_HTTP_PACKETS, allowInvalidPackets.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.FULL_CHUNKING, fullChunking.isSelected());
         PowerTunnel.SETTINGS.setOption(Settings.CHUNK_SIZE, chunkSize.getText());
         PowerTunnel.SETTINGS.setOption(Settings.PAYLOAD_LENGTH, payload.isSelected() ? "21" : "0");

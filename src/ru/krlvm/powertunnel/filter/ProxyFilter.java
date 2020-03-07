@@ -41,6 +41,11 @@ public class ProxyFilter extends HttpFiltersAdapter {
                 Utility.print("[i] Accepted Web UI connection");
                 return PowerTunnelMonitor.getResponse(request.getUri());
             }
+            if(!request.headers().contains("Host")) {
+                Utility.print("[i] Invalid packet received: Host header not found");
+                return PowerTunnel.ALLOW_INVALID_HTTP_PACKETS ? null :
+                        HttpUtility.getStub("Bad request");
+            }
             String host = HttpUtility.formatHost(request.headers().get("Host"));
 
             PowerTunnel.addToJournal(host);

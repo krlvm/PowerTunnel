@@ -57,6 +57,7 @@ public class PowerTunnel {
 
     public static final Settings SETTINGS = new Settings();
     /** Optional settings */
+    public static boolean ALLOW_INVALID_HTTP_PACKETS = true;
     public static boolean FULL_CHUNKING = false;
     public static int CHUNK_SIZE = 2;
     public static int PAYLOAD_LENGTH = 0; //21 recommended
@@ -106,6 +107,7 @@ public class PowerTunnel {
                                 " -console - console mode, without UI\n" +
                                 " -government-blacklist-from [URL] - automatically fill government blacklist from URL\n" +
                                 " -use-dns-sec - enables DNSSec mode with the Google DNS servers\n" +
+                                " -disallow-invalid-packets - HTTP packets without Host header will be thrown out (unrecommended)\n" +
                                 " -full-chunking - enables chunking the whole packets\n" +
                                 " -mix-host-case - enables 'Host' header case mix (unstable)\n" +
                                 " -send-payload [length] - to bypass HTTP blocking, 21 is recommended\n" +
@@ -163,6 +165,10 @@ public class PowerTunnel {
                     }
                     case "disable-auto-proxy-setup": {
                         SETTINGS.setTemporaryValue(Settings.AUTO_PROXY_SETUP_ENABLED, "false");
+                        break;
+                    }
+                    case "disallow-invalid-packets": {
+                        SETTINGS.setTemporaryValue(Settings.ALLOW_INVALID_HTTP_PACKETS, "false");
                         break;
                     }
                     case "auto-proxy-setup-win-ie": {
@@ -505,6 +511,7 @@ public class PowerTunnel {
         SERVER_PORT = SETTINGS.getIntOption(Settings.SERVER_PORT);
         AUTO_PROXY_SETUP_ENABLED = SETTINGS.getBooleanOption(Settings.AUTO_PROXY_SETUP_ENABLED);
 
+        ALLOW_INVALID_HTTP_PACKETS = SETTINGS.getBooleanOption(Settings.ALLOW_INVALID_HTTP_PACKETS);
         FULL_CHUNKING = SETTINGS.getBooleanOption(Settings.FULL_CHUNKING);
         CHUNK_SIZE = SETTINGS.getIntOption(Settings.CHUNK_SIZE);
         PAYLOAD_LENGTH = SETTINGS.getIntOption(Settings.PAYLOAD_LENGTH);
