@@ -33,6 +33,9 @@ public class ProxyFilter extends HttpFiltersAdapter {
     public HttpResponse clientToProxyRequest(HttpObject httpObject) {
         if (httpObject instanceof HttpRequest) {
             HttpRequest request = (HttpRequest) httpObject;
+            if(!request.headers().contains("Host")) {
+                return null;
+            }
             if(PowerTunnel.isBlockedByGovernment(HttpUtility.formatHost(request.headers().get("Host")))) {
                 circumventDPI(request);
             }
