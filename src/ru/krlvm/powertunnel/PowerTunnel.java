@@ -24,7 +24,7 @@ import java.util.*;
  * LibertyTunnel: PowerTunnel with nothing extra
  *
  * This class initializes LibertyTunnel, loads government blacklist
- * and controlling a LittleProxy Server
+ * and controls a LittleProxy Server
  *
  * @author krlvm
  */
