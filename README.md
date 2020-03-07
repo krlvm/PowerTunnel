@@ -72,6 +72,7 @@ java -jar PowerTunnel.jar
 ```
 
 ## Spin-off projects
+* [PowerTunnel Android](https://github.com/krlvm/PowerTunnel-Android) - an Android port
 * [Invader](https://github.com/krlvm/Invader) - an effective MITM utility and script injector
 * [LibertyTunnel](https://github.com/krlvm/PowerTunnel/tree/libertytunnel) - a lightweight edition of PowerTunnel 
 
