@@ -32,6 +32,7 @@ public class PowerTunnel {
 
     public static final String NAME = "LibertyTunnel";
     public static final String VERSION = "1.0";
+    public static final String BASE_VERSION = "1.7.2";
     public static final int VERSION_CODE = 10; //base version code
     public static final String REPOSITORY_URL = "https://github.com/krlvm/PowerTunnel/tree/libertytunnel";
 
@@ -138,7 +139,7 @@ public class PowerTunnel {
         System.out.println(NAME + " version " + VERSION);
         System.out.println("Simple, scalable, cross-platform and effective solution against government censorship");
         System.out.println(REPOSITORY_URL);
-        System.out.println("Base PowerTunnel version: 1.7.2 | https://github.com/krlvm/PowerTunnel");
+        System.out.println("Base PowerTunnel version: " + BASE_VERSION + " | https://github.com/krlvm/PowerTunnel");
         System.out.println("(c) krlvm, 2019-2020");
         System.out.println();
 
