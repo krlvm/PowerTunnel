@@ -263,14 +263,14 @@ public class PowerTunnel {
                 }
             }
         }
+        try {
+            SETTINGS.loadSettings();
+            loadSettings();
+        } catch (IOException ex) {
+            Utility.print("[!] Failed to load settings: " + ex.getMessage());
+            Debugger.debug(ex);
+        }
         if(!CONSOLE_MODE) {
-            try {
-                SETTINGS.loadSettings();
-                loadSettings();
-            } catch (IOException ex) {
-                Utility.print("[!] Failed to load settings: " + ex.getMessage());
-                Debugger.debug(ex);
-            }
             //Initialize UI
             if(uiSettings[1]) {
                 try {
