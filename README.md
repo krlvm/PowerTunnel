@@ -45,7 +45,7 @@ DoH servers tested with PowerTunnel:
 * Google - https://dns.google/dns-query
 * Cloudflare - https://cloudflare-dns.com/dns-query (unstable)
 
-If you have problems with DoH on PowerTunnel try disabling DNSSec mode.
+You can test if you're using DoH [here](http://www.whatsmydnsserver.com/). If you have problems with DoH on PowerTunnel try disabling DNSSec mode.
 
 ### From User Interface
 ![User Interface for configuring the program](https://raw.githubusercontent.com/krlvm/PowerTunnel/master/images/options.png "User Interface for configuring the program")
