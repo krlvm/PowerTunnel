@@ -61,6 +61,7 @@ java -jar PowerTunnel.jar
 -console - console mode, without UI
 -government-blacklist-from [URL] - automatically fill government blacklist from URL
 -use-dns-sec - enables DNSSec mode with the Google DNS servers
+-use-doh-resolver [URL] - enables DNS over HTTPS resolver
 -full-chunking - enables chunking the whole packets
 -mix-host-case - enables 'Host' header case mix (unstable)
 -send-payload [length] - to bypass HTTP blocking, 21 is recommended
