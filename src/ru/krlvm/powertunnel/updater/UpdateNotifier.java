@@ -27,17 +27,17 @@ public class UpdateNotifier {
                     String content = URLUtility.load(URL);
                     String[] data = content.split(";");
                     if (data.length != 2) {
-                        failure("Malformed response: '" + content + "'");
+                        print("Malformed response: '" + content + "'");
                     } else {
                         int newVersionCode;
                         try {
                             newVersionCode = Integer.parseInt(data[0]);
                         } catch (NumberFormatException ex) {
-                            failure("Invalid version code: '" + data[0] + "'");
+                            print("Invalid version code: '" + data[0] + "'");
                             return;
                         }
                         if (newVersionCode <= PowerTunnel.VERSION_CODE) {
-                            info("You're running the latest version of " + PowerTunnel.NAME + "!");
+                            print("You're running the latest version of " + PowerTunnel.NAME + "!");
                             return;
                         }
                         final String version = data[1];
@@ -71,7 +71,7 @@ public class UpdateNotifier {
                         }
                     }
                 } catch (IOException ex) {
-                    failure("Cannot connect to the server: " + ex.getMessage());
+                    print("Cannot connect to the server: " + ex.getMessage());
                     Debugger.debug(ex);
                 }
             }

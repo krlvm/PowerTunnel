@@ -2,10 +2,10 @@ package ru.krlvm.powertunnel;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpRequest;
-import org.littleshoot.proxy.HttpFilters;
-import org.littleshoot.proxy.HttpFiltersSourceAdapter;
-import org.littleshoot.proxy.HttpProxyServer;
+import org.jitsi.dnssec.validator.ValidatingResolver;
+import org.littleshoot.proxy.*;
 import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
+import org.xbill.DNS.*;
 import ru.krlvm.powertunnel.data.DataStore;
 import ru.krlvm.powertunnel.data.DataStoreException;
 import ru.krlvm.powertunnel.data.Settings;
@@ -22,7 +22,6 @@ import ru.krlvm.powertunnel.webui.PowerTunnelMonitor;
 import ru.krlvm.swingdpi.SwingDPI;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,6 +61,7 @@ public class PowerTunnel {
     public static int CHUNK_SIZE = 2;
     public static int PAYLOAD_LENGTH = 0; //21 recommended
     public static boolean USE_DNS_SEC = false;
+    public static String DOH_ADDRESS = null;
     public static boolean MIX_HOST_CASE = false;
     private static String GOVERNMENT_BLACKLIST_MIRROR = null;
     /** ----------------- */
@@ -107,6 +107,7 @@ public class PowerTunnel {
                                 " -console - console mode, without UI\n" +
                                 " -government-blacklist-from [URL] - automatically fill government blacklist from URL\n" +
                                 " -use-dns-sec - enables DNSSec mode with the Google DNS servers\n" +
+                                " -use-doh-resolver [URL] - enables DNS over HTTPS resolver\n" +
                                 " -disallow-invalid-packets - HTTP packets without Host header will be thrown out (unrecommended)\n" +
                                 " -full-chunking - enables chunking the whole packets\n" +
                                 " -mix-host-case - enables 'Host' header case mix (unstable)\n" +
@@ -214,6 +215,11 @@ public class PowerTunnel {
                                     } catch (NumberFormatException ex) {
                                         Utility.print("[x] Invalid port, using default");
                                     }
+                                    break;
+                                }
+                                case "use-doh-resolver": {
+                                    SETTINGS.setTemporaryValue(Settings.DOH_ADDRESS, value);
+                                    Utility.print("[#] DNS over HTTPS resolver address set to '%s'", value);
                                     break;
                                 }
                                 case "with-web-ui": {
@@ -425,13 +431,46 @@ public class PowerTunnel {
         SETTINGS.setOption(Settings.SERVER_IP_ADDRESS, SERVER_IP_ADDRESS);
         SETTINGS.setOption(Settings.SERVER_PORT, String.valueOf(SERVER_PORT));
         Utility.print("[.] Starting LittleProxy server on %s:%s", SERVER_IP_ADDRESS, SERVER_PORT);
-        SERVER = DefaultHttpProxyServer.bootstrap().withFiltersSource(new HttpFiltersSourceAdapter() {
+        HttpProxyServerBootstrap bootstrap = DefaultHttpProxyServer.bootstrap().withFiltersSource(new HttpFiltersSourceAdapter() {
             @Override
             public HttpFilters filterRequest(HttpRequest originalRequest, ChannelHandlerContext ctx) {
                 return new ProxyFilter(originalRequest);
             }
         }).withAddress(new InetSocketAddress(InetAddress.getByName(SERVER_IP_ADDRESS), SERVER_PORT))
-                .withTransparent(true).withUseDnsSec(USE_DNS_SEC).start();
+                .withTransparent(true).withUseDnsSec(USE_DNS_SEC);
+        boolean useDoh = DOH_ADDRESS != null && !DOH_ADDRESS.isEmpty();
+        if (useDoh) {
+            if (DOH_ADDRESS.endsWith("/")) {
+                DOH_ADDRESS = DOH_ADDRESS.substring(0, DOH_ADDRESS.length() - 1);
+            }
+            Utility.print("[*] DNS over HTTPS is enabled: '" + DOH_ADDRESS + "'");
+        }
+        if (USE_DNS_SEC) {
+            Utility.print("[*] DNSSec is enabled");
+        }
+        if(useDoh || USE_DNS_SEC) {
+            final Resolver resolver = getResolver(useDoh);
+            bootstrap.withServerResolver(new HostResolver() {
+                @Override
+                public InetSocketAddress resolve(String host, int port) throws UnknownHostException {
+                    try {
+                        Lookup lookup = new Lookup(host, Type.A);
+                        lookup.setResolver(resolver);
+                        Record[] records = lookup.run();
+                        if (lookup.getResult() == Lookup.SUCCESSFUL) {
+                            return new InetSocketAddress(((ARecord) records[0]).getAddress(), port);
+                        } else {
+                            throw new UnknownHostException(lookup.getErrorString());
+                        }
+                    } catch (Exception ex) {
+                        Utility.print("[x] Failed to resolve '%s': %s", host, ex.getMessage());
+                        Debugger.debug(ex);
+                        throw new UnknownHostException(String.format("Failed to resolve '%s': %s", host, ex.getMessage()));
+                    }
+                }
+            });
+        }
+        SERVER = bootstrap.start();
         setStatus(ServerStatus.RUNNING);
         Utility.print("[.] Server started");
         Utility.print();
@@ -503,6 +542,20 @@ public class PowerTunnel {
         }
     }
 
+    private static Resolver getResolver(boolean useDoh) throws UnknownHostException {
+        Resolver resolver = null;
+        if(useDoh) {
+            resolver = new DohResolver(DOH_ADDRESS);
+        }
+        if(USE_DNS_SEC) {
+            if(resolver == null) {
+                resolver = new SimpleResolver();
+            }
+            resolver = new ValidatingResolver(resolver);
+        }
+        return resolver;
+    }
+
     public static void loadSettings() {
         DISABLE_JOURNAL = SETTINGS.getBooleanOption(Settings.DISABLE_JOURNAL);
         GOVERNMENT_BLACKLIST_MIRROR = SETTINGS.getOption(Settings.GOVERNMENT_BLACKLIST_MIRROR);
@@ -517,6 +570,7 @@ public class PowerTunnel {
         PAYLOAD_LENGTH = SETTINGS.getIntOption(Settings.PAYLOAD_LENGTH);
         MIX_HOST_CASE = SETTINGS.getBooleanOption(Settings.MIX_HOST_CASE);
         USE_DNS_SEC = SETTINGS.getBooleanOption(Settings.USE_DNS_SEC);
+        DOH_ADDRESS = SETTINGS.getOption(Settings.DOH_ADDRESS);
     }
 
     public static TrayManager getTray() {

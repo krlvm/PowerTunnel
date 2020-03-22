@@ -24,6 +24,7 @@ public class OptionsFrame extends ControlFrame {
     private JCheckBox allowInvalidPackets;
     private JCheckBox mixHostCase;
     private JCheckBox useDnsSec;
+    private JTextField dnsOverHttps;
     private JTextField blacklistMirror;
     private JCheckBox enableJournal;
     /* ------------------------------------ */
@@ -101,10 +102,10 @@ public class OptionsFrame extends ControlFrame {
                 "Enables full chunking mode.<br>Can led to higher CPU utilization, some websites from<br>the government blacklist may not accept connections,<br>but more efficient than the default (quiet) method.");
         panel.add(fullChunking, gbc);
 
-        JPanel chunkPane = new JPanel(new FlowLayout());
+        JPanel chunkPane = new JPanel(new FlowLayout(FlowLayout.LEADING));
         chunkSize = new JTextField(String.valueOf(PowerTunnel.CHUNK_SIZE));
-        chunkSize.setPreferredSize(new Dimension(50, ((int) chunkSize.getPreferredSize().getHeight())));
-        chunkPane.add(new TooltipLabel("Chunk size:", "Count of fragments HTTP packets be divided"));
+        JLabel chunkLabel = new TooltipLabel("Chunk size:", "Count of fragments HTTP packets be divided");
+        chunkPane.add(chunkLabel);
         chunkPane.add(chunkSize, gbc);
         panel.add(chunkPane, gbc);
 
@@ -120,14 +121,22 @@ public class OptionsFrame extends ControlFrame {
                 "When it enabled, PowerTunnel mixing case of the host of the website you're trying to connect.<br>Some websites, especially working on the old webservers, may not accept connection.");
         panel.add(mixHostCase, gbc);
 
-        useDnsSec = new TooltipCheckBox("Use DNSSec mode (server restart needed)",
+        useDnsSec = new TooltipCheckBox("Use DNSSec mode (server restart required)",
                 "Enables validating DNS server responses with<br>the Google DNS servers and protects you from the DNS substitution.<br>Can slow down your connection a bit.<br>Make sure you restart the server<br>after changing this option.");
         panel.add(useDnsSec, gbc);
 
-        JPanel mirrorPane = new JPanel(new FlowLayout());
+        JPanel dohPane = new JPanel(new FlowLayout(FlowLayout.LEADING));
+        dnsOverHttps = new JTextField(PowerTunnel.DOH_ADDRESS);
+        dnsOverHttps.setPreferredSize(new Dimension(400, ((int) dnsOverHttps.getPreferredSize().getHeight())));
+        JLabel dohLabel = new TooltipLabel("DoH resolver (server restart required):", "DNS over HTTPS server address<br>Compatible DoH addresses is listed in the repository readme");
+        dohPane.add(dohLabel);
+        dohPane.add(dnsOverHttps, gbc);
+        panel.add(dohPane, gbc);
+
+        JPanel mirrorPane = new JPanel(new FlowLayout(FlowLayout.LEADING));
         blacklistMirror = new JTextField(String.valueOf(PowerTunnel.CHUNK_SIZE));
-        blacklistMirror.setPreferredSize(new Dimension(200, ((int) blacklistMirror.getPreferredSize().getHeight())));
-        mirrorPane.add(new TooltipLabel("Government blacklist mirror:", "URL address from government blacklist automatically loads"));
+        JLabel blacklistLabel = new TooltipLabel("Government blacklist mirror:", "URL address from government blacklist automatically loads");
+        mirrorPane.add(blacklistLabel);
         mirrorPane.add(blacklistMirror, gbc);
         panel.add(mirrorPane, gbc);
 
@@ -144,6 +153,12 @@ public class OptionsFrame extends ControlFrame {
         root.setDefaultButton(ok);
         setResizable(false);
         pack();
+
+        chunkSize.setPreferredSize(new Dimension(dohPane.getWidth()-chunkLabel.getWidth(), chunkSize.getHeight()));
+        blacklistMirror.setPreferredSize(new Dimension(dohPane.getWidth()-blacklistLabel.getWidth(), blacklistMirror.getHeight()));
+        dnsOverHttps.setPreferredSize(new Dimension(dnsOverHttps.getWidth()+15, dnsOverHttps.getHeight()));
+        pack();
+
         controlFrameInitialized();
     }
 
@@ -169,6 +184,9 @@ public class OptionsFrame extends ControlFrame {
         useDnsSec.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.USE_DNS_SEC));
         useDnsSec.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.USE_DNS_SEC));
 
+        dnsOverHttps.setText(PowerTunnel.SETTINGS.getOption(Settings.DOH_ADDRESS));
+        dnsOverHttps.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.DOH_ADDRESS));
+
         blacklistMirror.setText(PowerTunnel.SETTINGS.getOption(Settings.GOVERNMENT_BLACKLIST_MIRROR));
         blacklistMirror.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.GOVERNMENT_BLACKLIST_MIRROR));
 
@@ -184,6 +202,7 @@ public class OptionsFrame extends ControlFrame {
         PowerTunnel.SETTINGS.setOption(Settings.PAYLOAD_LENGTH, payload.isSelected() ? "21" : "0");
         PowerTunnel.SETTINGS.setBooleanOption(Settings.MIX_HOST_CASE, mixHostCase.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.USE_DNS_SEC, useDnsSec.isSelected());
+        PowerTunnel.SETTINGS.setOption(Settings.DOH_ADDRESS, dnsOverHttps.getText());
         PowerTunnel.SETTINGS.setOption(Settings.GOVERNMENT_BLACKLIST_MIRROR, blacklistMirror.getText());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.DISABLE_JOURNAL, !enableJournal.isSelected());
         PowerTunnel.loadSettings();

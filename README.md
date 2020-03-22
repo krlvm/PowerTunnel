@@ -38,6 +38,15 @@ Also, you can try launching PowerTunnel with `-full-chunking` argument.
 You can monitor network activity, block and whitelist websites through Java Swing-based user interface when console mode is off or through [PowerTunnel Monitor](https://github.com/krlvm/PowerTunnel/wiki/PowerTunnel-Monitor).
 
 ## Configuring PowerTunnel
+### DNS over HTTPS
+PowerTunnel supports DNS over HTTPS (DoH) - secure and fast DNS protocol.
+
+DoH servers tested with PowerTunnel:
+* Google - https://dns.google/dns-query
+* Cloudflare - https://cloudflare-dns.com/dns-query (unstable)
+
+If you have problems with DoH on PowerTunnel try disabling DNSSec mode.
+
 ### From User Interface
 ![User Interface for configuring the program](https://raw.githubusercontent.com/krlvm/PowerTunnel/master/images/options.png "User Interface for configuring the program")
 
@@ -78,6 +87,7 @@ java -jar PowerTunnel.jar
 
 ## Dependencies
 * [LittleProxy](https://github.com/adamfisk/LittleProxy) with some [patches](https://github.com/krlvm/PowerTunnel/tree/master/src/org/littleshoot/proxy/impl) - proxy server
+* [dnsjava](https://github.com/dnsjava/dnsjava) - DNS library, DoH realization
 * [DNSSEC4J](https://github.com/adamfisk/DNSSEC4J) - DNSSec realization for LittleProxy
 * [Java Native Access](https://github.com/java-native-access/jna) - changing the system's proxy server using the native APIs
 * [SwingDPI](https://github.com/krlvm/SwingDPI) - HiDPI scaling

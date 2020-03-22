@@ -134,7 +134,8 @@ public class Settings extends DataStore {
     public static final String CHUNK_SIZE = "https.chunking.size.int";
     public static final String PAYLOAD_LENGTH = "http.payload.length.int";
     public static final String MIX_HOST_CASE = "http.mix-host-case.bool";
-    public static final String USE_DNS_SEC = "dns-sec.enabled.bool";
+    public static final String USE_DNS_SEC = "dns.dnssec.enabled.bool";
+    public static final String DOH_ADDRESS = "dns.doh.address";
     public static final String GOVERNMENT_BLACKLIST_MIRROR = "powertunnel.government-blacklist-mirror";
     public static final String DISABLE_JOURNAL = "powertunnel.journal.enabled";
 
@@ -149,6 +150,7 @@ public class Settings extends DataStore {
         defaultValues.put(PAYLOAD_LENGTH, "0");
         defaultValues.put(MIX_HOST_CASE, "false");
         defaultValues.put(USE_DNS_SEC, "false");
+        defaultValues.put(DOH_ADDRESS, "");
         defaultValues.put(GOVERNMENT_BLACKLIST_MIRROR, "");
         defaultValues.put(DISABLE_JOURNAL, "false");
     }
