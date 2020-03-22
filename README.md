@@ -89,6 +89,7 @@ java -jar PowerTunnel.jar
 ## Dependencies
 * [LittleProxy](https://github.com/adamfisk/LittleProxy) with some [patches](https://github.com/krlvm/PowerTunnel/tree/master/src/org/littleshoot/proxy/impl) - proxy server
 * [dnsjava](https://github.com/dnsjava/dnsjava) - DNS library, DoH realization
+* [dnssecjava](https://github.com/ibauersachs/dnssecjava) - DNSSec realization for dnsjava
 * [DNSSEC4J](https://github.com/adamfisk/DNSSEC4J) - DNSSec realization for LittleProxy
 * [Java Native Access](https://github.com/java-native-access/jna) - changing the system's proxy server using the native APIs
 * [SwingDPI](https://github.com/krlvm/SwingDPI) - HiDPI scaling
