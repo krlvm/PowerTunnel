@@ -94,7 +94,7 @@ public class OptionsFrame extends ControlFrame {
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.anchor = GridBagConstraints.WEST;
 
-        autoSetup = new TooltipCheckBox("Auto system proxy setup",
+        autoSetup = new TooltipCheckBox("Auto system proxy setup (Windows)",
                 "Automatically setting up system proxy server configuration.<br>At the moment available only on the Windows systems.<br>May need Internet Explorer starting for a few seconds.");
         panel.add(autoSetup, gbc);
 

@@ -14,7 +14,7 @@ import java.util.List;
 public class DataStore {
 
     //Constants
-    public static final DataStore GOVERNMENT_BLACKLIST = new DataStore("government-blacklist");
+    public static final DataStore GOVERNMENT_BLACKLIST = new DataStore("government-blacklist", Collections.singletonList("*"));
     public static final DataStore ISP_STUB_LIST = new DataStore("isp-stub");
     public static final DataStore USER_BLACKLIST = new DataStore("user-blacklist");
     public static final DataStore USER_WHITELIST = new DataStore("user-whitelist");
