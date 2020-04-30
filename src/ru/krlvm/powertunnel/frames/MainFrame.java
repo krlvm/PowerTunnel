@@ -127,7 +127,7 @@ public class MainFrame extends ControlFrame {
         panel.add(userWhitelist);
         panel.add(options);
         pane.add(panel, gbc);
-        pane.add(UIUtility.getLabelWithHyperlinkSupport("<a href=\"" + PowerTunnel.REPOSITORY_URL + "/issues\">Submit a bug</a> | " + "<a href=\"" + PowerTunnel.REPOSITORY_URL + "/wiki\">Help</a><br>" +
+        pane.add(UIUtility.getLabelWithHyperlinkSupport("<a href=\"" + PowerTunnel.REPOSITORY_URL + "/issues\">Submit a bug</a> | <a href=\"https://github.com/krlvm/PowerTunnel-Android\">Android version</a> | " + "<a href=\"" + PowerTunnel.REPOSITORY_URL + "/wiki\">Help</a><br>" +
                 "<b><a style=\"color: black\" href=\"" + PowerTunnel.REPOSITORY_URL + "\">" + PowerTunnel.REPOSITORY_URL + "</a>" +
                 "</b><br><br>(c) krlvm, 2019-2020", "text-align: center"), gbc);
 
