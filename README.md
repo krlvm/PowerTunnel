@@ -3,6 +3,8 @@
 <br><h1>PowerTunnel</h1><br>
 Simple, scalable, cross-platform and effective solution against government censorship
 
+<a href="https://t.me/powertunnel_dpi">Telegram channel</a>
+<br>
 <a href="https://github.com/krlvm/PowerTunnel-Android">Check out the Android version!<a/>
 <br><br>
 <a href="https://github.com/krlvm/PowerTunnel/blob/master/LICENSE"><img src="https://img.shields.io/github/license/krlvm/PowerTunnel?style=flat-square" alt="License"/></a>
@@ -42,7 +44,7 @@ You can monitor network activity, block and whitelist websites through Java Swin
 PowerTunnel supports DNS over HTTPS (DoH) - secure and fast DNS protocol.
 
 DoH servers tested with PowerTunnel:
-* Google - https://dns.google/dns-query
+* Google - https://dns.google/dns-query (recommended)
 * Cloudflare - https://cloudflare-dns.com/dns-query (unstable)
 
 You can test if you're using DoH [here](http://www.whatsmydnsserver.com/). If you have problems with DoH on PowerTunnel try disabling DNSSec mode.
