@@ -109,7 +109,7 @@ public class OptionsFrame extends ControlFrame {
         chunkPane.add(chunkSize, gbc);
         panel.add(chunkPane, gbc);
 
-        payload = new TooltipCheckBox("HTTP: Send payload",
+        payload = new TooltipCheckBox("HTTP: Send additional 21KB payload",
                 "When it enabled, PowerTunnel adding 21KB of useless data before the Host header");
         panel.add(payload, gbc);
 

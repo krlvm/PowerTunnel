@@ -1,5 +1,6 @@
 package ru.krlvm.powertunnel.data;
 
+import ru.krlvm.powertunnel.filter.ProxyFilter;
 import ru.krlvm.powertunnel.utilities.Debugger;
 import ru.krlvm.powertunnel.utilities.Utility;
 
@@ -59,7 +60,12 @@ public class Settings extends DataStore {
     private void addDefaults() {
         for (Map.Entry<String, String> entry : defaultValues.entrySet()) {
             if(!options.containsKey(entry.getKey())) {
-                options.put(entry.getKey(), entry.getValue());
+                String key = entry.getKey(), value = entry.getValue();
+                options.put(key, value);
+
+                if(!temporaryValues.containsKey(key)) {
+                    valueUpdated(key, value);
+                }
             }
         }
     }
@@ -75,6 +81,8 @@ public class Settings extends DataStore {
 
     public void setTemporaryValue(String key, String value) {
         temporaryValues.put(key, value);
+
+        valueUpdated(key, value);
     }
 
     public String getOption(String key) {
@@ -101,6 +109,8 @@ public class Settings extends DataStore {
         }
         options.put(key, value);
         hasChanged = true;
+
+        valueUpdated(key, value);
     }
 
     public void setIntOption(String key, int value) {
@@ -118,6 +128,17 @@ public class Settings extends DataStore {
             lines.add(entry.getKey() + KEY_VALUE_SEPARATOR + entry.getValue());
         }
         write(lines);
+    }
+
+    private static void valueUpdated(String key, String value) {
+        if(key.equals(PAYLOAD_LENGTH)) {
+            int len = Integer.parseInt(value);
+            ProxyFilter.PAYLOAD.clear();
+            for(int i = 0; i < len; i++) {
+                ProxyFilter.PAYLOAD.add(new String(new char[1000])
+                        .replace("\0", String.valueOf(i % 10)).intern());
+            }
+        }
     }
 
     @Override

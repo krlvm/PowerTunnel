@@ -11,6 +11,9 @@ import ru.krlvm.powertunnel.utilities.HttpUtility;
 import ru.krlvm.powertunnel.utilities.Utility;
 import ru.krlvm.powertunnel.webui.PowerTunnelMonitor;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Implementation of LittleProxy filter
  *
@@ -111,10 +114,11 @@ public class ProxyFilter extends HttpFiltersAdapter {
         request.headers().remove("Host");
         if(PowerTunnel.PAYLOAD_LENGTH > 0) {
             for (int i = 0; i < PowerTunnel.PAYLOAD_LENGTH; i++) {
-                request.headers().add("X-Padding" + i,
-                        new String(new char[1000]).replace("\0", String.valueOf(i % 10)).intern());
+                request.headers().add("X-Padding" + i, PAYLOAD.get(i));
             }
         }
         request.headers().add("hOSt", host + ".");
     }
+
+    public static final List<String> PAYLOAD = new LinkedList<>();
 }
