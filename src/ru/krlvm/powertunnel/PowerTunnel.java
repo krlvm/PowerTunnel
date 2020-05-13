@@ -21,6 +21,7 @@ import ru.krlvm.powertunnel.utilities.URLUtility;
 import ru.krlvm.powertunnel.utilities.Utility;
 import ru.krlvm.powertunnel.webui.PowerTunnelMonitor;
 import ru.krlvm.swingdpi.SwingDPI;
+import sun.plugin.dom.exception.InvalidStateException;
 
 import javax.swing.*;
 import java.io.ByteArrayOutputStream;
@@ -490,10 +491,14 @@ public class PowerTunnel {
      * Stops LittleProxy server
      */
     public static void stopServer() {
+        if(!isRunning()) {
+            throw new InvalidStateException("Server not running");
+        }
         setStatus(ServerStatus.STOPPING);
         Utility.print();
         Utility.print("[.] Stopping server...");
         SERVER.stop();
+        SERVER = null;
         Utility.print("[.] Server stopped");
         Utility.print();
         setStatus(ServerStatus.NOT_RUNNING);
@@ -515,6 +520,15 @@ public class PowerTunnel {
         ISP_STUB_LIST.clear();
     }
 
+    public static void restartServer() {
+        stopServer();
+        safeBootstrap();
+    }
+
+    public static boolean isRunning() {
+        return SERVER != null;
+    }
+
     public static void handleClosing() {
         new Thread(new Runnable() {
             @Override
@@ -531,6 +545,8 @@ public class PowerTunnel {
 
     public static void showMainFrame() {
         frame.setVisible(true);
+        frame.toFront();
+        frame.requestFocus();
     }
 
     public static boolean isMainFrameVisible() {

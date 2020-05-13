@@ -23,11 +23,15 @@ public class OptionsFrame extends ControlFrame {
     private JCheckBox payload;
     private JCheckBox allowInvalidPackets;
     private JCheckBox mixHostCase;
-    private JCheckBox useDnsSec;
-    private JTextField dnsOverHttps;
+    private JCheckBox useDnsSec;     //server restart
+    private JTextField dnsOverHttps; //server restart
     private JTextField blacklistMirror;
     private JCheckBox enableJournal;
     /* ------------------------------------ */
+
+    //Restart required - previous values
+    private boolean useDnsSecVal;
+    private String dnsOverHttpsVal;
 
     public OptionsFrame() {
         super("Options");
@@ -181,10 +185,10 @@ public class OptionsFrame extends ControlFrame {
         mixHostCase.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.MIX_HOST_CASE));
         mixHostCase.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.MIX_HOST_CASE));
 
-        useDnsSec.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.USE_DNS_SEC));
+        useDnsSec.setSelected(useDnsSecVal = PowerTunnel.SETTINGS.getBooleanOption(Settings.USE_DNS_SEC));
         useDnsSec.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.USE_DNS_SEC));
 
-        dnsOverHttps.setText(PowerTunnel.SETTINGS.getOption(Settings.DOH_ADDRESS));
+        dnsOverHttps.setText(dnsOverHttpsVal = PowerTunnel.SETTINGS.getOption(Settings.DOH_ADDRESS));
         dnsOverHttps.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.DOH_ADDRESS));
 
         blacklistMirror.setText(PowerTunnel.SETTINGS.getOption(Settings.GOVERNMENT_BLACKLIST_MIRROR));
@@ -195,6 +199,11 @@ public class OptionsFrame extends ControlFrame {
     }
 
     private void save() {
+        final boolean suggestRestart = (
+                useDnsSecVal != useDnsSec.isSelected() ||
+                        !dnsOverHttpsVal.equals(dnsOverHttps.getText())
+        );
+
         PowerTunnel.SETTINGS.setBooleanOption(Settings.AUTO_PROXY_SETUP_ENABLED, autoSetup.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.ALLOW_INVALID_HTTP_PACKETS, allowInvalidPackets.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.FULL_CHUNKING, fullChunking.isSelected());
@@ -206,6 +215,17 @@ public class OptionsFrame extends ControlFrame {
         PowerTunnel.SETTINGS.setOption(Settings.GOVERNMENT_BLACKLIST_MIRROR, blacklistMirror.getText());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.DISABLE_JOURNAL, !enableJournal.isSelected());
         PowerTunnel.loadSettings();
+
+        if (suggestRestart && PowerTunnel.isRunning()) {
+            if (JOptionPane.showConfirmDialog(this, "<html>The changes you made requires server restart to take effect.<br>Restart server?</html>", PowerTunnel.NAME, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        PowerTunnel.restartServer();
+                    }
+                }, "Server Restart Thread").start();
+            }
+        }
     }
 
     public void updateAvailable(String version) {
