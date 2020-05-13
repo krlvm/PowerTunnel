@@ -21,7 +21,6 @@ import ru.krlvm.powertunnel.utilities.URLUtility;
 import ru.krlvm.powertunnel.utilities.Utility;
 import ru.krlvm.powertunnel.webui.PowerTunnelMonitor;
 import ru.krlvm.swingdpi.SwingDPI;
-import sun.plugin.dom.exception.InvalidStateException;
 
 import javax.swing.*;
 import java.io.ByteArrayOutputStream;
@@ -89,6 +88,12 @@ public class PowerTunnel {
     private static boolean CONSOLE_MODE = false;
 
     public static void main(String[] args) {
+        Utility.print(NAME + " version " + VERSION);
+        Utility.print("Simple, scalable, cross-platform and effective solution against government censorship");
+        Utility.print(REPOSITORY_URL);
+        Utility.print("(c) krlvm, 2019-2020");
+        Utility.print();
+
         //Parse launch arguments
         //java -jar PowerTunnel.jar (-args)
         boolean startNow = false;
@@ -103,31 +108,31 @@ public class PowerTunnel {
                 arg = arg.replaceFirst("-", "").toLowerCase();
                 switch (arg) {
                     case "help": {
-                        Utility.print("Available params:\n" +
-                                " -help - display help\n" +
-                                " -start - starts server right after load\n" +
-                                " -console - console mode, without UI\n" +
-                                " -government-blacklist-from [URL] - automatically fill government blacklist from URL\n" +
-                                " -use-dns-sec - enables DNSSec mode with the Google DNS servers\n" +
-                                " -use-doh-resolver [URL] - enables DNS over HTTPS resolver\n" +
-                                " -disallow-invalid-packets - HTTP packets without Host header will be thrown out (unrecommended)\n" +
-                                " -full-chunking - enables chunking the whole packets\n" +
-                                " -mix-host-case - enables 'Host' header case mix (unstable)\n" +
-                                " -send-payload [length] - to bypass HTTP blocking, 21 is recommended\n" +
-                                " -chunk-size [size] - sets size of one chunk\n" +
-                                " -ip [IP Address] - sets IP Address\n" +
-                                " -port [Port] - sets port\n" +
-                                " -with-web-ui [appendix] - enables Web UI at http://" + String.format(PowerTunnelMonitor.FAKE_ADDRESS_TEMPLATE, "[appendix]") + "\n" +
-                                " -disable-auto-proxy-setup - disables auto proxy setup on Windows\n" +
-                                " -auto-proxy-setup-win-ie - auto proxy setup using IE instead of native API on Windows\n" +
-                                " -full-output-mirroring - fully mirrors system output to the log\n" +
-                                " -set-scale-factor [n] - sets DPI scale factor (for testing purposes)\n" +
-                                " -disable-journal - disables journal\n" +
-                                " -disable-tray - disables tray icon\n" +
-                                " -disable-native-lf - disables native L&F (when UI enabled)\n" +
-                                " -disable-ui-scaling - disables UI scaling (when UI enabled)\n" +
-                                " -disable-updater - disables the update notifier\n" +
-                                " -debug - enables debug");
+                        Utility.print("Available arguments:\n" +
+                                " -help                                display help\n" +
+                                " -start                               starts server right after load\n" +
+                                " -console                             console mode, without UI\n" +
+                                " -government-blacklist-from [URL]     automatically fill government blacklist from URL\n" +
+                                " -use-dns-sec                         enables DNSSec mode with the Google DNS servers\n" +
+                                " -use-doh-resolver [URL]              enables DNS over HTTPS resolver\n" +
+                                " -disallow-invalid-packets            HTTP packets without Host header will be thrown out (unrecommended)\n" +
+                                " -full-chunking                       enables chunking the whole packets\n" +
+                                " -mix-host-case                       enables 'Host' header case mix (unstable)\n" +
+                                " -send-payload [length]               to bypass HTTP blocking, 21 is recommended\n" +
+                                " -chunk-size [size]                   sets size of one chunk\n" +
+                                " -ip [IP Address]                     sets IP Address\n" +
+                                " -port [Port]                         sets port\n" +
+                                " -with-web-ui [appendix]              enables Web UI at http://" + String.format(PowerTunnelMonitor.FAKE_ADDRESS_TEMPLATE, "[appendix]") + "\n" +
+                                " -disable-auto-proxy-setup            disables auto proxy setup on Windows\n" +
+                                " -auto-proxy-setup-win-ie             auto proxy setup using IE instead of native API on Windows\n" +
+                                " -full-output-mirroring               fully mirrors system output to the log\n" +
+                                " -set-scale-factor [n]                sets DPI scale factor (for testing purposes)\n" +
+                                " -disable-journal                     disables journal\n" +
+                                " -disable-tray                        disables tray icon\n" +
+                                " -disable-native-lf                   disables native L&F (when UI enabled)\n" +
+                                " -disable-ui-scaling                  disables UI scaling (when UI enabled)\n" +
+                                " -disable-updater                     disables the update notifier\n" +
+                                " -debug                               enables debug");
                         System.exit(0);
                         break;
                     }
@@ -328,12 +333,6 @@ public class PowerTunnel {
             };
         }
 
-        Utility.print(NAME + " version " + VERSION);
-        Utility.print("Simple, scalable, cross-platform and effective solution against government censorship");
-        Utility.print(REPOSITORY_URL);
-        Utility.print("(c) krlvm, 2019-2020");
-        Utility.print();
-
         //Allow us to modify 'HOST' request header
         System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
 
@@ -351,6 +350,7 @@ public class PowerTunnel {
             safeBootstrap();
         }
 
+        Utility.print();
         UpdateNotifier.checkAndNotify();
     }
 
@@ -492,7 +492,7 @@ public class PowerTunnel {
      */
     public static void stopServer() {
         if(!isRunning()) {
-            throw new InvalidStateException("Server not running");
+            throw new IllegalStateException("Server not running");
         }
         setStatus(ServerStatus.STOPPING);
         Utility.print();
