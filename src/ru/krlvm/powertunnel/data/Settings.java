@@ -160,6 +160,7 @@ public class Settings extends DataStore {
     public static final String GOVERNMENT_BLACKLIST_MIRROR = "powertunnel.government-blacklist-mirror";
     public static final String ENABLE_JOURNAL = "powertunnel.journal.enabled";
     public static final String ENABLE_LOGS = "powertunnel.logs.enabled";
+    public static final String ALLOW_REQUESTS_TO_ORIGIN_SERVER = "server.allow-requests-to-origin-server";
 
     private static final Map<String, String> defaultValues = new HashMap<>();
     static {
@@ -176,5 +177,6 @@ public class Settings extends DataStore {
         defaultValues.put(GOVERNMENT_BLACKLIST_MIRROR, "");
         defaultValues.put(ENABLE_JOURNAL, "false");
         defaultValues.put(ENABLE_LOGS, "false");
+        defaultValues.put(ALLOW_REQUESTS_TO_ORIGIN_SERVER, "false");
     }
 }

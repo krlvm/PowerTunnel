@@ -27,6 +27,7 @@ public class OptionsFrame extends ControlFrame {
     private JCheckBox useDnsSec;     //server restart
     private JTextField dnsOverHttps; //server restart
     private JTextField blacklistMirror;
+    private JCheckBox allowRequestsToOriginServer;
     private JCheckBox enableJournal;
     private JCheckBox enableLogs;
     /* ------------------------------------ */
@@ -148,6 +149,10 @@ public class OptionsFrame extends ControlFrame {
         mirrorPane.add(blacklistMirror, gbc);
         panel.add(mirrorPane, gbc);
 
+        allowRequestsToOriginServer = new TooltipCheckBox("Allow requests to origin server",
+                "Experimental option, can fix some connectivity issues.");
+        panel.add(allowRequestsToOriginServer, gbc);
+
         enableJournal = new TooltipCheckBox("Enable PowerTunnel Journal (restart required)",
                 "Enables PowerTunnel Journal, collecting<br>all websites you've been visited with timestamps.<br>This data doesn't sending anywhere.");
         panel.add(enableJournal, gbc);
@@ -202,6 +207,9 @@ public class OptionsFrame extends ControlFrame {
         blacklistMirror.setText(PowerTunnel.SETTINGS.getOption(Settings.GOVERNMENT_BLACKLIST_MIRROR));
         blacklistMirror.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.GOVERNMENT_BLACKLIST_MIRROR));
 
+        allowRequestsToOriginServer.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.ALLOW_REQUESTS_TO_ORIGIN_SERVER));
+        allowRequestsToOriginServer.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.ALLOW_REQUESTS_TO_ORIGIN_SERVER));
+
         enableJournal.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.ENABLE_JOURNAL));
         enableJournal.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.ENABLE_JOURNAL));
 
@@ -224,6 +232,7 @@ public class OptionsFrame extends ControlFrame {
         PowerTunnel.SETTINGS.setBooleanOption(Settings.USE_DNS_SEC, useDnsSec.isSelected());
         PowerTunnel.SETTINGS.setOption(Settings.DOH_ADDRESS, dnsOverHttps.getText());
         PowerTunnel.SETTINGS.setOption(Settings.GOVERNMENT_BLACKLIST_MIRROR, blacklistMirror.getText());
+        PowerTunnel.SETTINGS.setBooleanOption(Settings.ALLOW_REQUESTS_TO_ORIGIN_SERVER, allowRequestsToOriginServer.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.ENABLE_JOURNAL, enableJournal.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.ENABLE_LOGS, enableLogs.isSelected());
         PowerTunnel.loadSettings();
@@ -241,7 +250,7 @@ public class OptionsFrame extends ControlFrame {
     }
 
     public void updateAvailable(String version) {
-        updateButton.setText("Update info");
+        updateButton.setText("Update details");
         updateLabel.setText("<html><b>An update available: v" + version + "</b></html>");
     }
 

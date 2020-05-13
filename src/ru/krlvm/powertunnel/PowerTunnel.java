@@ -61,6 +61,8 @@ public class PowerTunnel {
     public static int SERVER_PORT = 8085;
     private static boolean AUTO_PROXY_SETUP_ENABLED = true;
 
+    private static boolean ALLOW_REQUESTS_TO_ORIGIN_SERVER = false;
+
     public static final Settings SETTINGS = new Settings();
     /** Optional settings */
     public static boolean ALLOW_INVALID_HTTP_PACKETS = true;
@@ -422,7 +424,8 @@ public class PowerTunnel {
                 return new ProxyFilter(originalRequest);
             }
         }).withAddress(new InetSocketAddress(InetAddress.getByName(SERVER_IP_ADDRESS), SERVER_PORT))
-                .withTransparent(true).withUseDnsSec(USE_DNS_SEC);
+                .withTransparent(true).withUseDnsSec(USE_DNS_SEC)
+                .withAllowRequestToOriginServer(ALLOW_REQUESTS_TO_ORIGIN_SERVER);
         boolean useDoh = DOH_ADDRESS != null && !DOH_ADDRESS.isEmpty();
         if (useDoh) {
             if (DOH_ADDRESS.endsWith("/")) {
@@ -618,6 +621,8 @@ public class PowerTunnel {
         MIX_HOST_CASE = SETTINGS.getBooleanOption(Settings.MIX_HOST_CASE);
         USE_DNS_SEC = SETTINGS.getBooleanOption(Settings.USE_DNS_SEC);
         DOH_ADDRESS = SETTINGS.getOption(Settings.DOH_ADDRESS);
+
+        ALLOW_REQUESTS_TO_ORIGIN_SERVER = SETTINGS.getBooleanOption(Settings.ALLOW_REQUESTS_TO_ORIGIN_SERVER);
     }
 
     public static TrayManager getTray() {
