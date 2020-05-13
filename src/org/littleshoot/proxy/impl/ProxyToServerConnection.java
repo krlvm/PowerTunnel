@@ -205,34 +205,94 @@ package org.littleshoot.proxy.impl;
 
 import com.google.common.net.HostAndPort;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.bootstrap.ChannelFactory;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandler.Sharable;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.channel.udt.nio.NioUdtProvider;
-import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.haproxy.HAProxyMessage;
+import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpContent;
+import io.netty.handler.codec.http.HttpMessage;
+import io.netty.handler.codec.http.HttpObject;
+import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpRequestEncoder;
+import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.HttpResponseDecoder;
+import io.netty.handler.codec.http.HttpResponseEncoder;
+import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpUtil;
+import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http.LastHttpContent;
+import io.netty.handler.codec.socksx.v4.DefaultSocks4CommandRequest;
+import io.netty.handler.codec.socksx.v4.Socks4ClientDecoder;
+import io.netty.handler.codec.socksx.v4.Socks4ClientEncoder;
+import io.netty.handler.codec.socksx.v4.Socks4CommandResponse;
+import io.netty.handler.codec.socksx.v4.Socks4CommandStatus;
+import io.netty.handler.codec.socksx.v4.Socks4CommandType;
+import io.netty.handler.codec.socksx.v5.DefaultSocks5CommandRequest;
+import io.netty.handler.codec.socksx.v5.DefaultSocks5InitialRequest;
+import io.netty.handler.codec.socksx.v5.DefaultSocks5PasswordAuthRequest;
+import io.netty.handler.codec.socksx.v5.Socks5AddressType;
+import io.netty.handler.codec.socksx.v5.Socks5AuthMethod;
+import io.netty.handler.codec.socksx.v5.Socks5ClientEncoder;
+import io.netty.handler.codec.socksx.v5.Socks5CommandResponse;
+import io.netty.handler.codec.socksx.v5.Socks5CommandResponseDecoder;
+import io.netty.handler.codec.socksx.v5.Socks5CommandStatus;
+import io.netty.handler.codec.socksx.v5.Socks5CommandType;
+import io.netty.handler.codec.socksx.v5.Socks5InitialResponse;
+import io.netty.handler.codec.socksx.v5.Socks5InitialResponseDecoder;
+import io.netty.handler.codec.socksx.v5.Socks5PasswordAuthResponse;
+import io.netty.handler.codec.socksx.v5.Socks5PasswordAuthResponseDecoder;
+import io.netty.handler.codec.socksx.v5.Socks5PasswordAuthStatus;
+import io.netty.handler.proxy.ProxyConnectException;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.handler.traffic.GlobalTrafficShapingHandler;
+import io.netty.resolver.AddressResolverGroup;
+import io.netty.resolver.DefaultAddressResolverGroup;
 import io.netty.util.ReferenceCounted;
 import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
-import org.littleshoot.proxy.*;
+import org.littleshoot.proxy.ActivityTracker;
+import org.littleshoot.proxy.ChainedProxy;
+import org.littleshoot.proxy.ChainedProxyAdapter;
+import org.littleshoot.proxy.ChainedProxyManager;
+import org.littleshoot.proxy.ChainedProxyType;
+import org.littleshoot.proxy.FullFlowContext;
+import org.littleshoot.proxy.HttpFilters;
+import org.littleshoot.proxy.MitmManager;
+import org.littleshoot.proxy.TransportProtocol;
+import org.littleshoot.proxy.UnknownTransportProtocolException;
+import org.littleshoot.proxy.extras.HAProxyMessageEncoder;
 import ru.krlvm.powertunnel.PowerTunnel;
 import ru.krlvm.powertunnel.utilities.Debugger;
 import ru.krlvm.powertunnel.utilities.HttpUtility;
 import ru.krlvm.powertunnel.utilities.Utility;
 
+import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLProtocolException;
 import javax.net.ssl.SSLSession;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.RejectedExecutionException;
 
-import static org.littleshoot.proxy.impl.ConnectionState.*;
+import static org.littleshoot.proxy.impl.ConnectionState.AWAITING_CHUNK;
+import static org.littleshoot.proxy.impl.ConnectionState.AWAITING_CONNECT_OK;
+import static org.littleshoot.proxy.impl.ConnectionState.AWAITING_INITIAL;
+import static org.littleshoot.proxy.impl.ConnectionState.CONNECTING;
+import static org.littleshoot.proxy.impl.ConnectionState.DISCONNECTED;
+import static org.littleshoot.proxy.impl.ConnectionState.HANDSHAKING;
 
 /**
  * <p>
@@ -240,9 +300,9 @@ import static org.littleshoot.proxy.impl.ConnectionState.*;
  * ProxyConnections are reused fairly liberally, and can go from disconnected to
  * connected, back to disconnected and so on.
  * </p>
- * 
+ *
  * <p>
- * Connecting a {@link org.littleshoot.proxy.impl.ProxyToServerConnection} can involve more than just
+ * Connecting a {@link ProxyToServerConnection} can involve more than just
  * connecting the underlying {@link Channel}. In particular, the connection may
  * use encryption (i.e. TLS) and it may also establish an HTTP CONNECT tunnel.
  * The various steps involved in fully establishing a connection are
@@ -255,14 +315,21 @@ import static org.littleshoot.proxy.impl.ConnectionState.*;
  * This is a patched version of LittleProxy's class
  * Licensed under Apache License 2.0
  * https://github.com/adamfisk/LittleProxy
+ * From mrog's fork: https://github.com/mrog/LittleProxy
  */
 @Sharable
-public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyConnection<HttpResponse> {
+public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
+    private static final String SOCKS_ENCODER_NAME = "socksEncoder";
+    private static final String SOCKS_DECODER_NAME = "socksDecoder";
     private final ClientToProxyConnection clientConnection;
-    private final org.littleshoot.proxy.impl.ProxyToServerConnection serverConnection = this;
+    private final ProxyToServerConnection serverConnection = this;
     private volatile TransportProtocol transportProtocol;
+    private volatile ChainedProxyType chainedProxyType;
     private volatile InetSocketAddress remoteAddress;
     private volatile InetSocketAddress localAddress;
+    private volatile AddressResolverGroup<?> remoteAddressResolver;
+    private volatile String username;
+    private volatile String password;
     private final String serverHostAndPort;
     private volatile ChainedProxy chainedProxy;
     private final Queue<ChainedProxy> availableChainedProxies;
@@ -316,40 +383,32 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
     private volatile GlobalTrafficShapingHandler trafficHandler;
 
     /**
-     * Minimum size of the adaptive recv buffer when throttling is enabled. 
+     * Minimum size of the adaptive recv buffer when throttling is enabled.
      */
     private static final int MINIMUM_RECV_BUFFER_SIZE_BYTES = 64;
-    
+
     /**
-     * Create a new org.littleshoot.proxy.impl.ProxyToServerConnection.
-     * 
-     * @param proxyServer
-     * @param clientConnection
-     * @param serverHostAndPort
-     * @param initialFilters
-     * @param initialHttpRequest
-     * @return
-     * @throws UnknownHostException
+     * Create a new ProxyToServerConnection.
      */
-    static org.littleshoot.proxy.impl.ProxyToServerConnection create(DefaultHttpProxyServer proxyServer,
-                                                                     ClientToProxyConnection clientConnection,
-                                                                     String serverHostAndPort,
-                                                                     HttpFilters initialFilters,
-                                                                     HttpRequest initialHttpRequest,
-                                                                     GlobalTrafficShapingHandler globalTrafficShapingHandler)
+    static ProxyToServerConnection create(DefaultHttpProxyServer proxyServer,
+                                          ClientToProxyConnection clientConnection,
+                                          String serverHostAndPort,
+                                          HttpFilters initialFilters,
+                                          HttpRequest initialHttpRequest,
+                                          GlobalTrafficShapingHandler globalTrafficShapingHandler)
             throws UnknownHostException {
-        Queue<ChainedProxy> chainedProxies = new ConcurrentLinkedQueue<ChainedProxy>();
+        Queue<ChainedProxy> chainedProxies = new ConcurrentLinkedQueue<>();
         ChainedProxyManager chainedProxyManager = proxyServer
                 .getChainProxyManager();
         if (chainedProxyManager != null) {
             chainedProxyManager.lookupChainedProxies(initialHttpRequest,
-                    chainedProxies);
+                    chainedProxies, clientConnection.getClientDetails());
             if (chainedProxies.size() == 0) {
                 // ChainedProxyManager returned no proxies, can't connect
                 return null;
             }
         }
-        return new org.littleshoot.proxy.impl.ProxyToServerConnection(proxyServer,
+        return new ProxyToServerConnection(proxyServer,
                 clientConnection,
                 serverHostAndPort,
                 chainedProxies.poll(),
@@ -396,7 +455,7 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
         return PowerTunnel.CHUNK_SIZE;
     }
 
-    /***************************************************************************
+    /* *************************************************************************
      * Reading
      **************************************************************************/
 
@@ -413,11 +472,17 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
     }
 
     @Override
+    protected void readHAProxyMessage(HAProxyMessage msg) {
+        // NO-OP,
+        // We never expect server to send a proxy protocol message.
+    }
+
+    @Override
     protected ConnectionState readHTTPInitial(HttpResponse httpResponse) {
         LOG.debug("Received raw response: {}", httpResponse);
 
-        if (httpResponse.getDecoderResult().isFailure()) {
-            LOG.debug("Could not parse response from server. Decoder result: {}", httpResponse.getDecoderResult().toString());
+        if (httpResponse.decoderResult().isFailure()) {
+            LOG.debug("Could not parse response from server. Decoder result: {}", httpResponse.decoderResult().toString());
 
             // create a "substitute" Bad Gateway response from the server, since we couldn't understand what the actual
             // response from the server was. set the keep-alive on the substitute response to false so the proxy closes
@@ -425,7 +490,7 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
             FullHttpResponse substituteResponse = ProxyUtils.createFullHttpResponse(HttpVersion.HTTP_1_1,
                     HttpResponseStatus.BAD_GATEWAY,
                     "Unable to parse response from server");
-            HttpHeaders.setKeepAlive(substituteResponse, false);
+            HttpUtil.setKeepAlive(substituteResponse, false);
             httpResponse = substituteResponse;
         }
 
@@ -459,12 +524,12 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
      * doesn't know that any given response is to a HEAD request, so it needs to
      * be told that there's no content so that it doesn't hang waiting for it.
      * </p>
-     * 
+     *
      * <p>
      * See the documentation for {@link HttpResponseDecoder} for information
      * about why HEAD requests need special handling.
      * </p>
-     * 
+     *
      * <p>
      * Thanks to <a href="https://github.com/nataliakoval">nataliakoval</a> for
      * pointing out that with connections being reused as they are, this needs
@@ -474,7 +539,7 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
     private class HeadAwareHttpResponseDecoder extends HttpResponseDecoder {
 
         public HeadAwareHttpResponseDecoder(int maxInitialLineLength,
-                int maxHeaderSize, int maxChunkSize) {
+                                            int maxHeaderSize, int maxChunkSize) {
             super(maxInitialLineLength, maxHeaderSize, maxChunkSize);
         }
 
@@ -492,22 +557,18 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
         }
     }
 
-    /***************************************************************************
+    /* *************************************************************************
      * Writing
      **************************************************************************/
 
     /**
      * Like {@link #write(Object)} and also sets the current filters to the
      * given value.
-     * 
-     * @param msg
-     * @param filters
      */
     void write(Object msg, HttpFilters filters) {
         this.currentFilters = filters;
         write(msg);
     }
-
 
     @Override
     void write(Object msg) {
@@ -554,14 +615,13 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
             chainedProxy.filterRequest(httpObject);
         }
         if (httpObject instanceof HttpRequest) {
-            HttpRequest httpRequest = (HttpRequest) httpObject;
             // Remember that we issued this HttpRequest for later
-            currentHttpRequest = httpRequest;
+            currentHttpRequest = (HttpRequest) httpObject;
         }
         super.writeHttp(httpObject);
     }
 
-    /***************************************************************************
+    /* *************************************************************************
      * Lifecycle
      **************************************************************************/
 
@@ -627,17 +687,20 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
     @Override
     protected void exceptionCaught(Throwable cause) {
         try {
-            if (cause instanceof IOException) {
+            if (cause instanceof ProxyConnectException) {
+                LOG.info("A ProxyConnectException occurred on ProxyToServerConnection: " + cause.getMessage());
+                connectionFlow.fail(cause);
+            } else if (cause instanceof IOException) {
                 // IOExceptions are expected errors, for example when a server drops the connection. rather than flood
                 // the logs with stack traces for these expected exceptions, log the message at the INFO level and the
                 // stack trace at the DEBUG level.
-                LOG.info("An IOException occurred on org.littleshoot.proxy.impl.ProxyToServerConnection: " + cause.getMessage());
-                LOG.debug("An IOException occurred on org.littleshoot.proxy.impl.ProxyToServerConnection", cause);
+                LOG.info("An IOException occurred on ProxyToServerConnection: " + cause.getMessage());
+                LOG.debug("An IOException occurred on ProxyToServerConnection", cause);
             } else if (cause instanceof RejectedExecutionException) {
-                LOG.info("An executor rejected a read or write operation on the org.littleshoot.proxy.impl.ProxyToServerConnection (this is normal if the proxy is shutting down). Message: " + cause.getMessage());
-                LOG.debug("A RejectedExecutionException occurred on org.littleshoot.proxy.impl.ProxyToServerConnection", cause);
+                LOG.info("An executor rejected a read or write operation on the ProxyToServerConnection (this is normal if the proxy is shutting down). Message: " + cause.getMessage());
+                LOG.debug("A RejectedExecutionException occurred on ProxyToServerConnection", cause);
             } else {
-                LOG.error("Caught an exception on org.littleshoot.proxy.impl.ProxyToServerConnection", cause);
+                LOG.error("Caught an exception on ProxyToServerConnection", cause);
             }
         } finally {
             if (!is(DISCONNECTED)) {
@@ -651,11 +714,15 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
         // connection, so there should not be any further action to take here.
     }
 
-    /***************************************************************************
+    /* *************************************************************************
      * State Management
      **************************************************************************/
     public TransportProtocol getTransportProtocol() {
         return transportProtocol;
+    }
+
+    public ChainedProxyType getChainedProxyType() {
+        return chainedProxyType;
     }
 
     public InetSocketAddress getRemoteAddress() {
@@ -688,15 +755,13 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
         return currentFilters;
     }
 
-    /***************************************************************************
+    /* *************************************************************************
      * Private Implementation
      **************************************************************************/
 
     /**
      * Keeps track of the current HttpResponse so that we can associate its
      * headers with future related chunks for this same transfer.
-     * 
-     * @param response
      */
     private void rememberCurrentResponse(HttpResponse response) {
         LOG.debug("Remembering the current response.");
@@ -710,8 +775,6 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
 
     /**
      * Respond to the client with the given {@link HttpObject}.
-     * 
-     * @param httpObject
      */
     private void respondWith(HttpObject httpObject) {
         clientConnection.respond(this, currentFilters, currentHttpRequest,
@@ -742,18 +805,29 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
                 connectLock)
                 .then(ConnectChannel);
 
-        if (chainedProxy != null && chainedProxy.requiresEncryption()) {
-            connectionFlow.then(serverConnection.EncryptChannel(chainedProxy
-                    .newSslEngine()));
+        if (hasUpstreamChainedProxy()) {
+            if (chainedProxy.requiresEncryption()) {
+                connectionFlow.then(serverConnection.EncryptChannel(chainedProxy.newSslEngine()));
+            }
+            switch (chainedProxyType) {
+                case SOCKS4:
+                    connectionFlow.then(SOCKS4CONNECTWithChainedProxy);
+                    break;
+                case SOCKS5:
+                    connectionFlow.then(SOCKS5InitialRequest);
+                    break;
+                default:
+                    break;
+            }
         }
 
         if (ProxyUtils.isCONNECT(initialRequest)) {
-            // If we're chaining, forward the CONNECT request
-            if (hasUpstreamChainedProxy()) {
-                connectionFlow.then(
-                        serverConnection.HTTPCONNECTWithChainedProxy);
-            }        	
-        	
+            // If we're chaining to an upstream HTTP proxy, forward the CONNECT request.
+            // Do not chain the CONNECT request for SOCKS proxies.
+            if (hasUpstreamChainedProxy() && (chainedProxyType == ChainedProxyType.HTTP)) {
+                connectionFlow.then(serverConnection.HTTPCONNECTWithChainedProxy);
+            }
+
             MitmManager mitmManager = proxyServer.getMitmManager();
             boolean isMitmEnabled = mitmManager != null;
 
@@ -773,7 +847,7 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
                             .serverSslEngine(parsedHostAndPort.getHost(), parsedHostAndPort.getPort())));
                 }
 
-            	connectionFlow
+                connectionFlow
                         .then(clientConnection.RespondCONNECTSuccessful)
                         .then(serverConnection.MitmEncryptClientChannel);
             } else {
@@ -781,6 +855,21 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
                         .then(clientConnection.RespondCONNECTSuccessful)
                         .then(clientConnection.StartTunneling);
             }
+        }
+    }
+
+    private void addFirstOrReplaceHandler(String name, ChannelHandler handler) {
+        if (channel.pipeline().context(name) != null) {
+            channel.pipeline().replace(name, name, handler);
+        }
+        else {
+            channel.pipeline().addFirst(name, handler);
+        }
+    }
+
+    private void removeHandlerIfPresent(String name) {
+        if (channel.pipeline().context(name) != null) {
+            channel.pipeline().remove(name);
         }
     }
 
@@ -796,29 +885,26 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
 
         @Override
         protected Future<?> execute() {
-            Bootstrap cb = new Bootstrap().group(proxyServer.getProxyToServerWorkerFor(transportProtocol));
+            Bootstrap cb = new Bootstrap()
+                    .group(proxyServer.getProxyToServerWorkerFor(transportProtocol))
+                    .resolver(remoteAddressResolver);
 
             switch (transportProtocol) {
-            case TCP:
-                LOG.debug("Connecting to server with TCP");
-                cb.channelFactory(new ChannelFactory<Channel>() {
-                    @Override
-                    public Channel newChannel() {
-                        return new NioSocketChannel();
-                    }
-                });
-                break;
-            case UDT:
-                LOG.debug("Connecting to server with UDT");
-                cb.channelFactory(NioUdtProvider.BYTE_CONNECTOR)
-                        .option(ChannelOption.SO_REUSEADDR, true);
-                break;
-            default:
-                throw new UnknownTransportProtocolException(transportProtocol);
+                case TCP:
+                    LOG.debug("Connecting to server with TCP");
+                    cb.channelFactory(NioSocketChannel::new);
+                    break;
+                case UDT:
+                    LOG.debug("Connecting to server with UDT");
+                    cb.channelFactory(NioUdtProvider.BYTE_CONNECTOR)
+                            .option(ChannelOption.SO_REUSEADDR, true);
+                    break;
+                default:
+                    throw new UnknownTransportProtocolException(transportProtocol);
             }
 
             cb.handler(new ChannelInitializer<Channel>() {
-                protected void initChannel(Channel ch) throws Exception {
+                protected void initChannel(Channel ch) {
                     initChannelPipeline(ch.pipeline(), initialRequest);
                 }
             });
@@ -848,22 +934,18 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
              * connection when we are negotiating connect (see readHttp()
              * in ProxyConnection). This cannot be ignored while we are
              * doing MITM + Chained Proxy because the HttpRequestEncoder
-             * of the org.littleshoot.proxy.impl.ProxyToServerConnection will be in an invalid state
+             * of the ProxyToServerConnection will be in an invalid state
              * when the next request is written. Writing the EmptyLastContent
              * resets its state.
              */
             if(isMitmEnabled){
                 ChannelFuture future = writeToChannel(initialRequest);
-                future.addListener(new ChannelFutureListener() {
-
-                    @Override
-                    public void operationComplete(ChannelFuture arg0) throws Exception {
-                        if(arg0.isSuccess()){
-                            writeToChannel(LastHttpContent.EMPTY_LAST_CONTENT);
-                        }
+                future.addListener((ChannelFutureListener) arg0 -> {
+                    if(arg0.isSuccess()){
+                        writeToChannel(LastHttpContent.EMPTY_LAST_CONTENT);
                     }
                 });
-            	return future;
+                return future;
             } else {
                 return writeToChannel(initialRequest);
             }
@@ -880,7 +962,7 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
             boolean connectOk = false;
             if (msg instanceof HttpResponse) {
                 HttpResponse httpResponse = (HttpResponse) msg;
-                int statusCode = httpResponse.getStatus().code();
+                int statusCode = httpResponse.status().code();
                 if (statusCode >= 200 && statusCode <= 299) {
                     connectOk = true;
                 }
@@ -894,10 +976,176 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
     };
 
     /**
+     * Establishes a SOCKS4 connection.
+     */
+    private ConnectionFlowStep SOCKS4CONNECTWithChainedProxy = new ConnectionFlowStep(
+            this, AWAITING_CONNECT_OK) {
+
+        @Override
+        protected Future<?> execute() {
+            InetSocketAddress destinationAddress;
+            try {
+                destinationAddress = addressFor(serverHostAndPort, proxyServer);
+            } catch (UnknownHostException e) {
+                return channel.newFailedFuture(e);
+            }
+
+            DefaultSocks4CommandRequest connectRequest = new DefaultSocks4CommandRequest(
+                    Socks4CommandType.CONNECT, destinationAddress.getHostString(), destinationAddress.getPort());
+
+            addFirstOrReplaceHandler(SOCKS_ENCODER_NAME, Socks4ClientEncoder.INSTANCE);
+            addFirstOrReplaceHandler(SOCKS_DECODER_NAME, new Socks4ClientDecoder());
+            return writeToChannel(connectRequest);
+        }
+
+        @Override
+        void read(ConnectionFlow flow, Object msg) {
+            removeHandlerIfPresent(SOCKS_ENCODER_NAME);
+            removeHandlerIfPresent(SOCKS_DECODER_NAME);
+            if (msg instanceof Socks4CommandResponse) {
+                if (((Socks4CommandResponse) msg).status() == Socks4CommandStatus.SUCCESS) {
+                    flow.advance();
+                    return;
+                }
+            }
+            flow.fail();
+        }
+
+        @Override
+        void onSuccess(ConnectionFlow flow) {
+            // Do not advance the flow until the SOCKS response has been parsed
+        }
+    };
+
+    /**
+     * Initiates a SOCKS5 connection.
+     */
+    private ConnectionFlowStep SOCKS5InitialRequest = new ConnectionFlowStep(
+            this, AWAITING_CONNECT_OK) {
+
+        @Override
+        protected Future<?> execute() {
+            List<Socks5AuthMethod> authMethods = new ArrayList<>(2);
+            authMethods.add(Socks5AuthMethod.NO_AUTH);
+            if ((username != null) || (password != null)) {
+                authMethods.add(Socks5AuthMethod.PASSWORD);
+            }
+            DefaultSocks5InitialRequest initialRequest = new DefaultSocks5InitialRequest(authMethods);
+
+            addFirstOrReplaceHandler(SOCKS_ENCODER_NAME, Socks5ClientEncoder.DEFAULT);
+            addFirstOrReplaceHandler(SOCKS_DECODER_NAME, new Socks5InitialResponseDecoder());
+            return writeToChannel(initialRequest);
+        }
+
+        @Override
+        void read(ConnectionFlow flow, Object msg) {
+            if (msg instanceof Socks5InitialResponse) {
+                Socks5AuthMethod selectedAuthMethod = ((Socks5InitialResponse) msg).authMethod();
+
+                final boolean authSuccess;
+                if (selectedAuthMethod == Socks5AuthMethod.NO_AUTH) {
+                    // Immediately proceed to SOCKS CONNECT
+                    flow.first(SOCKS5CONNECTRequestWithChainedProxy);
+                    authSuccess = true;
+                }
+                else if (selectedAuthMethod == Socks5AuthMethod.PASSWORD) {
+                    // Insert a password negotiation step:
+                    flow.first(SOCKS5SendPasswordCredentials);
+                    authSuccess = true;
+                }
+                else {
+                    // Server returned Socks5AuthMethod.UNACCEPTED or a method we do not support
+                    authSuccess = false;
+                }
+
+                if (authSuccess) {
+                    flow.advance();
+                    return;
+                }
+            }
+            flow.fail();
+        }
+
+        @Override
+        void onSuccess(ConnectionFlow flow) {
+            // Do not advance the flow until the SOCKS response has been parsed
+        }
+    };
+
+    /**
+     * Sends SOCKS5 password credentials after {@link #SOCKS5InitialRequest} has completed.
+     */
+    private ConnectionFlowStep SOCKS5SendPasswordCredentials = new ConnectionFlowStep(
+            this, AWAITING_CONNECT_OK) {
+
+        @Override
+        protected Future<?> execute() {
+            DefaultSocks5PasswordAuthRequest authRequest = new DefaultSocks5PasswordAuthRequest(
+                    username != null ? username : "", password != null ? password : "");
+
+            addFirstOrReplaceHandler(SOCKS_DECODER_NAME, new Socks5PasswordAuthResponseDecoder());
+            return writeToChannel(authRequest);
+        }
+
+        @Override
+        void read(ConnectionFlow flow, Object msg) {
+            if (msg instanceof Socks5PasswordAuthResponse) {
+                if (((Socks5PasswordAuthResponse) msg).status() == Socks5PasswordAuthStatus.SUCCESS) {
+                    flow.first(SOCKS5CONNECTRequestWithChainedProxy);
+                    flow.advance();
+                    return;
+                }
+            }
+            flow.fail();
+        }
+
+        @Override
+        void onSuccess(ConnectionFlow flow) {
+            // Do not advance the flow until the SOCKS response has been parsed
+        }
+    };
+
+    /**
+     * Establishes a SOCKS5 connection after {@link #SOCKS5InitialRequest} and
+     * (optionally) {@link #SOCKS5SendPasswordCredentials} have completed.
+     */
+    private ConnectionFlowStep SOCKS5CONNECTRequestWithChainedProxy = new ConnectionFlowStep(
+            this, AWAITING_CONNECT_OK) {
+
+        @Override
+        protected Future<?> execute() {
+            InetSocketAddress destinationAddress = unresolvedAddressFor(serverHostAndPort);
+            DefaultSocks5CommandRequest connectRequest = new DefaultSocks5CommandRequest(
+                    Socks5CommandType.CONNECT, Socks5AddressType.DOMAIN, destinationAddress.getHostString(), destinationAddress.getPort());
+
+            addFirstOrReplaceHandler(SOCKS_DECODER_NAME, new Socks5CommandResponseDecoder());
+            return writeToChannel(connectRequest);
+        }
+
+        @Override
+        void read(ConnectionFlow flow, Object msg) {
+            removeHandlerIfPresent(SOCKS_ENCODER_NAME);
+            removeHandlerIfPresent(SOCKS_DECODER_NAME);
+            if (msg instanceof Socks5CommandResponse) {
+                if (((Socks5CommandResponse) msg).status() == Socks5CommandStatus.SUCCESS) {
+                    flow.advance();
+                    return;
+                }
+            }
+            flow.fail();
+        }
+
+        @Override
+        void onSuccess(ConnectionFlow flow) {
+            // Do not advance the flow until the SOCKS response has been parsed
+        }
+    };
+
+    /**
      * <p>
      * Encrypts the client channel based on our server {@link SSLSession}.
      * </p>
-     * 
+     *
      * <p>
      * This does not wait for the handshake to finish so that we can go on and
      * respond to the CONNECT request.
@@ -921,14 +1169,9 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
                     .encrypt(proxyServer.getMitmManager()
                             .clientSslEngineFor(initialRequest, sslEngine.getSession()), false)
                     .addListener(
-                            new GenericFutureListener<Future<? super Channel>>() {
-                                @Override
-                                public void operationComplete(
-                                        Future<? super Channel> future)
-                                        throws Exception {
-                                    if (future.isSuccess()) {
-                                        clientConnection.setMitming(true);
-                                    }
+                            future -> {
+                                if (future.isSuccess()) {
+                                    clientConnection.setMitming(true);
                                 }
                             });
         }
@@ -947,7 +1190,7 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
         // sends back a valid certificate for the expected host. we can retry the connection without SNI to allow the proxy
         // to connect to these misconfigured hosts. we should only retry the connection without SNI if the connection
         // failure happened when SNI was enabled, to prevent never-ending connection attempts due to SNI warnings.
-        if (!disableSni && cause instanceof SSLProtocolException) {
+        if (!disableSni && (cause instanceof SSLProtocolException) || (cause instanceof SSLHandshakeException)) {
             // unfortunately java does not expose the specific TLS alert number (112), so we have to look for the
             // unrecognized_name string in the exception's message
             if (cause.getMessage() != null && cause.getMessage().contains("unrecognized_name")) {
@@ -1007,17 +1250,24 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
     /**
      * Set up our connection parameters based on server address and chained
      * proxies.
-     * 
+     *
      * @throws UnknownHostException when unable to resolve the hostname to an IP address
      */
     private void setupConnectionParameters() throws UnknownHostException {
         if (chainedProxy != null
                 && chainedProxy != ChainedProxyAdapter.FALLBACK_TO_DIRECT_CONNECTION) {
             this.transportProtocol = chainedProxy.getTransportProtocol();
-            this.remoteAddress = chainedProxy.getChainedProxyAddress();
+            this.chainedProxyType = chainedProxy.getChainedProxyType();
             this.localAddress = chainedProxy.getLocalAddress();
+            this.remoteAddress = chainedProxy.getChainedProxyAddress();
+            this.remoteAddressResolver = DefaultAddressResolverGroup.INSTANCE;
+            this.username = chainedProxy.getUsername();
+            this.password = chainedProxy.getPassword();
         } else {
             this.transportProtocol = TransportProtocol.TCP;
+            this.chainedProxyType = ChainedProxyType.HTTP;
+            this.username = null;
+            this.password = null;
 
             // Report DNS resolution to HttpFilters
             this.remoteAddress = this.currentFilters.proxyToServerResolutionStarted(serverHostAndPort);
@@ -1052,20 +1302,16 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
     /**
      * Initialize our {@link ChannelPipeline} to connect the upstream server.
      * LittleProxy acts as a client here.
-     * 
+     *
      * A {@link ChannelPipeline} invokes the read (Inbound) handlers in
      * ascending ordering of the list and then the write (Outbound) handlers in
      * descending ordering.
-     * 
+     *
      * Regarding the Javadoc of {@link HttpObjectAggregator} it's needed to have
      * the {@link HttpResponseEncoder} or {@link HttpRequestEncoder} before the
      * {@link HttpObjectAggregator} in the {@link ChannelPipeline}.
-     * 
-     * @param pipeline
-     * @param httpRequest
      */
-    private void initChannelPipeline(ChannelPipeline pipeline,
-            HttpRequest httpRequest) {
+    private void initChannelPipeline(ChannelPipeline pipeline, HttpRequest httpRequest) {
 
         if (trafficHandler != null) {
             pipeline.addLast("global-traffic-shaping", trafficHandler);
@@ -1074,9 +1320,12 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
         pipeline.addLast("bytesReadMonitor", bytesReadMonitor);
         pipeline.addLast("bytesWrittenMonitor", bytesWrittenMonitor);
 
+        if ( proxyServer.isSendProxyProtocol()) {
+            pipeline.addLast("proxy-protocol-encoder", new HAProxyMessageEncoder());
+        }
         pipeline.addLast("encoder", new HttpRequestEncoder());
         pipeline.addLast("decoder", new HeadAwareHttpResponseDecoder(
-        		proxyServer.getMaxInitialLineLength(),
+                proxyServer.getMaxInitialLineLength(),
                 proxyServer.getMaxHeaderSize(),
                 proxyServer.getMaxChunkSize()));
 
@@ -1104,7 +1353,7 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
      * Do all the stuff that needs to be done after our {@link ConnectionFlow}
      * has succeeded.
      * </p>
-     * 
+     *
      * @param shouldForwardInitialRequest
      *            whether or not we should forward the initial HttpRequest to
      *            the server after the connection has been established.
@@ -1139,7 +1388,7 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
 
     /**
      * Build an {@link InetSocketAddress} for the given hostAndPort.
-     * 
+     *
      * @param hostAndPort String representation of the host and port
      * @param proxyServer the current {@link DefaultHttpProxyServer}
      * @return a resolved InetSocketAddress for the specified hostAndPort
@@ -1162,17 +1411,31 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
         return proxyServer.getServerResolver().resolve(host, port);
     }
 
-    /***************************************************************************
+    /**
+     * Similar to {@link #addressFor(String, DefaultHttpProxyServer)} except that it does
+     * not resolve the address.
+     * @param hostAndPort the host and port to parse.
+     * @return an unresolved {@link InetSocketAddress}.
+     */
+    private static InetSocketAddress unresolvedAddressFor(String hostAndPort) {
+        HostAndPort parsedHostAndPort = HostAndPort.fromString(hostAndPort);
+        String host = parsedHostAndPort.getHost();
+        int port = parsedHostAndPort.getPortOrDefault(80);
+        return InetSocketAddress.createUnresolved(host, port);
+    }
+
+    /* *************************************************************************
      * Activity Tracking/Statistics
-     * 
+     *
      * We track statistics on bytes, requests and responses by adding handlers
      * at the appropriate parts of the pipeline (see initChannelPipeline()).
      **************************************************************************/
+
     private final BytesReadMonitor bytesReadMonitor = new BytesReadMonitor() {
         @Override
         protected void bytesRead(int numberOfBytes) {
             FullFlowContext flowContext = new FullFlowContext(clientConnection,
-                    org.littleshoot.proxy.impl.ProxyToServerConnection.this);
+                    ProxyToServerConnection.this);
             for (ActivityTracker tracker : proxyServer
                     .getActivityTrackers()) {
                 tracker.bytesReceivedFromServer(flowContext, numberOfBytes);
@@ -1184,7 +1447,7 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
         @Override
         protected void responseRead(HttpResponse httpResponse) {
             FullFlowContext flowContext = new FullFlowContext(clientConnection,
-                    org.littleshoot.proxy.impl.ProxyToServerConnection.this);
+                    ProxyToServerConnection.this);
             for (ActivityTracker tracker : proxyServer
                     .getActivityTrackers()) {
                 tracker.responseReceivedFromServer(flowContext, httpResponse);
@@ -1196,7 +1459,7 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
         @Override
         protected void bytesWritten(int numberOfBytes) {
             FullFlowContext flowContext = new FullFlowContext(clientConnection,
-                    org.littleshoot.proxy.impl.ProxyToServerConnection.this);
+                    ProxyToServerConnection.this);
             for (ActivityTracker tracker : proxyServer
                     .getActivityTrackers()) {
                 tracker.bytesSentToServer(flowContext, numberOfBytes);
@@ -1208,7 +1471,7 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
         @Override
         protected void requestWriting(HttpRequest httpRequest) {
             FullFlowContext flowContext = new FullFlowContext(clientConnection,
-                    org.littleshoot.proxy.impl.ProxyToServerConnection.this);
+                    ProxyToServerConnection.this);
             try {
                 for (ActivityTracker tracker : proxyServer
                         .getActivityTrackers()) {
@@ -1234,6 +1497,6 @@ public class ProxyToServerConnection extends org.littleshoot.proxy.impl.ProxyCon
     };
 
     static {
-        Debugger.debug(ProxyToServerConnection.class.getSimpleName() + " is patched");
+        Debugger.debug(ProxyConnection.class.getSimpleName() + " is patched");
     }
 }
