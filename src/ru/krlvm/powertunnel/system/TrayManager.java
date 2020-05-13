@@ -42,10 +42,7 @@ public class TrayManager {
         item.setEnabled(false);
         popup.add(item);
 
-        item = new MenuItem("");
-        item.setFont(font);
-        item.setEnabled(false);
-        popup.add(item);
+        popup.addSeparator();
 
         item = new MenuItem("Open " + PowerTunnel.NAME);
         item.setFont(font);
@@ -57,10 +54,7 @@ public class TrayManager {
         });
         popup.add(item);
 
-        item = new MenuItem("");
-        item.setFont(font);
-        item.setEnabled(false);
-        popup.add(item);
+        popup.addSeparator();
 
         item = new MenuItem("Logs");
         item.setFont(font);
@@ -112,10 +106,7 @@ public class TrayManager {
         });
         popup.add(item);
 
-        item = new MenuItem("");
-        item.setFont(font);
-        item.setEnabled(false);
-        popup.add(item);
+        popup.addSeparator();
 
         item = new MenuItem("Exit");
         item.setFont(headerFont);
