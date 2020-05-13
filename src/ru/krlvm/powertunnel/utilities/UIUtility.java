@@ -5,6 +5,7 @@ import ru.krlvm.powertunnel.frames.ControlFrame;
 import ru.krlvm.swingdpi.SwingDPI;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import java.awt.*;
@@ -62,10 +63,12 @@ public class UIUtility {
     public static JEditorPane getLabelWithHyperlinkSupport(String html, String additionalStyles) {
         //We will copy style from this JLabel
         JLabel label = new JLabel();
+        Color background = label.getBackground();
         Font font = label.getFont();
         String style = "font-family:" + font.getFamily() + ";" +
                 "font-weight:" + (font.isBold() ? "bold" : "normal") + ";" +
-                "font-size:" + font.getSize() + "pt;";
+                "font-size:" + font.getSize() + "pt;" +
+                "background-color:#" + Integer.toHexString(background.getRGB()).substring(2) + ";";
         if(additionalStyles != null) {
             style += additionalStyles;
         }
@@ -88,6 +91,7 @@ public class UIUtility {
         });
 
         pane.setEditable(false);
+        pane.setBorder(new LineBorder(background, (int)(3*SwingDPI.getScaleFactor())));
         pane.setBackground(label.getBackground());
         pane.setHighlighter(null);
 
