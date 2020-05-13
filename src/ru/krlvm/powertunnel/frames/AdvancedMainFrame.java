@@ -141,17 +141,17 @@ public class AdvancedMainFrame extends MainFrame {
             public void actionPerformed(ActionEvent e) {
                 JEditorPane message = UIUtility.getLabelWithHyperlinkSupport(
                         "<a href=\"https://github.com/krlvm/PowerTunnel\">PowerTunnel</a> is made possible by these open-source projects:" +
-                        "<br><br>" +
-                        "<a href=\"https://github.com/adamfisk/LittleProxy\">LittleProxy</a> - proxy server<br>" +
-                        "<a href=\"https://github.com/dnsjava/dnsjava\">dnsjava</a> - DNS library, DoH realization<br>" +
-                        "<a href=\"https://github.com/ibauersachs/dnssecjava\">dnssecjava</a> - DNSSec realization for dnsjava<br>" +
-                        "<a href=\"https://github.com/adamfisk/DNSSEC4J\">DNSSEC4J</a> - DNSSec realization for LittleProxy<br>" +
-                        "<a href=\"https://github.com/java-native-access/jna\">Java Native Access</a> - library for accessing system API<br>" +
-                        "<a href=\"https://github.com/krlvm/SwingDPI\">SwingDPI</a> - High DPI scaling" +
-                        "<br><br>" +
-                        "<a href=\"https:/t.me/powertunnel_dpi\">Join PowerTunnel Telegram channel!</a>" +
-                        "<br><br>" +
-                        "(c) krlvm, 2019-2020",
+                                "<br><br>" +
+                                "<a href=\"https://github.com/adamfisk/LittleProxy\">LittleProxy</a> - proxy server, <a href=\"https://github.com/mrog/LittleProxy\">forked</a> version<br>" +
+                                "<a href=\"https://github.com/dnsjava/dnsjava\">dnsjava</a> - DNS library, DoH realization<br>" +
+                                "<a href=\"https://github.com/ibauersachs/dnssecjava\">dnssecjava</a> - DNSSec realization for dnsjava<br>" +
+                                "<a href=\"https://github.com/adamfisk/DNSSEC4J\">DNSSEC4J</a> - DNSSec realization for LittleProxy<br>" +
+                                "<a href=\"https://github.com/java-native-access/jna\">Java Native Access</a> - library for accessing system API<br>" +
+                                "<a href=\"https://github.com/krlvm/SwingDPI\">SwingDPI</a> - High DPI scaling" +
+                                "<br><br>" +
+                                "<a href=\"https:/t.me/powertunnel_dpi\">Join PowerTunnel Telegram channel!</a>" +
+                                "<br><br>" +
+                                "(c) krlvm, 2019-2020",
                         null);
                 JOptionPane.showMessageDialog(null, message, "About " + PowerTunnel.NAME, JOptionPane.INFORMATION_MESSAGE);
             }

@@ -67,7 +67,7 @@ Available arguments:
  -console                             console mode, without UI
  -government-blacklist-from [URL]     automatically fill government blacklist from URL
  -use-dns-sec                         enables DNSSec mode with the Google DNS servers
- -use-doh-resolver [URL]              enables DNS over HTTPS resolver
+ -use-dns-server [URL]                overrides DNS settings (DNS over HTTPS supported)
  -disallow-invalid-packets            HTTP packets without Host header will be thrown out (unrecommended)
  -full-chunking                       enables chunking the whole packets
  -mix-host-case                       enables 'Host' header case mix (unstable)
@@ -75,12 +75,14 @@ Available arguments:
  -chunk-size [size]                   sets size of one chunk
  -ip [IP Address]                     sets IP Address
  -port [Port]                         sets port
+ -enable-journal                      enables PowerTunnel journal (when UI enabled)
+ -enable-logs                         enables PowerTunnel logs (when UI enabled)
+ -enable-log-to-file                  enables PowerTunnel logger and log file
  -with-web-ui [appendix]              enables Web UI at http://powertunnelmonitor[appendix].info
  -disable-auto-proxy-setup            disables auto proxy setup on Windows
  -auto-proxy-setup-win-ie             auto proxy setup using IE instead of native API on Windows
  -full-output-mirroring               fully mirrors system output to the log
  -set-scale-factor [n]                sets DPI scale factor (for testing purposes)
- -disable-journal                     disables journal
  -disable-tray                        disables tray icon
  -disable-native-lf                   disables native L&F (when UI enabled)
  -disable-ui-scaling                  disables UI scaling (when UI enabled)
@@ -95,6 +97,7 @@ Available arguments:
 
 ## Dependencies
 * [LittleProxy](https://github.com/adamfisk/LittleProxy) with some [patches](https://github.com/krlvm/PowerTunnel/tree/master/src/org/littleshoot/proxy/impl) - proxy server
+  * [The original LittleProxy](https://github.com/adamfisk/LittleProxy) was replaced with a [forked one](https://github.com/mrog/LittleProxy) since version 1.11
 * [dnsjava](https://github.com/dnsjava/dnsjava) - DNS library, DoH realization
 * [dnssecjava](https://github.com/ibauersachs/dnssecjava) - DNSSec realization for dnsjava
 * [DNSSEC4J](https://github.com/adamfisk/DNSSEC4J) - DNSSec realization for LittleProxy
