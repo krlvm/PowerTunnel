@@ -52,7 +52,7 @@ public class UpdateNotifier {
                                 public void run() {
                                     PowerTunnel.optionsFrame.updateAvailable(version);
                                     if(PowerTunnel.isMainFrameVisible() || PowerTunnel.optionsFrame.isVisible()) {
-                                        JEditorPane message = UIUtility.getLabelWithHyperlinkSupport("" + PowerTunnel.NAME + " is ready to update!" +
+                                        JEditorPane message = UIUtility.getLabelWithHyperlinkSupport(PowerTunnel.NAME + " is ready to update!" +
                                                 "<br><br>" +
                                                 "Version: " + version + "<br>" +
                                                 "<br>" +
@@ -60,9 +60,9 @@ public class UpdateNotifier {
                                                 "<br>" +
                                                 "Download: <a href=\"" + PowerTunnel.REPOSITORY_URL + "/releases/download/v" + version + "/" + PowerTunnel.NAME + ".jar\">click here</a>" +
                                                 "<br><br>" +
-                                                "Visit <a href=\"" + PowerTunnel.REPOSITORY_URL + "\">GitHub repository</a>" +
-                                                "</body></html>", null);
-                                        JOptionPane.showMessageDialog(null, message, "" + PowerTunnel.NAME + " Updater", JOptionPane.INFORMATION_MESSAGE);
+                                                "Visit <a href=\"" + PowerTunnel.REPOSITORY_URL + "\">GitHub repository</a>",
+                                                null);
+                                        JOptionPane.showMessageDialog(null, message, PowerTunnel.NAME + " Updater", JOptionPane.INFORMATION_MESSAGE);
                                     } else {
                                         PowerTunnel.getTray().showNotification("An PowerTunnel update available");
                                     }

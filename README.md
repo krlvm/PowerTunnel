@@ -98,5 +98,5 @@ Available arguments:
 * [dnsjava](https://github.com/dnsjava/dnsjava) - DNS library, DoH realization
 * [dnssecjava](https://github.com/ibauersachs/dnssecjava) - DNSSec realization for dnsjava
 * [DNSSEC4J](https://github.com/adamfisk/DNSSEC4J) - DNSSec realization for LittleProxy
-* [Java Native Access](https://github.com/java-native-access/jna) - changing the system's proxy server using the native APIs
-* [SwingDPI](https://github.com/krlvm/SwingDPI) - HiDPI scaling
+* [Java Native Access](https://github.com/java-native-access/jna) - library for accessing system API
+* [SwingDPI](https://github.com/krlvm/SwingDPI) - High DPI scaling
