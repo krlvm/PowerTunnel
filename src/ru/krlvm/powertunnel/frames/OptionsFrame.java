@@ -5,6 +5,7 @@ import ru.krlvm.powertunnel.data.Settings;
 import ru.krlvm.powertunnel.ui.TooltipCheckBox;
 import ru.krlvm.powertunnel.ui.TooltipLabel;
 import ru.krlvm.powertunnel.updater.UpdateNotifier;
+import ru.krlvm.powertunnel.utilities.SystemUtility;
 
 import javax.swing.*;
 import java.awt.*;
@@ -98,9 +99,11 @@ public class OptionsFrame extends ControlFrame {
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.anchor = GridBagConstraints.WEST;
 
-        autoSetup = new TooltipCheckBox("Auto system proxy setup (Windows)",
+        autoSetup = new TooltipCheckBox("Auto system proxy setup",
                 "Automatically setting up system proxy server configuration.<br>At the moment available only on the Windows systems.<br>Can require automatic Internet Explorer start for a few seconds.");
-        panel.add(autoSetup, gbc);
+        if(SystemUtility.OS.contains("windows")) {
+            panel.add(autoSetup, gbc);
+        }
 
         fullChunking = new TooltipCheckBox("HTTPS: Full chunking mode",
                 "Enables full chunking mode.<br>Can led to higher CPU utilization, some websites from<br>the government blacklist may not accept connections,<br>but more efficient than the default (quiet) method.");
