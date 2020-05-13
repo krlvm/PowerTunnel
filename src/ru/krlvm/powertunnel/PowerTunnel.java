@@ -393,43 +393,7 @@ public class PowerTunnel {
         setStatus(ServerStatus.STARTING);
         //Load data
         try {
-            for (String address : DataStore.GOVERNMENT_BLACKLIST.load()) {
-                addToGovernmentBlacklist(address);
-            }
-            if(GOVERNMENT_BLACKLIST_MIRROR != null && !GOVERNMENT_BLACKLIST_MIRROR.trim().isEmpty()) {
-                Utility.print("[#] Loading government blacklist from the mirror...");
-                try {
-                    URL url = new URL(GOVERNMENT_BLACKLIST_MIRROR);
-                    InputStream in = url.openStream();
-                    Scanner scanner = new Scanner(in);
-                    int before = GOVERNMENT_BLACKLIST.size();
-                    while (scanner.hasNext()) {
-                        addToGovernmentBlacklist(scanner.next());
-                    }
-                    in.close();
-                    scanner.close();
-                    Utility.print("[#] Loaded '%s' government-blocked websites from the mirror", (GOVERNMENT_BLACKLIST.size() - before));
-                } catch (Exception ex) {
-                    Utility.print("[#] Failed to load government-blocked websites from the mirror: " + ex.getMessage());
-                    Debugger.debug(ex);
-                }
-            }
-            for (String address : DataStore.USER_BLACKLIST.load()) {
-                addToUserBlacklist(address);
-            }
-            if(!CONSOLE_MODE) {
-                USER_FRAMES[0].refill();
-            }
-            for (String address : DataStore.USER_WHITELIST.load()) {
-                addToUserWhitelist(address);
-            }
-            if(!CONSOLE_MODE) {
-                USER_FRAMES[1].refill();
-            }
-            ISP_STUB_LIST.addAll(DataStore.ISP_STUB_LIST.load());
-            Utility.print("[i] Loaded '%s' government blocked sites, '%s' user blocked sites, '%s' user whitelisted sites",
-                    GOVERNMENT_BLACKLIST.size(), USER_BLACKLIST.size(), USER_WHITELIST.size());
-            Utility.print();
+            loadLists();
         } catch (IOException ex) {
             throw new DataStoreException(ex.getMessage(), ex);
         }
@@ -526,10 +490,7 @@ public class PowerTunnel {
     public static void stop() {
         stopServer();
         safeUserListSave();
-        GOVERNMENT_BLACKLIST.clear();
-        USER_BLACKLIST.clear();
-        USER_WHITELIST.clear();
-        ISP_STUB_LIST.clear();
+        clearLists();
     }
 
     public static void restartServer() {
@@ -571,6 +532,54 @@ public class PowerTunnel {
         if(!CONSOLE_MODE) {
             frame.update();
         }
+    }
+
+    private static void clearLists() {
+        GOVERNMENT_BLACKLIST.clear();
+        USER_BLACKLIST.clear();
+        USER_WHITELIST.clear();
+        ISP_STUB_LIST.clear();
+    }
+
+    public static void loadLists() throws IOException {
+        clearLists();
+        for (String address : DataStore.GOVERNMENT_BLACKLIST.load()) {
+            addToGovernmentBlacklist(address);
+        }
+        if(GOVERNMENT_BLACKLIST_MIRROR != null && !GOVERNMENT_BLACKLIST_MIRROR.trim().isEmpty()) {
+            Utility.print("[#] Loading government blacklist from the mirror...");
+            try {
+                URL url = new URL(GOVERNMENT_BLACKLIST_MIRROR);
+                InputStream in = url.openStream();
+                Scanner scanner = new Scanner(in);
+                int before = GOVERNMENT_BLACKLIST.size();
+                while (scanner.hasNext()) {
+                    addToGovernmentBlacklist(scanner.next());
+                }
+                in.close();
+                scanner.close();
+                Utility.print("[#] Loaded '%s' government-blocked websites from the mirror", (GOVERNMENT_BLACKLIST.size() - before));
+            } catch (Exception ex) {
+                Utility.print("[#] Failed to load government-blocked websites from the mirror: " + ex.getMessage());
+                Debugger.debug(ex);
+            }
+        }
+        for (String address : DataStore.USER_BLACKLIST.load()) {
+            addToUserBlacklist(address);
+        }
+        if(!CONSOLE_MODE) {
+            USER_FRAMES[0].refill();
+        }
+        for (String address : DataStore.USER_WHITELIST.load()) {
+            addToUserWhitelist(address);
+        }
+        if(!CONSOLE_MODE) {
+            USER_FRAMES[1].refill();
+        }
+        ISP_STUB_LIST.addAll(DataStore.ISP_STUB_LIST.load());
+        Utility.print("[i] Loaded '%s' government blocked sites, '%s' user blocked sites, '%s' user whitelisted sites",
+                GOVERNMENT_BLACKLIST.size(), USER_BLACKLIST.size(), USER_WHITELIST.size());
+        Utility.print();
     }
 
     private static Resolver getResolver(boolean useDoh) throws UnknownHostException {

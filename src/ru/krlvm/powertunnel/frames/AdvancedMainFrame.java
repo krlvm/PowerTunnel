@@ -7,6 +7,7 @@ import ru.krlvm.swingdpi.SwingDPI;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 
 public class AdvancedMainFrame extends MainFrame {
 
@@ -32,13 +33,15 @@ public class AdvancedMainFrame extends MainFrame {
         ipInput.setPreferredSize(new Dimension(SwingDPI.scale(200)+insets.left+insets.right,
                 SwingDPI.scale(22)+insets.top+insets.bottom));
         ipInput.setToolTipText("IP Address");
+        //ipInput.setHorizontalAlignment(SwingConstants.CENTER);
         ipInput.setText(String.valueOf(PowerTunnel.SERVER_IP_ADDRESS));
 
         final JTextField portInput = new JTextField();
         insets = portInput.getInsets();
-        portInput.setPreferredSize(SwingDPI.scale(76+insets.left+insets.right,
+        portInput.setPreferredSize(SwingDPI.scale(75+insets.left+insets.right,
                 22+insets.top+insets.bottom));
         portInput.setToolTipText("Port");
+        //portInput.setHorizontalAlignment(SwingConstants.CENTER);
         portInput.setText(String.valueOf(PowerTunnel.SERVER_PORT));
 
         inputs = new JTextField[]{ipInput, portInput};
@@ -114,8 +117,36 @@ public class AdvancedMainFrame extends MainFrame {
             }
         });
 
+        JButton reload = new JButton("Reload");
+        reload.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    PowerTunnel.loadLists();
+                    JOptionPane.showMessageDialog(AdvancedMainFrame.this,
+                            "Government blacklist and user lists has been reloaded",
+                            PowerTunnel.NAME, JOptionPane.INFORMATION_MESSAGE);
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(AdvancedMainFrame.this,
+                            "An error occurred while reloading lists: " + ex.getMessage(),
+                            PowerTunnel.NAME, JOptionPane.INFORMATION_MESSAGE);
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+        JButton about = new JButton("About");
+        about.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PowerTunnel.optionsFrame.showFrame();
+            }
+        });
+
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        //panel.add(new JLabel("IP Address:"));
         panel.add(ipInput);
+        //panel.add(new JLabel("Port:"));
         panel.add(portInput);
         panel.add(stateButton);
         pane.add(header, gbc);
@@ -123,23 +154,35 @@ public class AdvancedMainFrame extends MainFrame {
         root.add(pane, BorderLayout.NORTH);
 
         panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panel.add(logButton);
-        panel.add(journalButton);
-        panel.add(userBlacklist);
-        panel.add(userWhitelist);
-        panel.add(options);
-        pane.add(panel, gbc);
+        JPanel generalButtonsPane = new JPanel(new GridLayout(2, 1));
+
+        JPanel firstButtonsRow = new JPanel();
+        firstButtonsRow.add(logButton);
+        firstButtonsRow.add(journalButton);
+        firstButtonsRow.add(userBlacklist);
+        firstButtonsRow.add(userWhitelist);
+
+        JPanel secondButtonsRow = new JPanel();
+        secondButtonsRow.add(reload);
+        secondButtonsRow.add(options);
+        secondButtonsRow.add(about);
+
+        generalButtonsPane.add(firstButtonsRow);
+        generalButtonsPane.add(secondButtonsRow);
+
+        pane.add(generalButtonsPane, gbc);
         pane.add(UIUtility.getLabelWithHyperlinkSupport("<a href=\"" + PowerTunnel.REPOSITORY_URL + "/issues\">Submit a bug</a> | <a href=\"https://github.com/krlvm/PowerTunnel-Android\">Android version</a> | " + "<a href=\"" + PowerTunnel.REPOSITORY_URL + "/wiki\">Help</a><br>" +
                 "<b><a style=\"color: black\" href=\"" + PowerTunnel.REPOSITORY_URL + "\">" + PowerTunnel.REPOSITORY_URL + "</a>" +
                 "</b><br><br>(c) krlvm, 2019-2020", "text-align: center"), gbc);
-
-        root.setDefaultButton(stateButton);
-        stateButton.requestFocus();
 
         pack();
         setResizable(false);
         controlFrameInitialized();
         setVisible(true);
+
+        stateButton.requestFocus();
+        stateButton.requestFocusInWindow();
+        root.setDefaultButton(stateButton);
 
         //save data
         setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
