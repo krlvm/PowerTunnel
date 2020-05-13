@@ -49,6 +49,12 @@ public class PowerTunnel {
     public static final int VERSION_CODE = 23;
     public static final String REPOSITORY_URL = "https://github.com/krlvm/PowerTunnel";
 
+    private static final String HEADER =
+            NAME + " version " + VERSION + "\n" +
+            "Simple, scalable, cross-platform and effective solution against government censorship\n" +
+            REPOSITORY_URL + "\n" +
+            "(c) krlvm, 2019-2020\n";
+
     private static HttpProxyServer SERVER;
     private static ServerStatus STATUS = ServerStatus.NOT_RUNNING;
     public static String SERVER_IP_ADDRESS = "127.0.0.1";
@@ -88,12 +94,6 @@ public class PowerTunnel {
     private static boolean CONSOLE_MODE = false;
 
     public static void main(String[] args) {
-        Utility.print(NAME + " version " + VERSION);
-        Utility.print("Simple, scalable, cross-platform and effective solution against government censorship");
-        Utility.print(REPOSITORY_URL);
-        Utility.print("(c) krlvm, 2019-2020");
-        Utility.print();
-
         //Parse launch arguments
         //java -jar PowerTunnel.jar (-args)
         boolean startNow = false;
@@ -108,6 +108,7 @@ public class PowerTunnel {
                 arg = arg.replaceFirst("-", "").toLowerCase();
                 switch (arg) {
                     case "help": {
+                        Utility.print(HEADER);
                         Utility.print("Available arguments:\n" +
                                 " -help                                display help\n" +
                                 " -start                               starts server right after load\n" +
@@ -332,6 +333,8 @@ public class PowerTunnel {
                     new BlacklistFrame(), new WhitelistFrame()
             };
         }
+
+        Utility.print(HEADER);
 
         //Allow us to modify 'HOST' request header
         System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
