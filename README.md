@@ -44,7 +44,9 @@ You can monitor network activity, block and whitelist websites through Java Swin
 PowerTunnel supports DNS over HTTPS (DoH) - secure and fast DNS protocol.
 
 DoH servers tested with PowerTunnel:
-* Google - https://dns.google/dns-query (recommended)
+* Google (recommended):
+  * https://dns.google/dns-query
+  * https://8.8.8.8/dns-query
 * Cloudflare - https://cloudflare-dns.com/dns-query (unstable)
 
 You can test if you're using DoH [here](http://www.whatsmydnsserver.com/). If you have problems with DoH on PowerTunnel try disabling DNSSec mode.
