@@ -25,7 +25,7 @@ public class OptionsFrame extends ControlFrame {
     private JCheckBox allowInvalidPackets;
     private JCheckBox mixHostCase;
     private JCheckBox useDnsSec;     //server restart
-    private JTextField dnsOverHttps; //server restart
+    private JTextField dnsAddress; //server restart
     private JTextField blacklistMirror;
     private JCheckBox allowRequestsToOriginServer;
     private JCheckBox enableJournal;
@@ -135,11 +135,11 @@ public class OptionsFrame extends ControlFrame {
         panel.add(useDnsSec, gbc);
 
         JPanel dohPane = new JPanel(new FlowLayout(FlowLayout.LEADING));
-        dnsOverHttps = new JTextField(PowerTunnel.DOH_ADDRESS);
-        dnsOverHttps.setPreferredSize(new Dimension(400, ((int) dnsOverHttps.getPreferredSize().getHeight())));
-        JLabel dohLabel = new TooltipLabel("DoH resolver (server restart required):", "DNS over HTTPS server address<br>Compatible DoH addresses is listed in the repository readme");
+        dnsAddress = new JTextField(PowerTunnel.DNS_SERVER);
+        dnsAddress.setPreferredSize(new Dimension(400, ((int) dnsAddress.getPreferredSize().getHeight())));
+        JLabel dohLabel = new TooltipLabel("DNS or DoH resolver (server restart required):", "DNS or DNS over HTTPS resolver address<br>Addresses starts with 'https://' automatically recognizes as a DoH resolvers<br>Compatible DoH addresses is listed in the repository readme");
         dohPane.add(dohLabel);
-        dohPane.add(dnsOverHttps, gbc);
+        dohPane.add(dnsAddress, gbc);
         panel.add(dohPane, gbc);
 
         JPanel mirrorPane = new JPanel(new FlowLayout(FlowLayout.LEADING));
@@ -173,7 +173,7 @@ public class OptionsFrame extends ControlFrame {
 
         chunkSize.setPreferredSize(new Dimension(dohPane.getWidth()-chunkLabel.getWidth(), chunkSize.getHeight()));
         blacklistMirror.setPreferredSize(new Dimension(dohPane.getWidth()-blacklistLabel.getWidth(), blacklistMirror.getHeight()));
-        dnsOverHttps.setPreferredSize(new Dimension(dnsOverHttps.getWidth()+15, dnsOverHttps.getHeight()));
+        dnsAddress.setPreferredSize(new Dimension(dnsAddress.getWidth()+15, dnsAddress.getHeight()));
         pack();
 
         controlFrameInitialized();
@@ -201,8 +201,8 @@ public class OptionsFrame extends ControlFrame {
         useDnsSec.setSelected(useDnsSecVal = PowerTunnel.SETTINGS.getBooleanOption(Settings.USE_DNS_SEC));
         useDnsSec.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.USE_DNS_SEC));
 
-        dnsOverHttps.setText(dnsOverHttpsVal = PowerTunnel.SETTINGS.getOption(Settings.DOH_ADDRESS));
-        dnsOverHttps.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.DOH_ADDRESS));
+        dnsAddress.setText(dnsOverHttpsVal = PowerTunnel.SETTINGS.getOption(Settings.DNS_ADDRESS));
+        dnsAddress.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.DNS_ADDRESS));
 
         blacklistMirror.setText(PowerTunnel.SETTINGS.getOption(Settings.GOVERNMENT_BLACKLIST_MIRROR));
         blacklistMirror.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.GOVERNMENT_BLACKLIST_MIRROR));
@@ -220,7 +220,7 @@ public class OptionsFrame extends ControlFrame {
     private void save() {
         final boolean suggestRestart = (
                 useDnsSecVal != useDnsSec.isSelected() ||
-                        !dnsOverHttpsVal.equals(dnsOverHttps.getText())
+                        !dnsOverHttpsVal.equals(dnsAddress.getText())
         );
 
         PowerTunnel.SETTINGS.setBooleanOption(Settings.AUTO_PROXY_SETUP_ENABLED, autoSetup.isSelected());
@@ -230,7 +230,7 @@ public class OptionsFrame extends ControlFrame {
         PowerTunnel.SETTINGS.setOption(Settings.PAYLOAD_LENGTH, payload.isSelected() ? "21" : "0");
         PowerTunnel.SETTINGS.setBooleanOption(Settings.MIX_HOST_CASE, mixHostCase.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.USE_DNS_SEC, useDnsSec.isSelected());
-        PowerTunnel.SETTINGS.setOption(Settings.DOH_ADDRESS, dnsOverHttps.getText());
+        PowerTunnel.SETTINGS.setOption(Settings.DNS_ADDRESS, dnsAddress.getText());
         PowerTunnel.SETTINGS.setOption(Settings.GOVERNMENT_BLACKLIST_MIRROR, blacklistMirror.getText());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.ALLOW_REQUESTS_TO_ORIGIN_SERVER, allowRequestsToOriginServer.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.ENABLE_JOURNAL, enableJournal.isSelected());

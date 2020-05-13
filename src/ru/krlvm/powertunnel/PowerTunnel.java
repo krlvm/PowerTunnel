@@ -70,7 +70,7 @@ public class PowerTunnel {
     public static int CHUNK_SIZE = 2;
     public static int PAYLOAD_LENGTH = 0; //21 recommended
     public static boolean USE_DNS_SEC = false;
-    public static String DOH_ADDRESS = null;
+    public static String DNS_SERVER = null;
     public static boolean MIX_HOST_CASE = false;
     private static String GOVERNMENT_BLACKLIST_MIRROR = null;
     /** ----------------- */
@@ -119,7 +119,7 @@ public class PowerTunnel {
                                 " -console                             console mode, without UI\n" +
                                 " -government-blacklist-from [URL]     automatically fill government blacklist from URL\n" +
                                 " -use-dns-sec                         enables DNSSec mode with the Google DNS servers\n" +
-                                " -use-doh-resolver [URL]              enables DNS over HTTPS resolver\n" +
+                                " -use-dns-server [URL]                overrides DNS settings (DNS over HTTPS supported)\n" +
                                 " -disallow-invalid-packets            HTTP packets without Host header will be thrown out (unrecommended)\n" +
                                 " -full-chunking                       enables chunking the whole packets\n" +
                                 " -mix-host-case                       enables 'Host' header case mix (unstable)\n" +
@@ -240,9 +240,9 @@ public class PowerTunnel {
                                     }
                                     break;
                                 }
-                                case "use-doh-resolver": {
-                                    SETTINGS.setTemporaryValue(Settings.DOH_ADDRESS, value);
-                                    Utility.print("[#] DNS over HTTPS resolver address set to '%s'", value);
+                                case "use-dns-server": {
+                                    SETTINGS.setTemporaryValue(Settings.DNS_ADDRESS, value);
+                                    Utility.print("[#] DNS resolver address set to '%s'", value);
                                     break;
                                 }
                                 case "with-web-ui": {
@@ -426,18 +426,19 @@ public class PowerTunnel {
         }).withAddress(new InetSocketAddress(InetAddress.getByName(SERVER_IP_ADDRESS), SERVER_PORT))
                 .withTransparent(true).withUseDnsSec(USE_DNS_SEC)
                 .withAllowRequestToOriginServer(ALLOW_REQUESTS_TO_ORIGIN_SERVER);
-        boolean useDoh = DOH_ADDRESS != null && !DOH_ADDRESS.isEmpty();
-        if (useDoh) {
-            if (DOH_ADDRESS.endsWith("/")) {
-                DOH_ADDRESS = DOH_ADDRESS.substring(0, DOH_ADDRESS.length() - 1);
+        boolean overrideDns = DNS_SERVER != null && !DNS_SERVER.isEmpty();
+        boolean doh = DNS_SERVER.startsWith("https://");
+        if (overrideDns && doh) {
+            if (DNS_SERVER.endsWith("/")) {
+                DNS_SERVER = DNS_SERVER.substring(0, DNS_SERVER.length() - 1);
             }
-            Utility.print("[*] DNS over HTTPS is enabled: '" + DOH_ADDRESS + "'");
+            Utility.print("[*] DNS over HTTPS is enabled: '" + DNS_SERVER + "'");
         }
         if (USE_DNS_SEC) {
             Utility.print("[*] DNSSec is enabled");
         }
-        if(useDoh || USE_DNS_SEC) {
-            final Resolver resolver = getResolver(useDoh);
+        if(overrideDns || USE_DNS_SEC) {
+            final Resolver resolver = getResolver(overrideDns, doh);
             bootstrap.withServerResolver(new HostResolver() {
                 @Override
                 public InetSocketAddress resolve(String host, int port) throws UnknownHostException {
@@ -591,16 +592,20 @@ public class PowerTunnel {
         Utility.print();
     }
 
-    private static Resolver getResolver(boolean useDoh) throws UnknownHostException {
+    private static Resolver getResolver(boolean override, boolean useDoh) throws UnknownHostException {
         Resolver resolver = null;
-        if(useDoh) {
-            resolver = new DohResolver(DOH_ADDRESS);
-        }
-        if(USE_DNS_SEC) {
-            if(resolver == null) {
-                resolver = new SimpleResolver();
+        if (useDoh) {
+            resolver = new DohResolver(DNS_SERVER);
+        } else {
+            if(override) {
+                resolver = new SimpleResolver(DNS_SERVER);
             }
-            resolver = new ValidatingResolver(resolver);
+            if (USE_DNS_SEC) {
+                if (resolver == null) {
+                    resolver = new SimpleResolver();
+                }
+                resolver = new ValidatingResolver(resolver);
+            }
         }
         return resolver;
     }
@@ -620,7 +625,7 @@ public class PowerTunnel {
         PAYLOAD_LENGTH = SETTINGS.getIntOption(Settings.PAYLOAD_LENGTH);
         MIX_HOST_CASE = SETTINGS.getBooleanOption(Settings.MIX_HOST_CASE);
         USE_DNS_SEC = SETTINGS.getBooleanOption(Settings.USE_DNS_SEC);
-        DOH_ADDRESS = SETTINGS.getOption(Settings.DOH_ADDRESS);
+        DNS_SERVER = SETTINGS.getOption(Settings.DNS_ADDRESS);
 
         ALLOW_REQUESTS_TO_ORIGIN_SERVER = SETTINGS.getBooleanOption(Settings.ALLOW_REQUESTS_TO_ORIGIN_SERVER);
     }
