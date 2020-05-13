@@ -66,6 +66,9 @@ public class ProxyFilter extends HttpFiltersAdapter {
         return null;
     }
 
+    /**
+     * There's no need in this when LittleProxy running in transparent mode
+     *
     @Override
     public HttpResponse proxyToServerRequest(HttpObject httpObject) {
         if (httpObject instanceof HttpRequest) {
@@ -75,7 +78,7 @@ public class ProxyFilter extends HttpFiltersAdapter {
             }
         }
         return null;
-    }
+    }*/
 
     @Override
     public HttpObject serverToProxyResponse(HttpObject httpObject) {
