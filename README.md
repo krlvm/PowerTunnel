@@ -56,33 +56,36 @@ You can test if you're using DoH [here](http://www.whatsmydnsserver.com/). If yo
 
 Hover over option to get more info
 ### Launch arguments
-You can specify some params that will override settings through the CLI:
+You can specify some params that will override settings through CLI:
 
 ```
-java -jar PowerTunnel.jar
--help - displays help
--start - starts server right after load
--console - console mode, without UI
--government-blacklist-from [URL] - automatically fill government blacklist from URL
--use-dns-sec - enables DNSSec mode with the Google DNS servers
--use-doh-resolver [URL] - enables DNS over HTTPS resolver
--full-chunking - enables chunking the whole packets
--mix-host-case - enables 'Host' header case mix (unstable)
--send-payload [length] - to bypass HTTP blocking, 21 is recommended
--chunk-size [Size] - sets chunk size, minimum is 1, default is 5
--ip [IP Address]
--port [Port]
--with-web-ui [appendix] - enables Web UI at http://powertunnelmonitor[appendix].info
--disable-auto-proxy-setup - disables auto proxy setup on Windows
--auto-proxy-setup-win-ie - auto proxy setup using IE instead of native API on Windows
--full-output-mirroring - fully mirrors system output to the log
--set-scale-factor [n] - sets DPI scale factor (for testing purposes)
--disable-journal - disables journal
--disable-tray - disables tray icon
--disable-native-lf - disables native L&F (when UI enabled)
--disable-ui-scaling - disables UI scaling (when UI enabled)
--disable-updater - disables the update notifier
--debug - enables debug
+$ java -jar PowerTunnel.jar -help
+
+Available arguments:
+ -help                                display help
+ -start                               starts server right after load
+ -console                             console mode, without UI
+ -government-blacklist-from [URL]     automatically fill government blacklist from URL
+ -use-dns-sec                         enables DNSSec mode with the Google DNS servers
+ -use-doh-resolver [URL]              enables DNS over HTTPS resolver
+ -disallow-invalid-packets            HTTP packets without Host header will be thrown out (unrecommended)
+ -full-chunking                       enables chunking the whole packets
+ -mix-host-case                       enables 'Host' header case mix (unstable)
+ -send-payload [length]               to bypass HTTP blocking, 21 is recommended
+ -chunk-size [size]                   sets size of one chunk
+ -ip [IP Address]                     sets IP Address
+ -port [Port]                         sets port
+ -with-web-ui [appendix]              enables Web UI at http://powertunnelmonitor[appendix].info
+ -disable-auto-proxy-setup            disables auto proxy setup on Windows
+ -auto-proxy-setup-win-ie             auto proxy setup using IE instead of native API on Windows
+ -full-output-mirroring               fully mirrors system output to the log
+ -set-scale-factor [n]                sets DPI scale factor (for testing purposes)
+ -disable-journal                     disables journal
+ -disable-tray                        disables tray icon
+ -disable-native-lf                   disables native L&F (when UI enabled)
+ -disable-ui-scaling                  disables UI scaling (when UI enabled)
+ -disable-updater                     disables the update notifier
+ -debug                               enables debug
 ```
 
 ## Spin-off projects
