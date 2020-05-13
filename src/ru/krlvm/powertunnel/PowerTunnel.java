@@ -459,14 +459,28 @@ public class PowerTunnel {
                 }
             });
         }
-        SERVER = bootstrap.start();
-        setStatus(ServerStatus.RUNNING);
-        Utility.print("[.] Server started");
-        Utility.print();
-
-        if(AUTO_PROXY_SETUP_ENABLED) {
-            SystemProxy.enableProxy();
+        try {
+            SERVER = bootstrap.start();
+            setStatus(ServerStatus.RUNNING);
+            Utility.print("[.] Server started");
+            if(AUTO_PROXY_SETUP_ENABLED) {
+                SystemProxy.enableProxy();
+            }
+        } catch (Exception ex) {
+            Utility.print("[x] Cannot to start server: " + ex.getMessage());
+            Debugger.debug(ex);
+            setStatus(ServerStatus.NOT_RUNNING);
+            if(isUIEnabled()) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        JOptionPane.showMessageDialog(frame, "Cannot to start server: " + ex.getMessage(),
+                                NAME, JOptionPane.ERROR_MESSAGE);
+                    }
+                });
+            }
         }
+        Utility.print();
 
         if(!CONSOLE_MODE) {
             frame.update();
