@@ -1,5 +1,6 @@
 package ru.krlvm.powertunnel.utilities;
 
+import ru.krlvm.powertunnel.PowerTunnel;
 import ru.krlvm.powertunnel.frames.ControlFrame;
 import ru.krlvm.swingdpi.SwingDPI;
 
@@ -37,6 +38,19 @@ public class UIUtility {
 
     public static float getResidualScaleFactor() {
         return SwingDPI.isScaleApplied() ? SwingDPI.getScaleFactor() : 1;
+    }
+
+    public static void setAWTName() {
+        Toolkit xToolkit = Toolkit.getDefaultToolkit();
+        try {
+            java.lang.reflect.Field awtAppClassNameField =
+                    xToolkit.getClass().getDeclaredField("awtAppClassName");
+            awtAppClassNameField.setAccessible(true);
+            awtAppClassNameField.set(xToolkit, PowerTunnel.NAME);
+        } catch (Exception ex) {
+            Debugger.debug("[x] Failed to set AWT name: " + ex.getMessage());
+            //Debugger.debug(ex);
+        }
     }
 
     /**

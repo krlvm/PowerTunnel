@@ -16,6 +16,7 @@ import ru.krlvm.powertunnel.system.SystemProxy;
 import ru.krlvm.powertunnel.system.TrayManager;
 import ru.krlvm.powertunnel.updater.UpdateNotifier;
 import ru.krlvm.powertunnel.utilities.Debugger;
+import ru.krlvm.powertunnel.utilities.UIUtility;
 import ru.krlvm.powertunnel.utilities.URLUtility;
 import ru.krlvm.powertunnel.utilities.Utility;
 import ru.krlvm.powertunnel.webui.PowerTunnelMonitor;
@@ -278,6 +279,7 @@ public class PowerTunnel {
         }
         if(!CONSOLE_MODE) {
             //Initialize UI
+            UIUtility.setAWTName();
             if(uiSettings[1]) {
                 try {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
