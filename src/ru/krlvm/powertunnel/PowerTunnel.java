@@ -77,7 +77,9 @@ public class PowerTunnel {
 
     private static final Map<String, String> JOURNAL = new LinkedHashMap<>();
     private static final SimpleDateFormat JOURNAL_DATE_FORMAT = new SimpleDateFormat("[HH:mm]: ");
-    public static boolean DISABLE_JOURNAL = false;
+    public static boolean ENABLE_JOURNAL = false;
+
+    public static boolean ENABLE_LOGS = false;
 
     private static final Set<String> GOVERNMENT_BLACKLIST = new HashSet<>();
     private static final Set<String> ISP_STUB_LIST = new HashSet<>();
@@ -123,12 +125,13 @@ public class PowerTunnel {
                                 " -chunk-size [size]                   sets size of one chunk\n" +
                                 " -ip [IP Address]                     sets IP Address\n" +
                                 " -port [Port]                         sets port\n" +
+                                " -enable-journal                      enables PowerTunnel journal (when UI enabled)\n" +
+                                " -enable-logs                         enables PowerTunnel logs (when UI enabled)\n" +
                                 " -with-web-ui [appendix]              enables Web UI at http://" + String.format(PowerTunnelMonitor.FAKE_ADDRESS_TEMPLATE, "[appendix]") + "\n" +
                                 " -disable-auto-proxy-setup            disables auto proxy setup on Windows\n" +
                                 " -auto-proxy-setup-win-ie             auto proxy setup using IE instead of native API on Windows\n" +
                                 " -full-output-mirroring               fully mirrors system output to the log\n" +
                                 " -set-scale-factor [n]                sets DPI scale factor (for testing purposes)\n" +
-                                " -disable-journal                     disables journal\n" +
                                 " -disable-tray                        disables tray icon\n" +
                                 " -disable-native-lf                   disables native L&F (when UI enabled)\n" +
                                 " -disable-ui-scaling                  disables UI scaling (when UI enabled)\n" +
@@ -168,8 +171,8 @@ public class PowerTunnel {
                         Utility.print("[#] Enabled case mix for the 'Host' header");
                         break;
                     }
-                    case "disable-journal": {
-                        SETTINGS.setTemporaryValue(Settings.DISABLE_JOURNAL, "true");
+                    case "enable-journal": {
+                        SETTINGS.setTemporaryValue(Settings.ENABLE_JOURNAL, "true");
                         break;
                     }
                     case "disable-auto-proxy-setup": {
@@ -576,7 +579,7 @@ public class PowerTunnel {
     }
 
     public static void loadSettings() {
-        DISABLE_JOURNAL = SETTINGS.getBooleanOption(Settings.DISABLE_JOURNAL);
+        ENABLE_JOURNAL = SETTINGS.getBooleanOption(Settings.ENABLE_JOURNAL);
         GOVERNMENT_BLACKLIST_MIRROR = SETTINGS.getOption(Settings.GOVERNMENT_BLACKLIST_MIRROR);
 
         SERVER_IP_ADDRESS = SETTINGS.getOption(Settings.SERVER_IP_ADDRESS);
@@ -639,7 +642,7 @@ public class PowerTunnel {
      * @param address - website address
      */
     public static void addToJournal(String address) {
-        if(!DISABLE_JOURNAL) {
+        if(CONSOLE_MODE || !ENABLE_JOURNAL) {
             return;
         }
         JOURNAL.put(address, JOURNAL_DATE_FORMAT.format(new Date()));

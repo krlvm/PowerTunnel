@@ -28,6 +28,7 @@ public class OptionsFrame extends ControlFrame {
     private JTextField dnsOverHttps; //server restart
     private JTextField blacklistMirror;
     private JCheckBox enableJournal;
+    private JCheckBox enableLogs;
     /* ------------------------------------ */
 
     //Restart required - previous values
@@ -147,9 +148,13 @@ public class OptionsFrame extends ControlFrame {
         mirrorPane.add(blacklistMirror, gbc);
         panel.add(mirrorPane, gbc);
 
-        enableJournal = new TooltipCheckBox("Enable PowerTunnel Journal",
+        enableJournal = new TooltipCheckBox("Enable PowerTunnel Journal (restart required)",
                 "Enables PowerTunnel Journal, collecting<br>all websites you've been visited with timestamps.<br>This data doesn't sending anywhere.");
         panel.add(enableJournal, gbc);
+
+        enableLogs = new TooltipCheckBox("Enable PowerTunnel Logs (restart required)",
+                "Enables PowerTunnel Logs that need for troubleshooting and debugging<br>from the user interface.");
+        panel.add(enableLogs, gbc);
 
         JPanel container = new JPanel(new BorderLayout());
         container.add(panel, BorderLayout.WEST);
@@ -197,8 +202,11 @@ public class OptionsFrame extends ControlFrame {
         blacklistMirror.setText(PowerTunnel.SETTINGS.getOption(Settings.GOVERNMENT_BLACKLIST_MIRROR));
         blacklistMirror.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.GOVERNMENT_BLACKLIST_MIRROR));
 
-        enableJournal.setSelected(!PowerTunnel.SETTINGS.getBooleanOption(Settings.DISABLE_JOURNAL));
-        enableJournal.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.DISABLE_JOURNAL));
+        enableJournal.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.ENABLE_JOURNAL));
+        enableJournal.setEnabled(PowerTunnel.SETTINGS.isTemporary(Settings.ENABLE_JOURNAL));
+
+        enableLogs.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.ENABLE_LOGS));
+        enableLogs.setEnabled(PowerTunnel.SETTINGS.isTemporary(Settings.ENABLE_LOGS));
     }
 
     private void save() {
@@ -216,7 +224,8 @@ public class OptionsFrame extends ControlFrame {
         PowerTunnel.SETTINGS.setBooleanOption(Settings.USE_DNS_SEC, useDnsSec.isSelected());
         PowerTunnel.SETTINGS.setOption(Settings.DOH_ADDRESS, dnsOverHttps.getText());
         PowerTunnel.SETTINGS.setOption(Settings.GOVERNMENT_BLACKLIST_MIRROR, blacklistMirror.getText());
-        PowerTunnel.SETTINGS.setBooleanOption(Settings.DISABLE_JOURNAL, !enableJournal.isSelected());
+        PowerTunnel.SETTINGS.setBooleanOption(Settings.ENABLE_JOURNAL, enableJournal.isSelected());
+        PowerTunnel.SETTINGS.setBooleanOption(Settings.ENABLE_LOGS, enableLogs.isSelected());
         PowerTunnel.loadSettings();
 
         if (suggestRestart && PowerTunnel.isRunning()) {

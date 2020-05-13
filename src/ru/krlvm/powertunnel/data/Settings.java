@@ -158,7 +158,8 @@ public class Settings extends DataStore {
     public static final String USE_DNS_SEC = "dns.dnssec.enabled.bool";
     public static final String DOH_ADDRESS = "dns.doh.address";
     public static final String GOVERNMENT_BLACKLIST_MIRROR = "powertunnel.government-blacklist-mirror";
-    public static final String DISABLE_JOURNAL = "powertunnel.journal.enabled";
+    public static final String ENABLE_JOURNAL = "powertunnel.journal.enabled";
+    public static final String ENABLE_LOGS = "powertunnel.logs.enabled";
 
     private static final Map<String, String> defaultValues = new HashMap<>();
     static {
@@ -173,6 +174,7 @@ public class Settings extends DataStore {
         defaultValues.put(USE_DNS_SEC, "false");
         defaultValues.put(DOH_ADDRESS, "");
         defaultValues.put(GOVERNMENT_BLACKLIST_MIRROR, "");
-        defaultValues.put(DISABLE_JOURNAL, "false");
+        defaultValues.put(ENABLE_JOURNAL, "false");
+        defaultValues.put(ENABLE_LOGS, "false");
     }
 }
