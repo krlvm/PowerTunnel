@@ -79,6 +79,7 @@ public class AdvancedMainFrame extends MainFrame {
                 PowerTunnel.logFrame.showFrame();
             }
         });
+        logButton.setEnabled(PowerTunnel.ENABLE_LOGS);
 
         JButton journalButton = new JButton("Journal");
         journalButton.addActionListener(new ActionListener() {
@@ -87,6 +88,7 @@ public class AdvancedMainFrame extends MainFrame {
                 PowerTunnel.journalFrame.showFrame();
             }
         });
+        journalButton.setEnabled(PowerTunnel.ENABLE_JOURNAL);
 
         JButton userBlacklist = new JButton("Blacklist");
         userBlacklist.addActionListener(new ActionListener() {

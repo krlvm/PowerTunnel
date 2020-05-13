@@ -203,10 +203,10 @@ public class OptionsFrame extends ControlFrame {
         blacklistMirror.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.GOVERNMENT_BLACKLIST_MIRROR));
 
         enableJournal.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.ENABLE_JOURNAL));
-        enableJournal.setEnabled(PowerTunnel.SETTINGS.isTemporary(Settings.ENABLE_JOURNAL));
+        enableJournal.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.ENABLE_JOURNAL));
 
         enableLogs.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.ENABLE_LOGS));
-        enableLogs.setEnabled(PowerTunnel.SETTINGS.isTemporary(Settings.ENABLE_LOGS));
+        enableLogs.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.ENABLE_LOGS));
     }
 
     private void save() {

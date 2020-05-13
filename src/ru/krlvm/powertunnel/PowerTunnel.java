@@ -77,8 +77,8 @@ public class PowerTunnel {
 
     private static final Map<String, String> JOURNAL = new LinkedHashMap<>();
     private static final SimpleDateFormat JOURNAL_DATE_FORMAT = new SimpleDateFormat("[HH:mm]: ");
-    public static boolean ENABLE_JOURNAL = false;
 
+    public static boolean ENABLE_JOURNAL = false;
     public static boolean ENABLE_LOGS = false;
 
     private static final Set<String> GOVERNMENT_BLACKLIST = new HashSet<>();
@@ -173,6 +173,10 @@ public class PowerTunnel {
                     }
                     case "enable-journal": {
                         SETTINGS.setTemporaryValue(Settings.ENABLE_JOURNAL, "true");
+                        break;
+                    }
+                    case "enable-logs": {
+                        SETTINGS.setTemporaryValue(Settings.ENABLE_LOGS, "true");
                         break;
                     }
                     case "disable-auto-proxy-setup": {
@@ -308,6 +312,21 @@ public class PowerTunnel {
                 Debugger.debug("SwingDPI v" + SwingDPI.VERSION + " | Scale factor: " + SwingDPI.getScaleFactor());
             }
 
+            //Initializing main frame and system outputs mirroring
+            if(ENABLE_LOGS) {
+                logFrame = new LogFrame();
+                if (FULL_OUTPUT_MIRRORING) {
+                    PrintStream systemOutput = System.out;
+                    PrintStream systemErr = System.err;
+                    System.setOut(new PrintStream(new MirroredOutputStream(new ByteArrayOutputStream(), systemOutput)));
+                    System.setErr(new PrintStream(new MirroredOutputStream(new ByteArrayOutputStream(), systemErr)));
+                }
+            }
+
+            if(ENABLE_JOURNAL) {
+                journalFrame = new JournalFrame();
+            }
+
             trayManager = new TrayManager();
             if(uiSettings[2]) {
                 try {
@@ -318,16 +337,6 @@ public class PowerTunnel {
                 }
             }
 
-            //Initializing main frame and system outputs mirroring
-            logFrame = new LogFrame();
-            if (FULL_OUTPUT_MIRRORING) {
-                PrintStream systemOutput = System.out;
-                PrintStream systemErr = System.err;
-                System.setOut(new PrintStream(new MirroredOutputStream(new ByteArrayOutputStream(), systemOutput)));
-                System.setErr(new PrintStream(new MirroredOutputStream(new ByteArrayOutputStream(), systemErr)));
-            }
-
-            journalFrame = new JournalFrame();
             optionsFrame = new OptionsFrame();
             frame = new AdvancedMainFrame();
 
@@ -580,6 +589,7 @@ public class PowerTunnel {
 
     public static void loadSettings() {
         ENABLE_JOURNAL = SETTINGS.getBooleanOption(Settings.ENABLE_JOURNAL);
+        ENABLE_LOGS = SETTINGS.getBooleanOption(Settings.ENABLE_LOGS);
         GOVERNMENT_BLACKLIST_MIRROR = SETTINGS.getOption(Settings.GOVERNMENT_BLACKLIST_MIRROR);
 
         SERVER_IP_ADDRESS = SETTINGS.getOption(Settings.SERVER_IP_ADDRESS);

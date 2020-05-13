@@ -56,25 +56,29 @@ public class TrayManager {
 
         popup.addSeparator();
 
-        item = new MenuItem("Logs");
-        item.setFont(font);
-        item.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PowerTunnel.logFrame.showFrame();
-            }
-        });
-        popup.add(item);
+        if(PowerTunnel.ENABLE_LOGS) {
+            item = new MenuItem("Logs");
+            item.setFont(font);
+            item.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    PowerTunnel.logFrame.showFrame();
+                }
+            });
+            popup.add(item);
+        }
 
-        item = new MenuItem("Journal");
-        item.setFont(font);
-        item.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PowerTunnel.journalFrame.showFrame();
-            }
-        });
-        popup.add(item);
+        if(PowerTunnel.ENABLE_JOURNAL) {
+            item = new MenuItem("Journal");
+            item.setFont(font);
+            item.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    PowerTunnel.journalFrame.showFrame();
+                }
+            });
+            popup.add(item);
+        }
 
         item = new MenuItem("Blacklist");
         item.setFont(font);
