@@ -336,9 +336,6 @@ public class PowerTunnel {
 
         Utility.print(HEADER);
 
-        //Allow us to modify 'HOST' request header
-        System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
-
         if(isWebUIEnabled()) {
             try {
                 PowerTunnelMonitor.load();

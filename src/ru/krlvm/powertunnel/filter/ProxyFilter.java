@@ -21,12 +21,10 @@ import java.util.List;
  */
 public class ProxyFilter extends HttpFiltersAdapter {
 
-    public ProxyFilter(HttpRequest originalRequest, ChannelHandlerContext ctx) {
-        super(originalRequest, ctx);
-    }
-
     public ProxyFilter(HttpRequest originalRequest) {
         super(originalRequest);
+        //Allow us to modify 'HOST' request header
+        System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
     }
 
     /**
