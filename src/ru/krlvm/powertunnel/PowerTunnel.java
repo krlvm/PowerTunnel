@@ -538,6 +538,9 @@ public class PowerTunnel {
                 } else {
                     PowerTunnel.safeUserListSave();
                 }
+                if(trayManager.isLoaded()) {
+                    trayManager.unload();
+                }
                 System.exit(0);
             }
         }).start();
