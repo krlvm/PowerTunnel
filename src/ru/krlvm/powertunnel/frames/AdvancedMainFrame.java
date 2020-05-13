@@ -171,7 +171,7 @@ public class AdvancedMainFrame extends MainFrame {
     }
 
     private String getHeaderText() {
-        return getCenteredLabel("<b>" + PowerTunnel.NAME + " v" + PowerTunnel.VERSION + "</b><br>Server is" + PowerTunnel.getStatus() + "</div></html>");
+        return getCenteredLabel("<b>" + PowerTunnel.NAME + " v" + PowerTunnel.VERSION + "</b><br>Server " + PowerTunnel.getStatus() + "</div></html>");
     }
 
     private String getCenteredLabel(String text) {

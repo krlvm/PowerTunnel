@@ -2,10 +2,10 @@ package ru.krlvm.powertunnel.frames;
 
 public enum ServerStatus {
 
-    NOT_RUNNING("n't running"),
-    STARTING(" starting"),
-    RUNNING(" running"),
-    STOPPING(" stopping");
+    NOT_RUNNING("not running"),
+    STARTING("is starting"),
+    RUNNING("is running"),
+    STOPPING("is stopping");
 
     String display;
 
