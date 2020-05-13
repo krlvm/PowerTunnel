@@ -317,7 +317,7 @@ public class PowerTunnel {
 
             journalFrame = new JournalFrame();
             optionsFrame = new OptionsFrame();
-            frame = new MainFrame();
+            frame = new AdvancedMainFrame();
 
             //Initialize UI
             USER_FRAMES = new UserListFrame[] {

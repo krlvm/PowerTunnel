@@ -95,7 +95,7 @@ public class OptionsFrame extends ControlFrame {
         gbc.anchor = GridBagConstraints.WEST;
 
         autoSetup = new TooltipCheckBox("Auto system proxy setup (Windows)",
-                "Automatically setting up system proxy server configuration.<br>At the moment available only on the Windows systems.<br>May need Internet Explorer starting for a few seconds.");
+                "Automatically setting up system proxy server configuration.<br>At the moment available only on the Windows systems.<br>Can require automatic Internet Explorer start for a few seconds.");
         panel.add(autoSetup, gbc);
 
         fullChunking = new TooltipCheckBox("HTTPS: Full chunking mode",
@@ -114,11 +114,11 @@ public class OptionsFrame extends ControlFrame {
         panel.add(payload, gbc);
 
         allowInvalidPackets = new TooltipCheckBox("HTTP: Allow invalid packets (recommended)",
-                "When this option is disabled, HTTP packets without Host header are throwing out");
+                "When this option is disabled, HTTP packets without Host header throws out");
         panel.add(allowInvalidPackets, gbc);
 
         mixHostCase = new TooltipCheckBox("HTTP: Mix host case",
-                "When it enabled, PowerTunnel mixing case of the host of the website you're trying to connect.<br>Some websites, especially working on the old webservers, may not accept connection.");
+                "When it enabled, PowerTunnel mixing case of the host of the website you're trying to connect.<br>Some websites, especially working on the old web servers, may not accept connection.");
         panel.add(mixHostCase, gbc);
 
         useDnsSec = new TooltipCheckBox("Use DNSSec mode (server restart required)",
