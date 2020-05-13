@@ -27,7 +27,12 @@ public class TrayManager {
 
         MenuItem item;
 
-        item = new MenuItem(PowerTunnel.NAME + " " + PowerTunnel.VERSION);
+        item = new MenuItem(PowerTunnel.NAME);
+        item.setFont(headerFont);
+        item.setEnabled(false);
+        popup.add(item);
+
+        item = new MenuItem("Version " + PowerTunnel.VERSION);
         item.setFont(headerFont);
         item.setEnabled(false);
         popup.add(item);
