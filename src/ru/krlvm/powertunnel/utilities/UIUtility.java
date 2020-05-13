@@ -49,7 +49,7 @@ public class UIUtility {
             awtAppClassNameField.setAccessible(true);
             awtAppClassNameField.set(xToolkit, PowerTunnel.NAME);
         } catch (Exception ex) {
-            Debugger.debug("[x] Failed to set AWT name: " + ex.getMessage());
+            Debugger.debug("Failed to set AWT name: " + ex.getMessage());
             //Debugger.debug(ex);
         }
     }

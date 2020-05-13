@@ -544,9 +544,7 @@ public class PowerTunnel {
     }
 
     public static void showMainFrame() {
-        frame.setVisible(true);
-        frame.toFront();
-        frame.requestFocus();
+        frame.showFrame();
     }
 
     public static boolean isMainFrameVisible() {

@@ -76,7 +76,7 @@ public class AdvancedMainFrame extends MainFrame {
         logButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PowerTunnel.logFrame.setVisible(true);
+                PowerTunnel.logFrame.showFrame();
             }
         });
 
@@ -84,7 +84,7 @@ public class AdvancedMainFrame extends MainFrame {
         journalButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PowerTunnel.journalFrame.setVisible(true);
+                PowerTunnel.journalFrame.showFrame();
             }
         });
 
@@ -92,7 +92,7 @@ public class AdvancedMainFrame extends MainFrame {
         userBlacklist.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PowerTunnel.USER_FRAMES[0].setVisible(true);
+                PowerTunnel.USER_FRAMES[0].showFrame();
             }
         });
 
@@ -100,7 +100,7 @@ public class AdvancedMainFrame extends MainFrame {
         userWhitelist.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PowerTunnel.USER_FRAMES[1].setVisible(true);
+                PowerTunnel.USER_FRAMES[1].showFrame();
             }
         });
 
@@ -108,7 +108,7 @@ public class AdvancedMainFrame extends MainFrame {
         options.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PowerTunnel.optionsFrame.setVisible(true);
+                PowerTunnel.optionsFrame.showFrame();
             }
         });
 

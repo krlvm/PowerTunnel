@@ -67,7 +67,7 @@ public class TrayManager {
         item.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PowerTunnel.logFrame.setVisible(true);
+                PowerTunnel.logFrame.showFrame();
             }
         });
         popup.add(item);
@@ -77,7 +77,7 @@ public class TrayManager {
         item.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PowerTunnel.journalFrame.setVisible(true);
+                PowerTunnel.journalFrame.showFrame();
             }
         });
         popup.add(item);
@@ -87,7 +87,7 @@ public class TrayManager {
         item.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PowerTunnel.USER_FRAMES[0].setVisible(true);
+                PowerTunnel.USER_FRAMES[0].showFrame();
             }
         });
         popup.add(item);
@@ -97,7 +97,7 @@ public class TrayManager {
         item.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PowerTunnel.USER_FRAMES[1].setVisible(true);
+                PowerTunnel.USER_FRAMES[1].showFrame();
             }
         });
         popup.add(item);
@@ -107,7 +107,7 @@ public class TrayManager {
         item.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PowerTunnel.optionsFrame.setVisible(true);
+                PowerTunnel.optionsFrame.showFrame();
             }
         });
         popup.add(item);

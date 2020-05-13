@@ -22,6 +22,13 @@ public abstract class ControlFrame extends ScalableJFrame {
         setIconImage(UIUtility.UI_ICON);
     }
 
+    public void showFrame() {
+        setVisible(true);
+        setState(Frame.NORMAL);
+        toFront();
+        requestFocus();
+    }
+
     /**
      * Monotonous actions will be called after
      * frame complete initialization
