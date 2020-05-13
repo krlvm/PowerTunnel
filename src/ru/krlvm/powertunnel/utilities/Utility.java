@@ -3,6 +3,8 @@ package ru.krlvm.powertunnel.utilities;
 import ru.krlvm.powertunnel.PowerTunnel;
 import ru.krlvm.powertunnel.frames.LogFrame;
 
+import java.util.logging.*;
+
 /**
  * PowerTunnel Utilities
  * Main utility class
@@ -35,8 +37,12 @@ public class Utility {
             print();
             return;
         }
-        System.out.println(message);
-        if(PowerTunnel.isUIEnabled() && !PowerTunnel.FULL_OUTPUT_MIRRORING) {
+        if(LOGGER == null) {
+            System.out.println(message);
+        } else {
+            LOGGER.info(message);
+        }
+        if(PowerTunnel.isUIEnabled() && (LOGGER != null || !PowerTunnel.FULL_OUTPUT_MIRRORING)) {
             LogFrame.print(message);
         }
     }
@@ -47,4 +53,25 @@ public class Utility {
     public static void print() {
         print("");
     }
+
+    public static void initializeLogger() {
+        LOGGER = Logger.getLogger("PT");
+        try {
+            FileHandler handler = new FileHandler("powertunnel.log");
+            handler.setFormatter(new Formatter() {
+                @Override
+                public String format(LogRecord record) {
+                    return String.valueOf(record.getLevel()) + ':' +
+                            record.getMessage() + '\n';
+                }
+            });
+            LOGGER.addHandler(handler);
+        } catch (Exception ex) {
+            LOGGER = null;
+            print("[x] Failed to initialize logger: " + ex.getMessage());
+            Debugger.debug(ex);
+        }
+    }
+
+    public static Logger LOGGER;
 }

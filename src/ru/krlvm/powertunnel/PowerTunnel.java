@@ -127,6 +127,7 @@ public class PowerTunnel {
                                 " -port [Port]                         sets port\n" +
                                 " -enable-journal                      enables PowerTunnel journal (when UI enabled)\n" +
                                 " -enable-logs                         enables PowerTunnel logs (when UI enabled)\n" +
+                                " -enable-log-to-file                  enables PowerTunnel logger and log file\n" +
                                 " -with-web-ui [appendix]              enables Web UI at http://" + String.format(PowerTunnelMonitor.FAKE_ADDRESS_TEMPLATE, "[appendix]") + "\n" +
                                 " -disable-auto-proxy-setup            disables auto proxy setup on Windows\n" +
                                 " -auto-proxy-setup-win-ie             auto proxy setup using IE instead of native API on Windows\n" +
@@ -151,6 +152,7 @@ public class PowerTunnel {
                     }
                     case "full-output-mirroring": {
                         FULL_OUTPUT_MIRRORING = true;
+                        Utility.print("[+] Enabled full output mirroring");
                         break;
                     }
                     case "debug": {
@@ -177,6 +179,10 @@ public class PowerTunnel {
                     }
                     case "enable-logs": {
                         SETTINGS.setTemporaryValue(Settings.ENABLE_LOGS, "true");
+                        break;
+                    }
+                    case "enable-log-to-file": {
+                        Utility.initializeLogger();
                         break;
                     }
                     case "disable-auto-proxy-setup": {

@@ -88,7 +88,7 @@ public class LogFrame extends ControlFrame {
             return;
         }
         instance.logArea.append(s);
-        if(!PowerTunnel.FULL_OUTPUT_MIRRORING) {
+        if(!s.endsWith("\n")) {
             instance.logArea.append("\r\n");
         }
         instance.logArea.setCaretPosition(instance.logArea.getDocument().getLength());

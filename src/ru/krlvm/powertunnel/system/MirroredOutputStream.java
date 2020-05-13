@@ -1,6 +1,7 @@
 package ru.krlvm.powertunnel.system;
 
 import ru.krlvm.powertunnel.frames.LogFrame;
+import ru.krlvm.powertunnel.utilities.Utility;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;
@@ -35,6 +36,11 @@ public class MirroredOutputStream extends FilterOutputStream {
     }
 
     private void writeToLog(String s) {
+        if(Utility.LOGGER != null && !s.startsWith(MIRROR_TAG)) {
+            Utility.LOGGER.info(MIRROR_TAG + s);
+        }
         LogFrame.print(s);
     }
+
+    private static final String MIRROR_TAG = "[Mirrored] ";
 }
