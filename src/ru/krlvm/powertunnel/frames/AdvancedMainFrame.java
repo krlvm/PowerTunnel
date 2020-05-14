@@ -154,7 +154,7 @@ public class AdvancedMainFrame extends MainFrame {
                                 "<br><br>" +
                                 "(c) krlvm, 2019-2020",
                         null);
-                JOptionPane.showMessageDialog(null, message, "About " + PowerTunnel.NAME, JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(AdvancedMainFrame.this, message, "About " + PowerTunnel.NAME, JOptionPane.INFORMATION_MESSAGE);
             }
         });
 
