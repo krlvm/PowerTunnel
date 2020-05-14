@@ -177,6 +177,6 @@ public class Settings extends DataStore {
         defaultValues.put(GOVERNMENT_BLACKLIST_MIRROR, "");
         defaultValues.put(ENABLE_JOURNAL, "false");
         defaultValues.put(ENABLE_LOGS, "false");
-        defaultValues.put(ALLOW_REQUESTS_TO_ORIGIN_SERVER, "false");
+        defaultValues.put(ALLOW_REQUESTS_TO_ORIGIN_SERVER, "true");
     }
 }
