@@ -140,7 +140,8 @@ public class AdvancedMainFrame extends MainFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JEditorPane message = UIUtility.getLabelWithHyperlinkSupport(
-                        "<a href=\"https://github.com/krlvm/PowerTunnel\">PowerTunnel</a> is made possible by these open-source projects:" +
+                        "Simple, scalable, cross-platform and effective solution against government censorship<br><br>" +
+                                "<a href=\"https://github.com/krlvm/PowerTunnel\">PowerTunnel</a> is made possible by these open-source projects:" +
                                 "<br><br>" +
                                 "<a href=\"https://github.com/adamfisk/LittleProxy\">LittleProxy</a> - proxy server, <a href=\"https://github.com/mrog/LittleProxy\">forked</a> version<br>" +
                                 "<a href=\"https://github.com/dnsjava/dnsjava\">dnsjava</a> - DNS library, DoH realization<br>" +
