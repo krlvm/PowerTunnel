@@ -141,7 +141,7 @@ public class TrayManager {
 
     public void showNotification(String message) {
         if(!isLoaded()) return;
-        trayIcon.displayMessage(PowerTunnel.NAME, message, TrayIcon.MessageType.INFO);
+        trayIcon.displayMessage(PowerTunnel.NAME, message, TrayIcon.MessageType.NONE);
     }
 
     public boolean isLoaded() {

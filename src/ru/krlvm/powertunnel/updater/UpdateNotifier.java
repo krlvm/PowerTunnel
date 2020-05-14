@@ -64,7 +64,7 @@ public class UpdateNotifier {
                                                 null);
                                         JOptionPane.showMessageDialog(null, message, PowerTunnel.NAME + " Updater", JOptionPane.INFORMATION_MESSAGE);
                                     } else {
-                                        PowerTunnel.getTray().showNotification("An PowerTunnel update available");
+                                        PowerTunnel.getTray().showNotification("PowerTunnel update available");
                                     }
                                 }
                             });

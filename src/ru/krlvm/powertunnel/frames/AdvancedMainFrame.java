@@ -203,7 +203,7 @@ public class AdvancedMainFrame extends MainFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 if(PowerTunnel.getStatus() != ServerStatus.NOT_RUNNING && PowerTunnel.getTray().isLoaded()) {
-                    PowerTunnel.getTray().showNotification(PowerTunnel.NAME + " is still working in tray mode");
+                    PowerTunnel.getTray().showNotification(PowerTunnel.NAME + " is still running in tray mode");
                     return;
                 }
                 PowerTunnel.handleClosing();
