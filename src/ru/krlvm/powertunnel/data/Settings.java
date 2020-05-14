@@ -158,9 +158,9 @@ public class Settings extends DataStore {
     public static final String USE_DNS_SEC = "dns.dnssec.enabled.bool";
     public static final String DNS_ADDRESS = "dns.doh.address";
     public static final String GOVERNMENT_BLACKLIST_MIRROR = "powertunnel.government-blacklist-mirror";
-    public static final String ENABLE_JOURNAL = "powertunnel.journal.enabled";
-    public static final String ENABLE_LOGS = "powertunnel.logs.enabled";
-    public static final String ALLOW_REQUESTS_TO_ORIGIN_SERVER = "server.allow-requests-to-origin-server";
+    public static final String ENABLE_JOURNAL = "powertunnel.journal.enabled.bool";
+    public static final String ENABLE_LOGS = "powertunnel.logs.enabled.bool";
+    public static final String ALLOW_REQUESTS_TO_ORIGIN_SERVER = "server.allow-requests-to-origin-server.bool";
 
     private static final Map<String, String> defaultValues = new HashMap<>();
     static {
