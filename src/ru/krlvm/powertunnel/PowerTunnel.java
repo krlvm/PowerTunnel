@@ -428,11 +428,15 @@ public class PowerTunnel {
                 .withAllowRequestToOriginServer(ALLOW_REQUESTS_TO_ORIGIN_SERVER);
         boolean overrideDns = DNS_SERVER != null && !DNS_SERVER.isEmpty();
         boolean doh = DNS_SERVER.startsWith("https://");
-        if (overrideDns && doh) {
-            if (DNS_SERVER.endsWith("/")) {
-                DNS_SERVER = DNS_SERVER.substring(0, DNS_SERVER.length() - 1);
+        if (overrideDns) {
+            if(doh) {
+                if (DNS_SERVER.endsWith("/")) {
+                    DNS_SERVER = DNS_SERVER.substring(0, DNS_SERVER.length() - 1);
+                }
+                Utility.print("[*] DNS over HTTPS is enabled: '" + DNS_SERVER + "'");
+            } else {
+                Utility.print("[*] DNS override enabled: '" + DNS_SERVER + "'");
             }
-            Utility.print("[*] DNS over HTTPS is enabled: '" + DNS_SERVER + "'");
         }
         if (USE_DNS_SEC) {
             Utility.print("[*] DNSSec is enabled");
