@@ -35,6 +35,7 @@ public class OptionsFrame extends ControlFrame {
     //Restart required - previous values
     private boolean useDnsSecVal;
     private String dnsOverHttpsVal;
+    private boolean allowRequestsToOriginServerVal;
 
     public OptionsFrame() {
         super("Options");
@@ -149,7 +150,7 @@ public class OptionsFrame extends ControlFrame {
         mirrorPane.add(blacklistMirror, gbc);
         panel.add(mirrorPane, gbc);
 
-        allowRequestsToOriginServer = new TooltipCheckBox("Allow requests to origin server",
+        allowRequestsToOriginServer = new TooltipCheckBox("Allow requests to origin server (server restart required)",
                 "Experimental option, can fix some connectivity issues.");
         panel.add(allowRequestsToOriginServer, gbc);
 
@@ -207,7 +208,7 @@ public class OptionsFrame extends ControlFrame {
         blacklistMirror.setText(PowerTunnel.SETTINGS.getOption(Settings.GOVERNMENT_BLACKLIST_MIRROR));
         blacklistMirror.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.GOVERNMENT_BLACKLIST_MIRROR));
 
-        allowRequestsToOriginServer.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.ALLOW_REQUESTS_TO_ORIGIN_SERVER));
+        allowRequestsToOriginServer.setSelected(allowRequestsToOriginServerVal = PowerTunnel.SETTINGS.getBooleanOption(Settings.ALLOW_REQUESTS_TO_ORIGIN_SERVER));
         allowRequestsToOriginServer.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.ALLOW_REQUESTS_TO_ORIGIN_SERVER));
 
         enableJournal.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.ENABLE_JOURNAL));
@@ -220,7 +221,8 @@ public class OptionsFrame extends ControlFrame {
     private void save() {
         final boolean suggestRestart = (
                 useDnsSecVal != useDnsSec.isSelected() ||
-                        !dnsOverHttpsVal.equals(dnsAddress.getText())
+                !dnsOverHttpsVal.equals(dnsAddress.getText()) ||
+                allowRequestsToOriginServerVal != allowRequestsToOriginServer.isSelected()
         );
 
         PowerTunnel.SETTINGS.setBooleanOption(Settings.AUTO_PROXY_SETUP_ENABLED, autoSetup.isSelected());

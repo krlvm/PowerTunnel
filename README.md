@@ -97,7 +97,7 @@ Available arguments:
 
 ## Dependencies
 * [LittleProxy](https://github.com/adamfisk/LittleProxy) with some [patches](https://github.com/krlvm/PowerTunnel/tree/master/src/org/littleshoot/proxy/impl) - proxy server
-  * [The original LittleProxy](https://github.com/adamfisk/LittleProxy) was replaced with a [forked one](https://github.com/mrog/LittleProxy) since version 1.11
+  * [The original LittleProxy](https://github.com/adamfisk/LittleProxy) was replaced with a [forked one](https://github.com/mrog/LittleProxy) in version 1.11
 * [dnsjava](https://github.com/dnsjava/dnsjava) - DNS library, DoH realization
 * [dnssecjava](https://github.com/ibauersachs/dnssecjava) - DNSSec realization for dnsjava
 * [DNSSEC4J](https://github.com/adamfisk/DNSSEC4J) - DNSSec realization for LittleProxy
