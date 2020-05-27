@@ -8,7 +8,7 @@ Simple, scalable, cross-platform and effective solution against government censo
 <a href="https://github.com/krlvm/PowerTunnel-Android">Check out the Android version!<a/>
 <br><br>
 <a href="https://github.com/krlvm/PowerTunnel/blob/master/LICENSE"><img src="https://img.shields.io/github/license/krlvm/PowerTunnel?style=flat-square" alt="License"/></a>
-<a href="https://github.com/krlvm/PowerTunnel/releases"><img src="https://img.shields.io/github/v/release/krlvm/PowerTunnel?style=flat-square" alt="Latest release"/></a>
+<a href="https://github.com/krlvm/PowerTunnel/releases/latest"><img src="https://img.shields.io/github/v/release/krlvm/PowerTunnel?style=flat-square" alt="Latest release"/></a>
 <a href="https://github.com/krlvm/PowerTunnel/releases"><img src="https://img.shields.io/github/downloads/krlvm/PowerTunnel/total?style=flat-square" alt="Downloads"/></a>
 <a href="https://github.com/krlvm/PowerTunnel/wiki"><img src="https://img.shields.io/badge/help-wiki-yellow?style=flat-square" alt="Help on the Wiki"/></a>
 <br>

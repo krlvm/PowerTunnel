@@ -14,6 +14,7 @@ import ru.krlvm.powertunnel.frames.*;
 import ru.krlvm.powertunnel.system.MirroredOutputStream;
 import ru.krlvm.powertunnel.system.SystemProxy;
 import ru.krlvm.powertunnel.system.TrayManager;
+import ru.krlvm.powertunnel.system.windows.WindowsProxyHandler;
 import ru.krlvm.powertunnel.updater.UpdateNotifier;
 import ru.krlvm.powertunnel.utilities.Debugger;
 import ru.krlvm.powertunnel.utilities.UIUtility;
@@ -196,7 +197,7 @@ public class PowerTunnel {
                         break;
                     }
                     case "auto-proxy-setup-win-ie": {
-                        SystemProxy.USE_WINDOWS_NATIVE_API = false;
+                        WindowsProxyHandler.USE_WINDOWS_NATIVE_API = false;
                         break;
                     }
                     case "disable-tray": {
