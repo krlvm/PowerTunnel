@@ -17,10 +17,7 @@ import ru.krlvm.powertunnel.system.SystemProxy;
 import ru.krlvm.powertunnel.system.TrayManager;
 import ru.krlvm.powertunnel.system.windows.WindowsProxyHandler;
 import ru.krlvm.powertunnel.updater.UpdateNotifier;
-import ru.krlvm.powertunnel.utilities.Debugger;
-import ru.krlvm.powertunnel.utilities.UIUtility;
-import ru.krlvm.powertunnel.utilities.URLUtility;
-import ru.krlvm.powertunnel.utilities.Utility;
+import ru.krlvm.powertunnel.utilities.*;
 import ru.krlvm.powertunnel.webui.PowerTunnelMonitor;
 import ru.krlvm.swingdpi.SwingDPI;
 
@@ -626,7 +623,19 @@ public class PowerTunnel {
             resolver = new DohResolver(DNS_SERVER);
         } else {
             if(override) {
-                resolver = new SimpleResolver(DNS_SERVER);
+                String address = DNS_SERVER;
+                int port = -1;
+                if(IPUtility.hasPort(DNS_SERVER)) {
+                    Object[] split = IPUtility.split(DNS_SERVER);
+                    if(split != null) {
+                        address = ((String) split[0]);
+                        port = ((int) split[1]);
+                    }
+                }
+                resolver = new SimpleResolver(address);
+                if(port != -1) {
+                    resolver.setPort(port);
+                }
             }
             if (USE_DNS_SEC) {
                 if (resolver == null) {
