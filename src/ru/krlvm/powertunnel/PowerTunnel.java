@@ -7,7 +7,8 @@ import org.littleshoot.proxy.*;
 import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
 import org.xbill.DNS.*;
 import ru.krlvm.powertunnel.data.DataStore;
-import ru.krlvm.powertunnel.data.DataStoreException;
+import ru.krlvm.powertunnel.exceptions.DataStoreException;
+import ru.krlvm.powertunnel.exceptions.PTUnknownHostException;
 import ru.krlvm.powertunnel.data.Settings;
 import ru.krlvm.powertunnel.filter.ProxyFilter;
 import ru.krlvm.powertunnel.frames.*;
@@ -379,11 +380,10 @@ public class PowerTunnel {
         String error = null;
         try {
             PowerTunnel.bootstrap();
-        } catch (UnknownHostException ex) {
-            Utility.print("[x] Cannot use IP-Address '%s': %s", SERVER_IP_ADDRESS, ex.getMessage());
+        } catch (PTUnknownHostException ex) {
+            Utility.print("[x] Cannot use %s address '%s': %s", ex.getType(), ex.getHost(), ex.getMessage());
             Debugger.debug(ex);
-            Utility.print("[!] Program halted");
-            error = "Cannot use IP Address '" + PowerTunnel.SERVER_IP_ADDRESS + "'";
+            error = "Cannot use " + ex.getType() + " address '" + ex.getHost() + "'";
         } catch (DataStoreException ex) {
             Utility.print("[x] Failed to load data store: " + ex.getMessage());
             ex.printStackTrace();
@@ -398,7 +398,7 @@ public class PowerTunnel {
     /**
      * PowerTunnel bootstrap
      */
-    public static void bootstrap() throws DataStoreException, UnknownHostException {
+    public static void bootstrap() throws DataStoreException, PTUnknownHostException {
         setStatus(ServerStatus.STARTING);
         //Load data
         try {
@@ -414,7 +414,7 @@ public class PowerTunnel {
     /**
      * Starts LittleProxy server
      */
-    private static void startServer() throws UnknownHostException {
+    private static void startServer() throws PTUnknownHostException {
         setStatus(ServerStatus.STARTING);
         SETTINGS.setOption(Settings.SERVER_IP_ADDRESS, SERVER_IP_ADDRESS);
         SETTINGS.setOption(Settings.SERVER_PORT, String.valueOf(SERVER_PORT));
@@ -424,9 +424,13 @@ public class PowerTunnel {
             public HttpFilters filterRequest(HttpRequest originalRequest, ChannelHandlerContext ctx) {
                 return new ProxyFilter(originalRequest);
             }
-        }).withAddress(new InetSocketAddress(InetAddress.getByName(SERVER_IP_ADDRESS), SERVER_PORT))
-                .withTransparent(true).withUseDnsSec(USE_DNS_SEC)
+        }).withTransparent(true).withUseDnsSec(USE_DNS_SEC)
                 .withAllowRequestToOriginServer(ALLOW_REQUESTS_TO_ORIGIN_SERVER);
+        try {
+            bootstrap.withAddress(new InetSocketAddress(InetAddress.getByName(SERVER_IP_ADDRESS), SERVER_PORT));
+        } catch (UnknownHostException ex) {
+            throw new PTUnknownHostException(SERVER_IP_ADDRESS, PTUnknownHostException.Type.SERVER_IP, ex);
+        }
         boolean overrideDns = DNS_SERVER != null && !DNS_SERVER.isEmpty();
         boolean doh = DNS_SERVER.startsWith("https://");
         if (overrideDns) {
@@ -443,7 +447,12 @@ public class PowerTunnel {
             Utility.print("[*] DNSSec is enabled");
         }
         if(overrideDns || USE_DNS_SEC) {
-            final Resolver resolver = getResolver(overrideDns, doh);
+            final Resolver resolver;
+            try {
+                resolver = getResolver(overrideDns, doh);
+            } catch (UnknownHostException ex) {
+                throw new PTUnknownHostException(DNS_SERVER, PTUnknownHostException.Type.DNS, ex);
+            }
             bootstrap.withServerResolver(new HostResolver() {
                 @Override
                 public InetSocketAddress resolve(String host, int port) throws UnknownHostException {

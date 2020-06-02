@@ -1,4 +1,4 @@
-package ru.krlvm.powertunnel.data;
+package ru.krlvm.powertunnel.exceptions;
 
 /**
  * Exactly says about DataStore load failure
