@@ -1,126 +1,82 @@
 package ru.krlvm.powertunnel.system;
 
 import ru.krlvm.powertunnel.PowerTunnel;
+import ru.krlvm.powertunnel.utilities.TrayUtility;
 import ru.krlvm.powertunnel.utilities.UIUtility;
-import ru.krlvm.swingdpi.SwingDPI;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.font.TextAttribute;
-import java.util.HashMap;
-import java.util.Map;
 
 public class TrayManager {
 
     private TrayIcon trayIcon;
 
     public void load() throws AWTException {
+        TrayUtility.initializeFonts();
+
         PopupMenu popup = new PopupMenu();
 
-        Map<TextAttribute, Object> attributes = new HashMap<>();
-        attributes.put(TextAttribute.SIZE, 12*SwingDPI.getScaleFactor());
-        Font font = Font.getFont(attributes);
-        attributes.put(TextAttribute.FAMILY, Font.DIALOG);
-        attributes.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
-        Font headerFont = Font.getFont(attributes);
-
-        MenuItem item;
-
-        item = new MenuItem(PowerTunnel.NAME);
-        item.setFont(headerFont);
-        item.setEnabled(false);
-        popup.add(item);
-
-        item = new MenuItem("Version " + PowerTunnel.VERSION);
-        item.setFont(headerFont);
-        item.setEnabled(false);
-        popup.add(item);
-
-        item = new MenuItem("(c) krlvm, 2019-2020");
-        item.setFont(headerFont);
-        item.setEnabled(false);
-        popup.add(item);
+        popup.add(TrayUtility.getItem(PowerTunnel.NAME, null, true));
+        popup.add(TrayUtility.getItem("Version " + PowerTunnel.VERSION, null, true));
+        popup.add(TrayUtility.getItem("(c) krlvm, 2019-2020", null, true));
 
         popup.addSeparator();
 
-        item = new MenuItem("Open " + PowerTunnel.NAME);
-        item.setFont(font);
-        item.addActionListener(new ActionListener() {
+        popup.add(TrayUtility.getItem("Open " + PowerTunnel.NAME, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 PowerTunnel.showMainFrame();
             }
-        });
-        popup.add(item);
+        }));
 
         popup.addSeparator();
 
         if(PowerTunnel.ENABLE_LOGS) {
-            item = new MenuItem("Logs");
-            item.setFont(font);
-            item.addActionListener(new ActionListener() {
+            popup.add(TrayUtility.getItem("Logs", new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     PowerTunnel.logFrame.showFrame();
                 }
-            });
-            popup.add(item);
+            }));
         }
 
         if(PowerTunnel.ENABLE_JOURNAL) {
-            item = new MenuItem("Journal");
-            item.setFont(font);
-            item.addActionListener(new ActionListener() {
+            popup.add(TrayUtility.getItem("Journal", new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     PowerTunnel.journalFrame.showFrame();
                 }
-            });
-            popup.add(item);
+            }));
         }
 
-        item = new MenuItem("Blacklist");
-        item.setFont(font);
-        item.addActionListener(new ActionListener() {
+        popup.add(TrayUtility.getItem("Blacklist", new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 PowerTunnel.USER_FRAMES[0].showFrame();
             }
-        });
-        popup.add(item);
-
-        item = new MenuItem("Whitelist");
-        item.setFont(font);
-        item.addActionListener(new ActionListener() {
+        }));
+        popup.add(TrayUtility.getItem("Whitelist", new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 PowerTunnel.USER_FRAMES[1].showFrame();
             }
-        });
-        popup.add(item);
-
-        item = new MenuItem("Options");
-        item.setFont(font);
-        item.addActionListener(new ActionListener() {
+        }));
+        popup.add(TrayUtility.getItem("Options", new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 PowerTunnel.optionsFrame.showFrame();
             }
-        });
-        popup.add(item);
+        }));
 
         popup.addSeparator();
 
-        item = new MenuItem("Exit");
-        item.setFont(headerFont);
-        item.addActionListener(new ActionListener() {
+        popup.add(TrayUtility.getItem("Exit", new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 PowerTunnel.handleClosing();
             }
-        });
-        popup.add(item);
+        }, true));
 
         trayIcon = new TrayIcon(UIUtility.UI_ICON, PowerTunnel.NAME, popup);
         trayIcon.setImageAutoSize(true);
@@ -132,6 +88,8 @@ public class TrayManager {
             }
         });
         SystemTray.getSystemTray().add(trayIcon);
+
+        TrayUtility.freeFonts();
     }
 
     public void unload() {
