@@ -150,7 +150,10 @@ public class AdvancedMainFrame extends MainFrame {
                                 "<a href=\"https://github.com/java-native-access/jna\">Java Native Access</a> - library for accessing system API<br>" +
                                 "<a href=\"https://github.com/krlvm/SwingDPI\">SwingDPI</a> - High DPI scaling" +
                                 "<br><br>" +
-                                "<a href=\"https:/t.me/powertunnel_dpi\">Join PowerTunnel Telegram channel!</a>" +
+                                "<a href=\"https://github.com/krlvm/PowerTunnel-Android\">Version for Android</a>" +
+                                "<br><br>" +
+                                "Licensed under the<br>" +
+                                "<a href=\"https://raw.githubusercontent.com/krlvm/PowerTunnel/master/LICENSE\">MIT License</a>" +
                                 "<br><br>" +
                                 "(c) krlvm, 2019-2020",
                         null);
@@ -185,7 +188,7 @@ public class AdvancedMainFrame extends MainFrame {
         generalButtonsPane.add(secondButtonsRow);
 
         pane.add(generalButtonsPane, gbc);
-        pane.add(UIUtility.getLabelWithHyperlinkSupport("<a href=\"" + PowerTunnel.REPOSITORY_URL + "/issues\">Submit a bug</a> | <a href=\"https://github.com/krlvm/PowerTunnel-Android\">Android version</a> | " + "<a href=\"" + PowerTunnel.REPOSITORY_URL + "/wiki\">Help</a><br>" +
+        pane.add(UIUtility.getLabelWithHyperlinkSupport("<a href=\"" + PowerTunnel.REPOSITORY_URL + "/issues\">Submit a bug</a> | <a href=\"https://t.me/powertunnel_dpi\">Telegram Channel</a> | " + "<a href=\"" + PowerTunnel.REPOSITORY_URL + "/wiki\">Help</a><br>" +
                 "<b><a style=\"color: black\" href=\"" + PowerTunnel.REPOSITORY_URL + "\">" + PowerTunnel.REPOSITORY_URL + "</a>" +
                 "</b><br><br>(c) krlvm, 2019-2020", "text-align: center"), gbc);
 
