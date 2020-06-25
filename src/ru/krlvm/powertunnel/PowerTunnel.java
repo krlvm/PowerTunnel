@@ -3,7 +3,6 @@ package ru.krlvm.powertunnel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
-import io.netty.util.AsciiString;
 import org.jitsi.dnssec.validator.ValidatingResolver;
 import org.littleshoot.proxy.*;
 import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
@@ -465,7 +464,7 @@ public class PowerTunnel {
             throw new PTUnknownHostException(SERVER_IP_ADDRESS, PTUnknownHostException.Type.SERVER_IP, ex);
         }
         boolean overrideDns = DNS_SERVER != null && !DNS_SERVER.isEmpty();
-        boolean doh = DNS_SERVER.startsWith("https://");
+        boolean doh = DNS_SERVER != null && DNS_SERVER.startsWith("https://");
         if (overrideDns) {
             if(doh) {
                 if (DNS_SERVER.endsWith("/")) {
