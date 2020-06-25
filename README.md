@@ -103,3 +103,6 @@ Available arguments:
 * [DNSSEC4J](https://github.com/adamfisk/DNSSEC4J) - DNSSec realization for LittleProxy
 * [Java Native Access](https://github.com/java-native-access/jna) - library for accessing system API
 * [SwingDPI](https://github.com/krlvm/SwingDPI) - High DPI scaling
+
+### Credits
+* [blockcheck](https://github.com/ValdikSS/blockcheck)
