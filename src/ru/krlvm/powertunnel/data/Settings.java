@@ -12,7 +12,6 @@ import java.util.Map;
 
 public class Settings extends DataStore {
 
-
     private static final String KEY_VALUE_SEPARATOR = "=";
 
     private boolean hasChanged = false;

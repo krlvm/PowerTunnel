@@ -1,6 +1,7 @@
 package ru.krlvm.powertunnel.frames;
 
 import ru.krlvm.powertunnel.PowerTunnel;
+import ru.krlvm.powertunnel.data.Settings;
 import ru.krlvm.powertunnel.utilities.UIUtility;
 import ru.krlvm.swingdpi.SwingDPI;
 
@@ -35,6 +36,7 @@ public class AdvancedMainFrame extends MainFrame {
         ipInput.setToolTipText("IP Address");
         //ipInput.setHorizontalAlignment(SwingConstants.CENTER);
         ipInput.setText(String.valueOf(PowerTunnel.SERVER_IP_ADDRESS));
+        ipInput.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.SERVER_IP_ADDRESS));
 
         final JTextField portInput = new JTextField();
         insets = portInput.getInsets();
@@ -43,6 +45,7 @@ public class AdvancedMainFrame extends MainFrame {
         portInput.setToolTipText("Port");
         //portInput.setHorizontalAlignment(SwingConstants.CENTER);
         portInput.setText(String.valueOf(PowerTunnel.SERVER_PORT));
+        portInput.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.SERVER_PORT));
 
         inputs = new JTextField[]{ipInput, portInput};
 
