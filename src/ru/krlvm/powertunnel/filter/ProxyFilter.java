@@ -1,10 +1,6 @@
 package ru.krlvm.powertunnel.filter;
 
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.DefaultHttpResponse;
-import io.netty.handler.codec.http.HttpObject;
-import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.*;
 import org.littleshoot.proxy.HttpFiltersAdapter;
 import ru.krlvm.powertunnel.PowerTunnel;
 import ru.krlvm.powertunnel.utilities.HttpUtility;
@@ -112,13 +108,30 @@ public class ProxyFilter extends HttpFiltersAdapter {
             }
             host = modified.toString();
         }
-        request.headers().remove("Host");
         if(PowerTunnel.PAYLOAD_LENGTH > 0) {
+            request.headers().remove("Host");
             for (int i = 0; i < PowerTunnel.PAYLOAD_LENGTH; i++) {
                 request.headers().add("X-Padding" + i, PAYLOAD.get(i));
             }
         }
-        request.headers().add("hOSt", host + ".");
+        if(request.method() != HttpMethod.CONNECT && PowerTunnel.isHTTPMethodTricksEnabled()) {
+            String method = request.method().name();
+            if(PowerTunnel.LINE_BREAK_BEFORE_GET) {
+                method = "\r\n" + method;
+            }
+            if(PowerTunnel.ADDITIONAL_SPACE_AFTER_GET) {
+                method = method + " ";
+            }
+            request.setMethod(new HttpMethod(method));
+        }
+        if(PowerTunnel.DOT_AFTER_HOST_HEADER) {
+            host = host + ".";
+            request.headers().remove("Host");
+        }
+        if(!request.headers().contains("Host")) {
+            String hostHeader = PowerTunnel.MIX_HOST_HEADER_CASE ? "hOSt" : "Host";
+            request.headers().add(hostHeader, host);
+        }
     }
 
     public static final List<String> PAYLOAD = new LinkedList<>();

@@ -19,11 +19,16 @@ public class OptionsFrame extends ControlFrame {
 
     /* ------------------------------------ */
     private JCheckBox autoSetup;
+    private JCheckBox chunking;
     private JCheckBox fullChunking;
     private JTextField chunkSize;
     private JCheckBox payload;
     private JCheckBox allowInvalidPackets;
     private JCheckBox mixHostCase;
+    private JCheckBox mixHostHeaderCase;
+    private JCheckBox dotAfterHost;
+    private JCheckBox lineBreakGet;
+    private JCheckBox spaceGet;
     private JCheckBox useDnsSec;     //server restart
     private JTextField dnsAddress; //server restart
     private JTextField blacklistMirror;
@@ -108,7 +113,11 @@ public class OptionsFrame extends ControlFrame {
             panel.add(autoSetup, gbc);
         }
 
-        fullChunking = new TooltipCheckBox("HTTPS: Full chunking mode",
+        chunking = new TooltipCheckBox("HTTPS: Enable chunking",
+                "Fragments your HTTPS packets");
+        panel.add(chunking, gbc);
+
+        fullChunking = new TooltipCheckBox("HTTPS: Full chunking mode (requires chunking enabled)",
                 "Enables full chunking mode.<br>Can led to higher CPU utilization, some websites from<br>the government blacklist may not accept connections,<br>but more efficient than the default (quiet) method.");
         panel.add(fullChunking, gbc);
 
@@ -128,8 +137,24 @@ public class OptionsFrame extends ControlFrame {
         panel.add(allowInvalidPackets, gbc);
 
         mixHostCase = new TooltipCheckBox("HTTP: Mix host case",
-                "When it enabled, PowerTunnel mixing case of the host of the website you're trying to connect.<br>Some websites, especially working on the old web servers, may not accept connection.");
+                "When it enabled, PowerTunnel mixes case of the host header value of the website you're trying to connect.<br>Some websites, especially working on the old web servers, may not accept connection.");
         panel.add(mixHostCase, gbc);
+
+        mixHostHeaderCase = new TooltipCheckBox("HTTP: Mix host header case",
+                "When it enabled, PowerTunnel mixes case of the host header.<br>Some websites, especially working on the old web servers, may not accept connection.");
+        panel.add(mixHostHeaderCase, gbc);
+
+        dotAfterHost = new TooltipCheckBox("HTTP: Dot after host",
+                "When it enabled, PowerTunnel adds a dot after the host header.");
+        panel.add(dotAfterHost, gbc);
+
+        lineBreakGet = new TooltipCheckBox("HTTP: Line break before the GET method",
+                "When it enabled, PowerTunnel adds a line break before the GET method.");
+        panel.add(lineBreakGet, gbc);
+
+        spaceGet = new TooltipCheckBox("HTTP: Space after the GET method",
+                "When it enabled, PowerTunnel adds a space after the GET method.");
+        panel.add(spaceGet, gbc);
 
         useDnsSec = new TooltipCheckBox("Use DNSSec mode (server restart required)",
                 "Enables validating DNS server responses with<br>the Google DNS servers and protects you from the DNS substitution.<br>Can slow down your connection a bit.<br>Make sure you restart the server<br>after changing this option.");
@@ -184,6 +209,9 @@ public class OptionsFrame extends ControlFrame {
         autoSetup.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.AUTO_PROXY_SETUP_ENABLED));
         autoSetup.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.AUTO_PROXY_SETUP_ENABLED));
 
+        chunking.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.ENABLE_CHUNKING));
+        chunking.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.ENABLE_CHUNKING));
+
         fullChunking.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.FULL_CHUNKING));
         fullChunking.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.FULL_CHUNKING));
 
@@ -198,6 +226,18 @@ public class OptionsFrame extends ControlFrame {
 
         mixHostCase.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.MIX_HOST_CASE));
         mixHostCase.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.MIX_HOST_CASE));
+
+        mixHostHeaderCase.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.MIX_HOST_HEADER_CASE));
+        mixHostHeaderCase.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.MIX_HOST_HEADER_CASE));
+
+        dotAfterHost.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.DOT_AFTER_HOST_HEADER));
+        dotAfterHost.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.DOT_AFTER_HOST_HEADER));
+
+        lineBreakGet.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.LINE_BREAK_BEFORE_GET));
+        lineBreakGet.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.LINE_BREAK_BEFORE_GET));
+
+        spaceGet.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.ADDITIONAL_SPACE_AFTER_GET));
+        lineBreakGet.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.ADDITIONAL_SPACE_AFTER_GET));
 
         useDnsSec.setSelected(useDnsSecVal = PowerTunnel.SETTINGS.getBooleanOption(Settings.USE_DNS_SEC));
         useDnsSec.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.USE_DNS_SEC));
@@ -227,10 +267,15 @@ public class OptionsFrame extends ControlFrame {
 
         PowerTunnel.SETTINGS.setBooleanOption(Settings.AUTO_PROXY_SETUP_ENABLED, autoSetup.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.ALLOW_INVALID_HTTP_PACKETS, allowInvalidPackets.isSelected());
+        PowerTunnel.SETTINGS.setBooleanOption(Settings.ENABLE_CHUNKING, chunking.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.FULL_CHUNKING, fullChunking.isSelected());
         PowerTunnel.SETTINGS.setOption(Settings.CHUNK_SIZE, chunkSize.getText());
         PowerTunnel.SETTINGS.setOption(Settings.PAYLOAD_LENGTH, payload.isSelected() ? "21" : "0");
         PowerTunnel.SETTINGS.setBooleanOption(Settings.MIX_HOST_CASE, mixHostCase.isSelected());
+        PowerTunnel.SETTINGS.setBooleanOption(Settings.MIX_HOST_HEADER_CASE, mixHostHeaderCase.isSelected());
+        PowerTunnel.SETTINGS.setBooleanOption(Settings.DOT_AFTER_HOST_HEADER, dotAfterHost.isSelected());
+        PowerTunnel.SETTINGS.setBooleanOption(Settings.LINE_BREAK_BEFORE_GET, lineBreakGet.isSelected());
+        PowerTunnel.SETTINGS.setBooleanOption(Settings.ADDITIONAL_SPACE_AFTER_GET, spaceGet.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.USE_DNS_SEC, useDnsSec.isSelected());
         PowerTunnel.SETTINGS.setOption(Settings.DNS_ADDRESS, dnsAddress.getText());
         PowerTunnel.SETTINGS.setOption(Settings.GOVERNMENT_BLACKLIST_MIRROR, blacklistMirror.getText());

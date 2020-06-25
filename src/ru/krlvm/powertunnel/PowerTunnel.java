@@ -1,7 +1,9 @@
 package ru.krlvm.powertunnel;
 
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
+import io.netty.util.AsciiString;
 import org.jitsi.dnssec.validator.ValidatingResolver;
 import org.littleshoot.proxy.*;
 import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
@@ -63,16 +65,24 @@ public class PowerTunnel {
     private static boolean ALLOW_REQUESTS_TO_ORIGIN_SERVER = false;
 
     public static final Settings SETTINGS = new Settings();
-    /** Optional settings */
+    /* Optional settings */
     public static boolean ALLOW_INVALID_HTTP_PACKETS = true;
+    public static boolean CHUNKING_ENABLED = true;
     public static boolean FULL_CHUNKING = false;
     public static int CHUNK_SIZE = 2;
     public static int PAYLOAD_LENGTH = 0; //21 recommended
     public static boolean USE_DNS_SEC = false;
     public static String DNS_SERVER = null;
     public static boolean MIX_HOST_CASE = false;
+    public static boolean MIX_HOST_HEADER_CASE = true;
+    public static boolean DOT_AFTER_HOST_HEADER = true;
     private static String GOVERNMENT_BLACKLIST_MIRROR = null;
-    /** ----------------- */
+    // v1.12-features (experimental) //
+    public static boolean LINE_BREAK_BEFORE_GET = true;
+    public static boolean ADDITIONAL_SPACE_AFTER_GET = true;
+    // ====>
+    public static HttpMethod GET_METHOD_OVERRIDE = null;
+    /* ----------------- */
 
     public static boolean FULL_OUTPUT_MIRRORING = false;
 
@@ -112,7 +122,8 @@ public class PowerTunnel {
                 switch (arg) {
                     case "help": {
                         Utility.print(HEADER);
-                        Utility.print("Available arguments:\n" +
+                        Utility.print(
+                                "Available arguments:\n" +
                                 " -help                                display help\n" +
                                 " -start                               starts server right after load\n" +
                                 " -console                             console mode, without UI\n" +
@@ -120,10 +131,13 @@ public class PowerTunnel {
                                 " -use-dns-sec                         enables DNSSec mode with the Google DNS servers\n" +
                                 " -use-dns-server [URL]                overrides DNS settings (DNS over HTTPS supported)\n" +
                                 " -disallow-invalid-packets            HTTP packets without Host header will be thrown out (unrecommended)\n" +
-                                " -full-chunking                       enables chunking the whole packets\n" +
-                                " -mix-host-case                       enables 'Host' header case mix (unstable)\n" +
-                                " -send-payload [length]               to bypass HTTP blocking, 21 is recommended\n" +
-                                " -chunk-size [size]                   sets size of one chunk\n" +
+                                " -disable-chunking                    HTTPS: disables packet chunking (fragmentation)\n" +
+                                " -full-chunking                       HTTPS: enables chunking the whole packets (requires chunking enabled)\n" +
+                                " -chunk-size [size]                   HTTPS: sets size of one chunk\n" +
+                                " -mix-host-case                       HTTP:  enables 'Host' header value case mix (unstable)\n" +
+                                " -disable-mix-host-header-case        HTTP:  disables 'Host' header case mix\n" +
+                                " -disable-dot-after-host-header       HTTP:  disables dot after host header\n" +
+                                " -send-payload [length]               HTTP:  sends payload to bypass blocking, 21 is recommended\n" +
                                 " -ip [IP Address]                     sets IP Address\n" +
                                 " -port [Port]                         sets port\n" +
                                 " -enable-journal                      enables PowerTunnel journal (when UI enabled)\n" +
@@ -138,7 +152,11 @@ public class PowerTunnel {
                                 " -disable-native-lf                   disables native L&F (when UI enabled)\n" +
                                 " -disable-ui-scaling                  disables UI scaling (when UI enabled)\n" +
                                 " -disable-updater                     disables the update notifier\n" +
-                                " -debug                               enables debug");
+                                " -debug                               enables debug\n" +
+                                "Latest preview features from v1.12:\n" +
+                                " -line-break-get                      HTTP:  inserts a line break before 'GET' method\n" +
+                                " -space-after-get                     HTTP:  inserts a space after 'GET' method"
+                        );
                         System.exit(0);
                         break;
                     }
@@ -164,14 +182,32 @@ public class PowerTunnel {
                         CONSOLE_MODE = true;
                         break;
                     }
+                    case "disable-chunking": {
+                        SETTINGS.setTemporaryValue(Settings.ENABLE_CHUNKING, "false");
+                        break;
+                    }
                     case "full-chunking": {
                         SETTINGS.setTemporaryValue(Settings.FULL_CHUNKING, "true");
-                        Utility.print("[#] Full-chunking mode enabled");
                         break;
                     }
                     case "mix-host-case": {
                         SETTINGS.setTemporaryValue(Settings.MIX_HOST_CASE, "true");
-                        Utility.print("[#] Enabled case mix for the 'Host' header");
+                        break;
+                    }
+                    case "disable-mix-host-header-case": {
+                        SETTINGS.setTemporaryValue(Settings.MIX_HOST_HEADER_CASE, "false");
+                        break;
+                    }
+                    case "disable-dot-after-host-header": {
+                        SETTINGS.setTemporaryValue(Settings.DOT_AFTER_HOST_HEADER, "false");
+                        break;
+                    }
+                    case "line-break-get": {
+                        SETTINGS.setTemporaryValue(Settings.LINE_BREAK_BEFORE_GET, "true");
+                        break;
+                    }
+                    case "space-after-get": {
+                        SETTINGS.setTemporaryValue(Settings.ADDITIONAL_SPACE_AFTER_GET, "true");
                         break;
                     }
                     case "enable-journal": {
@@ -657,10 +693,16 @@ public class PowerTunnel {
         AUTO_PROXY_SETUP_ENABLED = SETTINGS.getBooleanOption(Settings.AUTO_PROXY_SETUP_ENABLED);
 
         ALLOW_INVALID_HTTP_PACKETS = SETTINGS.getBooleanOption(Settings.ALLOW_INVALID_HTTP_PACKETS);
+        CHUNKING_ENABLED = SETTINGS.getBooleanOption(Settings.ENABLE_CHUNKING);
         FULL_CHUNKING = SETTINGS.getBooleanOption(Settings.FULL_CHUNKING);
         CHUNK_SIZE = SETTINGS.getIntOption(Settings.CHUNK_SIZE);
         PAYLOAD_LENGTH = SETTINGS.getIntOption(Settings.PAYLOAD_LENGTH);
         MIX_HOST_CASE = SETTINGS.getBooleanOption(Settings.MIX_HOST_CASE);
+        MIX_HOST_HEADER_CASE = SETTINGS.getBooleanOption(Settings.MIX_HOST_HEADER_CASE);
+        DOT_AFTER_HOST_HEADER = SETTINGS.getBooleanOption(Settings.DOT_AFTER_HOST_HEADER);
+        LINE_BREAK_BEFORE_GET = SETTINGS.getBooleanOption(Settings.LINE_BREAK_BEFORE_GET);
+        ADDITIONAL_SPACE_AFTER_GET = SETTINGS.getBooleanOption(Settings.ADDITIONAL_SPACE_AFTER_GET);
+
         USE_DNS_SEC = SETTINGS.getBooleanOption(Settings.USE_DNS_SEC);
         DNS_SERVER = SETTINGS.getOption(Settings.DNS_ADDRESS);
 
@@ -684,6 +726,11 @@ public class PowerTunnel {
             ex.printStackTrace();
             Utility.print();
         }
+    }
+
+    public static boolean isHTTPMethodTricksEnabled() {
+        System.out.println("Requested tricks: " + (ADDITIONAL_SPACE_AFTER_GET || LINE_BREAK_BEFORE_GET));
+        return ADDITIONAL_SPACE_AFTER_GET || LINE_BREAK_BEFORE_GET;
     }
 
     /**

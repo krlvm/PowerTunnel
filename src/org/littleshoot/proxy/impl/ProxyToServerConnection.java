@@ -442,6 +442,9 @@ public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
 
     @Override
     public boolean isShouldBeFragmented() {
+        if(!PowerTunnel.CHUNKING_ENABLED) {
+            return false;
+        }
         String addr = HttpUtility.formatHost(serverHostAndPort);
         boolean is = PowerTunnel.isBlockedByGovernment(addr);
         if(is) {
