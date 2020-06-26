@@ -247,7 +247,7 @@ public class OptionsFrame extends ControlFrame {
         lineBreakGet.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.LINE_BREAK_BEFORE_GET));
 
         spaceGet.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.ADDITIONAL_SPACE_AFTER_GET));
-        lineBreakGet.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.ADDITIONAL_SPACE_AFTER_GET));
+        spaceGet.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.ADDITIONAL_SPACE_AFTER_GET));
         
         eraseSni.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.ERASE_SNI));
         eraseSni.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.ERASE_SNI));
