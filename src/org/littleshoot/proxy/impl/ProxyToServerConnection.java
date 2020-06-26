@@ -933,7 +933,7 @@ public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
             LOG.debug("Handling CONNECT request through Chained Proxy");
             chainedProxy.filterRequest(initialRequest);
             MitmManager mitmManager = proxyServer.getMitmManager();
-            boolean isMitmEnabled = mitmManager != null;
+            boolean isMitmEnabled = mitmManager != null && PowerTunnel.ERASE_SNI && _powerTunnelIsBlocked();
             /*
              * We ignore the LastHttpContent which we read from the client
              * connection when we are negotiating connect (see readHttp()
@@ -1156,7 +1156,7 @@ public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
      * respond to the CONNECT request.
      * </p>
      */
-    private ConnectionFlowStep MitmEncryptClientChannel = new ConnectionFlowStep(
+    private final ConnectionFlowStep MitmEncryptClientChannel = new ConnectionFlowStep(
             this, HANDSHAKING) {
         @Override
         boolean shouldExecuteOnEventLoop() {

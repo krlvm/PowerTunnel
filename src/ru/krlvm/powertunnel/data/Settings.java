@@ -159,6 +159,7 @@ public class Settings extends DataStore {
     public static final String DOT_AFTER_HOST_HEADER = "http.dot-after-host-header.bool";
     public static final String LINE_BREAK_BEFORE_GET = "http.line-break-before-get.bol";
     public static final String ADDITIONAL_SPACE_AFTER_GET = "http.space-after-get.bool";
+    public static final String ERASE_SNI = "https.erase-sni.bool";
     public static final String USE_DNS_SEC = "dns.dnssec.enabled.bool";
     public static final String DNS_ADDRESS = "dns.doh.address";
     public static final String GOVERNMENT_BLACKLIST_MIRROR = "powertunnel.government-blacklist-mirror";
@@ -181,6 +182,7 @@ public class Settings extends DataStore {
         defaultValues.put(DOT_AFTER_HOST_HEADER, "true");
         defaultValues.put(LINE_BREAK_BEFORE_GET, "false");
         defaultValues.put(ADDITIONAL_SPACE_AFTER_GET, "false");
+        defaultValues.put(ERASE_SNI, "false");
         defaultValues.put(USE_DNS_SEC, "false");
         defaultValues.put(DNS_ADDRESS, "");
         defaultValues.put(GOVERNMENT_BLACKLIST_MIRROR, "");

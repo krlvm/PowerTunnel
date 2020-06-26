@@ -6,6 +6,7 @@ import ru.krlvm.powertunnel.ui.TooltipCheckBox;
 import ru.krlvm.powertunnel.ui.TooltipLabel;
 import ru.krlvm.powertunnel.updater.UpdateNotifier;
 import ru.krlvm.powertunnel.utilities.SystemUtility;
+import ru.krlvm.powertunnel.utilities.UIUtility;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,6 +23,7 @@ public class OptionsFrame extends ControlFrame {
     private final JCheckBox chunking;
     private final JCheckBox fullChunking;
     private final JTextField chunkSize;
+    private final JCheckBox eraseSni;     // server restart
     private final JCheckBox payload;
     private final JCheckBox allowInvalidPackets;
     private final JCheckBox mixHostCase;
@@ -29,8 +31,8 @@ public class OptionsFrame extends ControlFrame {
     private final JCheckBox dotAfterHost;
     private final JCheckBox lineBreakGet;
     private final JCheckBox spaceGet;
-    private final JCheckBox useDnsSec;     //server restart
-    private final JTextField dnsAddress; //server restart
+    private final JCheckBox useDnsSec;    // server restart
+    private final JTextField dnsAddress;  // server restart
     private final JTextField blacklistMirror;
     private final JCheckBox allowRequestsToOriginServer;
     private final JCheckBox enableJournal;
@@ -121,12 +123,20 @@ public class OptionsFrame extends ControlFrame {
                 "Enables full chunking mode.<br>Can led to higher CPU utilization, some websites from<br>the government blacklist may not accept connections,<br>but more efficient than the default (quiet) method.");
         panel.add(fullChunking, gbc);
 
-        JPanel chunkPane = new JPanel(new FlowLayout(FlowLayout.LEADING));
+        JPanel chunkPane = newOptionPanel();
         chunkSize = new JTextField(String.valueOf(PowerTunnel.CHUNK_SIZE));
         JLabel chunkLabel = new TooltipLabel("Chunk size:", "Count of fragments HTTP packets be divided");
         chunkPane.add(chunkLabel);
         chunkPane.add(chunkSize, gbc);
         panel.add(chunkPane, gbc);
+
+        JPanel eraseSniPane = newOptionPanel();
+        eraseSni = new TooltipCheckBox("HTTPS: Erase SNI (requires further setup)",
+                "When it enabled, PowerTunnel removes Server Name Indication from your HTTPS requests");
+        JEditorPane eraseSniWiki = UIUtility.getLabelWithHyperlinkSupport("<a href=\"todo\">Read more...</a>", null);
+        eraseSniPane.add(eraseSni);
+        eraseSniPane.add(eraseSniWiki, gbc);
+        panel.add(eraseSniPane, gbc);
 
         payload = new TooltipCheckBox("HTTP: Send additional 21KB payload",
                 "When it enabled, PowerTunnel adding 21KB of useless data before the Host header");
@@ -160,7 +170,7 @@ public class OptionsFrame extends ControlFrame {
                 "Enables validating DNS server responses with<br>the Google DNS servers and protects you from the DNS substitution.<br>Can slow down your connection a bit.<br>Make sure you restart the server<br>after changing this option.");
         panel.add(useDnsSec, gbc);
 
-        JPanel dohPane = new JPanel(new FlowLayout(FlowLayout.LEADING));
+        JPanel dohPane = newOptionPanel();
         dnsAddress = new JTextField(PowerTunnel.DNS_SERVER);
         dnsAddress.setPreferredSize(new Dimension(400, ((int) dnsAddress.getPreferredSize().getHeight())));
         JLabel dohLabel = new TooltipLabel("DNS or DoH resolver (server restart required):", "DNS or DNS over HTTPS resolver address<br>Addresses starts with 'https://' automatically recognizes as a DoH resolvers<br>Compatible DoH addresses is listed in the repository readme");
@@ -168,7 +178,7 @@ public class OptionsFrame extends ControlFrame {
         dohPane.add(dnsAddress, gbc);
         panel.add(dohPane, gbc);
 
-        JPanel mirrorPane = new JPanel(new FlowLayout(FlowLayout.LEADING));
+        JPanel mirrorPane = newOptionPanel();
         blacklistMirror = new JTextField(String.valueOf(PowerTunnel.CHUNK_SIZE));
         JLabel blacklistLabel = new TooltipLabel("Government blacklist mirror:", "URL address from government blacklist automatically loads");
         mirrorPane.add(blacklistLabel);
@@ -238,6 +248,9 @@ public class OptionsFrame extends ControlFrame {
 
         spaceGet.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.ADDITIONAL_SPACE_AFTER_GET));
         lineBreakGet.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.ADDITIONAL_SPACE_AFTER_GET));
+        
+        eraseSni.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.ERASE_SNI));
+        eraseSni.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.ERASE_SNI));
 
         useDnsSec.setSelected(useDnsSecVal = PowerTunnel.SETTINGS.getBooleanOption(Settings.USE_DNS_SEC));
         useDnsSec.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.USE_DNS_SEC));
@@ -276,6 +289,7 @@ public class OptionsFrame extends ControlFrame {
         PowerTunnel.SETTINGS.setBooleanOption(Settings.DOT_AFTER_HOST_HEADER, dotAfterHost.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.LINE_BREAK_BEFORE_GET, lineBreakGet.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.ADDITIONAL_SPACE_AFTER_GET, spaceGet.isSelected());
+        PowerTunnel.SETTINGS.setBooleanOption(Settings.ERASE_SNI, eraseSni.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.USE_DNS_SEC, useDnsSec.isSelected());
         PowerTunnel.SETTINGS.setOption(Settings.DNS_ADDRESS, dnsAddress.getText());
         PowerTunnel.SETTINGS.setOption(Settings.GOVERNMENT_BLACKLIST_MIRROR, blacklistMirror.getText());
@@ -307,5 +321,9 @@ public class OptionsFrame extends ControlFrame {
             adjustSettings();
         }
         super.setVisible(b);
+    }
+    
+    private JPanel newOptionPanel() {
+        return new JPanel(new FlowLayout(FlowLayout.LEADING));
     }
 }

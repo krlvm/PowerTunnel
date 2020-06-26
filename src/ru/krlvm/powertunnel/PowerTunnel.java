@@ -79,6 +79,7 @@ public class PowerTunnel {
     // v1.12-features (experimental) //
     public static boolean LINE_BREAK_BEFORE_GET = true;
     public static boolean ADDITIONAL_SPACE_AFTER_GET = true;
+    public static boolean ERASE_SNI = false;
     // ====>
     public static HttpMethod GET_METHOD_OVERRIDE = null;
     /* ----------------- */
@@ -154,7 +155,8 @@ public class PowerTunnel {
                                 " -debug                               enables debug\n" +
                                 "Latest preview features from v1.12:\n" +
                                 " -line-break-get                      HTTP:  inserts a line break before 'GET' method\n" +
-                                " -space-after-get                     HTTP:  inserts a space after 'GET' method"
+                                " -space-after-get                     HTTP:  inserts a space after 'GET' method" +
+                                " -erase-sni                           HTTPS:  enable SNI erasing (requires Root CA installation)"
                         );
                         System.exit(0);
                         break;
@@ -207,6 +209,10 @@ public class PowerTunnel {
                     }
                     case "space-after-get": {
                         SETTINGS.setTemporaryValue(Settings.ADDITIONAL_SPACE_AFTER_GET, "true");
+                        break;
+                    }
+                    case "erase-sni": {
+                        SETTINGS.setTemporaryValue(Settings.ERASE_SNI, "true");
                         break;
                     }
                     case "enable-journal": {
@@ -701,6 +707,7 @@ public class PowerTunnel {
         DOT_AFTER_HOST_HEADER = SETTINGS.getBooleanOption(Settings.DOT_AFTER_HOST_HEADER);
         LINE_BREAK_BEFORE_GET = SETTINGS.getBooleanOption(Settings.LINE_BREAK_BEFORE_GET);
         ADDITIONAL_SPACE_AFTER_GET = SETTINGS.getBooleanOption(Settings.ADDITIONAL_SPACE_AFTER_GET);
+        ERASE_SNI = SETTINGS.getBooleanOption(Settings.ERASE_SNI);
 
         USE_DNS_SEC = SETTINGS.getBooleanOption(Settings.USE_DNS_SEC);
         DNS_SERVER = SETTINGS.getOption(Settings.DNS_ADDRESS);
