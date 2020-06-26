@@ -468,8 +468,8 @@ abstract class ProxyConnection<I extends HttpObject> extends
      */
     private boolean alreadyChunked = false;
     protected void writeRaw(ByteBuf buf) {
-        if(!alreadyChunked && isShouldBeFragmented()) {
-            int chunkSize = getPTFragmentSize();
+        if(!alreadyChunked && _powerTunnelIsBlocked()) {
+            int chunkSize = _powerTunnelFragmentSize();
             for (byte[] byteChunk : PacketUtility.chunk(buf, chunkSize)) {
                 writeToChannel(Unpooled.wrappedBuffer(byteChunk));
             }
@@ -479,11 +479,11 @@ abstract class ProxyConnection<I extends HttpObject> extends
         }
     }
 
-    public boolean isShouldBeFragmented() {
+    public boolean _powerTunnelIsBlocked() {
         return false;
     }
 
-    public int getPTFragmentSize() {
+    public int _powerTunnelFragmentSize() {
         return 1;
     }
 

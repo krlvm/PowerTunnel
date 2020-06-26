@@ -441,7 +441,7 @@ public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
     }
 
     @Override
-    public boolean isShouldBeFragmented() {
+    public boolean _powerTunnelIsBlocked() {
         if(!PowerTunnel.CHUNKING_ENABLED) {
             return false;
         }
@@ -454,7 +454,7 @@ public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
     }
 
     @Override
-    public int getPTFragmentSize() {
+    public int _powerTunnelFragmentSize() {
         return PowerTunnel.CHUNK_SIZE;
     }
 
