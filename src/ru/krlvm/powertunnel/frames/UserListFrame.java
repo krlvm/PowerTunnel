@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 public abstract class UserListFrame extends ControlFrame {
 
     private final String type;
-    private DefaultListModel<String> model;
+    private final DefaultListModel<String> model;
 
     public UserListFrame(String type) {
         super(type);

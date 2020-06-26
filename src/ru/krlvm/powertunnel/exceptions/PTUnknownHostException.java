@@ -6,8 +6,8 @@ package ru.krlvm.powertunnel.exceptions;
  */
 public class PTUnknownHostException extends Exception {
 
-    private String host;
-    private Type type;
+    private final String host;
+    private final Type type;
 
     public PTUnknownHostException(String host, Type type, Throwable cause) {
         super(cause);

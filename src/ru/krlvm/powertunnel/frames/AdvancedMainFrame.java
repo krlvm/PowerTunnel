@@ -31,9 +31,9 @@ public class AdvancedMainFrame extends MainFrame {
             "<br><br>" +
             "(c) krlvm, 2019-2020";
 
-    private JLabel header;
-    private JButton stateButton;
-    private JTextField[] inputs;
+    private final JLabel header;
+    private final JButton stateButton;
+    private final JTextField[] inputs;
 
     public AdvancedMainFrame() {
         JRootPane root = getRootPane();

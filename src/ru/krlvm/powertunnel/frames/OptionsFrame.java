@@ -14,27 +14,27 @@ import java.awt.event.ActionListener;
 
 public class OptionsFrame extends ControlFrame {
 
-    private JLabel updateLabel;
-    private JButton updateButton;
+    private final JLabel updateLabel;
+    private final JButton updateButton;
 
     /* ------------------------------------ */
-    private JCheckBox autoSetup;
-    private JCheckBox chunking;
-    private JCheckBox fullChunking;
-    private JTextField chunkSize;
-    private JCheckBox payload;
-    private JCheckBox allowInvalidPackets;
-    private JCheckBox mixHostCase;
-    private JCheckBox mixHostHeaderCase;
-    private JCheckBox dotAfterHost;
-    private JCheckBox lineBreakGet;
-    private JCheckBox spaceGet;
-    private JCheckBox useDnsSec;     //server restart
-    private JTextField dnsAddress; //server restart
-    private JTextField blacklistMirror;
-    private JCheckBox allowRequestsToOriginServer;
-    private JCheckBox enableJournal;
-    private JCheckBox enableLogs;
+    private final JCheckBox autoSetup;
+    private final JCheckBox chunking;
+    private final JCheckBox fullChunking;
+    private final JTextField chunkSize;
+    private final JCheckBox payload;
+    private final JCheckBox allowInvalidPackets;
+    private final JCheckBox mixHostCase;
+    private final JCheckBox mixHostHeaderCase;
+    private final JCheckBox dotAfterHost;
+    private final JCheckBox lineBreakGet;
+    private final JCheckBox spaceGet;
+    private final JCheckBox useDnsSec;     //server restart
+    private final JTextField dnsAddress; //server restart
+    private final JTextField blacklistMirror;
+    private final JCheckBox allowRequestsToOriginServer;
+    private final JCheckBox enableJournal;
+    private final JCheckBox enableLogs;
     /* ------------------------------------ */
 
     //Restart required - previous values
