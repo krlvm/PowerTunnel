@@ -40,6 +40,7 @@ public class OptionsFrame extends ControlFrame {
     /* ------------------------------------ */
 
     //Restart required - previous values
+    private boolean eraseSniVal;
     private boolean useDnsSecVal;
     private String dnsOverHttpsVal;
     private boolean allowRequestsToOriginServerVal;
@@ -229,6 +230,9 @@ public class OptionsFrame extends ControlFrame {
         chunkSize.setText(PowerTunnel.SETTINGS.getOption(Settings.CHUNK_SIZE));
         chunkSize.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.CHUNK_SIZE));
 
+        eraseSni.setSelected(eraseSniVal = PowerTunnel.SETTINGS.getBooleanOption(Settings.ERASE_SNI));
+        eraseSni.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.ERASE_SNI));
+
         payload.setSelected(PowerTunnel.SETTINGS.getIntOption(Settings.PAYLOAD_LENGTH) != 0);
         payload.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.FULL_CHUNKING));
 
@@ -249,9 +253,6 @@ public class OptionsFrame extends ControlFrame {
 
         spaceGet.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.ADDITIONAL_SPACE_AFTER_GET));
         spaceGet.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.ADDITIONAL_SPACE_AFTER_GET));
-        
-        eraseSni.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.ERASE_SNI));
-        eraseSni.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.ERASE_SNI));
 
         useDnsSec.setSelected(useDnsSecVal = PowerTunnel.SETTINGS.getBooleanOption(Settings.USE_DNS_SEC));
         useDnsSec.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.USE_DNS_SEC));
@@ -276,7 +277,8 @@ public class OptionsFrame extends ControlFrame {
         final boolean suggestRestart = (
                 useDnsSecVal != useDnsSec.isSelected() ||
                 !dnsOverHttpsVal.equals(dnsAddress.getText()) ||
-                allowRequestsToOriginServerVal != allowRequestsToOriginServer.isSelected()
+                allowRequestsToOriginServerVal != allowRequestsToOriginServer.isSelected() ||
+                eraseSniVal != eraseSni.isSelected()
         );
 
         PowerTunnel.SETTINGS.setBooleanOption(Settings.AUTO_PROXY_SETUP_ENABLED, autoSetup.isSelected());
@@ -284,13 +286,13 @@ public class OptionsFrame extends ControlFrame {
         PowerTunnel.SETTINGS.setBooleanOption(Settings.ENABLE_CHUNKING, chunking.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.FULL_CHUNKING, fullChunking.isSelected());
         PowerTunnel.SETTINGS.setOption(Settings.CHUNK_SIZE, chunkSize.getText());
+        PowerTunnel.SETTINGS.setBooleanOption(Settings.ERASE_SNI, eraseSni.isSelected());
         PowerTunnel.SETTINGS.setOption(Settings.PAYLOAD_LENGTH, payload.isSelected() ? "21" : "0");
         PowerTunnel.SETTINGS.setBooleanOption(Settings.MIX_HOST_CASE, mixHostCase.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.MIX_HOST_HEADER_CASE, mixHostHeaderCase.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.DOT_AFTER_HOST_HEADER, dotAfterHost.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.LINE_BREAK_BEFORE_GET, lineBreakGet.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.ADDITIONAL_SPACE_AFTER_GET, spaceGet.isSelected());
-        PowerTunnel.SETTINGS.setBooleanOption(Settings.ERASE_SNI, eraseSni.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.USE_DNS_SEC, useDnsSec.isSelected());
         PowerTunnel.SETTINGS.setOption(Settings.DNS_ADDRESS, dnsAddress.getText());
         PowerTunnel.SETTINGS.setOption(Settings.GOVERNMENT_BLACKLIST_MIRROR, blacklistMirror.getText());
