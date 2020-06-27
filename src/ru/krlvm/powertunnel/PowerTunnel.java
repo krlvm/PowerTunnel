@@ -481,6 +481,17 @@ public class PowerTunnel {
                 Utility.print("[*] DNS override enabled: '" + DNS_SERVER + "'");
             }
         }
+        if (ERASE_SNI) {
+            try {
+                bootstrap.withManInTheMiddle(MITMUtility.mitmManager());
+                Utility.print("[*] SNI Erasing is enabled\n" +
+                        "    You have to install PowerTunnel Root CA\n" +
+                        "    Please, read the following manual: https://github.com/krlvm/PowerTunnel/wiki/SNI-Erasing");
+            } catch (Exception ex) {
+                Utility.print("[x] Failed to initialize MITM Manager for SNI Erasing\n" +
+                              "    Follow this link for troubleshooting: https://github.com/krlvm/PowerTunnel/wiki/SNI-Erasing");
+            }
+        }
         if (USE_DNS_SEC) {
             Utility.print("[*] DNSSec is enabled");
         }

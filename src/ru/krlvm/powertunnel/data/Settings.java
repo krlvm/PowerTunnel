@@ -1,7 +1,9 @@
 package ru.krlvm.powertunnel.data;
 
+import ru.krlvm.powertunnel.PowerTunnel;
 import ru.krlvm.powertunnel.filter.ProxyFilter;
 import ru.krlvm.powertunnel.utilities.Debugger;
+import ru.krlvm.powertunnel.utilities.MITMUtility;
 import ru.krlvm.powertunnel.utilities.Utility;
 
 import java.io.IOException;
@@ -12,7 +14,7 @@ import java.util.Map;
 
 public class Settings extends DataStore {
 
-    private static final String KEY_VALUE_SEPARATOR = "=";
+    public static final String KEY_VALUE_SEPARATOR = "=";
 
     private boolean hasChanged = false;
     private Map<String, String> temporaryValues = new HashMap<>();
@@ -29,6 +31,11 @@ public class Settings extends DataStore {
             if(line.contains(KEY_VALUE_SEPARATOR)) {
                 String[] array = line.split(KEY_VALUE_SEPARATOR);
                 String key = array[0];
+                if(key.equals(ROOT_CA_PASSWORD)) {
+                    loadedLines.remove(line);
+                    line = null;
+                    continue;
+                }
                 String value;
                 if(array.length > 1) {
                     value = array[1];
@@ -50,7 +57,7 @@ public class Settings extends DataStore {
                 }
                 options.put(key, value);
             } else {
-                Debugger.debug("Malformed settings line: '%s'", line);
+                Debugger.debug("[Settings] Malformed settings line: '%s'", line);
             }
         }
         addDefaults();
@@ -110,6 +117,7 @@ public class Settings extends DataStore {
         hasChanged = true;
 
         valueUpdated(key, value);
+        value = null;
     }
 
     public void setIntOption(String key, int value) {
@@ -118,6 +126,18 @@ public class Settings extends DataStore {
 
     public void setBooleanOption(String key, boolean value) {
         options.put(key, String.valueOf(value));
+    }
+
+    public void unload(String key) {
+        temporaryValues.remove(key);
+        options.remove(key);
+        if(loadedLines != null) {
+            for (String line : loadedLines) {
+                if(line.startsWith(key)) {
+                    loadedLines.remove(key);
+                }
+            }
+        }
     }
 
     public void save() throws IOException {
@@ -153,19 +173,20 @@ public class Settings extends DataStore {
     public static final String ENABLE_CHUNKING = "https.chunking.enabled.bool";
     public static final String FULL_CHUNKING = "https.chunking.full.bool";
     public static final String CHUNK_SIZE = "https.chunking.size.int";
+    public static final String ERASE_SNI = "https.erase-sni.bool";
     public static final String PAYLOAD_LENGTH = "http.payload.length.int";
     public static final String MIX_HOST_CASE = "http.mix-host-case.bool";
     public static final String MIX_HOST_HEADER_CASE = "http.mix-host-header-case.bool";
     public static final String DOT_AFTER_HOST_HEADER = "http.dot-after-host-header.bool";
     public static final String LINE_BREAK_BEFORE_GET = "http.line-break-before-get.bol";
     public static final String ADDITIONAL_SPACE_AFTER_GET = "http.space-after-get.bool";
-    public static final String ERASE_SNI = "https.erase-sni.bool";
     public static final String USE_DNS_SEC = "dns.dnssec.enabled.bool";
     public static final String DNS_ADDRESS = "dns.doh.address";
     public static final String GOVERNMENT_BLACKLIST_MIRROR = "powertunnel.government-blacklist-mirror";
     public static final String ENABLE_JOURNAL = "powertunnel.journal.enabled.bool";
     public static final String ENABLE_LOGS = "powertunnel.logs.enabled.bool";
     public static final String ALLOW_REQUESTS_TO_ORIGIN_SERVER = "server.allow-requests-to-origin-server.bool";
+    public static final String ROOT_CA_PASSWORD = "powertunnel.cert.password";
 
     private static final Map<String, String> defaultValues = new HashMap<>();
     static {

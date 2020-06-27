@@ -24,7 +24,7 @@ public class AdvancedMainFrame extends MainFrame {
             "<a href=\"https://github.com/java-native-access/jna\">Java Native Access</a> - library for accessing system API<br>" +
             "<a href=\"https://github.com/krlvm/SwingDPI\">SwingDPI</a> - High DPI scaling" +
             "<br><br>" +
-            "<a href=\"https://github.com/krlvm/PowerTunnel-Android\">Version for Android</a>" +
+            "Get <a href=\"https://github.com/krlvm/PowerTunnel-Android\">version for Android</a>" +
             "<br><br>" +
             "Licensed under the<br>" +
             "<a href=\"https://raw.githubusercontent.com/krlvm/PowerTunnel/master/LICENSE\">MIT License</a>" +
