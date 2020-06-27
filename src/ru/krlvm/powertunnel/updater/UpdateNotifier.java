@@ -61,7 +61,7 @@ public class UpdateNotifier {
                                                 "Download: <a href=\"" + PowerTunnel.REPOSITORY_URL + "/releases/download/v" + version + "/" + PowerTunnel.NAME + ".jar\">click here</a>" +
                                                 "<br><br>" +
                                                 "Visit <a href=\"" + PowerTunnel.REPOSITORY_URL + "\">GitHub repository</a>",
-                                                null);
+                                                null, true);
                                         JOptionPane.showMessageDialog(null, message, PowerTunnel.NAME + " Updater", JOptionPane.INFORMATION_MESSAGE);
                                     } else {
                                         PowerTunnel.getTray().showNotification("PowerTunnel update available");

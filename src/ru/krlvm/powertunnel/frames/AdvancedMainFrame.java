@@ -161,7 +161,7 @@ public class AdvancedMainFrame extends MainFrame {
         about.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JEditorPane message = UIUtility.getLabelWithHyperlinkSupport(ABOUT_MESSAGE, null);
+                JEditorPane message = UIUtility.getLabelWithHyperlinkSupport(ABOUT_MESSAGE, null, true);
                 JOptionPane.showMessageDialog(AdvancedMainFrame.this, message, "About " + PowerTunnel.NAME, JOptionPane.INFORMATION_MESSAGE);
             }
         });
