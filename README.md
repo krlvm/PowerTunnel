@@ -97,7 +97,7 @@ Available arguments:
 
 ## Dependencies
 * [LittleProxy](https://github.com/adamfisk/LittleProxy) - proxy server
-  * [The original LittleProxy](https://github.com/adamfisk/LittleProxy) is replaced with a [forked version](https://github.com/mrog/LittleProxy) since v1.11
+  * Replaced with a [forked version](https://github.com/mrog/LittleProxy) since v1.11
 * [LittleProxy-MITM](https://github.com/ganskef/LittleProxy-mitm) - an extension for LittleProxy to work with SSL
 * [dnsjava](https://github.com/dnsjava/dnsjava) - DNS library, DoH realization
 * [dnssecjava](https://github.com/ibauersachs/dnssecjava) - DNSSec realization for dnsjava
