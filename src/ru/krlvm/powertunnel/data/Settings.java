@@ -26,16 +26,16 @@ public class Settings extends DataStore {
 
     public void loadSettings() throws IOException {
         options.clear();
-        load();
+        filteredLoad(new Filter() {
+            @Override
+            public boolean accept(String line) {
+                return !line.startsWith(ROOT_CA_PASSWORD);
+            }
+        });
         for (String line : loadedLines) {
             if(line.contains(KEY_VALUE_SEPARATOR)) {
                 String[] array = line.split(KEY_VALUE_SEPARATOR);
                 String key = array[0];
-                if(key.equals(ROOT_CA_PASSWORD)) {
-                    loadedLines.remove(line);
-                    line = null;
-                    continue;
-                }
                 String value;
                 if(array.length > 1) {
                     value = array[1];

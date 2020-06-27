@@ -746,7 +746,6 @@ public class PowerTunnel {
     }
 
     public static boolean isHTTPMethodTricksEnabled() {
-        System.out.println("Requested tricks: " + (ADDITIONAL_SPACE_AFTER_GET || LINE_BREAK_BEFORE_GET));
         return ADDITIONAL_SPACE_AFTER_GET || LINE_BREAK_BEFORE_GET;
     }
 
