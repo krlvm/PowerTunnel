@@ -268,7 +268,6 @@ import org.littleshoot.proxy.ChainedProxyManager;
 import org.littleshoot.proxy.ChainedProxyType;
 import org.littleshoot.proxy.FullFlowContext;
 import org.littleshoot.proxy.HttpFilters;
-import org.littleshoot.proxy.MitmManager;
 import org.littleshoot.proxy.TransportProtocol;
 import org.littleshoot.proxy.UnknownTransportProtocolException;
 import org.littleshoot.proxy.extras.HAProxyMessageEncoder;
@@ -352,7 +351,7 @@ public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
      * when retrying a connection without SNI to work around Java's SNI handling issue (see
      * {@link #connectionFailed(Throwable)}).
      */
-    private volatile boolean disableSni = false;
+    private volatile boolean disableSni = true;
 
     /**
      * While we're in the process of connecting, it's possible that we'll
@@ -447,10 +446,15 @@ public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
         if(!PowerTunnel.CHUNKING_ENABLED) {
             return false;
         }
-        String addr = HttpUtility.formatHost(serverHostAndPort);
-        boolean is = PowerTunnel.isBlockedByGovernment(addr);
+        final String address = HttpUtility.formatHost(serverHostAndPort);
+        final boolean is = PowerTunnel.isBlockedByGovernment(address);
         if(is) {
-            Utility.print(" [+] Will be fragmented: %s", addr);
+            if(PowerTunnel.CHUNKING_ENABLED) {
+                Utility.print(" [+] Will be fragmented: %s", address);
+            }
+            if(PowerTunnel.ERASE_SNI) {
+                Utility.print(" [+] SNI will be erased: %s", address);
+            }
         }
         return is;
     }
@@ -833,8 +837,7 @@ public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
                 connectionFlow.then(serverConnection.HTTPCONNECTWithChainedProxy);
             }
 
-            MitmManager mitmManager = proxyServer.getMitmManager();
-            boolean isMitmEnabled = mitmManager != null;
+            boolean isMitmEnabled = isMITMEnabled();
 
             if (isMitmEnabled) {
                 // When MITM is enabled and when chained proxy is set up, remoteAddress
@@ -932,8 +935,7 @@ public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
         protected Future<?> execute() {
             LOG.debug("Handling CONNECT request through Chained Proxy");
             chainedProxy.filterRequest(initialRequest);
-            MitmManager mitmManager = proxyServer.getMitmManager();
-            boolean isMitmEnabled = mitmManager != null && PowerTunnel.ERASE_SNI && _powerTunnelIsBlocked();
+            boolean isMitmEnabled = isMITMEnabled();
             /*
              * We ignore the LastHttpContent which we read from the client
              * connection when we are negotiating connect (see readHttp()
@@ -1501,7 +1503,11 @@ public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
         }
     };
 
+    private boolean isMITMEnabled() {
+        return proxyServer.getMitmManager() != null && PowerTunnel.ERASE_SNI && _powerTunnelIsBlocked();
+    }
+
     static {
-        Debugger.debug(ProxyConnection.class.getSimpleName() + " is patched");
+        Debugger.debug("[Internals] " + ProxyConnection.class.getSimpleName() + " is patched");
     }
 }
