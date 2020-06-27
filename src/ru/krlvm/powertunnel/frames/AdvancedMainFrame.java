@@ -34,6 +34,7 @@ public class AdvancedMainFrame extends MainFrame {
     private final JLabel header;
     private final JButton stateButton;
     private final JTextField[] inputs;
+    private final boolean[] inputsDisabled;
 
     public AdvancedMainFrame() {
         JRootPane root = getRootPane();
@@ -48,6 +49,11 @@ public class AdvancedMainFrame extends MainFrame {
 
         header = new JLabel(getHeaderText());
 
+        inputsDisabled = new boolean[]{
+                PowerTunnel.SETTINGS.isTemporary(Settings.SERVER_IP_ADDRESS),
+                PowerTunnel.SETTINGS.isTemporary(Settings.SERVER_PORT)
+        };
+
         final JTextField ipInput = new JTextField();
         Insets insets = ipInput.getInsets();
         ipInput.setPreferredSize(new Dimension(SwingDPI.scale(200)+insets.left+insets.right,
@@ -55,7 +61,7 @@ public class AdvancedMainFrame extends MainFrame {
         ipInput.setToolTipText("IP Address");
         //ipInput.setHorizontalAlignment(SwingConstants.CENTER);
         ipInput.setText(String.valueOf(PowerTunnel.SERVER_IP_ADDRESS));
-        ipInput.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.SERVER_IP_ADDRESS));
+        ipInput.setEnabled(!inputsDisabled[0]);
 
         final JTextField portInput = new JTextField();
         insets = portInput.getInsets();
@@ -64,7 +70,7 @@ public class AdvancedMainFrame extends MainFrame {
         portInput.setToolTipText("Port");
         //portInput.setHorizontalAlignment(SwingConstants.CENTER);
         portInput.setText(String.valueOf(PowerTunnel.SERVER_PORT));
-        portInput.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.SERVER_PORT));
+        portInput.setEnabled(!inputsDisabled[1]);
 
         inputs = new JTextField[]{ipInput, portInput};
 
@@ -230,8 +236,9 @@ public class AdvancedMainFrame extends MainFrame {
                 header.setText(getHeaderText());
                 boolean activateUI = !(PowerTunnel.getStatus() == ServerStatus.STARTING || PowerTunnel.getStatus() == ServerStatus.STOPPING);
                 stateButton.setEnabled(activateUI);
-                for (JTextField input : inputs) {
-                    input.setEditable(PowerTunnel.getStatus() == ServerStatus.NOT_RUNNING);
+
+                for(int i = 0; i < inputs.length; i++) {
+                    inputs[i].setEditable(PowerTunnel.getStatus() == ServerStatus.NOT_RUNNING && !inputsDisabled[i]);
                 }
             }
         });
