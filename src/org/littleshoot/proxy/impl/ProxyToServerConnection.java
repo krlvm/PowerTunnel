@@ -443,16 +443,16 @@ public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
 
     @Override
     public boolean _powerTunnelIsBlocked() {
-        if(!PowerTunnel.CHUNKING_ENABLED) {
+        if (!PowerTunnel.CHUNKING_ENABLED && !PowerTunnel.ERASE_SNI) {
             return false;
         }
         final String address = HttpUtility.formatHost(serverHostAndPort);
         final boolean is = PowerTunnel.isBlockedByGovernment(address);
-        if(is) {
-            if(PowerTunnel.CHUNKING_ENABLED) {
+        if (is) {
+            if (PowerTunnel.CHUNKING_ENABLED) {
                 Utility.print(" [+] Will be fragmented: %s", address);
             }
-            if(PowerTunnel.ERASE_SNI) {
+            if (PowerTunnel.ERASE_SNI) {
                 Utility.print(" [+] SNI will be erased: %s", address);
             }
         }
