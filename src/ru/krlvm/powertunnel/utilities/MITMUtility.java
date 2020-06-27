@@ -28,7 +28,7 @@ public class MITMUtility {
             password = UUID.randomUUID().toString().toCharArray();
             PowerTunnel.SETTINGS.setOption(Settings.ROOT_CA_PASSWORD, new String(password));
             PowerTunnel.SETTINGS.save();
-            PowerTunnel.SETTINGS.unload(Settings.ROOT_CA_PASSWORD);
+            //PowerTunnel.SETTINGS.unload(Settings.ROOT_CA_PASSWORD);
         }
         try {
             return new CertificateSniffingMitmManager(new Authority(new File("."),
