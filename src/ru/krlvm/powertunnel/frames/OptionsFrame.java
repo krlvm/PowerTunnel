@@ -134,7 +134,7 @@ public class OptionsFrame extends ControlFrame {
         JPanel eraseSniPane = newOptionPanel();
         eraseSni = new TooltipCheckBox("HTTPS: Erase SNI (requires further setup)",
                 "When it enabled, PowerTunnel removes Server Name Indication from your HTTPS requests");
-        JEditorPane eraseSniWiki = UIUtility.getLabelWithHyperlinkSupport("<a href=\"todo\">Read more...</a>", null);
+        JEditorPane eraseSniWiki = UIUtility.getLabelWithHyperlinkSupport("<a href=\"https://github.com/krlvm/PowerTunnel/wiki/SNI-Erasing\">Read more...</a>", null);
         eraseSni.setBorder(null);
         eraseSniPane.add(eraseSni);
         eraseSniPane.add(eraseSniWiki, gbc);
