@@ -1,13 +1,13 @@
 package ru.krlvm.powertunnel;
 
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import org.jitsi.dnssec.validator.ValidatingResolver;
 import org.littleshoot.proxy.*;
 import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
 import org.xbill.DNS.*;
 import ru.krlvm.powertunnel.data.DataStore;
+import ru.krlvm.powertunnel.enums.SNITrick;
 import ru.krlvm.powertunnel.exceptions.DataStoreException;
 import ru.krlvm.powertunnel.exceptions.PTUnknownHostException;
 import ru.krlvm.powertunnel.data.Settings;
@@ -79,9 +79,7 @@ public class PowerTunnel {
     // v1.12-features (experimental) //
     public static boolean LINE_BREAK_BEFORE_GET = true;
     public static boolean ADDITIONAL_SPACE_AFTER_GET = true;
-    public static boolean ERASE_SNI = false;
-    // ====>
-    public static HttpMethod GET_METHOD_OVERRIDE = null;
+    public static SNITrick SNI_TRICK = null;
     /* ----------------- */
 
     public static boolean FULL_OUTPUT_MIRRORING = false;
@@ -156,7 +154,7 @@ public class PowerTunnel {
                                 "Latest preview features from v1.12:\n" +
                                 " -line-break-get                      HTTP:  inserts a line break before 'GET' method\n" +
                                 " -space-after-get                     HTTP:  inserts a space after 'GET' method" +
-                                " -erase-sni                           HTTPS: enable SNI erasing (requires Root CA installation)"
+                                " -sni-trick [trick]                   HTTPS: enable SNI tricks: 1 - erase; 2 - spoil (requires Root CA installation)"
                         );
                         System.exit(0);
                         break;
@@ -209,10 +207,6 @@ public class PowerTunnel {
                     }
                     case "space-after-get": {
                         SETTINGS.setTemporaryValue(Settings.ADDITIONAL_SPACE_AFTER_GET, "true");
-                        break;
-                    }
-                    case "erase-sni": {
-                        SETTINGS.setTemporaryValue(Settings.ERASE_SNI, "true");
                         break;
                     }
                     case "enable-journal": {
@@ -307,6 +301,21 @@ public class PowerTunnel {
                                         Utility.print("[#] Chunk size set to '%s'", value);
                                     } catch (NumberFormatException ex) {
                                         Utility.print("[x] Invalid chunk size number, using default");
+                                    }
+                                    break;
+                                }
+                                case "erase-sni": {
+                                    try {
+                                        int id = Integer.parseInt(value);
+                                        SNITrick trick = SNITrick.fromID(id);
+                                        if(trick == null) {
+                                            Utility.print("[x] Unknown SNI trick ID");
+                                        } else {
+                                            SETTINGS.setTemporaryValue(Settings.SNI_TRICK, value);
+                                            Utility.print("[#] SNI trick set to '%s (%s)'", trick.name(), id);
+                                        }
+                                    } catch (NumberFormatException ex) {
+                                        Utility.print("[x] Invalid SNI Trick ID");
                                     }
                                     break;
                                 }
@@ -481,7 +490,7 @@ public class PowerTunnel {
                 Utility.print("[*] DNS override enabled: '" + DNS_SERVER + "'");
             }
         }
-        if (ERASE_SNI) {
+        if (SNI_TRICK != null) {
             try {
                 bootstrap.withManInTheMiddle(MITMUtility.mitmManager());
                 Utility.print("[*] SNI Erasing is enabled\n" +
@@ -718,7 +727,7 @@ public class PowerTunnel {
         DOT_AFTER_HOST_HEADER = SETTINGS.getBooleanOption(Settings.DOT_AFTER_HOST_HEADER);
         LINE_BREAK_BEFORE_GET = SETTINGS.getBooleanOption(Settings.LINE_BREAK_BEFORE_GET);
         ADDITIONAL_SPACE_AFTER_GET = SETTINGS.getBooleanOption(Settings.ADDITIONAL_SPACE_AFTER_GET);
-        ERASE_SNI = SETTINGS.getBooleanOption(Settings.ERASE_SNI);
+        SNI_TRICK = SNITrick.fromID(SETTINGS.getIntOption(Settings.SNI_TRICK));
 
         USE_DNS_SEC = SETTINGS.getBooleanOption(Settings.USE_DNS_SEC);
         DNS_SERVER = SETTINGS.getOption(Settings.DNS_ADDRESS);

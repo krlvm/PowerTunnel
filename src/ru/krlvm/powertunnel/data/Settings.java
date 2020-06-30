@@ -1,9 +1,7 @@
 package ru.krlvm.powertunnel.data;
 
-import ru.krlvm.powertunnel.PowerTunnel;
 import ru.krlvm.powertunnel.filter.ProxyFilter;
 import ru.krlvm.powertunnel.utilities.Debugger;
-import ru.krlvm.powertunnel.utilities.MITMUtility;
 import ru.krlvm.powertunnel.utilities.Utility;
 
 import java.io.IOException;
@@ -174,7 +172,7 @@ public class Settings extends DataStore {
     public static final String ENABLE_CHUNKING = "https.chunking.enabled.bool";
     public static final String FULL_CHUNKING = "https.chunking.full.bool";
     public static final String CHUNK_SIZE = "https.chunking.size.int";
-    public static final String ERASE_SNI = "https.erase-sni.bool";
+    public static final String SNI_TRICK = "https.sni-trick.int";
     public static final String PAYLOAD_LENGTH = "http.payload.length.int";
     public static final String MIX_HOST_CASE = "http.mix-host-case.bool";
     public static final String MIX_HOST_HEADER_CASE = "http.mix-host-header-case.bool";
@@ -204,7 +202,7 @@ public class Settings extends DataStore {
         defaultValues.put(DOT_AFTER_HOST_HEADER, "true");
         defaultValues.put(LINE_BREAK_BEFORE_GET, "false");
         defaultValues.put(ADDITIONAL_SPACE_AFTER_GET, "false");
-        defaultValues.put(ERASE_SNI, "false");
+        defaultValues.put(SNI_TRICK, "0");
         defaultValues.put(USE_DNS_SEC, "false");
         defaultValues.put(DNS_ADDRESS, "");
         defaultValues.put(GOVERNMENT_BLACKLIST_MIRROR, "");

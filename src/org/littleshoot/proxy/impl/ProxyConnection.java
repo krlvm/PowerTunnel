@@ -1034,6 +1034,6 @@ abstract class ProxyConnection<I extends HttpObject> extends
     }
 
     static {
-        Debugger.debug("[Internals] " + ProxyConnection.class.getSimpleName() + " is patched");
+        Debugger.debug("Internals | " + ProxyConnection.class.getSimpleName() + " is patched");
     }
 }

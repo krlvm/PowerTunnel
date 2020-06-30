@@ -272,6 +272,7 @@ import org.littleshoot.proxy.TransportProtocol;
 import org.littleshoot.proxy.UnknownTransportProtocolException;
 import org.littleshoot.proxy.extras.HAProxyMessageEncoder;
 import ru.krlvm.powertunnel.PowerTunnel;
+import ru.krlvm.powertunnel.enums.SNITrick;
 import ru.krlvm.powertunnel.utilities.Debugger;
 import ru.krlvm.powertunnel.utilities.HttpUtility;
 import ru.krlvm.powertunnel.utilities.Utility;
@@ -351,7 +352,7 @@ public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
      * when retrying a connection without SNI to work around Java's SNI handling issue (see
      * {@link #connectionFailed(Throwable)}).
      */
-    private volatile boolean disableSni = true;
+    private volatile boolean disableSni = PowerTunnel.SNI_TRICK == SNITrick.ERASE;//false;
 
     /**
      * While we're in the process of connecting, it's possible that we'll
@@ -443,7 +444,7 @@ public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
 
     @Override
     public boolean _powerTunnelIsBlocked() {
-        if (!PowerTunnel.CHUNKING_ENABLED && !PowerTunnel.ERASE_SNI) {
+        if (!PowerTunnel.CHUNKING_ENABLED && PowerTunnel.SNI_TRICK == null) {
             return false;
         }
         final String address = HttpUtility.formatHost(serverHostAndPort);
@@ -452,8 +453,12 @@ public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
             if (PowerTunnel.CHUNKING_ENABLED) {
                 Utility.print(" [+] Will be fragmented: %s", address);
             }
-            if (PowerTunnel.ERASE_SNI) {
-                Utility.print(" [+] SNI will be erased: %s", address);
+            if(PowerTunnel.SNI_TRICK != null) {
+                if (PowerTunnel.SNI_TRICK == SNITrick.ERASE) {
+                    Utility.print(" [+] SNI will be erased: %s", address);
+                } else if (PowerTunnel.SNI_TRICK == SNITrick.SPOIL) {
+                    Utility.print(" [+] SNI will be spoiled: %s", address);
+                }
             }
         }
         return is;
@@ -852,7 +857,7 @@ public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
                             .serverSslEngine()));
                 } else {
                     connectionFlow.then(serverConnection.EncryptChannel(proxyServer.getMitmManager()
-                            .serverSslEngine(parsedHostAndPort.getHost(), parsedHostAndPort.getPort())));
+                            .serverSslEngine(parsedHostAndPort.getHost() + ".", parsedHostAndPort.getPort())));
                 }
 
                 connectionFlow
@@ -1504,10 +1509,10 @@ public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
     };
 
     private boolean isMITMEnabled() {
-        return proxyServer.getMitmManager() != null && PowerTunnel.ERASE_SNI && _powerTunnelIsBlocked();
+        return proxyServer.getMitmManager() != null && PowerTunnel.SNI_TRICK != null && _powerTunnelIsBlocked();
     }
 
     static {
-        Debugger.debug("[Internals] " + ProxyConnection.class.getSimpleName() + " is patched");
+        Debugger.debug("Internals | " + ProxyConnection.class.getSimpleName() + " is patched");
     }
 }
