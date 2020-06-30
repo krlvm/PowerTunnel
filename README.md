@@ -71,10 +71,17 @@ Available arguments:
  -use-dns-sec                         enables DNSSec mode with the Google DNS servers
  -use-dns-server [URL]                overrides DNS settings (DNS over HTTPS supported)
  -disallow-invalid-packets            HTTP packets without Host header will be thrown out (unrecommended)
- -full-chunking                       enables chunking the whole packets
- -mix-host-case                       enables 'Host' header case mix (unstable)
- -send-payload [length]               to bypass HTTP blocking, 21 is recommended
- -chunk-size [size]                   sets size of one chunk
+ -disable-chunking                    HTTPS: disables packet chunking (fragmentation)
+ -full-chunking                       HTTPS: enables chunking the whole packets (requires chunking enabled)
+ -chunk-size [size]                   HTTPS: sets size of one chunk
+ -sni-trick [trick]                   HTTPS: enable SNI tricks: 1 - spoil; 2 - erase (requires Root CA installation)
+ -line-break-get                      HTTP:  inserts a line break before 'GET' method
+ -space-after-get                     HTTP:  inserts a space after 'GET' method
+ -apply-http-https                    HTTP:  apply enabled HTTP tricks to HTTPS
+ -mix-host-case                       HTTP:  enables 'Host' header value case mix
+ -disable-mix-host-header-case        HTTP:  disables 'Host' header case mix
+ -disable-dot-after-host-header       HTTP:  disables dot after host header
+ -send-payload [length]               HTTP:  sends payload to bypass blocking, 21 is recommended
  -ip [IP Address]                     sets IP Address
  -port [Port]                         sets port
  -enable-journal                      enables PowerTunnel journal (when UI enabled)

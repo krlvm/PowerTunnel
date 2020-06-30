@@ -45,8 +45,8 @@ import java.util.*;
 public class PowerTunnel {
 
     public static final String NAME = "PowerTunnel";
-    public static final String VERSION = "1.12-rc2";
-    public static final int VERSION_CODE = 27;
+    public static final String VERSION = "1.12";
+    public static final int VERSION_CODE = 28;
     public static final String REPOSITORY_URL = "https://github.com/krlvm/PowerTunnel";
 
     private static final String HEADER =
@@ -133,6 +133,9 @@ public class PowerTunnel {
                                 " -disable-chunking                    HTTPS: disables packet chunking (fragmentation)\n" +
                                 " -full-chunking                       HTTPS: enables chunking the whole packets (requires chunking enabled)\n" +
                                 " -chunk-size [size]                   HTTPS: sets size of one chunk\n" +
+                                " -sni-trick [trick]                   HTTPS: enable SNI tricks: 1 - spoil; 2 - erase (requires Root CA installation)\n" +
+                                " -line-break-get                      HTTP:  inserts a line break before 'GET' method\n" +
+                                " -space-after-get                     HTTP:  inserts a space after 'GET' method\n" +
                                 " -apply-http-https                    HTTP:  apply enabled HTTP tricks to HTTPS\n" +
                                 " -mix-host-case                       HTTP:  enables 'Host' header value case mix\n" +
                                 " -disable-mix-host-header-case        HTTP:  disables 'Host' header case mix\n" +
@@ -152,11 +155,7 @@ public class PowerTunnel {
                                 " -disable-native-lf                   disables native L&F (when UI enabled)\n" +
                                 " -disable-ui-scaling                  disables UI scaling (when UI enabled)\n" +
                                 " -disable-updater                     disables the update notifier\n" +
-                                " -debug                               enables debug\n" +
-                                "Latest preview features from v1.12:\n" +
-                                " -line-break-get                      HTTP:  inserts a line break before 'GET' method\n" +
-                                " -space-after-get                     HTTP:  inserts a space after 'GET' method" +
-                                " -sni-trick [trick]                   HTTPS: enable SNI tricks: 1 - spoil; 2 - erase (requires Root CA installation)"
+                                " -debug                               enables debug"
                         );
                         System.exit(0);
                         break;
