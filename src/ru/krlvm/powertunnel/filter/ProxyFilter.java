@@ -95,7 +95,7 @@ public class ProxyFilter extends HttpFiltersAdapter {
     }
 
     /**
-     * DPI circumvention algorithm
+     * DPI circumvention algorithm for HTTP requests
      *
      * @param request - original HttpRequest
      */

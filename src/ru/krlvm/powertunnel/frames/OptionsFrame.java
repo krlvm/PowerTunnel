@@ -23,7 +23,9 @@ public class OptionsFrame extends ControlFrame {
     private final JCheckBox chunking;
     private final JCheckBox fullChunking;
     private final JTextField chunkSize;
-    private final JCheckBox eraseSni;     // server restart
+    private final JCheckBox enableSniTricks;  // server restart
+    private final JComboBox<String> sniTrick;
+    private final JCheckBox applyHttpHttps;
     private final JCheckBox payload;
     private final JCheckBox allowInvalidPackets;
     private final JCheckBox mixHostCase;
@@ -31,7 +33,7 @@ public class OptionsFrame extends ControlFrame {
     private final JCheckBox dotAfterHost;
     private final JCheckBox lineBreakGet;
     private final JCheckBox spaceGet;
-    private final JCheckBox useDnsSec;    // server restart
+    private final JCheckBox useDnsSec;  // server restart
     private final JTextField dnsAddress;  // server restart
     private final JTextField blacklistMirror;
     private final JCheckBox allowRequestsToOriginServer;
@@ -131,22 +133,26 @@ public class OptionsFrame extends ControlFrame {
         chunkPane.add(chunkSize, gbc);
         panel.add(chunkPane, gbc);
 
-        JPanel eraseSniPane = newOptionPanel();
-        eraseSni = new TooltipCheckBox("HTTPS: Erase SNI (requires further setup, server restart required)",
-                "When it enabled, PowerTunnel removes Server Name Indication from your HTTPS requests");
-        JEditorPane eraseSniWiki = UIUtility.getLabelWithHyperlinkSupport("<a href=\"https://github.com/krlvm/PowerTunnel/wiki/SNI-Erasing\">Read more...</a>", null);
-        eraseSni.setBorder(null);
-        eraseSniPane.add(eraseSni);
-        eraseSniPane.add(eraseSniWiki, gbc);
-        panel.add(eraseSniPane, gbc);
+        JPanel sniPane = newOptionPanel();
+        enableSniTricks = new TooltipCheckBox("HTTPS: Enable SNI tricks (requires further setup, server restart required)",
+                "When it enabled, PowerTunnel does some magic with Server Name Indication in your HTTPS requests");
+        enableSniTricks.setBorder(null);
+        JEditorPane sniWikiRef = UIUtility.getLabelWithHyperlinkSupport("<a href=\"https://github.com/krlvm/PowerTunnel/wiki/SNI-Erasing\">Read more...</a>", null);
+        sniTrick = new JComboBox<>(new String[] { "Erase SNI", "Spoil SNI" });
+        sniTrick.setSelectedIndex(0);
+        sniTrick.setLightWeightPopupEnabled(false);
+        sniPane.add(enableSniTricks);
+        sniPane.add(sniWikiRef, gbc);
+        sniPane.add(sniTrick, gbc);
+        panel.add(sniPane, gbc);
+
+        applyHttpHttps = new TooltipCheckBox("HTTPS: Apply HTTP tricks to HTTPS packets",
+                "When this option is enabled, selected HTTP tricks will be applied to HTTPS too");
+        panel.add(applyHttpHttps, gbc);
 
         payload = new TooltipCheckBox("HTTP: Send additional 21KB payload",
                 "When it enabled, PowerTunnel adding 21KB of useless data before the Host header");
         panel.add(payload, gbc);
-
-        allowInvalidPackets = new TooltipCheckBox("HTTP: Allow invalid packets (recommended)",
-                "When this option is disabled, HTTP packets without Host header throws out");
-        panel.add(allowInvalidPackets, gbc);
 
         mixHostCase = new TooltipCheckBox("HTTP: Mix host case",
                 "When it enabled, PowerTunnel mixes case of the host header value of the website you're trying to connect.<br>Some websites, especially working on the old web servers, may not accept connection.");
@@ -186,6 +192,10 @@ public class OptionsFrame extends ControlFrame {
         mirrorPane.add(blacklistLabel);
         mirrorPane.add(blacklistMirror, gbc);
         panel.add(mirrorPane, gbc);
+
+        allowInvalidPackets = new TooltipCheckBox("Allow invalid packets (recommended)",
+                "When this option is disabled, HTTP packets without Host header throws out");
+        panel.add(allowInvalidPackets, gbc);
 
         allowRequestsToOriginServer = new TooltipCheckBox("Allow requests to origin server (server restart required)",
                 "Experimental option, can fix some connectivity issues.");
@@ -230,8 +240,11 @@ public class OptionsFrame extends ControlFrame {
         chunkSize.setText(PowerTunnel.SETTINGS.getOption(Settings.CHUNK_SIZE));
         chunkSize.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.CHUNK_SIZE));
 
-        eraseSni.setSelected(eraseSniVal = PowerTunnel.SETTINGS.getBooleanOption(Settings.ERASE_SNI));
-        eraseSni.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.ERASE_SNI));
+        enableSniTricks.setSelected(eraseSniVal = PowerTunnel.SETTINGS.getIntOption(Settings.SNI_TRICK) != 0);
+        enableSniTricks.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.SNI_TRICK));
+
+        applyHttpHttps.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.APPLY_HTTP_TRICKS_TO_HTTPS));
+        applyHttpHttps.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.APPLY_HTTP_TRICKS_TO_HTTPS));
 
         payload.setSelected(PowerTunnel.SETTINGS.getIntOption(Settings.PAYLOAD_LENGTH) != 0);
         payload.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.FULL_CHUNKING));
@@ -278,7 +291,7 @@ public class OptionsFrame extends ControlFrame {
                 useDnsSecVal != useDnsSec.isSelected() ||
                 !dnsOverHttpsVal.equals(dnsAddress.getText()) ||
                 allowRequestsToOriginServerVal != allowRequestsToOriginServer.isSelected() ||
-                eraseSniVal != eraseSni.isSelected()
+                eraseSniVal != enableSniTricks.isSelected()
         );
 
         PowerTunnel.SETTINGS.setBooleanOption(Settings.AUTO_PROXY_SETUP_ENABLED, autoSetup.isSelected());
@@ -286,7 +299,8 @@ public class OptionsFrame extends ControlFrame {
         PowerTunnel.SETTINGS.setBooleanOption(Settings.ENABLE_CHUNKING, chunking.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.FULL_CHUNKING, fullChunking.isSelected());
         PowerTunnel.SETTINGS.setOption(Settings.CHUNK_SIZE, chunkSize.getText());
-        PowerTunnel.SETTINGS.setBooleanOption(Settings.ERASE_SNI, eraseSni.isSelected());
+        PowerTunnel.SETTINGS.setIntOption(Settings.SNI_TRICK, determineSniTrick());
+        PowerTunnel.SETTINGS.setBooleanOption(Settings.APPLY_HTTP_TRICKS_TO_HTTPS, applyHttpHttps.isSelected());
         PowerTunnel.SETTINGS.setOption(Settings.PAYLOAD_LENGTH, payload.isSelected() ? "21" : "0");
         PowerTunnel.SETTINGS.setBooleanOption(Settings.MIX_HOST_CASE, mixHostCase.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.MIX_HOST_HEADER_CASE, mixHostHeaderCase.isSelected());
@@ -311,6 +325,13 @@ public class OptionsFrame extends ControlFrame {
                 }, "Server Restart Thread").start();
             }
         }
+    }
+
+    private int determineSniTrick() {
+        if(!enableSniTricks.isSelected()) {
+            return 0;
+        }
+        return sniTrick.getSelectedIndex()+1;
     }
 
     public void updateAvailable(String version) {
