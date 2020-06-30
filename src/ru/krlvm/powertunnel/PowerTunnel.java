@@ -156,7 +156,7 @@ public class PowerTunnel {
                                 "Latest preview features from v1.12:\n" +
                                 " -line-break-get                      HTTP:  inserts a line break before 'GET' method\n" +
                                 " -space-after-get                     HTTP:  inserts a space after 'GET' method" +
-                                " -sni-trick [trick]                   HTTPS: enable SNI tricks: 1 - erase; 2 - spoil (requires Root CA installation)"
+                                " -sni-trick [trick]                   HTTPS: enable SNI tricks: 1 - spoil; 2 - erase (requires Root CA installation)"
                         );
                         System.exit(0);
                         break;

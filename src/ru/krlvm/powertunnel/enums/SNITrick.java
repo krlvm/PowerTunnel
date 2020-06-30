@@ -8,10 +8,10 @@ public enum SNITrick {
     public static SNITrick fromID(int id) {
         switch (id) {
             case 1: {
-                return ERASE;
+                return SPOIL;
             }
             case 2: {
-                return SPOIL;
+                return ERASE;
             }
             default: {
                 return null;

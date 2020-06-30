@@ -138,7 +138,7 @@ public class OptionsFrame extends ControlFrame {
                 "When it enabled, PowerTunnel does some magic with Server Name Indication in your HTTPS requests");
         enableSniTricks.setBorder(null);
         JEditorPane sniWikiRef = UIUtility.getLabelWithHyperlinkSupport("<a href=\"https://github.com/krlvm/PowerTunnel/wiki/SNI-Erasing\">Read more...</a>", null);
-        sniTrick = new JComboBox<>(new String[] { "Erase SNI", "Spoil SNI" });
+        sniTrick = new JComboBox<>(new String[] { "Spoil SNI", "Erase SNI" });
         sniTrick.setSelectedIndex(0);
         sniTrick.setLightWeightPopupEnabled(false);
         sniPane.add(enableSniTricks);
