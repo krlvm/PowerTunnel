@@ -79,6 +79,7 @@ Available arguments:
  -space-after-get                     HTTP:  inserts a space after 'GET' method
  -apply-http-https                    HTTP:  apply enabled HTTP tricks to HTTPS
  -mix-host-case                       HTTP:  enables 'Host' header value case mix
+ -complete-mix-host-case              HTTP:  complete 'Host' header value case mix
  -disable-mix-host-header-case        HTTP:  disables 'Host' header case mix
  -disable-dot-after-host-header       HTTP:  disables dot after host header
  -send-payload [length]               HTTP:  sends payload to bypass blocking, 21 is recommended
