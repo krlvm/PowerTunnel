@@ -18,4 +18,6 @@ public enum SNITrick {
             }
         }
     }
+
+    public static final String SUPPORT_REFERENCE = "https://github.com/krlvm/PowerTunnel/wiki/SNI-Tricks";
 }

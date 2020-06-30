@@ -499,12 +499,12 @@ public class PowerTunnel {
         if (SNI_TRICK != null) {
             try {
                 bootstrap.withManInTheMiddle(MITMUtility.mitmManager());
-                Utility.print("[*] SNI Erasing is enabled\n" +
+                Utility.print("[*] SNI Tricks is enabled\n" +
                         "    You have to install PowerTunnel Root CA\n" +
-                        "    Please, read the following manual: https://github.com/krlvm/PowerTunnel/wiki/SNI-Erasing");
+                        "    Please, read the following manual: " + SNITrick.SUPPORT_REFERENCE);
             } catch (Exception ex) {
-                Utility.print("[x] Failed to initialize MITM Manager for SNI Erasing\n" +
-                              "    Follow this link for troubleshooting: https://github.com/krlvm/PowerTunnel/wiki/SNI-Erasing");
+                Utility.print("[x] Failed to initialize MITM Manager for SNI Tricks\n" +
+                              "    Follow this link for troubleshooting: " + SNITrick.SUPPORT_REFERENCE);
             }
         }
         if (USE_DNS_SEC) {

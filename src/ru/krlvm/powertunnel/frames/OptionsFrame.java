@@ -2,6 +2,7 @@ package ru.krlvm.powertunnel.frames;
 
 import ru.krlvm.powertunnel.PowerTunnel;
 import ru.krlvm.powertunnel.data.Settings;
+import ru.krlvm.powertunnel.enums.SNITrick;
 import ru.krlvm.powertunnel.ui.TooltipCheckBox;
 import ru.krlvm.powertunnel.ui.TooltipLabel;
 import ru.krlvm.powertunnel.updater.UpdateNotifier;
@@ -137,7 +138,7 @@ public class OptionsFrame extends ControlFrame {
         enableSniTricks = new TooltipCheckBox("HTTPS: Enable SNI tricks (requires further setup, server restart required)",
                 "When it enabled, PowerTunnel does some magic with Server Name Indication in your HTTPS requests");
         enableSniTricks.setBorder(null);
-        JEditorPane sniWikiRef = UIUtility.getLabelWithHyperlinkSupport("<a href=\"https://github.com/krlvm/PowerTunnel/wiki/SNI-Erasing\">Read more...</a>", null);
+        JEditorPane sniWikiRef = UIUtility.getLabelWithHyperlinkSupport("<a href=\"" + SNITrick.SUPPORT_REFERENCE + "\">Read more...</a>", null);
         sniTrick = new JComboBox<>(new String[] { "Spoil SNI", "Erase SNI" });
         sniTrick.setSelectedIndex(0);
         sniTrick.setLightWeightPopupEnabled(false);
