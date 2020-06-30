@@ -226,6 +226,6 @@ public class HttpMethod implements Comparable<HttpMethod> {
     }
 
     static {
-        Debugger.debug(HttpMethod.class.getSimpleName() + " is patched");
+        Debugger.debug("Internals | " + HttpMethod.class.getSimpleName() + " is patched");
     }
 }

@@ -206,6 +206,7 @@
 package org.littleshoot.proxy.mitm;
 
 import java.io.ByteArrayInputStream;
+import java.io.Closeable;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
@@ -228,6 +229,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.Random;
+import java.util.function.Consumer;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
@@ -235,7 +237,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
-import org.apache.commons.io.IOUtils;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -260,6 +261,7 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.krlvm.powertunnel.utilities.Utility;
 
 public final class CertificateHelper {
 
@@ -408,7 +410,26 @@ public final class CertificateHelper {
             SubjectPublicKeyInfo info = new SubjectPublicKeyInfo(seq);
             return new BcX509ExtensionUtils().createSubjectKeyIdentifier(info);
         } finally {
-            IOUtils.closeQuietly(is);
+            Utility.closeQuietly(is);
+        }
+    }
+
+    /**
+     * Closes the given {@link Closeable} as a null-safe operation while consuming IOException by the given {@code consumer}.
+     *
+     * @param closeable The resource to close, may be null.
+     * @param consumer Consumes the IOException thrown by {@link Closeable#close()}.
+     * @since 2.7
+     */
+    public static void closeQuietly(final Closeable closeable, final Consumer<IOException> consumer) {
+        if (closeable != null) {
+            try {
+                closeable.close();
+            } catch (IOException e) {
+                if (consumer != null) {
+                    consumer.accept(e);
+                }
+            }
         }
     }
 

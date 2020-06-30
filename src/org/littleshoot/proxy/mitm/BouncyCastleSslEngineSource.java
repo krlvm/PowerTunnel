@@ -233,7 +233,6 @@ import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLParameters;
 import javax.net.ssl.TrustManager;
 
-import org.apache.commons.io.IOUtils;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.littleshoot.proxy.SslEngineSource;
@@ -242,6 +241,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import ru.krlvm.powertunnel.utilities.Utility;
 
 /**
  * A {@link SslEngineSource} which creates a key store with a Root Certificate
@@ -432,7 +432,7 @@ public class BouncyCastleSslEngineSource implements SslEngineSource {
                     authority.aliasFile(KEY_STORE_FILE_EXTENSION));
             keystore.store(os, authority.password());
         } finally {
-            IOUtils.closeQuietly(os);
+            Utility.closeQuietly(os);
         }
 
         Certificate cert = keystore.getCertificate(authority.alias());
@@ -478,7 +478,7 @@ public class BouncyCastleSslEngineSource implements SslEngineSource {
                     authority.aliasFile(KEY_STORE_FILE_EXTENSION));
             ks.load(is, authority.password());
         } finally {
-            IOUtils.closeQuietly(is);
+            Utility.closeQuietly(is);
         }
         return ks;
     }
@@ -573,8 +573,8 @@ public class BouncyCastleSslEngineSource implements SslEngineSource {
                 pw.flush();
             }
         } finally {
-            IOUtils.closeQuietly(pw);
-            IOUtils.closeQuietly(sw);
+            Utility.closeQuietly(pw);
+            Utility.closeQuietly(sw);
         }
     }
 
