@@ -11,8 +11,8 @@ import java.util.Map;
 
 public class JournalFrame extends ControlFrame {
 
-    private Thread refillThread;
-    private DefaultListModel<String> model;
+    private final Thread refillThread;
+    private final DefaultListModel<String> model;
 
     public JournalFrame() {
         super("Journal");

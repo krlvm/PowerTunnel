@@ -2,10 +2,12 @@ package ru.krlvm.powertunnel.frames;
 
 import ru.krlvm.powertunnel.PowerTunnel;
 import ru.krlvm.powertunnel.data.Settings;
+import ru.krlvm.powertunnel.enums.SNITrick;
 import ru.krlvm.powertunnel.ui.TooltipCheckBox;
 import ru.krlvm.powertunnel.ui.TooltipLabel;
 import ru.krlvm.powertunnel.updater.UpdateNotifier;
 import ru.krlvm.powertunnel.utilities.SystemUtility;
+import ru.krlvm.powertunnel.utilities.UIUtility;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,25 +16,34 @@ import java.awt.event.ActionListener;
 
 public class OptionsFrame extends ControlFrame {
 
-    private JLabel updateLabel;
-    private JButton updateButton;
+    private final JLabel updateLabel;
+    private final JButton updateButton;
 
     /* ------------------------------------ */
-    private JCheckBox autoSetup;
-    private JCheckBox fullChunking;
-    private JTextField chunkSize;
-    private JCheckBox payload;
-    private JCheckBox allowInvalidPackets;
-    private JCheckBox mixHostCase;
-    private JCheckBox useDnsSec;     //server restart
-    private JTextField dnsAddress; //server restart
-    private JTextField blacklistMirror;
-    private JCheckBox allowRequestsToOriginServer;
-    private JCheckBox enableJournal;
-    private JCheckBox enableLogs;
+    private final JCheckBox autoSetup;
+    private final JCheckBox chunking;
+    private final JCheckBox fullChunking;
+    private final JTextField chunkSize;
+    private final JCheckBox enableSniTricks;  // server restart
+    private final JComboBox<String> sniTrick;
+    private final JCheckBox applyHttpHttps;
+    private final JCheckBox payload;
+    private final JCheckBox allowInvalidPackets;
+    private final JCheckBox mixHostCase;
+    private final JCheckBox mixHostHeaderCase;
+    private final JCheckBox dotAfterHost;
+    private final JCheckBox lineBreakGet;
+    private final JCheckBox spaceGet;
+    private final JCheckBox useDnsSec;  // server restart
+    private final JTextField dnsAddress;  // server restart
+    private final JTextField blacklistMirror;
+    private final JCheckBox allowRequestsToOriginServer;
+    private final JCheckBox enableJournal;
+    private final JCheckBox enableLogs;
     /* ------------------------------------ */
 
     //Restart required - previous values
+    private boolean eraseSniVal;
     private boolean useDnsSecVal;
     private String dnsOverHttpsVal;
     private boolean allowRequestsToOriginServerVal;
@@ -108,34 +119,67 @@ public class OptionsFrame extends ControlFrame {
             panel.add(autoSetup, gbc);
         }
 
-        fullChunking = new TooltipCheckBox("HTTPS: Full chunking mode",
+        chunking = new TooltipCheckBox("HTTPS: Enable chunking",
+                "Fragments your HTTPS packets");
+        panel.add(chunking, gbc);
+
+        fullChunking = new TooltipCheckBox("HTTPS: Full chunking mode (requires chunking enabled)",
                 "Enables full chunking mode.<br>Can led to higher CPU utilization, some websites from<br>the government blacklist may not accept connections,<br>but more efficient than the default (quiet) method.");
         panel.add(fullChunking, gbc);
 
-        JPanel chunkPane = new JPanel(new FlowLayout(FlowLayout.LEADING));
+        JPanel chunkPane = newOptionPanel();
         chunkSize = new JTextField(String.valueOf(PowerTunnel.CHUNK_SIZE));
         JLabel chunkLabel = new TooltipLabel("Chunk size:", "Count of fragments HTTP packets be divided");
         chunkPane.add(chunkLabel);
         chunkPane.add(chunkSize, gbc);
         panel.add(chunkPane, gbc);
 
+        JPanel sniPane = newOptionPanel();
+        enableSniTricks = new TooltipCheckBox("HTTPS: Enable SNI tricks (requires further setup, server restart required)",
+                "When it enabled, PowerTunnel does some magic with Server Name Indication in your HTTPS requests");
+        enableSniTricks.setBorder(null);
+        JEditorPane sniWikiRef = UIUtility.getLabelWithHyperlinkSupport("<a href=\"" + SNITrick.SUPPORT_REFERENCE + "\">Read more...</a>", null);
+        sniTrick = new JComboBox<>(new String[] { "Spoil SNI", "Erase SNI" });
+        sniTrick.setSelectedIndex(0);
+        sniTrick.setLightWeightPopupEnabled(false);
+        sniPane.add(enableSniTricks);
+        sniPane.add(sniWikiRef, gbc);
+        sniPane.add(sniTrick, gbc);
+        panel.add(sniPane, gbc);
+
+        applyHttpHttps = new TooltipCheckBox("HTTPS: Apply HTTP tricks to HTTPS packets",
+                "When this option is enabled, selected HTTP tricks will be applied to HTTPS too");
+        panel.add(applyHttpHttps, gbc);
+
         payload = new TooltipCheckBox("HTTP: Send additional 21KB payload",
                 "When it enabled, PowerTunnel adding 21KB of useless data before the Host header");
         panel.add(payload, gbc);
 
-        allowInvalidPackets = new TooltipCheckBox("HTTP: Allow invalid packets (recommended)",
-                "When this option is disabled, HTTP packets without Host header throws out");
-        panel.add(allowInvalidPackets, gbc);
-
         mixHostCase = new TooltipCheckBox("HTTP: Mix host case",
-                "When it enabled, PowerTunnel mixing case of the host of the website you're trying to connect.<br>Some websites, especially working on the old web servers, may not accept connection.");
+                "When it enabled, PowerTunnel mixes case of the host header value of the website you're trying to connect.<br>Some websites, especially working on the old web servers, may not accept connection.");
         panel.add(mixHostCase, gbc);
+
+        mixHostHeaderCase = new TooltipCheckBox("HTTP: Mix host header case",
+                "When it enabled, PowerTunnel mixes case of the host header.<br>Some websites, especially working on the old web servers, may not accept connection.");
+        panel.add(mixHostHeaderCase, gbc);
+
+        dotAfterHost = new TooltipCheckBox("HTTP: Dot after host",
+                "When it enabled, PowerTunnel adds a dot after the host header.");
+        panel.add(dotAfterHost, gbc);
+
+        lineBreakGet = new TooltipCheckBox("HTTP: Line break before the GET method",
+                "When it enabled, PowerTunnel adds a line break before the GET method.");
+        panel.add(lineBreakGet, gbc);
+
+        spaceGet = new TooltipCheckBox("HTTP: Space after the GET method",
+                "When it enabled, PowerTunnel adds a space after the GET method.");
+        panel.add(spaceGet, gbc);
 
         useDnsSec = new TooltipCheckBox("Use DNSSec mode (server restart required)",
                 "Enables validating DNS server responses with<br>the Google DNS servers and protects you from the DNS substitution.<br>Can slow down your connection a bit.<br>Make sure you restart the server<br>after changing this option.");
         panel.add(useDnsSec, gbc);
 
-        JPanel dohPane = new JPanel(new FlowLayout(FlowLayout.LEADING));
+        JPanel dohPane = newOptionPanel();
         dnsAddress = new JTextField(PowerTunnel.DNS_SERVER);
         dnsAddress.setPreferredSize(new Dimension(400, ((int) dnsAddress.getPreferredSize().getHeight())));
         JLabel dohLabel = new TooltipLabel("DNS or DoH resolver (server restart required):", "DNS or DNS over HTTPS resolver address<br>Addresses starts with 'https://' automatically recognizes as a DoH resolvers<br>Compatible DoH addresses is listed in the repository readme");
@@ -143,12 +187,16 @@ public class OptionsFrame extends ControlFrame {
         dohPane.add(dnsAddress, gbc);
         panel.add(dohPane, gbc);
 
-        JPanel mirrorPane = new JPanel(new FlowLayout(FlowLayout.LEADING));
+        JPanel mirrorPane = newOptionPanel();
         blacklistMirror = new JTextField(String.valueOf(PowerTunnel.CHUNK_SIZE));
         JLabel blacklistLabel = new TooltipLabel("Government blacklist mirror:", "URL address from government blacklist automatically loads");
         mirrorPane.add(blacklistLabel);
         mirrorPane.add(blacklistMirror, gbc);
         panel.add(mirrorPane, gbc);
+
+        allowInvalidPackets = new TooltipCheckBox("Allow invalid packets (recommended)",
+                "When this option is disabled, HTTP packets without Host header throws out");
+        panel.add(allowInvalidPackets, gbc);
 
         allowRequestsToOriginServer = new TooltipCheckBox("Allow requests to origin server (server restart required)",
                 "Experimental option, can fix some connectivity issues.");
@@ -184,11 +232,20 @@ public class OptionsFrame extends ControlFrame {
         autoSetup.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.AUTO_PROXY_SETUP_ENABLED));
         autoSetup.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.AUTO_PROXY_SETUP_ENABLED));
 
+        chunking.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.ENABLE_CHUNKING));
+        chunking.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.ENABLE_CHUNKING));
+
         fullChunking.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.FULL_CHUNKING));
         fullChunking.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.FULL_CHUNKING));
 
         chunkSize.setText(PowerTunnel.SETTINGS.getOption(Settings.CHUNK_SIZE));
         chunkSize.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.CHUNK_SIZE));
+
+        enableSniTricks.setSelected(eraseSniVal = PowerTunnel.SETTINGS.getIntOption(Settings.SNI_TRICK) != 0);
+        enableSniTricks.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.SNI_TRICK));
+
+        applyHttpHttps.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.APPLY_HTTP_TRICKS_TO_HTTPS));
+        applyHttpHttps.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.APPLY_HTTP_TRICKS_TO_HTTPS));
 
         payload.setSelected(PowerTunnel.SETTINGS.getIntOption(Settings.PAYLOAD_LENGTH) != 0);
         payload.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.FULL_CHUNKING));
@@ -198,6 +255,18 @@ public class OptionsFrame extends ControlFrame {
 
         mixHostCase.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.MIX_HOST_CASE));
         mixHostCase.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.MIX_HOST_CASE));
+
+        mixHostHeaderCase.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.MIX_HOST_HEADER_CASE));
+        mixHostHeaderCase.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.MIX_HOST_HEADER_CASE));
+
+        dotAfterHost.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.DOT_AFTER_HOST_HEADER));
+        dotAfterHost.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.DOT_AFTER_HOST_HEADER));
+
+        lineBreakGet.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.LINE_BREAK_BEFORE_GET));
+        lineBreakGet.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.LINE_BREAK_BEFORE_GET));
+
+        spaceGet.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.ADDITIONAL_SPACE_AFTER_GET));
+        spaceGet.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.ADDITIONAL_SPACE_AFTER_GET));
 
         useDnsSec.setSelected(useDnsSecVal = PowerTunnel.SETTINGS.getBooleanOption(Settings.USE_DNS_SEC));
         useDnsSec.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.USE_DNS_SEC));
@@ -222,15 +291,23 @@ public class OptionsFrame extends ControlFrame {
         final boolean suggestRestart = (
                 useDnsSecVal != useDnsSec.isSelected() ||
                 !dnsOverHttpsVal.equals(dnsAddress.getText()) ||
-                allowRequestsToOriginServerVal != allowRequestsToOriginServer.isSelected()
+                allowRequestsToOriginServerVal != allowRequestsToOriginServer.isSelected() ||
+                eraseSniVal != enableSniTricks.isSelected()
         );
 
         PowerTunnel.SETTINGS.setBooleanOption(Settings.AUTO_PROXY_SETUP_ENABLED, autoSetup.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.ALLOW_INVALID_HTTP_PACKETS, allowInvalidPackets.isSelected());
+        PowerTunnel.SETTINGS.setBooleanOption(Settings.ENABLE_CHUNKING, chunking.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.FULL_CHUNKING, fullChunking.isSelected());
         PowerTunnel.SETTINGS.setOption(Settings.CHUNK_SIZE, chunkSize.getText());
+        PowerTunnel.SETTINGS.setIntOption(Settings.SNI_TRICK, determineSniTrick());
+        PowerTunnel.SETTINGS.setBooleanOption(Settings.APPLY_HTTP_TRICKS_TO_HTTPS, applyHttpHttps.isSelected());
         PowerTunnel.SETTINGS.setOption(Settings.PAYLOAD_LENGTH, payload.isSelected() ? "21" : "0");
         PowerTunnel.SETTINGS.setBooleanOption(Settings.MIX_HOST_CASE, mixHostCase.isSelected());
+        PowerTunnel.SETTINGS.setBooleanOption(Settings.MIX_HOST_HEADER_CASE, mixHostHeaderCase.isSelected());
+        PowerTunnel.SETTINGS.setBooleanOption(Settings.DOT_AFTER_HOST_HEADER, dotAfterHost.isSelected());
+        PowerTunnel.SETTINGS.setBooleanOption(Settings.LINE_BREAK_BEFORE_GET, lineBreakGet.isSelected());
+        PowerTunnel.SETTINGS.setBooleanOption(Settings.ADDITIONAL_SPACE_AFTER_GET, spaceGet.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.USE_DNS_SEC, useDnsSec.isSelected());
         PowerTunnel.SETTINGS.setOption(Settings.DNS_ADDRESS, dnsAddress.getText());
         PowerTunnel.SETTINGS.setOption(Settings.GOVERNMENT_BLACKLIST_MIRROR, blacklistMirror.getText());
@@ -251,6 +328,13 @@ public class OptionsFrame extends ControlFrame {
         }
     }
 
+    private int determineSniTrick() {
+        if(!enableSniTricks.isSelected()) {
+            return 0;
+        }
+        return sniTrick.getSelectedIndex()+1;
+    }
+
     public void updateAvailable(String version) {
         updateButton.setText("Update details");
         updateLabel.setText("<html><b>An update available: v" + version + "</b></html>");
@@ -262,5 +346,9 @@ public class OptionsFrame extends ControlFrame {
             adjustSettings();
         }
         super.setVisible(b);
+    }
+    
+    private JPanel newOptionPanel() {
+        return new JPanel(new FlowLayout(FlowLayout.LEADING));
     }
 }

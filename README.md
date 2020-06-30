@@ -98,10 +98,14 @@ Available arguments:
 * [LibertyTunnel](https://github.com/krlvm/PowerTunnel/tree/libertytunnel) - a lightweight edition of PowerTunnel 
 
 ## Dependencies
-* [LittleProxy](https://github.com/adamfisk/LittleProxy) with some [patches](https://github.com/krlvm/PowerTunnel/tree/master/src/org/littleshoot/proxy/impl) - proxy server
-  * [The original LittleProxy](https://github.com/adamfisk/LittleProxy) was replaced with a [forked one](https://github.com/mrog/LittleProxy) in version 1.11
+* [LittleProxy](https://github.com/adamfisk/LittleProxy) - proxy server
+  * Replaced with a [forked version](https://github.com/mrog/LittleProxy) since v1.11
+* [LittleProxy-MITM](https://github.com/ganskef/LittleProxy-mitm) - an extension for LittleProxy to work with SSL
 * [dnsjava](https://github.com/dnsjava/dnsjava) - DNS library, DoH realization
 * [dnssecjava](https://github.com/ibauersachs/dnssecjava) - DNSSec realization for dnsjava
 * [DNSSEC4J](https://github.com/adamfisk/DNSSEC4J) - DNSSec realization for LittleProxy
 * [Java Native Access](https://github.com/java-native-access/jna) - library for accessing system API
 * [SwingDPI](https://github.com/krlvm/SwingDPI) - High DPI scaling
+
+### Credits
+* [blockcheck](https://github.com/ValdikSS/blockcheck)

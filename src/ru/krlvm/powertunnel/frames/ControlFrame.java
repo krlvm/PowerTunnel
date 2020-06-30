@@ -17,7 +17,7 @@ public abstract class ControlFrame extends ScalableJFrame {
     }
 
     public ControlFrame(String title) {
-        super(title == null ? PowerTunnel.NAME + " v" + PowerTunnel.VERSION : PowerTunnel.NAME + " - " + title);
+        super(title == null ? PowerTunnel.NAME + " v" + PowerTunnel.VERSION : title + " - " + PowerTunnel.NAME);
         setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         setIconImage(UIUtility.UI_ICON);
     }

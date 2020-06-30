@@ -14,7 +14,7 @@ import java.io.PrintStream;
  */
 public class MirroredOutputStream extends FilterOutputStream {
 
-    private PrintStream SYSTEM_OUTPUT;
+    private final PrintStream SYSTEM_OUTPUT;
 
     public MirroredOutputStream(OutputStream out, PrintStream systemOutput) {
         super(out);

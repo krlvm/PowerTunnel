@@ -76,7 +76,7 @@ public class TrayManager {
             public void actionPerformed(ActionEvent e) {
                 PowerTunnel.handleClosing();
             }
-        }, true));
+        }));
 
         trayIcon = new TrayIcon(UIUtility.UI_ICON, PowerTunnel.NAME, popup);
         trayIcon.setImageAutoSize(true);

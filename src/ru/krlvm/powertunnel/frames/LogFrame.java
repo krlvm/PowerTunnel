@@ -14,11 +14,11 @@ public class LogFrame extends ControlFrame {
 
     private static LogFrame instance = null;
 
-    private JTextArea logArea;
-    private JTextField addressInput;
-    private JPanel panel;
-    private JButton addToBlockList;
-    private JButton addToWhiteList;
+    private final JTextArea logArea;
+    private final JTextField addressInput;
+    private final JPanel panel;
+    private final JButton addToBlockList;
+    private final JButton addToWhiteList;
 
     public LogFrame() {
         super("Log");
