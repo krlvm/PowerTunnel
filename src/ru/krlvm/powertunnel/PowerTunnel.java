@@ -72,6 +72,7 @@ public class PowerTunnel {
     public static int PAYLOAD_LENGTH = 0; //21 recommended
     public static boolean USE_DNS_SEC = false;
     public static String DNS_SERVER = null;
+    public static boolean APPLY_HTTP_TRICKS_TO_HTTPS = false;
     public static boolean MIX_HOST_CASE = false;
     public static boolean MIX_HOST_HEADER_CASE = true;
     public static boolean DOT_AFTER_HOST_HEADER = true;
@@ -132,7 +133,8 @@ public class PowerTunnel {
                                 " -disable-chunking                    HTTPS: disables packet chunking (fragmentation)\n" +
                                 " -full-chunking                       HTTPS: enables chunking the whole packets (requires chunking enabled)\n" +
                                 " -chunk-size [size]                   HTTPS: sets size of one chunk\n" +
-                                " -mix-host-case                       HTTP:  enables 'Host' header value case mix (unstable)\n" +
+                                " -apply-http-https                    HTTP:  apply enabled HTTP tricks to HTTPS\n" +
+                                " -mix-host-case                       HTTP:  enables 'Host' header value case mix\n" +
                                 " -disable-mix-host-header-case        HTTP:  disables 'Host' header case mix\n" +
                                 " -disable-dot-after-host-header       HTTP:  disables dot after host header\n" +
                                 " -send-payload [length]               HTTP:  sends payload to bypass blocking, 21 is recommended\n" +
@@ -187,6 +189,10 @@ public class PowerTunnel {
                     }
                     case "full-chunking": {
                         SETTINGS.setTemporaryValue(Settings.FULL_CHUNKING, "true");
+                        break;
+                    }
+                    case "apply-http-https": {
+                        SETTINGS.setTemporaryValue(Settings.APPLY_HTTP_TRICKS_TO_HTTPS, "true");
                         break;
                     }
                     case "mix-host-case": {
@@ -733,6 +739,7 @@ public class PowerTunnel {
         DNS_SERVER = SETTINGS.getOption(Settings.DNS_ADDRESS);
 
         ALLOW_REQUESTS_TO_ORIGIN_SERVER = SETTINGS.getBooleanOption(Settings.ALLOW_REQUESTS_TO_ORIGIN_SERVER);
+        APPLY_HTTP_TRICKS_TO_HTTPS = SETTINGS.getBooleanOption(Settings.APPLY_HTTP_TRICKS_TO_HTTPS);
     }
 
     public static TrayManager getTray() {

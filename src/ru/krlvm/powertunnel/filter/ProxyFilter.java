@@ -34,25 +34,29 @@ public class ProxyFilter extends HttpFiltersAdapter {
     public HttpResponse clientToProxyRequest(HttpObject httpObject) {
         if (httpObject instanceof HttpRequest) {
             HttpRequest request = (HttpRequest) httpObject;
+
             if(PowerTunnel.isWebUIEnabled() && PowerTunnelMonitor.checkUri(request.getUri())) {
-                Utility.print("[i] Accepted Web UI connection");
+                Utility.print(" [i] Accepted Web UI connection");
                 return PowerTunnelMonitor.getResponse(request.getUri());
             }
             if(!request.headers().contains("Host")) {
-                Utility.print("[i] Invalid packet received: Host header not found");
+                Utility.print(" [i] Invalid packet received: Host header not found");
                 return PowerTunnel.ALLOW_INVALID_HTTP_PACKETS ? null :
                         HttpUtility.getStub("Bad request");
             }
             String host = HttpUtility.formatHost(request.headers().get("Host"));
 
             PowerTunnel.addToJournal(host);
-            Utility.print("[i] %s / %s", request.getMethod(), host);
+            Utility.print("[i] %s / %s", request.method(), host);
 
             if(!PowerTunnel.isUserWhitelisted(host) && PowerTunnel.isUserBlacklisted(host)) {
                 Utility.print(" [!] Access denied by user: " + host);
                 return HttpUtility.getStub("This website is blocked by user");
             }
 
+            if(request.method() == HttpMethod.CONNECT && !PowerTunnel.APPLY_HTTP_TRICKS_TO_HTTPS) {
+                return null;
+            }
             if(PowerTunnel.isBlockedByGovernment(host)) {
                 circumventDPI(request);
                 Utility.print(" [+] Trying to bypass DPI: " + host);
