@@ -3,6 +3,8 @@ package ru.krlvm.powertunnel.utilities;
 import ru.krlvm.powertunnel.PowerTunnel;
 import ru.krlvm.powertunnel.frames.LogFrame;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.logging.*;
 
 /**
@@ -70,6 +72,16 @@ public class Utility {
             LOGGER = null;
             print("[x] Failed to initialize logger: " + ex.getMessage());
             Debugger.debug(ex);
+        }
+    }
+
+    //From Apache Commons-IO
+    public static void closeQuietly(Closeable is) {
+        if(is != null) {
+            try {
+                is.close();
+            } catch (IOException ignore) {
+            }
         }
     }
 

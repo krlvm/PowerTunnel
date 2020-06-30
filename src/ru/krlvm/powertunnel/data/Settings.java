@@ -175,6 +175,7 @@ public class Settings extends DataStore {
     public static final String SNI_TRICK = "https.sni-trick.int";
     public static final String PAYLOAD_LENGTH = "http.payload.length.int";
     public static final String MIX_HOST_CASE = "http.mix-host-case.bool";
+    public static final String COMPLETE_MIX_HOST_CASE = "http.mix-host-case.complete.bool";
     public static final String MIX_HOST_HEADER_CASE = "http.mix-host-header-case.bool";
     public static final String DOT_AFTER_HOST_HEADER = "http.dot-after-host-header.bool";
     public static final String LINE_BREAK_BEFORE_GET = "http.line-break-before-get.bol";
@@ -199,6 +200,7 @@ public class Settings extends DataStore {
         defaultValues.put(CHUNK_SIZE, "2");
         defaultValues.put(PAYLOAD_LENGTH, "0");
         defaultValues.put(MIX_HOST_CASE, "false");
+        defaultValues.put(COMPLETE_MIX_HOST_CASE, "false");
         defaultValues.put(MIX_HOST_HEADER_CASE, "true");
         defaultValues.put(DOT_AFTER_HOST_HEADER, "true");
         defaultValues.put(LINE_BREAK_BEFORE_GET, "false");

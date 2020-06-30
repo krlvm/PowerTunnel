@@ -74,10 +74,10 @@ public class PowerTunnel {
     public static String DNS_SERVER = null;
     public static boolean APPLY_HTTP_TRICKS_TO_HTTPS = false;
     public static boolean MIX_HOST_CASE = false;
+    public static boolean COMPLETE_MIX_HOST_CASE = false;
     public static boolean MIX_HOST_HEADER_CASE = true;
     public static boolean DOT_AFTER_HOST_HEADER = true;
     private static String GOVERNMENT_BLACKLIST_MIRROR = null;
-    // v1.12-features (experimental) //
     public static boolean LINE_BREAK_BEFORE_GET = false;
     public static boolean ADDITIONAL_SPACE_AFTER_GET = false;
     public static SNITrick SNI_TRICK = null;
@@ -138,6 +138,7 @@ public class PowerTunnel {
                                 " -space-after-get                     HTTP:  inserts a space after 'GET' method\n" +
                                 " -apply-http-https                    HTTP:  apply enabled HTTP tricks to HTTPS\n" +
                                 " -mix-host-case                       HTTP:  enables 'Host' header value case mix\n" +
+                                " -complete-mix-host-case              HTTP:  complete 'Host' header value case mix\n" +
                                 " -disable-mix-host-header-case        HTTP:  disables 'Host' header case mix\n" +
                                 " -disable-dot-after-host-header       HTTP:  disables dot after host header\n" +
                                 " -send-payload [length]               HTTP:  sends payload to bypass blocking, 21 is recommended\n" +
@@ -196,6 +197,10 @@ public class PowerTunnel {
                     }
                     case "mix-host-case": {
                         SETTINGS.setTemporaryValue(Settings.MIX_HOST_CASE, "true");
+                        break;
+                    }
+                    case "complete-mix-host-case": {
+                        SETTINGS.setTemporaryValue(Settings.COMPLETE_MIX_HOST_CASE, "true");
                         break;
                     }
                     case "disable-mix-host-header-case": {
@@ -728,6 +733,7 @@ public class PowerTunnel {
         CHUNK_SIZE = SETTINGS.getIntOption(Settings.CHUNK_SIZE);
         PAYLOAD_LENGTH = SETTINGS.getIntOption(Settings.PAYLOAD_LENGTH);
         MIX_HOST_CASE = SETTINGS.getBooleanOption(Settings.MIX_HOST_CASE);
+        COMPLETE_MIX_HOST_CASE = SETTINGS.getBooleanOption(Settings.COMPLETE_MIX_HOST_CASE);
         MIX_HOST_HEADER_CASE = SETTINGS.getBooleanOption(Settings.MIX_HOST_HEADER_CASE);
         DOT_AFTER_HOST_HEADER = SETTINGS.getBooleanOption(Settings.DOT_AFTER_HOST_HEADER);
         LINE_BREAK_BEFORE_GET = SETTINGS.getBooleanOption(Settings.LINE_BREAK_BEFORE_GET);

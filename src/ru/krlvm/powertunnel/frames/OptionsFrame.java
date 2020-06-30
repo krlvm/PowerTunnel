@@ -30,6 +30,7 @@ public class OptionsFrame extends ControlFrame {
     private final JCheckBox payload;
     private final JCheckBox allowInvalidPackets;
     private final JCheckBox mixHostCase;
+    private final JCheckBox completeMixHostCase;
     private final JCheckBox mixHostHeaderCase;
     private final JCheckBox dotAfterHost;
     private final JCheckBox lineBreakGet;
@@ -159,6 +160,10 @@ public class OptionsFrame extends ControlFrame {
                 "When it enabled, PowerTunnel mixes case of the host header value of the website you're trying to connect.<br>Some websites, especially working on the old web servers, may not accept connection.");
         panel.add(mixHostCase, gbc);
 
+        completeMixHostCase = new TooltipCheckBox("HTTP: Complete mix host case",
+                "When it enabled, PowerTunnel mixes case of the host header completely, not just the last letter.");
+        panel.add(completeMixHostCase, gbc);
+
         mixHostHeaderCase = new TooltipCheckBox("HTTP: Mix host header case",
                 "When it enabled, PowerTunnel mixes case of the host header.<br>Some websites, especially working on the old web servers, may not accept connection.");
         panel.add(mixHostHeaderCase, gbc);
@@ -256,6 +261,9 @@ public class OptionsFrame extends ControlFrame {
         mixHostCase.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.MIX_HOST_CASE));
         mixHostCase.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.MIX_HOST_CASE));
 
+        completeMixHostCase.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.COMPLETE_MIX_HOST_CASE));
+        completeMixHostCase.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.COMPLETE_MIX_HOST_CASE));
+
         mixHostHeaderCase.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.MIX_HOST_HEADER_CASE));
         mixHostHeaderCase.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.MIX_HOST_HEADER_CASE));
 
@@ -304,6 +312,7 @@ public class OptionsFrame extends ControlFrame {
         PowerTunnel.SETTINGS.setBooleanOption(Settings.APPLY_HTTP_TRICKS_TO_HTTPS, applyHttpHttps.isSelected());
         PowerTunnel.SETTINGS.setOption(Settings.PAYLOAD_LENGTH, payload.isSelected() ? "21" : "0");
         PowerTunnel.SETTINGS.setBooleanOption(Settings.MIX_HOST_CASE, mixHostCase.isSelected());
+        PowerTunnel.SETTINGS.setBooleanOption(Settings.COMPLETE_MIX_HOST_CASE, completeMixHostCase.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.MIX_HOST_HEADER_CASE, mixHostHeaderCase.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.DOT_AFTER_HOST_HEADER, dotAfterHost.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.LINE_BREAK_BEFORE_GET, lineBreakGet.isSelected());
