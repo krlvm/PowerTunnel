@@ -34,9 +34,9 @@ You can compile a binary yourself or download prepared binary [here](https://git
 The installation process is described in detail [on the Wiki](https://github.com/krlvm/PowerTunnel/wiki/Installation).
 
 ### Doesn't work
-Most likely your ISP blocked the website you need by IP address, so only encrypted tunnel (VPN/Tor) can help you.
+Try to disable chunking mode and enable SNI Spoil.
 
-Also, you can try launching PowerTunnel with `-full-chunking` argument.
+Most likely your ISP blocked the website you need by IP address, so only encrypted tunnel (VPN/Tor) can help you.
 
 ## User interface
 You can monitor network activity, block and whitelist websites through Java Swing-based user interface when console mode is off or through [PowerTunnel Monitor](https://github.com/krlvm/PowerTunnel/wiki/PowerTunnel-Monitor).
