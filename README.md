@@ -27,6 +27,9 @@ PowerTunnel is more than a regular anti-censorship utility - using it, you can m
 ### How does it work?
 PowerTunnel establishes a transparent proxy server on your PC and directs your traffic through it, applying DPI circumvention tricks.
 
+PowerTunnel never decrypts your traffic, all code is open-source.\
+You should install Root CA only in case you enabled [some specific options](https://github.com/krlvm/PowerTunnel/wiki/SNI-Tricks).
+
 ## How can I get it?
 You can compile a binary yourself or download prepared binary [here](https://github.com/krlvm/PowerTunnel/releases).
 
@@ -108,7 +111,7 @@ Available arguments:
 ## Dependencies
 * [LittleProxy](https://github.com/adamfisk/LittleProxy) - proxy server
   * Replaced with a [forked version](https://github.com/mrog/LittleProxy) since v1.11
-* [LittleProxy-MITM](https://github.com/ganskef/LittleProxy-mitm) - an extension for LittleProxy to work with SSL
+* [LittleProxy-MITM](https://github.com/ganskef/LittleProxy-mitm) - LittleProxy SSL extension
 * [dnsjava](https://github.com/dnsjava/dnsjava) - DNS library, DoH realization
 * [dnssecjava](https://github.com/ibauersachs/dnssecjava) - DNSSec realization for dnsjava
 * [DNSSEC4J](https://github.com/adamfisk/DNSSEC4J) - DNSSec realization for LittleProxy
