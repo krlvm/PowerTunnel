@@ -373,6 +373,7 @@ public class PowerTunnel {
             if(uiSettings[0]) {
                 if(scaleFactor != -1) {
                     SwingDPI.setScaleFactor(scaleFactor);
+                    SwingDPI.setScaleApplied(true);
                 } else {
                     SwingDPI.applyScalingAutomatically();
                 }
