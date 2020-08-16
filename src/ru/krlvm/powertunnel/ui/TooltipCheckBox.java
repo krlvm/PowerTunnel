@@ -6,7 +6,7 @@ public class TooltipCheckBox extends JCheckBox {
 
     public TooltipCheckBox(String text, String tooltip) {
         super(text);
-        setToolTipText("<html>" + tooltip + "</html>");
+        setToolTipText("<html>" + tooltip.replace("\n", "<br>") + "</html>");
     }
 
     @Override

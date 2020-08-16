@@ -10,6 +10,7 @@ import ru.krlvm.powertunnel.utilities.SystemUtility;
 import ru.krlvm.powertunnel.utilities.UIUtility;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -45,6 +46,7 @@ public class OptionsFrame extends ControlFrame {
     /* ------------------------------------ */
 
     //Restart required - previous values
+    private boolean proxyPacVal;
     private boolean eraseSniVal;
     private boolean useDnsSecVal;
     private String dnsOverHttpsVal;
@@ -95,34 +97,29 @@ public class OptionsFrame extends ControlFrame {
         buttonsPanel.add(actionButtonsPanel, BorderLayout.EAST);
 
         JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
-        gbc.anchor = GridBagConstraints.WEST;
 
         autoSetup = new TooltipCheckBox("Auto system proxy setup",
-                "Automatically setting up system proxy server configuration.<br>At the moment available only on the Windows systems.<br>Can require automatic Internet Explorer start for a few seconds.");
-        if(SystemUtility.OS.contains("windows")) {
-            panel.add(autoSetup, gbc);
-        }
+                "Automatically setting up system proxy server configuration.\nAt the moment available only on the Windows systems.\nCan require automatic Internet Explorer start for a few seconds.");
 
-        proxyPac = new TooltipCheckBox("Generate Proxy Auto Configuration file (PAC)",
-                "Can increase performance by using proxy only for blocked resources.<br>You should fill the government blacklist to use this option.<br>Can slowdown connections with big blacklists.");
-        panel.add(proxyPac, gbc);
+        proxyPac = new TooltipCheckBox("Generate Proxy Auto Configuration file (PAC, server restart required)",
+                "Can increase performance by using proxy only for blocked resources.\nYou should fill the government blacklist to use this option.\nCan slowdown connections with big blacklists.");
+
+        panel.add(generateBlock("Proxy connection",
+                (SystemUtility.IS_WINDOWS ? autoSetup : null),
+                proxyPac
+        ), gbc);
 
         chunking = new TooltipCheckBox("HTTPS: Enable chunking",
                 "Fragments your HTTPS packets");
-        panel.add(chunking, gbc);
 
         fullChunking = new TooltipCheckBox("HTTPS: Full chunking mode (requires chunking enabled)",
-                "Enables full chunking mode.<br>Can led to higher CPU utilization, some websites from<br>the government blacklist may not accept connections,<br>but more efficient than the default (quiet) method.");
-        panel.add(fullChunking, gbc);
+                "Enables full chunking mode.\nCan led to higher CPU utilization, some websites from\nthe government blacklist may not accept connections,\nbut more efficient than the default (quiet) method.");
 
         JPanel chunkPane = newOptionPanel();
         chunkSize = new JTextField(String.valueOf(PowerTunnel.CHUNK_SIZE));
         JLabel chunkLabel = new TooltipLabel("Chunk size:", "Count of fragments HTTP packets be divided");
         chunkPane.add(chunkLabel);
         chunkPane.add(chunkSize, gbc);
-        panel.add(chunkPane, gbc);
 
         JPanel sniPane = newOptionPanel();
         enableSniTricks = new TooltipCheckBox("HTTPS: Enable SNI tricks (requires further setup, server restart required)",
@@ -135,74 +132,85 @@ public class OptionsFrame extends ControlFrame {
         sniPane.add(enableSniTricks);
         sniPane.add(sniWikiRef, gbc);
         sniPane.add(sniTrick, gbc);
-        panel.add(sniPane, gbc);
 
         applyHttpHttps = new TooltipCheckBox("HTTPS: Apply HTTP tricks to HTTPS packets",
                 "When this option is enabled, selected HTTP tricks will be applied to HTTPS too");
-        panel.add(applyHttpHttps, gbc);
 
         payload = new TooltipCheckBox("HTTP: Send additional 21KB payload",
                 "When it enabled, PowerTunnel adding 21KB of useless data before the Host header");
-        panel.add(payload, gbc);
 
         mixHostCase = new TooltipCheckBox("HTTP: Mix host case",
-                "When it enabled, PowerTunnel mixes case of the host header value of the website you're trying to connect.<br>Some websites, especially working on the old web servers, may not accept connection.");
-        panel.add(mixHostCase, gbc);
+                "When it enabled, PowerTunnel mixes case of the host header value of the website you're trying to connect.\nSome websites, especially working on the old web servers, may not accept connection.");
 
         completeMixHostCase = new TooltipCheckBox("HTTP: Complete mix host case",
                 "When it enabled, PowerTunnel mixes case of the host header completely, not just the last letter.");
-        panel.add(completeMixHostCase, gbc);
 
         mixHostHeaderCase = new TooltipCheckBox("HTTP: Mix host header case",
-                "When it enabled, PowerTunnel mixes case of the host header.<br>Some websites, especially working on the old web servers, may not accept connection.");
-        panel.add(mixHostHeaderCase, gbc);
+                "When it enabled, PowerTunnel mixes case of the host header.\nSome websites, especially working on the old web servers, may not accept connection.");
 
         dotAfterHost = new TooltipCheckBox("HTTP: Dot after host",
                 "When it enabled, PowerTunnel adds a dot after the host header.");
-        panel.add(dotAfterHost, gbc);
 
         lineBreakGet = new TooltipCheckBox("HTTP: Line break before the GET method",
                 "When it enabled, PowerTunnel adds a line break before the GET method.");
-        panel.add(lineBreakGet, gbc);
 
         spaceGet = new TooltipCheckBox("HTTP: Space after the GET method",
                 "When it enabled, PowerTunnel adds a space after the GET method.");
-        panel.add(spaceGet, gbc);
 
-        useDnsSec = new TooltipCheckBox("Use DNSSec mode (server restart required)",
-                "Enables validating DNS server responses with<br>the Google DNS servers and protects you from the DNS substitution.<br>Can slow down your connection a bit.<br>Make sure you restart the server<br>after changing this option.");
-        panel.add(useDnsSec, gbc);
+        panel.add(generateBlock("DPI circumvention",
+                chunking,
+                fullChunking,
+                chunkPane,
+                sniPane,
+                applyHttpHttps,
+                payload,
+                mixHostCase,
+                completeMixHostCase,
+                mixHostHeaderCase,
+                dotAfterHost,
+                lineBreakGet,
+                spaceGet
+        ), gbc);
 
         JPanel dohPane = newOptionPanel();
         dnsAddress = new JTextField(PowerTunnel.DNS_SERVER);
         dnsAddress.setPreferredSize(new Dimension(400, ((int) dnsAddress.getPreferredSize().getHeight())));
-        JLabel dohLabel = new TooltipLabel("DNS or DoH resolver (server restart required):", "DNS or DNS over HTTPS resolver address<br>Addresses starts with 'https://' automatically recognizes as a DoH resolvers<br>Compatible DoH addresses is listed in the repository readme");
+        JLabel dohLabel = new TooltipLabel("DNS or DoH resolver (server restart required):", "DNS or DNS over HTTPS resolver address\nAddresses starts with 'https://' automatically recognizes as a DoH resolvers\nCompatible DoH addresses is listed in the repository readme");
         dohPane.add(dohLabel);
         dohPane.add(dnsAddress, gbc);
-        panel.add(dohPane, gbc);
+
+        useDnsSec = new TooltipCheckBox("Enable DNSSec (server restart required)",
+                "Enables validating DNS server responses with\nthe Google DNS servers and protects you from the DNS substitution.\nCan slow down your connection a bit.\nMake sure you restart the server\nafter changing this option.");
+
+        panel.add(generateBlock("Domain name resolving",
+                dohPane,
+                useDnsSec
+        ), gbc);
 
         JPanel mirrorPane = newOptionPanel();
         blacklistMirror = new JTextField(String.valueOf(PowerTunnel.CHUNK_SIZE));
         JLabel blacklistLabel = new TooltipLabel("Government blacklist mirror:", "URL address from government blacklist automatically loads");
         mirrorPane.add(blacklistLabel);
         mirrorPane.add(blacklistMirror, gbc);
-        panel.add(mirrorPane, gbc);
 
         allowInvalidPackets = new TooltipCheckBox("Allow invalid packets (recommended)",
                 "When this option is disabled, HTTP packets without Host header throws out");
-        panel.add(allowInvalidPackets, gbc);
 
         allowRequestsToOriginServer = new TooltipCheckBox("Allow requests to origin server (server restart required)",
                 "Experimental option, can fix some connectivity issues.");
-        panel.add(allowRequestsToOriginServer, gbc);
 
         enableJournal = new TooltipCheckBox("Enable PowerTunnel Journal (restart required)",
-                "Enables PowerTunnel Journal, collecting<br>all websites you've been visited with timestamps.<br>This data doesn't sending anywhere.");
-        panel.add(enableJournal, gbc);
+                "Enables PowerTunnel Journal, collecting\nall websites you've been visited with timestamps.\nThis data doesn't sending anywhere.");
 
         enableLogs = new TooltipCheckBox("Enable PowerTunnel Logs (restart required)",
-                "Enables PowerTunnel Logs that need for troubleshooting and debugging<br>from the user interface.");
-        panel.add(enableLogs, gbc);
+                "Enables PowerTunnel Logs that need for troubleshooting and debugging\nfrom the user interface.");
+
+        panel.add(generateBlock("Proxy settings",
+                allowInvalidPackets,
+                allowRequestsToOriginServer,
+                enableJournal,
+                enableLogs
+        ), gbc);
 
         JPanel container = new JPanel(new BorderLayout());
         container.add(panel, BorderLayout.WEST);
@@ -226,7 +234,7 @@ public class OptionsFrame extends ControlFrame {
         autoSetup.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.AUTO_PROXY_SETUP_ENABLED));
         autoSetup.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.AUTO_PROXY_SETUP_ENABLED));
 
-        proxyPac.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.PROXY_PAC_ENABLED));
+        proxyPac.setSelected(proxyPacVal = PowerTunnel.SETTINGS.getBooleanOption(Settings.PROXY_PAC_ENABLED));
         proxyPac.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.PROXY_PAC_ENABLED));
 
         chunking.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.ENABLE_CHUNKING));
@@ -289,6 +297,7 @@ public class OptionsFrame extends ControlFrame {
 
     private void save() {
         final boolean suggestRestart = (
+                proxyPacVal != proxyPac.isSelected() ||
                 useDnsSecVal != useDnsSec.isSelected() ||
                 !dnsOverHttpsVal.equals(dnsAddress.getText()) ||
                 allowRequestsToOriginServerVal != allowRequestsToOriginServer.isSelected() ||
@@ -319,7 +328,7 @@ public class OptionsFrame extends ControlFrame {
         PowerTunnel.loadSettings();
 
         if (suggestRestart && PowerTunnel.isRunning()) {
-            if (JOptionPane.showConfirmDialog(this, "<html>The changes you made requires server restart to take effect.<br>Restart server?</html>", PowerTunnel.NAME, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            if (JOptionPane.showConfirmDialog(this, "<html>The changes you made requires server restart to take effect.\nRestart server?</html>", PowerTunnel.NAME, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 new Thread(PowerTunnel::restartServer, "Server Restart Thread").start();
             }
         }
@@ -347,5 +356,31 @@ public class OptionsFrame extends ControlFrame {
     
     private JPanel newOptionPanel() {
         return new JPanel(new FlowLayout(FlowLayout.LEADING));
+    }
+
+    private JPanel generateBlock(String title, JComponent... components) {
+        JPanel panel = new JPanel(new GridBagLayout());
+
+        TitledBorder border = BorderFactory.createTitledBorder(title);
+        border.setTitleJustification(TitledBorder.LEADING);
+        panel.setBorder(border);
+
+        for (JComponent component : components) {
+            if(component == null) continue;
+            panel.add(component, gbc);
+        }
+
+        panel.setSize(panel.getWidth(), panel.getHeight()-20);
+
+        return panel;
+    }
+
+    private static final GridBagConstraints gbc;
+    static {
+        gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.WEST;
     }
 }
