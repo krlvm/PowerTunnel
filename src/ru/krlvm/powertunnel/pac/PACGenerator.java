@@ -23,7 +23,7 @@ public class PACGenerator {
                 // We assume it looks like "*.google.com"
                 host = host.replaceFirst("\\*", "");
             } else if(!host.startsWith(".")) {
-                host = host + ".";
+                host = "." + host;
             }
             script.append("(dnsDomainIs(host, \"").append(host).append("\"))");
             if(++i != hosts.size()) {

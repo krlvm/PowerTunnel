@@ -206,6 +206,7 @@ public class OptionsFrame extends ControlFrame {
                 "Enables PowerTunnel Logs that need for troubleshooting and debugging\nfrom the user interface.");
 
         panel.add(generateBlock("Proxy settings",
+                mirrorPane,
                 allowInvalidPackets,
                 allowRequestsToOriginServer,
                 enableJournal,
@@ -328,7 +329,7 @@ public class OptionsFrame extends ControlFrame {
         PowerTunnel.loadSettings();
 
         if (suggestRestart && PowerTunnel.isRunning()) {
-            if (JOptionPane.showConfirmDialog(this, "<html>The changes you made requires server restart to take effect.\nRestart server?</html>", PowerTunnel.NAME, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            if (JOptionPane.showConfirmDialog(this, "<html>The changes you made requires server restart to take effect.<br>Restart server?</html>", PowerTunnel.NAME, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 new Thread(PowerTunnel::restartServer, "Server Restart Thread").start();
             }
         }
