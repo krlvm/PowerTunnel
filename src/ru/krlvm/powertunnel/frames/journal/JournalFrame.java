@@ -9,11 +9,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class JournalFrame extends ControlFrame {
 
-    private final Thread refillThread;
     private final DefaultListModel<String> model;
+
+    private static final int REFILL_INTERVAL = 5; // in seconds
+    private final ScheduledExecutorService refillExecutor;
 
     public JournalFrame() {
         super("Journal");
@@ -52,17 +58,9 @@ public class JournalFrame extends ControlFrame {
         getContentPane().add(panel, "Last");
         getRootPane().setDefaultButton(addToBlacklist);
 
-        refillThread = new Thread(() -> {
-            while (!Thread.interrupted()) {
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
-                SwingUtilities.invokeLater(this::refill);
-            }
-        }, "Visited refill thread");
-        refillThread.start();
+        refillExecutor = Executors.newSingleThreadScheduledExecutor();
+        refillExecutor.scheduleAtFixedRate(() ->
+                SwingUtilities.invokeLater(this::refill), REFILL_INTERVAL, REFILL_INTERVAL, TimeUnit.SECONDS);
 
         controlFrameInitialized();
     }
@@ -83,6 +81,6 @@ public class JournalFrame extends ControlFrame {
     }
 
     public void stopRefilling() {
-        refillThread.interrupt();
+        refillExecutor.shutdown();
     }
 }
