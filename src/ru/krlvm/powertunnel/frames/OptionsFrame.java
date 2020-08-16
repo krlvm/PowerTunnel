@@ -21,6 +21,7 @@ public class OptionsFrame extends ControlFrame {
 
     /* ------------------------------------ */
     private final JCheckBox autoSetup;
+    private final JCheckBox proxyPac;
     private final JCheckBox chunking;
     private final JCheckBox fullChunking;
     private final JTextField chunkSize;
@@ -103,6 +104,10 @@ public class OptionsFrame extends ControlFrame {
         if(SystemUtility.OS.contains("windows")) {
             panel.add(autoSetup, gbc);
         }
+
+        proxyPac = new TooltipCheckBox("Generate Proxy Auto Configuration file (PAC)",
+                "Can increase performance by using proxy only for blocked resources.<br>You should fill the government blacklist to use this option.<br>Can slowdown connections with big blacklists.");
+        panel.add(proxyPac, gbc);
 
         chunking = new TooltipCheckBox("HTTPS: Enable chunking",
                 "Fragments your HTTPS packets");
@@ -221,6 +226,9 @@ public class OptionsFrame extends ControlFrame {
         autoSetup.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.AUTO_PROXY_SETUP_ENABLED));
         autoSetup.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.AUTO_PROXY_SETUP_ENABLED));
 
+        proxyPac.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.PROXY_PAC_ENABLED));
+        proxyPac.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.PROXY_PAC_ENABLED));
+
         chunking.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.ENABLE_CHUNKING));
         chunking.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.ENABLE_CHUNKING));
 
@@ -288,6 +296,7 @@ public class OptionsFrame extends ControlFrame {
         );
 
         PowerTunnel.SETTINGS.setBooleanOption(Settings.AUTO_PROXY_SETUP_ENABLED, autoSetup.isSelected());
+        PowerTunnel.SETTINGS.setBooleanOption(Settings.AUTO_PROXY_SETUP_ENABLED, proxyPac.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.ALLOW_INVALID_HTTP_PACKETS, allowInvalidPackets.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.ENABLE_CHUNKING, chunking.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.FULL_CHUNKING, fullChunking.isSelected());

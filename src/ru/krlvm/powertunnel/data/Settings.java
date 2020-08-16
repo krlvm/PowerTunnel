@@ -15,8 +15,8 @@ public class Settings extends DataStore {
     public static final String KEY_VALUE_SEPARATOR = "=";
 
     private boolean hasChanged = false;
-    private Map<String, String> temporaryValues = new HashMap<>();
-    private Map<String, String> options = new HashMap<>();
+    private final Map<String, String> temporaryValues = new HashMap<>();
+    private final Map<String, String> options = new HashMap<>();
 
     public Settings() {
         super("settings");
@@ -160,7 +160,7 @@ public class Settings extends DataStore {
     }
 
     @Override
-    public String getFileFormat() {
+    public String getFileExtension() {
         return "ini";
     }
 
@@ -168,6 +168,7 @@ public class Settings extends DataStore {
     public static final String SERVER_IP_ADDRESS = "server.ip";
     public static final String SERVER_PORT = "server.port.int";
     public static final String AUTO_PROXY_SETUP_ENABLED = "server.auto-setup.bool";
+    public static final String PROXY_PAC_ENABLED = "server.proxy-pac.bool";
     public static final String ALLOW_INVALID_HTTP_PACKETS = "http.invalid-packets.allow";
     public static final String ENABLE_CHUNKING = "https.chunking.enabled.bool";
     public static final String FULL_CHUNKING = "https.chunking.full.bool";
@@ -194,6 +195,7 @@ public class Settings extends DataStore {
         defaultValues.put(SERVER_IP_ADDRESS, "127.0.0.1");
         defaultValues.put(SERVER_PORT, "8085");
         defaultValues.put(AUTO_PROXY_SETUP_ENABLED, "true");
+        defaultValues.put(PROXY_PAC_ENABLED, "false");
         defaultValues.put(ALLOW_INVALID_HTTP_PACKETS, "true");
         defaultValues.put(ENABLE_CHUNKING, "true");
         defaultValues.put(FULL_CHUNKING, "false");

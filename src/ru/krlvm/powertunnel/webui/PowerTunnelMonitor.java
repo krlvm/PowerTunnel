@@ -119,7 +119,7 @@ public class PowerTunnelMonitor {
 
     private static final DataStore HTML_STORE = new DataStore("webui", DEFAULT_HTML) {
         @Override
-        public String getFileFormat() {
+        public String getFileExtension() {
             return "html";
         }
     };
