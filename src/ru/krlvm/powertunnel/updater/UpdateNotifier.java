@@ -20,60 +20,57 @@ public class UpdateNotifier {
         if(!ENABLED) {
             return;
         }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    String content = URLUtility.load(URL);
-                    String[] data = content.split(";");
-                    if (data.length != 2) {
-                        print("Malformed response: '" + content + "'");
-                    } else {
-                        int newVersionCode;
-                        try {
-                            newVersionCode = Integer.parseInt(data[0]);
-                        } catch (NumberFormatException ex) {
-                            print("Invalid version code: '" + data[0] + "'");
-                            return;
-                        }
-                        if (newVersionCode <= PowerTunnel.VERSION_CODE) {
-                            print("You're running the latest version of " + PowerTunnel.NAME + "!");
-                            return;
-                        }
-                        final String version = data[1];
-                        info("" + PowerTunnel.NAME + " is ready to update!",
-                                "Version: " + version,
-                                "Changelog: " + PowerTunnel.REPOSITORY_URL + "/releases/tag/v" + version,
-                                "Download: " + PowerTunnel.REPOSITORY_URL + "/releases/download/v" + version + "/" + PowerTunnel.NAME + ".jar",
-                                "Visit GitHub repository: " + PowerTunnel.REPOSITORY_URL);
-                        if (PowerTunnel.isUIEnabled()) {
-                            SwingUtilities.invokeLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    PowerTunnel.optionsFrame.updateAvailable(version);
-                                    if(PowerTunnel.isMainFrameVisible() || PowerTunnel.optionsFrame.isVisible()) {
-                                        JEditorPane message = UIUtility.getLabelWithHyperlinkSupport(PowerTunnel.NAME + " is ready to update!" +
-                                                "<br><br>" +
-                                                "Version: " + version + "<br>" +
-                                                "<br>" +
-                                                "Changelog: <a href=\"" + PowerTunnel.REPOSITORY_URL + "/releases/tag/v" + version + "\">view</a>" +
-                                                "<br>" +
-                                                "Download: <a href=\"" + PowerTunnel.REPOSITORY_URL + "/releases/download/v" + version + "/" + PowerTunnel.NAME + ".jar\">click here</a>" +
-                                                "<br><br>" +
-                                                "Visit <a href=\"" + PowerTunnel.REPOSITORY_URL + "\">GitHub repository</a>",
-                                                null, true);
-                                        JOptionPane.showMessageDialog(null, message, PowerTunnel.NAME + " Updater", JOptionPane.INFORMATION_MESSAGE);
-                                    } else {
-                                        PowerTunnel.getTray().showNotification("PowerTunnel update available");
-                                    }
-                                }
-                            });
-                        }
+        new Thread(() -> {
+            try {
+                String content = URLUtility.load(URL);
+                String[] data = content.split(";");
+                if (data.length != 2) {
+                    print("Malformed response: '" + content + "'");
+                } else {
+                    int newVersionCode;
+                    try {
+                        newVersionCode = Integer.parseInt(data[0]);
+                    } catch (NumberFormatException ex) {
+                        print("Invalid version code: '" + data[0] + "'");
+                        return;
                     }
-                } catch (IOException ex) {
-                    print("Cannot connect to the server: " + ex.getMessage());
-                    Debugger.debug(ex);
+                    if (newVersionCode <= PowerTunnel.VERSION_CODE) {
+                        print("You're running the latest version of " + PowerTunnel.NAME + "!");
+                        return;
+                    }
+                    final String version = data[1];
+                    info("" + PowerTunnel.NAME + " is ready to update!",
+                            "Version: " + version,
+                            "Changelog: " + PowerTunnel.REPOSITORY_URL + "/releases/tag/v" + version,
+                            "Download: " + PowerTunnel.REPOSITORY_URL + "/releases/download/v" + version + "/" + PowerTunnel.NAME + ".jar",
+                            "Visit GitHub repository: " + PowerTunnel.REPOSITORY_URL);
+                    if (PowerTunnel.isUIEnabled()) {
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                PowerTunnel.optionsFrame.updateAvailable(version);
+                                if(PowerTunnel.isMainFrameVisible() || PowerTunnel.optionsFrame.isVisible()) {
+                                    JEditorPane message = UIUtility.getLabelWithHyperlinkSupport(PowerTunnel.NAME + " is ready to update!" +
+                                            "<br><br>" +
+                                            "Version: " + version + "<br>" +
+                                            "<br>" +
+                                            "Changelog: <a href=\"" + PowerTunnel.REPOSITORY_URL + "/releases/tag/v" + version + "\">view</a>" +
+                                            "<br>" +
+                                            "Download: <a href=\"" + PowerTunnel.REPOSITORY_URL + "/releases/download/v" + version + "/" + PowerTunnel.NAME + ".jar\">click here</a>" +
+                                            "<br><br>" +
+                                            "Visit <a href=\"" + PowerTunnel.REPOSITORY_URL + "\">GitHub repository</a>",
+                                            null, true);
+                                    JOptionPane.showMessageDialog(null, message, PowerTunnel.NAME + " Updater", JOptionPane.INFORMATION_MESSAGE);
+                                } else {
+                                    PowerTunnel.getTray().showNotification("PowerTunnel update available");
+                                }
+                            }
+                        });
+                    }
                 }
+            } catch (IOException ex) {
+                print("Cannot connect to the server: " + ex.getMessage());
+                Debugger.debug(ex);
             }
         }, "Update Check Thread").start();
     }

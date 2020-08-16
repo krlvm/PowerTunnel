@@ -61,12 +61,7 @@ public class OptionsFrame extends ControlFrame {
         updateLabel.setEnabled(UpdateNotifier.ENABLED);
         updateButton = new JButton("Check for updates");
         updateButton.setEnabled(UpdateNotifier.ENABLED);
-        updateButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                UpdateNotifier.checkAndNotify();
-            }
-        });
+        updateButton.addActionListener(e -> UpdateNotifier.checkAndNotify());
         updatePanel.add(updateButton, BorderLayout.WEST);
         updatePanel.add(updateLabel, BorderLayout.EAST);
         updatePanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
@@ -77,33 +72,22 @@ public class OptionsFrame extends ControlFrame {
         JPanel buttonsPanel = new JPanel(new BorderLayout());
         JPanel actionButtonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton cancel = new JButton("Cancel");
-        cancel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setVisible(false);
-            }
-        });
+        cancel.addActionListener(e -> setVisible(false));
         JButton ok = new JButton("OK");
-        ok.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                save();
-                setVisible(false);
-            }
+        ok.addActionListener(e -> {
+            save();
+            setVisible(false);
         });
         actionButtonsPanel.add(cancel);
         actionButtonsPanel.add(ok);
 
         JPanel resetPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton reset = new JButton("Reset");
-        reset.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PowerTunnel.SETTINGS.reset();
-                adjustSettings();
-                JOptionPane.showMessageDialog(OptionsFrame.this, "Settings has been successfully reset",
-                        "PowerTunnel", JOptionPane.INFORMATION_MESSAGE);
-            }
+        reset.addActionListener(e -> {
+            PowerTunnel.SETTINGS.reset();
+            adjustSettings();
+            JOptionPane.showMessageDialog(OptionsFrame.this, "Settings has been successfully reset",
+                    "PowerTunnel", JOptionPane.INFORMATION_MESSAGE);
         });
         resetPane.add(reset);
         buttonsPanel.add(resetPane, BorderLayout.WEST);
@@ -327,12 +311,7 @@ public class OptionsFrame extends ControlFrame {
 
         if (suggestRestart && PowerTunnel.isRunning()) {
             if (JOptionPane.showConfirmDialog(this, "<html>The changes you made requires server restart to take effect.<br>Restart server?</html>", PowerTunnel.NAME, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        PowerTunnel.restartServer();
-                    }
-                }, "Server Restart Thread").start();
+                new Thread(PowerTunnel::restartServer, "Server Restart Thread").start();
             }
         }
     }

@@ -527,23 +527,20 @@ public class PowerTunnel {
             } catch (UnknownHostException ex) {
                 throw new PTUnknownHostException(DNS_SERVER, PTUnknownHostException.Type.DNS, ex);
             }
-            bootstrap.withServerResolver(new HostResolver() {
-                @Override
-                public InetSocketAddress resolve(String host, int port) throws UnknownHostException {
-                    try {
-                        Lookup lookup = new Lookup(host, Type.A);
-                        lookup.setResolver(resolver);
-                        Record[] records = lookup.run();
-                        if (lookup.getResult() == Lookup.SUCCESSFUL) {
-                            return new InetSocketAddress(((ARecord) records[0]).getAddress(), port);
-                        } else {
-                            throw new UnknownHostException(lookup.getErrorString());
-                        }
-                    } catch (Exception ex) {
-                        Utility.print("[x] Failed to resolve '%s': %s", host, ex.getMessage());
-                        Debugger.debug(ex);
-                        throw new UnknownHostException(String.format("Failed to resolve '%s': %s", host, ex.getMessage()));
+            bootstrap.withServerResolver((host, port) -> {
+                try {
+                    Lookup lookup = new Lookup(host, Type.A);
+                    lookup.setResolver(resolver);
+                    Record[] records = lookup.run();
+                    if (lookup.getResult() == Lookup.SUCCESSFUL) {
+                        return new InetSocketAddress(((ARecord) records[0]).getAddress(), port);
+                    } else {
+                        throw new UnknownHostException(lookup.getErrorString());
                     }
+                } catch (Exception ex) {
+                    Utility.print("[x] Failed to resolve '%s': %s", host, ex.getMessage());
+                    Debugger.debug(ex);
+                    throw new UnknownHostException(String.format("Failed to resolve '%s': %s", host, ex.getMessage()));
                 }
             });
         }
@@ -615,19 +612,16 @@ public class PowerTunnel {
     }
 
     public static void handleClosing() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (PowerTunnel.getStatus() == ServerStatus.RUNNING) {
-                    PowerTunnel.stop();
-                } else {
-                    PowerTunnel.safeUserListSave();
-                }
-                if(trayManager.isLoaded()) {
-                    trayManager.unload();
-                }
-                System.exit(0);
+        new Thread(() -> {
+            if (PowerTunnel.getStatus() == ServerStatus.RUNNING) {
+                PowerTunnel.stop();
+            } else {
+                PowerTunnel.safeUserListSave();
             }
+            if(trayManager.isLoaded()) {
+                trayManager.unload();
+            }
+            System.exit(0);
         }).start();
     }
 

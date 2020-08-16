@@ -24,28 +24,25 @@ public class WindowsProxyHandler implements SystemProxy.SystemProxyHandler {
     }
 
     public static void executeAndApply(final String... commands) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    for (String command : commands) {
-                        SystemUtility.executeWindowsCommand(command);
-                    }
-                    if (USE_WINDOWS_NATIVE_API) {
-                        Wininet wininet = Wininet.INSTANCE;
-                        wininet.InternetSetOptionW(0,
-                                wininet.INTERNET_OPTION_SETTINGS_CHANGED, null, 0);
-                        wininet.InternetSetOptionW(0,
-                                wininet.INTERNET_OPTION_REFRESH, null, 0);
-                    } else {
-                        //we need to start Internet Explorer for apply these changes
-                        forceUpdateProxySettings();
-                    }
-                    Utility.print("[*] System proxy setup has finished");
-                } catch (IOException ex) {
-                    Utility.print("[x] Failed to setup system proxy: " + ex.getMessage());
-                    Debugger.debug(ex);
+        new Thread(() -> {
+            try {
+                for (String command : commands) {
+                    SystemUtility.executeWindowsCommand(command);
                 }
+                if (USE_WINDOWS_NATIVE_API) {
+                    Wininet wininet = Wininet.INSTANCE;
+                    wininet.InternetSetOptionW(0,
+                            wininet.INTERNET_OPTION_SETTINGS_CHANGED, null, 0);
+                    wininet.InternetSetOptionW(0,
+                            wininet.INTERNET_OPTION_REFRESH, null, 0);
+                } else {
+                    //we need to start Internet Explorer for apply these changes
+                    forceUpdateProxySettings();
+                }
+                Utility.print("[*] System proxy setup has finished");
+            } catch (IOException ex) {
+                Utility.print("[x] Failed to setup system proxy: " + ex.getMessage());
+                Debugger.debug(ex);
             }
         }).start();
     }

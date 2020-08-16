@@ -77,90 +77,57 @@ public class AdvancedMainFrame extends MainFrame {
 
         stateButton = new JButton("Start server");
         stateButton.setPreferredSize(new Dimension((int)stateButton.getPreferredSize().getWidth(), (int)portInput.getPreferredSize().getHeight()));
-        stateButton.addActionListener(new ActionListener() {
+        stateButton.addActionListener(e -> new Thread(new Runnable() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (PowerTunnel.getStatus() == ServerStatus.RUNNING) {
-                            PowerTunnel.stopServer();
-                        } else {
-                            try {
-                                PowerTunnel.SERVER_IP_ADDRESS = ipInput.getText();
-                                PowerTunnel.SERVER_PORT = Integer.parseInt(portInput.getText());
-                                String error = PowerTunnel.safeBootstrap();
-                                if (error != null) {
-                                    JOptionPane.showMessageDialog(AdvancedMainFrame.this, error,
-                                            "Error", JOptionPane.ERROR_MESSAGE);
-                                }
-                            } catch (NumberFormatException ex) {
-                                JOptionPane.showMessageDialog(AdvancedMainFrame.this, "Invalid port",
-                                        "Error", JOptionPane.ERROR_MESSAGE);
-                            }
+            public void run() {
+                if (PowerTunnel.getStatus() == ServerStatus.RUNNING) {
+                    PowerTunnel.stopServer();
+                } else {
+                    try {
+                        PowerTunnel.SERVER_IP_ADDRESS = ipInput.getText();
+                        PowerTunnel.SERVER_PORT = Integer.parseInt(portInput.getText());
+                        String error = PowerTunnel.safeBootstrap();
+                        if (error != null) {
+                            JOptionPane.showMessageDialog(AdvancedMainFrame.this, error,
+                                    "Error", JOptionPane.ERROR_MESSAGE);
                         }
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(AdvancedMainFrame.this, "Invalid port",
+                                "Error", JOptionPane.ERROR_MESSAGE);
                     }
-                }).start();
+                }
             }
-        });
+        }).start());
 
         JButton logButton = new JButton("Logs");
-        logButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PowerTunnel.logFrame.showFrame();
-            }
-        });
+        logButton.addActionListener(e -> PowerTunnel.logFrame.showFrame());
         logButton.setEnabled(PowerTunnel.ENABLE_LOGS);
 
         JButton journalButton = new JButton("Journal");
-        journalButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PowerTunnel.journalFrame.showFrame();
-            }
-        });
+        journalButton.addActionListener(e -> PowerTunnel.journalFrame.showFrame());
         journalButton.setEnabled(PowerTunnel.ENABLE_JOURNAL);
 
         JButton userBlacklist = new JButton("Blacklist");
-        userBlacklist.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PowerTunnel.USER_FRAMES[0].showFrame();
-            }
-        });
+        userBlacklist.addActionListener(e -> PowerTunnel.USER_FRAMES[0].showFrame());
 
         JButton userWhitelist = new JButton("Whitelist");
-        userWhitelist.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PowerTunnel.USER_FRAMES[1].showFrame();
-            }
-        });
+        userWhitelist.addActionListener(e -> PowerTunnel.USER_FRAMES[1].showFrame());
 
         JButton options = new JButton("Options");
-        options.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PowerTunnel.optionsFrame.showFrame();
-            }
-        });
+        options.addActionListener(e -> PowerTunnel.optionsFrame.showFrame());
 
         JButton reload = new JButton("Reload");
-        reload.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    PowerTunnel.loadLists();
-                    JOptionPane.showMessageDialog(AdvancedMainFrame.this,
-                            "Government blacklist and user lists has been reloaded",
-                            PowerTunnel.NAME, JOptionPane.INFORMATION_MESSAGE);
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(AdvancedMainFrame.this,
-                            "An error occurred while reloading lists: " + ex.getMessage(),
-                            PowerTunnel.NAME, JOptionPane.INFORMATION_MESSAGE);
-                    ex.printStackTrace();
-                }
+        reload.addActionListener(e -> {
+            try {
+                PowerTunnel.loadLists();
+                JOptionPane.showMessageDialog(AdvancedMainFrame.this,
+                        "Government blacklist and user lists has been reloaded",
+                        PowerTunnel.NAME, JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(AdvancedMainFrame.this,
+                        "An error occurred while reloading lists: " + ex.getMessage(),
+                        PowerTunnel.NAME, JOptionPane.INFORMATION_MESSAGE);
+                ex.printStackTrace();
             }
         });
 
@@ -229,18 +196,15 @@ public class AdvancedMainFrame extends MainFrame {
 
     @Override
     public void update() {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                boolean running = PowerTunnel.getStatus() == ServerStatus.RUNNING;
-                stateButton.setText((running ? "Stop" : "Start") + " server");
-                header.setText(getHeaderText());
-                boolean activateUI = !(PowerTunnel.getStatus() == ServerStatus.STARTING || PowerTunnel.getStatus() == ServerStatus.STOPPING);
-                stateButton.setEnabled(activateUI);
+        SwingUtilities.invokeLater(() -> {
+            boolean running = PowerTunnel.getStatus() == ServerStatus.RUNNING;
+            stateButton.setText((running ? "Stop" : "Start") + " server");
+            header.setText(getHeaderText());
+            boolean activateUI = !(PowerTunnel.getStatus() == ServerStatus.STARTING || PowerTunnel.getStatus() == ServerStatus.STOPPING);
+            stateButton.setEnabled(activateUI);
 
-                for(int i = 0; i < inputs.length; i++) {
-                    inputs[i].setEditable(PowerTunnel.getStatus() == ServerStatus.NOT_RUNNING && !inputsDisabled[i]);
-                }
+            for(int i = 0; i < inputs.length; i++) {
+                inputs[i].setEditable(PowerTunnel.getStatus() == ServerStatus.NOT_RUNNING && !inputsDisabled[i]);
             }
         });
     }

@@ -23,70 +23,30 @@ public class TrayManager {
 
         popup.addSeparator();
 
-        popup.add(TrayUtility.getItem("Open " + PowerTunnel.NAME, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PowerTunnel.showMainFrame();
-            }
-        }));
+        popup.add(TrayUtility.getItem("Open " + PowerTunnel.NAME, e -> PowerTunnel.showMainFrame()));
 
         popup.addSeparator();
 
         if(PowerTunnel.ENABLE_LOGS) {
-            popup.add(TrayUtility.getItem("Logs", new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    PowerTunnel.logFrame.showFrame();
-                }
-            }));
+            popup.add(TrayUtility.getItem("Logs", e -> PowerTunnel.logFrame.showFrame()));
         }
 
         if(PowerTunnel.ENABLE_JOURNAL) {
-            popup.add(TrayUtility.getItem("Journal", new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    PowerTunnel.journalFrame.showFrame();
-                }
-            }));
+            popup.add(TrayUtility.getItem("Journal", e -> PowerTunnel.journalFrame.showFrame()));
         }
 
-        popup.add(TrayUtility.getItem("Blacklist", new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PowerTunnel.USER_FRAMES[0].showFrame();
-            }
-        }));
-        popup.add(TrayUtility.getItem("Whitelist", new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PowerTunnel.USER_FRAMES[1].showFrame();
-            }
-        }));
-        popup.add(TrayUtility.getItem("Options", new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PowerTunnel.optionsFrame.showFrame();
-            }
-        }));
+        popup.add(TrayUtility.getItem("Blacklist", e -> PowerTunnel.USER_FRAMES[0].showFrame()));
+        popup.add(TrayUtility.getItem("Whitelist", e -> PowerTunnel.USER_FRAMES[1].showFrame()));
+        popup.add(TrayUtility.getItem("Options", e -> PowerTunnel.optionsFrame.showFrame()));
 
         popup.addSeparator();
 
-        popup.add(TrayUtility.getItem("Exit", new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PowerTunnel.handleClosing();
-            }
-        }));
+        popup.add(TrayUtility.getItem("Exit", e -> PowerTunnel.handleClosing()));
 
         trayIcon = new TrayIcon(UIUtility.UI_ICON, PowerTunnel.NAME, popup);
         trayIcon.setImageAutoSize(true);
         trayIcon.setToolTip(PowerTunnel.NAME + " " + PowerTunnel.VERSION);
-        trayIcon.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PowerTunnel.showMainFrame();
-            }
-        });
+        trayIcon.addActionListener(e -> PowerTunnel.showMainFrame());
         SystemTray.getSystemTray().add(trayIcon);
 
         TrayUtility.freeFonts();

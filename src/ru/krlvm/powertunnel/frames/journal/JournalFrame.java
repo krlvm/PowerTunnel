@@ -20,31 +20,25 @@ public class JournalFrame extends ControlFrame {
         setSize(1000, 500);
 
         final JList<String> swingList = new JList<>(getVisited());
-        swingList.setModel(new DefaultListModel<String>());
+        swingList.setModel(new DefaultListModel<>());
         model = ((DefaultListModel<String>) swingList.getModel());
         refill();
 
         JButton addToWhitelist = new JButton("Allow");
-        addToWhitelist.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String value = swingList.getSelectedValue();
-                if(value != null) {
-                    PowerTunnel.addToUserWhitelist(value.split(": ")[1]);
-                    refill();
-                }
+        addToWhitelist.addActionListener(e -> {
+            String value = swingList.getSelectedValue();
+            if(value != null) {
+                PowerTunnel.addToUserWhitelist(value.split(": ")[1]);
+                refill();
             }
         });
 
         JButton addToBlacklist = new JButton("Block");
-        addToBlacklist.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String value = swingList.getSelectedValue();
-                if(value != null) {
-                    PowerTunnel.addToUserBlacklist(value.split(": ")[1]);
-                    refill();
-                }
+        addToBlacklist.addActionListener(e -> {
+            String value = swingList.getSelectedValue();
+            if(value != null) {
+                PowerTunnel.addToUserBlacklist(value.split(": ")[1]);
+                refill();
             }
         });
 
@@ -58,22 +52,14 @@ public class JournalFrame extends ControlFrame {
         getContentPane().add(panel, "Last");
         getRootPane().setDefaultButton(addToBlacklist);
 
-        refillThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (!Thread.interrupted()) {
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException ex) {
-                        ex.printStackTrace();
-                    }
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            refill();
-                        }
-                    });
+        refillThread = new Thread(() -> {
+            while (!Thread.interrupted()) {
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
                 }
+                SwingUtilities.invokeLater(this::refill);
             }
         }, "Visited refill thread");
         refillThread.start();

@@ -37,21 +37,11 @@ public class LogFrame extends ControlFrame {
         panel.add(addressInput, BorderLayout.CENTER);
 
         addToWhiteList = new JButton("Whitelist");
-        addToWhiteList.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PowerTunnel.addToUserWhitelist(readInput());
-            }
-        });
+        addToWhiteList.addActionListener(e -> PowerTunnel.addToUserWhitelist(readInput()));
         panel.add(addToWhiteList, BorderLayout.WEST);
 
         addToBlockList = new JButton("Blacklist");
-        addToBlockList.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PowerTunnel.addToUserBlacklist(readInput());
-            }
-        });
+        addToBlockList.addActionListener(e -> PowerTunnel.addToUserBlacklist(readInput()));
         panel.add(addToBlockList, BorderLayout.EAST);
 
         getContentPane().add(new JScrollPane(logArea));

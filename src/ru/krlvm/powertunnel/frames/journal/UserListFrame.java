@@ -18,17 +18,14 @@ public abstract class UserListFrame extends ControlFrame {
         setSize(1000, 500);
 
         final JList<String> swingList = new JList<>(getElements());
-        swingList.setModel(new DefaultListModel<String>());
+        swingList.setModel(new DefaultListModel<>());
         model = ((DefaultListModel<String>) swingList.getModel());
 
         JButton removeButton = new JButton("Remove");
-        removeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String value = swingList.getSelectedValue();
-                if(value != null) {
-                    userActed(swingList.getSelectedValue());
-                }
+        removeButton.addActionListener(e -> {
+            String value = swingList.getSelectedValue();
+            if(value != null) {
+                userActed(swingList.getSelectedValue());
             }
         });
 
