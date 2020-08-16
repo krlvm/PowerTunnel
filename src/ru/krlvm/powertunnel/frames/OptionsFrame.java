@@ -22,7 +22,7 @@ public class OptionsFrame extends ControlFrame {
 
     /* ------------------------------------ */
     private final JCheckBox autoSetup;
-    private final JCheckBox proxyPac;
+    private final JCheckBox proxyPac; // server restart
     private final JCheckBox chunking;
     private final JCheckBox fullChunking;
     private final JTextField chunkSize;
@@ -305,7 +305,7 @@ public class OptionsFrame extends ControlFrame {
         );
 
         PowerTunnel.SETTINGS.setBooleanOption(Settings.AUTO_PROXY_SETUP_ENABLED, autoSetup.isSelected());
-        PowerTunnel.SETTINGS.setBooleanOption(Settings.AUTO_PROXY_SETUP_ENABLED, proxyPac.isSelected());
+        PowerTunnel.SETTINGS.setBooleanOption(Settings.PROXY_PAC_ENABLED, proxyPac.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.ALLOW_INVALID_HTTP_PACKETS, allowInvalidPackets.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.ENABLE_CHUNKING, chunking.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.FULL_CHUNKING, fullChunking.isSelected());
