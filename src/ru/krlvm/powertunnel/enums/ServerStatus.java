@@ -1,4 +1,4 @@
-package ru.krlvm.powertunnel.frames;
+package ru.krlvm.powertunnel.enums;
 
 public enum ServerStatus {
 

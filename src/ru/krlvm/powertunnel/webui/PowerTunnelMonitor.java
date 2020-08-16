@@ -3,7 +3,7 @@ package ru.krlvm.powertunnel.webui;
 import io.netty.handler.codec.http.HttpResponse;
 import ru.krlvm.powertunnel.PowerTunnel;
 import ru.krlvm.powertunnel.data.DataStore;
-import ru.krlvm.powertunnel.frames.JournalFrame;
+import ru.krlvm.powertunnel.frames.journal.JournalFrame;
 import ru.krlvm.powertunnel.utilities.HttpUtility;
 import ru.krlvm.powertunnel.utilities.Utility;
 

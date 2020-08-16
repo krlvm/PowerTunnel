@@ -2,6 +2,7 @@ package ru.krlvm.powertunnel.frames;
 
 import ru.krlvm.powertunnel.PowerTunnel;
 import ru.krlvm.powertunnel.data.Settings;
+import ru.krlvm.powertunnel.enums.ServerStatus;
 import ru.krlvm.powertunnel.utilities.UIUtility;
 import ru.krlvm.swingdpi.SwingDPI;
 

@@ -1,4 +1,6 @@
-package ru.krlvm.powertunnel.frames;
+package ru.krlvm.powertunnel.frames.journal;
+
+import ru.krlvm.powertunnel.frames.ControlFrame;
 
 import javax.swing.*;
 import java.awt.*;
