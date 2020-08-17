@@ -3,6 +3,7 @@ package ru.krlvm.powertunnel.frames;
 import ru.krlvm.powertunnel.PowerTunnel;
 import ru.krlvm.powertunnel.data.Settings;
 import ru.krlvm.powertunnel.enums.SNITrick;
+import ru.krlvm.powertunnel.ui.TextRightClickPopup;
 import ru.krlvm.powertunnel.ui.TooltipCheckBox;
 import ru.krlvm.powertunnel.ui.TooltipLabel;
 import ru.krlvm.powertunnel.updater.UpdateNotifier;
@@ -120,6 +121,7 @@ public class OptionsFrame extends ControlFrame {
 
         JPanel chunkPane = newOptionPanel();
         chunkSize = new JTextField(String.valueOf(PowerTunnel.CHUNK_SIZE));
+        TextRightClickPopup.register(chunkSize);
         JLabel chunkLabel = new TooltipLabel("Chunk size:", "Count of fragments HTTP packets be divided");
         chunkPane.add(chunkLabel);
         chunkPane.add(chunkSize, gbc);
@@ -177,6 +179,7 @@ public class OptionsFrame extends ControlFrame {
 
         JPanel dohPane = newOptionPanel();
         dnsAddress = new JTextField(PowerTunnel.DNS_SERVER);
+        TextRightClickPopup.register(dnsAddress);
         dnsAddress.setPreferredSize(new Dimension(400, ((int) dnsAddress.getPreferredSize().getHeight())));
         JLabel dohLabel = new TooltipLabel("DNS or DoH resolver (server restart required):", "DNS or DNS over HTTPS resolver address\nAddresses starts with 'https://' automatically recognizes as a DoH resolvers\nCompatible DoH addresses is listed in the repository readme");
         dohPane.add(dohLabel);
@@ -192,6 +195,7 @@ public class OptionsFrame extends ControlFrame {
 
         JPanel mirrorPane = newOptionPanel();
         blacklistMirror = new JTextField(String.valueOf(PowerTunnel.CHUNK_SIZE));
+        TextRightClickPopup.register(blacklistMirror);
         JLabel blacklistLabel = new TooltipLabel("Government blacklist mirror:", "URL address from government blacklist automatically loads");
         mirrorPane.add(blacklistLabel);
         mirrorPane.add(blacklistMirror, gbc);
