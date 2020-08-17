@@ -85,7 +85,7 @@ public class OptionsFrame extends ControlFrame {
         actionButtonsPanel.add(ok);
 
         JPanel resetPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JButton reset = new JButton("Reset");
+        JButton reset = new JButton("Reset settings");
         reset.addActionListener(e -> {
             PowerTunnel.SETTINGS.reset();
             adjustSettings();
@@ -218,7 +218,7 @@ public class OptionsFrame extends ControlFrame {
         container.add(updatePanel, BorderLayout.SOUTH);
 
         root.add(container, BorderLayout.NORTH);
-        root.add(buttonsPanel, BorderLayout.EAST);
+        root.add(buttonsPanel, BorderLayout.SOUTH);
         root.setDefaultButton(ok);
         setResizable(false);
         pack();
