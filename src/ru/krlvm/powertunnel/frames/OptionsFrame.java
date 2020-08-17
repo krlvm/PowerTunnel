@@ -8,12 +8,15 @@ import ru.krlvm.powertunnel.ui.TooltipLabel;
 import ru.krlvm.powertunnel.updater.UpdateNotifier;
 import ru.krlvm.powertunnel.utilities.SystemUtility;
 import ru.krlvm.powertunnel.utilities.UIUtility;
+import ru.krlvm.swingdpi.SwingDPI;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class OptionsFrame extends ControlFrame {
 
@@ -54,22 +57,22 @@ public class OptionsFrame extends ControlFrame {
 
     public OptionsFrame() {
         super("Options");
-        JRootPane root = getRootPane();
+        JPanel root = new JPanel();
         root.setLayout(new BorderLayout());
         root.setBorder(BorderFactory.createEmptyBorder(10, 15, 15, 15));
 
         JPanel updatePanel = new JPanel(new BorderLayout());
         updateLabel = new JLabel("<html><b>No updates available</b></html>");
         updateLabel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
-        updateLabel.setEnabled(UpdateNotifier.ENABLED);
         updateButton = new JButton("Check for updates");
-        updateButton.setEnabled(UpdateNotifier.ENABLED);
         updateButton.addActionListener(e -> UpdateNotifier.checkAndNotify());
         updatePanel.add(updateButton, BorderLayout.WEST);
         updatePanel.add(updateLabel, BorderLayout.EAST);
         updatePanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         if(!UpdateNotifier.ENABLED) {
-            updateLabel.setText("<html><b>Update checking is disabled</b></html>");
+            updateButton.setEnabled(false);
+            updateLabel.setEnabled(false);
+            updateLabel.setText("<html><b>Check for updates is disabled</b></html>");
         }
 
         JPanel buttonsPanel = new JPanel(new BorderLayout());
@@ -90,7 +93,7 @@ public class OptionsFrame extends ControlFrame {
             PowerTunnel.SETTINGS.reset();
             adjustSettings();
             JOptionPane.showMessageDialog(OptionsFrame.this, "Settings has been successfully reset",
-                    "PowerTunnel", JOptionPane.INFORMATION_MESSAGE);
+                    PowerTunnel.NAME, JOptionPane.INFORMATION_MESSAGE);
         });
         resetPane.add(reset);
         buttonsPanel.add(resetPane, BorderLayout.WEST);
@@ -219,16 +222,34 @@ public class OptionsFrame extends ControlFrame {
 
         root.add(container, BorderLayout.NORTH);
         root.add(buttonsPanel, BorderLayout.SOUTH);
-        root.setDefaultButton(ok);
-        setResizable(false);
-        pack();
 
+        JScrollPane scroll = new JScrollPane(root);
+        scroll.setBorder(null);
+        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        add(scroll);
+
+        getRootPane().setDefaultButton(ok);
+        setResizable(true);
+
+        pack(); // calculate the first size estimate
         chunkSize.setPreferredSize(new Dimension(dohPane.getWidth()-chunkLabel.getWidth(), chunkSize.getHeight()));
         blacklistMirror.setPreferredSize(new Dimension(dohPane.getWidth()-blacklistLabel.getWidth(), blacklistMirror.getHeight()));
         dnsAddress.setPreferredSize(new Dimension(dnsAddress.getWidth()+15, dnsAddress.getHeight()));
+
         pack();
 
         controlFrameInitialized();
+
+        final int maxWidth = getWidth();
+        SwingUtilities.invokeLater(() -> {
+            addComponentListener(new ComponentAdapter() {
+                @Override
+                public void componentResized(ComponentEvent e) {
+                    setSize(maxWidth, getHeight());
+                    super.componentResized(e);
+                }
+            });
+        });
     }
 
     private void adjustSettings() {
