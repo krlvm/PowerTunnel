@@ -2,8 +2,8 @@
 <img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/images/logo.png" height="192px" width="192px" />
 <br><h1>PowerTunnel</h1><br>
 Simple, scalable, cross-platform and effective solution against government censorship
-
-<h3><b>Please, read <a href="https://gist.github.com/krlvm/76595f2fec7e23cf5e20f8ccfa43997a">important announcement</a></b></h3>
+<!-- That does not mean the battle is finished -->
+<!--<h3><b>Please, read <a href="https://gist.github.com/krlvm/76595f2fec7e23cf5e20f8ccfa43997a">important announcement</a></b></h3>-->
 
 <a href="https://t.me/powertunnel_dpi">Telegram channel</a>
 <br>
@@ -77,7 +77,8 @@ Available arguments:
  -disable-chunking                    HTTPS: disables packet chunking (fragmentation)
  -full-chunking                       HTTPS: enables chunking the whole packets (requires chunking enabled)
  -chunk-size [size]                   HTTPS: sets size of one chunk
- -sni-trick [trick]                   HTTPS: enable SNI tricks: 1 - spoil; 2 - erase (requires Root CA installation)
+ -sni-trick [trick]                   HTTPS: enable SNI tricks: 1 - spoil, 2 - erase, 3 - fake; (requires Root CA installation)
+ -sni-trick-fake-host [host]          HTTPS: host that will used with 'fake' SNI Trick
  -line-break-get                      HTTP:  inserts a line break before 'GET' method
  -space-after-get                     HTTP:  inserts a space after 'GET' method
  -apply-http-https                    HTTP:  apply enabled HTTP tricks to HTTPS
@@ -92,7 +93,8 @@ Available arguments:
  -enable-logs                         enables PowerTunnel logs (when UI enabled)
  -enable-log-to-file                  enables PowerTunnel logger and log file
  -with-web-ui [appendix]              enables Web UI at http://powertunnelmonitor[appendix].info
- -disable-auto-proxy-setup            disables auto proxy setup on Windows
+ -disable-auto-proxy-setup            disables auto proxy setup (supported OS: Windows)
+ -enable-proxy-pac                    enables generation of PAC file on startup
  -auto-proxy-setup-win-ie             auto proxy setup using IE instead of native API on Windows
  -full-output-mirroring               fully mirrors system output to the log
  -set-scale-factor [n]                sets DPI scale factor (for testing purposes)
