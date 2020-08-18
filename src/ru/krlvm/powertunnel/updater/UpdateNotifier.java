@@ -35,7 +35,12 @@ public class UpdateNotifier {
                         return;
                     }
                     if (newVersionCode <= PowerTunnel.VERSION_CODE) {
-                        print("You're running the latest version of " + PowerTunnel.NAME + "!");
+                        if(newVersionCode == PowerTunnel.VERSION_CODE) {
+                            print("You're running the latest version of %s" + PowerTunnel.NAME + "!");
+                        } else {
+                            print("You're running a preview version of " + PowerTunnel.NAME);
+                            print("You always can download a stable build here: " + PowerTunnel.REPOSITORY_URL + "/releases/latest");
+                        }
                         return;
                     }
                     final String version = data[1];
