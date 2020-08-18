@@ -32,6 +32,7 @@ public class OptionsFrame extends ControlFrame {
     private final JTextField chunkSize;
     private final JCheckBox enableSniTricks;  // server restart
     private final JComboBox<String> sniTrick;
+    private final JTextField fakeSniHost;
     private final JCheckBox applyHttpHttps;
     private final JCheckBox payload;
     private final JCheckBox allowInvalidPackets;
@@ -131,12 +132,19 @@ public class OptionsFrame extends ControlFrame {
                 "When it enabled, PowerTunnel does some magic with Server Name Indication in your HTTPS requests");
         enableSniTricks.setBorder(null);
         JEditorPane sniWikiRef = UIUtility.getLabelWithHyperlinkSupport("<a href=\"" + SNITrick.SUPPORT_REFERENCE + "\">Read more...</a>", null);
-        sniTrick = new JComboBox<>(new String[] { "Spoil SNI", "Erase SNI" });
+        sniTrick = new JComboBox<>(new String[] { "Spoil SNI", "Erase SNI", "Fake SNI" });
         sniTrick.setSelectedIndex(0);
         sniTrick.setLightWeightPopupEnabled(false);
         sniPane.add(enableSniTricks);
         sniPane.add(sniWikiRef, gbc);
         sniPane.add(sniTrick, gbc);
+
+        JPanel fakeSniPane = newOptionPanel();
+        fakeSniHost = new JTextField(String.valueOf(PowerTunnel.SNI_TRICK_FAKE_HOST));
+        TextRightClickPopup.register(fakeSniHost);
+        JLabel fakeSniLabel = new TooltipLabel("Fake SNI host:", "The fake SNI host sends instead of host of the blocked website you want connect to,\nthe fake host usually has to be a government resource host,\nor host of any not blocked website.\nUsed in combination with 'fake' SNI trick.");
+        fakeSniPane.add(fakeSniLabel);
+        fakeSniPane.add(fakeSniHost, gbc);
 
         applyHttpHttps = new TooltipCheckBox("HTTPS: Apply HTTP tricks to HTTPS packets",
                 "When this option is enabled, selected HTTP tricks will be applied to HTTPS too");
@@ -167,6 +175,7 @@ public class OptionsFrame extends ControlFrame {
                 fullChunking,
                 chunkPane,
                 sniPane,
+                fakeSniPane,
                 applyHttpHttps,
                 payload,
                 mixHostCase,
@@ -236,6 +245,7 @@ public class OptionsFrame extends ControlFrame {
         setResizable(true);
 
         pack(); // calculate the first size estimate
+        fakeSniHost.setPreferredSize(new Dimension(fakeSniPane.getWidth()-fakeSniLabel.getWidth(), fakeSniHost.getHeight()));
         chunkSize.setPreferredSize(new Dimension(dohPane.getWidth()-chunkLabel.getWidth(), chunkSize.getHeight()));
         blacklistMirror.setPreferredSize(new Dimension(dohPane.getWidth()-blacklistLabel.getWidth(), blacklistMirror.getHeight()));
         dnsAddress.setPreferredSize(new Dimension(dnsAddress.getWidth()+15, dnsAddress.getHeight()));

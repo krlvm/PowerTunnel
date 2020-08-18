@@ -174,6 +174,7 @@ public class Settings extends DataStore {
     public static final String FULL_CHUNKING = "https.chunking.full.bool";
     public static final String CHUNK_SIZE = "https.chunking.size.int";
     public static final String SNI_TRICK = "https.sni-trick.int";
+    public static final String SNI_TRICK_FAKE_HOST = "https.sni-trick.fake.host";
     public static final String PAYLOAD_LENGTH = "http.payload.length.int";
     public static final String MIX_HOST_CASE = "http.mix-host-case.bool";
     public static final String COMPLETE_MIX_HOST_CASE = "http.mix-host-case.complete.bool";
@@ -208,6 +209,7 @@ public class Settings extends DataStore {
         defaultValues.put(LINE_BREAK_BEFORE_GET, "false");
         defaultValues.put(ADDITIONAL_SPACE_AFTER_GET, "false");
         defaultValues.put(SNI_TRICK, "0");
+        defaultValues.put(SNI_TRICK_FAKE_HOST, "w3.org");
         defaultValues.put(USE_DNS_SEC, "false");
         defaultValues.put(DNS_ADDRESS, "");
         defaultValues.put(GOVERNMENT_BLACKLIST_MIRROR, "");

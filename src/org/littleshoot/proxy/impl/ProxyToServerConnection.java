@@ -454,11 +454,7 @@ public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
                 Utility.print(" [+] Will be fragmented: %s", address);
             }
             if(PowerTunnel.SNI_TRICK != null) {
-                if (PowerTunnel.SNI_TRICK == SNITrick.ERASE) {
-                    Utility.print(" [+] SNI will be erased: %s", address);
-                } else if (PowerTunnel.SNI_TRICK == SNITrick.SPOIL) {
-                    Utility.print(" [+] SNI will be spoiled: %s", address);
-                }
+                Utility.print(" [+] Apply '%s' SNI Trick: %s", PowerTunnel.SNI_TRICK.name(), address);
             }
         }
         return is;
@@ -856,8 +852,14 @@ public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
                     connectionFlow.then(serverConnection.EncryptChannel(proxyServer.getMitmManager()
                             .serverSslEngine()));
                 } else {
+                    String ptHost;
+                    if(PowerTunnel.SNI_TRICK == SNITrick.SPOIL) {
+                        ptHost = parsedHostAndPort.getHost() + ".";
+                    } else {
+                        ptHost = PowerTunnel.SNI_TRICK_FAKE_HOST;
+                    }
                     connectionFlow.then(serverConnection.EncryptChannel(proxyServer.getMitmManager()
-                            .serverSslEngine(parsedHostAndPort.getHost() + ".", parsedHostAndPort.getPort())));
+                            .serverSslEngine(ptHost, parsedHostAndPort.getPort())));
                 }
 
                 connectionFlow

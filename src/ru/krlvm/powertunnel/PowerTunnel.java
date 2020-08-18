@@ -91,6 +91,7 @@ public class PowerTunnel {
     public static boolean LINE_BREAK_BEFORE_GET = false;
     public static boolean ADDITIONAL_SPACE_AFTER_GET = false;
     public static SNITrick SNI_TRICK = null;
+    public static String SNI_TRICK_FAKE_HOST;
     /* ----------------- */
 
     public static boolean FULL_OUTPUT_MIRRORING = false;
@@ -143,7 +144,8 @@ public class PowerTunnel {
                             " -disable-chunking                    HTTPS: disables packet chunking (fragmentation)\n" +
                             " -full-chunking                       HTTPS: enables chunking the whole packets (requires chunking enabled)\n" +
                             " -chunk-size [size]                   HTTPS: sets size of one chunk\n" +
-                            " -sni-trick [trick]                   HTTPS: enable SNI tricks: 1 - spoil; 2 - erase (requires Root CA installation)\n" +
+                            " -sni-trick [trick]                   HTTPS: enable SNI tricks: 1 - spoil, 2 - erase, 3 - fake (requires Root CA installation)\n" +
+                            " -sni-trick-fake-host [host]          HTTPS: host that will used with 'fake' SNI Trick\n" +
                             " -line-break-get                      HTTP:  inserts a line break before 'GET' method\n" +
                             " -space-after-get                     HTTP:  inserts a space after 'GET' method\n" +
                             " -apply-http-https                    HTTP:  apply enabled HTTP tricks to HTTPS\n" +
@@ -765,6 +767,7 @@ public class PowerTunnel {
         LINE_BREAK_BEFORE_GET = SETTINGS.getBooleanOption(Settings.LINE_BREAK_BEFORE_GET);
         ADDITIONAL_SPACE_AFTER_GET = SETTINGS.getBooleanOption(Settings.ADDITIONAL_SPACE_AFTER_GET);
         SNI_TRICK = SNITrick.fromID(SETTINGS.getIntOption(Settings.SNI_TRICK));
+        SNI_TRICK_FAKE_HOST = SETTINGS.getOption(Settings.SNI_TRICK_FAKE_HOST);
 
         USE_DNS_SEC = SETTINGS.getBooleanOption(Settings.USE_DNS_SEC);
         DNS_SERVER = SETTINGS.getOption(Settings.DNS_ADDRESS);
