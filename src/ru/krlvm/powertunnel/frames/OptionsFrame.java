@@ -246,9 +246,9 @@ public class OptionsFrame extends ControlFrame {
 
         pack(); // calculate the first size estimate
         fakeSniHost.setPreferredSize(new Dimension(fakeSniPane.getWidth()-fakeSniLabel.getWidth(), fakeSniHost.getHeight()));
-        chunkSize.setPreferredSize(new Dimension(dohPane.getWidth()-chunkLabel.getWidth(), chunkSize.getHeight()));
-        blacklistMirror.setPreferredSize(new Dimension(dohPane.getWidth()-blacklistLabel.getWidth(), blacklistMirror.getHeight()));
-        dnsAddress.setPreferredSize(new Dimension(dnsAddress.getWidth()+15, dnsAddress.getHeight()));
+        chunkSize.setPreferredSize(new Dimension(chunkPane.getWidth()-chunkLabel.getWidth(), chunkSize.getHeight()));
+        blacklistMirror.setPreferredSize(new Dimension(mirrorPane.getWidth()-blacklistLabel.getWidth(), blacklistMirror.getHeight()));
+        dnsAddress.setPreferredSize(new Dimension(dohPane.getWidth()-dohLabel.getWidth(), dnsAddress.getHeight()));
 
         pack();
 
@@ -383,7 +383,7 @@ public class OptionsFrame extends ControlFrame {
 
     public void updateAvailable(String version) {
         updateButton.setText("Update details");
-        updateLabel.setText("<html><b>An update available: v" + version + "</b></html>");
+        updateLabel.setText("<html><b>Update available: v" + version + "</b></html>");
     }
 
     @Override
