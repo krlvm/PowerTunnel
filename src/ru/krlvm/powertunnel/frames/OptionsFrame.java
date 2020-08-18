@@ -104,7 +104,7 @@ public class OptionsFrame extends ControlFrame {
         JPanel panel = new JPanel(new GridBagLayout());
 
         autoSetup = new TooltipCheckBox("Auto system proxy setup",
-                "Automatically setting up system proxy server configuration.\nAt the moment available only on the Windows systems.\nCan require automatic Internet Explorer start for a few seconds.");
+                "Automatically setting up system proxy server configuration.\nAt the moment available only on the Windows.\n\nWindows: automatic Internet Explorer start for a few seconds can be required.");
 
         proxyPac = new TooltipCheckBox("Generate Proxy Auto Configuration file (PAC, server restart required)",
                 "Can increase performance by using proxy only for blocked resources.\nYou should fill the government blacklist to use this option.\nCan slowdown connections with big blacklists.");
