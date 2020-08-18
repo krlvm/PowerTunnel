@@ -18,7 +18,7 @@ public class AdvancedMainFrame extends MainFrame {
             "<a href=\"https://github.com/krlvm/PowerTunnel\">PowerTunnel</a> is made possible by these open-source projects:" +
             "<br><br>" +
             "<a href=\"https://github.com/adamfisk/LittleProxy\">LittleProxy</a> - proxy server, <a href=\"https://github.com/mrog/LittleProxy\">forked</a> version<br>" +
-            "<a href=\"https://github.com/ganskef/LittleProxy-mitm\">LittleProxy-MITM</a> - an extension for LittleProxy to work with SSL<br>" +
+            "<a href=\"https://github.com/ganskef/LittleProxy-mitm\">LittleProxy-MITM</a> - LittleProxy SSL extension<br>" +
             "<a href=\"https://github.com/dnsjava/dnsjava\">dnsjava</a> - DNS library, DoH realization<br>" +
             "<a href=\"https://github.com/ibauersachs/dnssecjava\">dnssecjava</a> - DNSSec realization for dnsjava<br>" +
             "<a href=\"https://github.com/adamfisk/DNSSEC4J\">DNSSEC4J</a> - DNSSec realization for LittleProxy<br>" +
