@@ -45,25 +45,22 @@ public class UpdateNotifier {
                             "Download: " + PowerTunnel.REPOSITORY_URL + "/releases/download/v" + version + "/" + PowerTunnel.NAME + ".jar",
                             "Visit GitHub repository: " + PowerTunnel.REPOSITORY_URL);
                     if (PowerTunnel.isUIEnabled()) {
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                PowerTunnel.optionsFrame.updateAvailable(version);
-                                if(PowerTunnel.isMainFrameVisible() || PowerTunnel.optionsFrame.isVisible()) {
-                                    JEditorPane message = UIUtility.getLabelWithHyperlinkSupport(PowerTunnel.NAME + " is ready to update!" +
-                                            "<br><br>" +
-                                            "Version: " + version + "<br>" +
-                                            "<br>" +
-                                            "Changelog: <a href=\"" + PowerTunnel.REPOSITORY_URL + "/releases/tag/v" + version + "\">view</a>" +
-                                            "<br>" +
-                                            "Download: <a href=\"" + PowerTunnel.REPOSITORY_URL + "/releases/download/v" + version + "/" + PowerTunnel.NAME + ".jar\">click here</a>" +
-                                            "<br><br>" +
-                                            "Visit <a href=\"" + PowerTunnel.REPOSITORY_URL + "\">GitHub repository</a>",
-                                            null, true);
-                                    JOptionPane.showMessageDialog(null, message, PowerTunnel.NAME + " Updater", JOptionPane.INFORMATION_MESSAGE);
-                                } else {
-                                    PowerTunnel.getTray().showNotification("PowerTunnel update available");
-                                }
+                        SwingUtilities.invokeLater(() -> {
+                            PowerTunnel.optionsFrame.updateAvailable(version);
+                            if(PowerTunnel.isMainFrameVisible() || PowerTunnel.optionsFrame.isVisible()) {
+                                JEditorPane message = UIUtility.getLabelWithHyperlinkSupport(PowerTunnel.NAME + " is ready to update!" +
+                                        "<br><br>" +
+                                        "Version: " + version + "<br>" +
+                                        "<br>" +
+                                        "Changelog: <a href=\"" + PowerTunnel.REPOSITORY_URL + "/releases/tag/v" + version + "\">view</a>" +
+                                        "<br>" +
+                                        "Download: <a href=\"" + PowerTunnel.REPOSITORY_URL + "/releases/download/v" + version + "/" + PowerTunnel.NAME + ".jar\">click here</a>" +
+                                        "<br><br>" +
+                                        "<a href=\"" + PowerTunnel.REPOSITORY_URL + "\">Visit GitHub repository</a>",
+                                        null, true);
+                                JOptionPane.showMessageDialog(null, message, PowerTunnel.NAME + " Updater", JOptionPane.INFORMATION_MESSAGE);
+                            } else {
+                                PowerTunnel.getTray().showNotification("PowerTunnel update available");
                             }
                         });
                     }
