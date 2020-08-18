@@ -3,6 +3,7 @@ package ru.krlvm.powertunnel.frames;
 import ru.krlvm.powertunnel.PowerTunnel;
 import ru.krlvm.powertunnel.data.Settings;
 import ru.krlvm.powertunnel.enums.ServerStatus;
+import ru.krlvm.powertunnel.ui.TextRightClickPopup;
 import ru.krlvm.powertunnel.utilities.UIUtility;
 import ru.krlvm.swingdpi.SwingDPI;
 
@@ -56,6 +57,7 @@ public class AdvancedMainFrame extends MainFrame {
         };
 
         final JTextField ipInput = new JTextField();
+        TextRightClickPopup.register(ipInput);
         Insets insets = ipInput.getInsets();
         ipInput.setPreferredSize(new Dimension(SwingDPI.scale(200)+insets.left+insets.right,
                 SwingDPI.scale(22)+insets.top+insets.bottom));
@@ -65,6 +67,7 @@ public class AdvancedMainFrame extends MainFrame {
         ipInput.setEnabled(!inputsDisabled[0]);
 
         final JTextField portInput = new JTextField();
+        TextRightClickPopup.register(portInput);
         insets = portInput.getInsets();
         portInput.setPreferredSize(SwingDPI.scale(75+insets.left+insets.right,
                 22+insets.top+insets.bottom));
