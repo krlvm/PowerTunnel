@@ -144,7 +144,7 @@ public class PowerTunnel {
                             " -disable-chunking                    HTTPS: disables packet chunking (fragmentation)\n" +
                             " -full-chunking                       HTTPS: enables chunking the whole packets (requires chunking enabled)\n" +
                             " -chunk-size [size]                   HTTPS: sets size of one chunk\n" +
-                            " -sni-trick [trick]                   HTTPS: enable SNI tricks: 1 - spoil, 2 - erase, 3 - fake (requires Root CA installation)\n" +
+                            " -sni-trick [trick]                   HTTPS: enable SNI tricks: 1 - spoil, 2 - erase, 3 - fake; (requires Root CA installation)\n" +
                             " -sni-trick-fake-host [host]          HTTPS: host that will used with 'fake' SNI Trick\n" +
                             " -line-break-get                      HTTP:  inserts a line break before 'GET' method\n" +
                             " -space-after-get                     HTTP:  inserts a space after 'GET' method\n" +

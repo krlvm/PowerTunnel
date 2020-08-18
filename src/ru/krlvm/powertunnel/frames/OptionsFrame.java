@@ -285,6 +285,9 @@ public class OptionsFrame extends ControlFrame {
         enableSniTricks.setSelected(eraseSniVal = PowerTunnel.SETTINGS.getIntOption(Settings.SNI_TRICK) != 0);
         enableSniTricks.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.SNI_TRICK));
 
+        fakeSniHost.setText(PowerTunnel.SETTINGS.getOption(Settings.SNI_TRICK_FAKE_HOST));
+        fakeSniHost.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.SNI_TRICK_FAKE_HOST));
+
         applyHttpHttps.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.APPLY_HTTP_TRICKS_TO_HTTPS));
         applyHttpHttps.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.APPLY_HTTP_TRICKS_TO_HTTPS));
 
@@ -347,6 +350,7 @@ public class OptionsFrame extends ControlFrame {
         PowerTunnel.SETTINGS.setBooleanOption(Settings.FULL_CHUNKING, fullChunking.isSelected());
         PowerTunnel.SETTINGS.setOption(Settings.CHUNK_SIZE, chunkSize.getText());
         PowerTunnel.SETTINGS.setIntOption(Settings.SNI_TRICK, determineSniTrick());
+        PowerTunnel.SETTINGS.setOption(Settings.SNI_TRICK_FAKE_HOST, fakeSniHost.getText());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.APPLY_HTTP_TRICKS_TO_HTTPS, applyHttpHttps.isSelected());
         PowerTunnel.SETTINGS.setOption(Settings.PAYLOAD_LENGTH, payload.isSelected() ? "21" : "0");
         PowerTunnel.SETTINGS.setBooleanOption(Settings.MIX_HOST_CASE, mixHostCase.isSelected());
