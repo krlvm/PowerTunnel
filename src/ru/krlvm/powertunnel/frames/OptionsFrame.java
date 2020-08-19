@@ -21,8 +21,11 @@ import java.awt.event.ComponentEvent;
 
 public class OptionsFrame extends ControlFrame {
 
+    private final int[] maxSize;
+
     private final JLabel updateLabel;
     private final JButton updateButton;
+    private final JScrollPane scroll;
 
     /* ------------------------------------ */
     private final JCheckBox autoSetup;
@@ -236,9 +239,8 @@ public class OptionsFrame extends ControlFrame {
         root.add(container, BorderLayout.NORTH);
         root.add(buttonsPanel, BorderLayout.SOUTH);
 
-        JScrollPane scroll = new JScrollPane(root);
+        scroll = new JScrollPane(root);
         scroll.setBorder(null);
-        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         add(scroll);
 
         getRootPane().setDefaultButton(ok);
@@ -251,19 +253,26 @@ public class OptionsFrame extends ControlFrame {
         dnsAddress.setPreferredSize(new Dimension(dohPane.getWidth()-dohLabel.getWidth(), dnsAddress.getHeight()));
 
         pack();
+        maxSize = new int[] { getWidth(), getHeight() };
+
+        Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
+        double screenWidth = screenResolution.getWidth();
+        double screenHeight = screenResolution.getHeight();
+        setSize(
+                (int)(Math.min(getWidth(), screenWidth)),
+                (int)(Math.min(getHeight(), screenHeight-(screenHeight*0.1)))
+        );
+        handleResize();
 
         controlFrameInitialized();
 
-        final int maxWidth = getWidth();
-        SwingUtilities.invokeLater(() -> {
-            addComponentListener(new ComponentAdapter() {
-                @Override
-                public void componentResized(ComponentEvent e) {
-                    setSize(maxWidth, getHeight());
-                    super.componentResized(e);
-                }
-            });
-        });
+        SwingUtilities.invokeLater(() -> addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                super.componentResized(e);
+                SwingUtilities.invokeLater(() -> handleResize());
+            }
+        }));
     }
 
     private void adjustSettings() {
@@ -392,6 +401,16 @@ public class OptionsFrame extends ControlFrame {
             adjustSettings();
         }
         super.setVisible(b);
+    }
+
+    private void handleResize() {
+        int newWidth = getWidth();
+        setSize(Math.min(newWidth, maxSize[0]), Math.min(getHeight(), maxSize[1]));
+        if(newWidth == maxSize[0]) {
+            scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        } else {
+            scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        }
     }
     
     private JPanel newOptionPanel() {
