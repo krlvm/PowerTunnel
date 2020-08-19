@@ -60,9 +60,22 @@ public class JournalFrame extends ControlFrame {
 
         refillExecutor = Executors.newSingleThreadScheduledExecutor();
         refillExecutor.scheduleAtFixedRate(() ->
-                SwingUtilities.invokeLater(this::refill), REFILL_INTERVAL, REFILL_INTERVAL, TimeUnit.SECONDS);
+                SwingUtilities.invokeLater(() -> {
+                    if(isVisible()) {
+                        refill();
+                    }
+                }), REFILL_INTERVAL, REFILL_INTERVAL, TimeUnit.SECONDS
+        );
 
         controlFrameInitialized();
+    }
+
+    @Override
+    public void setVisible(boolean b) {
+        super.setVisible(b);
+        if(b) {
+            refill();
+        }
     }
 
     private void refill() {
