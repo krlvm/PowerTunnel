@@ -831,6 +831,7 @@ public class PowerTunnel {
             return;
         }
         JOURNAL.put(address, JOURNAL_DATE_FORMAT.format(new Date()));
+        journalFrame.refill();
     }
 
     /**

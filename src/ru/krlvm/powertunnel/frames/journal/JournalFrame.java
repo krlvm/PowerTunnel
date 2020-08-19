@@ -18,8 +18,8 @@ public class JournalFrame extends ControlFrame {
 
     private final DefaultListModel<String> model;
 
-    private static final int REFILL_INTERVAL = 5; // in seconds
-    private final ScheduledExecutorService refillExecutor;
+    //private static final int REFILL_INTERVAL = 5; // in seconds
+    //private final ScheduledExecutorService refillExecutor;
 
     public JournalFrame() {
         super("Journal");
@@ -58,14 +58,14 @@ public class JournalFrame extends ControlFrame {
         getContentPane().add(panel, "Last");
         getRootPane().setDefaultButton(addToBlacklist);
 
-        refillExecutor = Executors.newSingleThreadScheduledExecutor();
-        refillExecutor.scheduleAtFixedRate(() ->
-                SwingUtilities.invokeLater(() -> {
-                    if(isVisible()) {
-                        refill();
-                    }
-                }), REFILL_INTERVAL, REFILL_INTERVAL, TimeUnit.SECONDS
-        );
+        //refillExecutor = Executors.newSingleThreadScheduledExecutor();
+        //refillExecutor.scheduleAtFixedRate(() ->
+        //        SwingUtilities.invokeLater(() -> {
+        //            if(isVisible()) {
+        //                refill();
+        //            }
+        //        }), REFILL_INTERVAL, REFILL_INTERVAL, TimeUnit.SECONDS
+        //);
 
         controlFrameInitialized();
     }
@@ -78,7 +78,7 @@ public class JournalFrame extends ControlFrame {
         }
     }
 
-    private void refill() {
+    public void refill() {
         model.removeAllElements();
         for (String b : getVisited()) {
             model.addElement(b);
@@ -93,7 +93,7 @@ public class JournalFrame extends ControlFrame {
         return list.toArray(new String[0]);
     }
 
-    public void stopRefilling() {
-        refillExecutor.shutdown();
-    }
+    //public void stopRefilling() {
+    //    refillExecutor.shutdown();
+    //}
 }
