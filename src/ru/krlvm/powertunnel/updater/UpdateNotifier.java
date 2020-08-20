@@ -36,7 +36,7 @@ public class UpdateNotifier {
                     }
                     if (newVersionCode <= PowerTunnel.VERSION_CODE) {
                         if(newVersionCode == PowerTunnel.VERSION_CODE) {
-                            print("You're running the latest version of %s" + PowerTunnel.NAME + "!");
+                            print("You're running the latest version of " + PowerTunnel.NAME + "!");
                         } else {
                             print("You're running a preview version of " + PowerTunnel.NAME);
                             print("You always can download a stable build here: " + PowerTunnel.REPOSITORY_URL + "/releases/latest");
@@ -48,7 +48,7 @@ public class UpdateNotifier {
                             "Version: " + version,
                             "Changelog: " + PowerTunnel.REPOSITORY_URL + "/releases/tag/v" + version,
                             "Download: " + PowerTunnel.REPOSITORY_URL + "/releases/download/v" + version + "/" + PowerTunnel.NAME + ".jar",
-                            "Visit GitHub repository: " + PowerTunnel.REPOSITORY_URL);
+                            "GitHub repository: " + PowerTunnel.REPOSITORY_URL);
                     if (PowerTunnel.isUIEnabled()) {
                         SwingUtilities.invokeLater(() -> {
                             PowerTunnel.optionsFrame.updateAvailable(version);
