@@ -80,24 +80,21 @@ public class AdvancedMainFrame extends MainFrame {
 
         stateButton = new JButton("Start server");
         stateButton.setPreferredSize(new Dimension((int)stateButton.getPreferredSize().getWidth(), (int)portInput.getPreferredSize().getHeight()));
-        stateButton.addActionListener(e -> new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (PowerTunnel.getStatus() == ServerStatus.RUNNING) {
-                    PowerTunnel.stopServer();
-                } else {
-                    try {
-                        PowerTunnel.SERVER_IP_ADDRESS = ipInput.getText();
-                        PowerTunnel.SERVER_PORT = Integer.parseInt(portInput.getText());
-                        String error = PowerTunnel.safeBootstrap();
-                        if (error != null) {
-                            JOptionPane.showMessageDialog(AdvancedMainFrame.this, error,
-                                    "Error", JOptionPane.ERROR_MESSAGE);
-                        }
-                    } catch (NumberFormatException ex) {
-                        JOptionPane.showMessageDialog(AdvancedMainFrame.this, "Invalid port",
+        stateButton.addActionListener(e -> new Thread(() -> {
+            if (PowerTunnel.getStatus() == ServerStatus.RUNNING) {
+                PowerTunnel.stopServer();
+            } else {
+                try {
+                    PowerTunnel.SERVER_IP_ADDRESS = ipInput.getText();
+                    PowerTunnel.SERVER_PORT = Integer.parseInt(portInput.getText());
+                    String error = PowerTunnel.safeBootstrap();
+                    if (error != null) {
+                        JOptionPane.showMessageDialog(AdvancedMainFrame.this, error,
                                 "Error", JOptionPane.ERROR_MESSAGE);
                     }
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(AdvancedMainFrame.this, "Invalid port",
+                            "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }).start());
@@ -135,12 +132,9 @@ public class AdvancedMainFrame extends MainFrame {
         });
 
         JButton about = new JButton("About");
-        about.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JEditorPane message = UIUtility.getLabelWithHyperlinkSupport(ABOUT_MESSAGE, null, true);
-                JOptionPane.showMessageDialog(AdvancedMainFrame.this, message, "About " + PowerTunnel.NAME, JOptionPane.INFORMATION_MESSAGE);
-            }
+        about.addActionListener(e -> {
+            JEditorPane message = UIUtility.getLabelWithHyperlinkSupport(ABOUT_MESSAGE, null, true);
+            JOptionPane.showMessageDialog(AdvancedMainFrame.this, message, "About " + PowerTunnel.NAME, JOptionPane.INFORMATION_MESSAGE);
         });
 
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));

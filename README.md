@@ -100,7 +100,7 @@ Available arguments:
  -set-scale-factor [n]                sets DPI scale factor (for testing purposes)
  -disable-tray                        disables tray icon
  -disable-native-lf                   disables native L&F (when UI enabled)
- -disable-ui-scaling                  disables UI scaling (when UI enabled)
+ -disable-ui-scaling                  disables UI scaling (when UI enabled, Java 9 scaling will be applied)
  -disable-updater                     disables the update notifier
  -debug                               enables debug
 ```

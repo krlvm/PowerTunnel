@@ -120,7 +120,11 @@ public class PowerTunnel {
         //Parse launch arguments
         //java -jar PowerTunnel.jar (-args)
         boolean startNow = false;
-        boolean[] uiSettings = { true, true, true };
+        boolean[] uiSettings = {
+                true, // enable scaling
+                true, // enable native L&F
+                true, // enable tray
+        };
         float scaleFactor = -1F;
         if(args.length > 0) {
             for (int i = 0; i < args.length; i++) {
@@ -167,7 +171,7 @@ public class PowerTunnel {
                             " -set-scale-factor [n]                sets DPI scale factor (for testing purposes)\n" +
                             " -disable-tray                        disables tray icon\n" +
                             " -disable-native-lf                   disables native L&F (when UI enabled)\n" +
-                            " -disable-ui-scaling                  disables UI scaling (when UI enabled)\n" +
+                            " -disable-ui-scaling                  disables UI scaling (when UI enabled, Java 9 scaling will be applied)\n" +
                             " -disable-updater                     disables the update notifier\n" +
                             " -debug                               enables debug"
                         );
@@ -377,6 +381,10 @@ public class PowerTunnel {
         }
         if(!CONSOLE_MODE) {
             //Initialize UI
+            if(uiSettings[0]) {
+                // the Java 9 scaling should be disabled before UI initialization
+                SwingDPI.disableJava9NativeScaling();
+            }
             UIUtility.setAWTName();
             if(uiSettings[1]) {
                 try {
