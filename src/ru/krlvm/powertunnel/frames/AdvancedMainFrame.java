@@ -18,13 +18,13 @@ public class AdvancedMainFrame extends MainFrame {
             "Simple, scalable, cross-platform and effective solution against government censorship<br><br>" +
             "<a href=\"https://github.com/krlvm/PowerTunnel\">PowerTunnel</a> is made possible by these open-source projects:" +
             "<br><br>" +
-            "<a href=\"https://github.com/adamfisk/LittleProxy\">LittleProxy</a> - proxy server, <a href=\"https://github.com/mrog/LittleProxy\">forked</a> version<br>" +
-            "<a href=\"https://github.com/ganskef/LittleProxy-mitm\">LittleProxy-MITM</a> - LittleProxy SSL extension<br>" +
-            "<a href=\"https://github.com/dnsjava/dnsjava\">dnsjava</a> - DNS library, DoH realization<br>" +
-            "<a href=\"https://github.com/ibauersachs/dnssecjava\">dnssecjava</a> - DNSSec realization for dnsjava<br>" +
-            "<a href=\"https://github.com/adamfisk/DNSSEC4J\">DNSSEC4J</a> - DNSSec realization for LittleProxy<br>" +
-            "<a href=\"https://github.com/java-native-access/jna\">Java Native Access</a> - library for accessing system API<br>" +
-            "<a href=\"https://github.com/krlvm/SwingDPI\">SwingDPI</a> - High DPI scaling" +
+            " • <a href=\"https://github.com/adamfisk/LittleProxy\">LittleProxy</a> - proxy server, <a href=\"https://github.com/mrog/LittleProxy\">forked</a> version<br>" +
+            " • <a href=\"https://github.com/ganskef/LittleProxy-mitm\">LittleProxy-MITM</a> - LittleProxy SSL extension<br>" +
+            " • <a href=\"https://github.com/dnsjava/dnsjava\">dnsjava</a> - DNS library, DoH realization<br>" +
+            " • <a href=\"https://github.com/ibauersachs/dnssecjava\">dnssecjava</a> - DNSSec realization for dnsjava<br>" +
+            " • <a href=\"https://github.com/adamfisk/DNSSEC4J\">DNSSEC4J</a> - DNSSec realization for LittleProxy<br>" +
+            " • <a href=\"https://github.com/java-native-access/jna\">Java Native Access</a> - library for accessing system native API<br>" +
+            " • <a href=\"https://github.com/krlvm/SwingDPI\">SwingDPI</a> - High DPI scaling" +
             "<br><br>" +
             "Get <a href=\"https://github.com/krlvm/PowerTunnel-Android\">version for Android</a>" +
             "<br><br>" +

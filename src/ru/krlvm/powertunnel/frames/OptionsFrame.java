@@ -377,7 +377,7 @@ public class OptionsFrame extends ControlFrame {
         PowerTunnel.loadSettings();
 
         if (suggestRestart && PowerTunnel.isRunning()) {
-            if (JOptionPane.showConfirmDialog(this, "<html>The changes you made requires server restart to take effect.<br>Restart server?</html>", PowerTunnel.NAME, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            if (JOptionPane.showConfirmDialog(this, "<html>The changes you made require server restart to take effect.<br>Restart server?</html>", PowerTunnel.NAME, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 new Thread(PowerTunnel::restartServer, "Server Restart Thread").start();
             }
         }
