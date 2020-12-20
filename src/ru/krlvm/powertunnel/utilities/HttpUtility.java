@@ -5,7 +5,9 @@ import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.*;
 import org.littleshoot.proxy.impl.ProxyUtils;
 
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 
@@ -88,5 +90,15 @@ public class HttpUtility {
      */
     public static String formatHost(String host) {
         return host.replace(":443", "").replace("www.", "");
+    }
+
+
+    /**
+     * Generates upstream proxy auth code
+     */
+    public static String generateAuthCode(String username, String password) {
+        String credential = username + ":" + password;
+        byte[] data = credential.getBytes(StandardCharsets.UTF_8);
+        return Base64.getEncoder().encodeToString(data).trim();
     }
 }

@@ -86,4 +86,9 @@ public class IPUtility {
     public static boolean hasPort(String address) {
         return isIPv6WithPort(address) || isIPv4WithPort(address);
     }
+
+    public static boolean isValid(String address) {
+        return isIPv4(address) || isIPv4WithPort(address)
+                || isIPv6(address) || isIPv6WithPort(address);
+    }
 }

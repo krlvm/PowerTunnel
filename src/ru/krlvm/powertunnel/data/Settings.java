@@ -190,6 +190,9 @@ public class Settings extends DataStore {
     public static final String ALLOW_REQUESTS_TO_ORIGIN_SERVER = "server.allow-requests-to-origin-server.bool";
     public static final String ROOT_CA_PASSWORD = "powertunnel.cert.password";
     public static final String APPLY_HTTP_TRICKS_TO_HTTPS = "powertunnel.filter.http-https.bool";
+    public static final String UPSTREAM_PROXY_ADDRESS = "powertunnel.upstream.address";
+    public static final String UPSTREAM_PROXY_USERNAME = "powertunnel.upstream.auth.username";
+    public static final String UPSTREAM_PROXY_PASSWORD = "powertunnel.upstream.auth.password";
 
     private static final Map<String, String> defaultValues = new HashMap<>();
     static {
@@ -217,5 +220,8 @@ public class Settings extends DataStore {
         defaultValues.put(ENABLE_LOGS, "false");
         defaultValues.put(ALLOW_REQUESTS_TO_ORIGIN_SERVER, "true");
         defaultValues.put(APPLY_HTTP_TRICKS_TO_HTTPS, "false");
+        defaultValues.put(UPSTREAM_PROXY_ADDRESS, "");
+        defaultValues.put(UPSTREAM_PROXY_USERNAME, "");
+        defaultValues.put(UPSTREAM_PROXY_PASSWORD, "");
     }
 }

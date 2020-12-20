@@ -18,6 +18,7 @@ import ru.krlvm.powertunnel.frames.journal.BlacklistFrame;
 import ru.krlvm.powertunnel.frames.journal.JournalFrame;
 import ru.krlvm.powertunnel.frames.journal.UserListFrame;
 import ru.krlvm.powertunnel.frames.journal.WhitelistFrame;
+import ru.krlvm.powertunnel.managers.UpstreamProxyChainedProxyManager;
 import ru.krlvm.powertunnel.pac.PACGenerator;
 import ru.krlvm.powertunnel.pac.PACScriptStore;
 import ru.krlvm.powertunnel.system.MirroredOutputStream;
@@ -94,6 +95,13 @@ public class PowerTunnel {
     public static String SNI_TRICK_FAKE_HOST;
     /* ----------------- */
 
+    public static boolean UPSTREAM_PROXY_CACHE = true;
+    public static String UPSTREAM_PROXY_IP = null;
+    public static int UPSTREAM_PROXY_PORT = -1;
+    public static String UPSTREAM_PROXY_USERNAME = null;
+    public static String UPSTREAM_PROXY_PASSWORD = null;
+    public static String UPSTREAM_PROXY_AUTH_CODE = null;
+
     public static boolean FULL_OUTPUT_MIRRORING = false;
 
     private static final Map<String, String> JOURNAL = new LinkedHashMap<>();
@@ -138,42 +146,45 @@ public class PowerTunnel {
                         Utility.print(HEADER);
                         Utility.print(
                             "Available arguments:\n" +
-                            " -help                                display help\n" +
-                            " -start                               starts server right after load\n" +
-                            " -console                             console mode, without UI\n" +
-                            " -government-blacklist-from [URL]     automatically fill government blacklist from URL\n" +
-                            " -use-dns-sec                         enables DNSSec mode with the Google DNS servers\n" +
-                            " -use-dns-server [URL]                overrides DNS settings (DNS over HTTPS supported)\n" +
-                            " -disallow-invalid-packets            HTTP packets without Host header will be thrown out (unrecommended)\n" +
-                            " -disable-chunking                    HTTPS: disables packet chunking (fragmentation)\n" +
-                            " -full-chunking                       HTTPS: enables chunking the whole packets (requires chunking enabled)\n" +
-                            " -chunk-size [size]                   HTTPS: sets size of one chunk\n" +
-                            " -sni-trick [trick]                   HTTPS: enable SNI tricks: 1 - spoil, 2 - erase, 3 - fake; (requires Root CA installation)\n" +
-                            " -sni-trick-fake-host [host]          HTTPS: host that will used with 'fake' SNI Trick\n" +
-                            " -line-break-get                      HTTP:  inserts a line break before 'GET' method\n" +
-                            " -space-after-get                     HTTP:  inserts a space after 'GET' method\n" +
-                            " -apply-http-https                    HTTP:  apply enabled HTTP tricks to HTTPS\n" +
-                            " -mix-host-case                       HTTP:  enables 'Host' header value case mix\n" +
-                            " -complete-mix-host-case              HTTP:  complete 'Host' header value case mix\n" +
-                            " -disable-mix-host-header-case        HTTP:  disables 'Host' header case mix\n" +
-                            " -disable-dot-after-host-header       HTTP:  disables dot after host header\n" +
-                            " -send-payload [length]               HTTP:  sends payload to bypass blocking, 21 is recommended\n" +
-                            " -ip [IP Address]                     sets IP Address\n" +
-                            " -port [Port]                         sets port\n" +
-                            " -enable-journal                      enables PowerTunnel journal (when UI enabled)\n" +
-                            " -enable-logs                         enables PowerTunnel logs (when UI enabled)\n" +
-                            " -enable-log-to-file                  enables PowerTunnel logger and log file\n" +
-                            " -with-web-ui [appendix]              enables Web UI at http://" + String.format(PowerTunnelMonitor.FAKE_ADDRESS_TEMPLATE, "[appendix]") + "\n" +
-                            " -disable-auto-proxy-setup            disables auto proxy setup (supported OS: Windows)\n" +
-                            " -enable-proxy-pac                    enables generation of PAC file on startup\n" +
-                            " -auto-proxy-setup-win-ie             auto proxy setup using IE instead of native API on Windows\n" +
-                            " -full-output-mirroring               fully mirrors system output to the log\n" +
-                            " -set-scale-factor [n]                sets DPI scale factor (for testing purposes)\n" +
-                            " -disable-tray                        disables tray icon\n" +
-                            " -disable-native-lf                   disables native L&F (when UI enabled)\n" +
-                            " -disable-ui-scaling                  disables UI scaling (when UI enabled, Java 9 scaling will be applied)\n" +
-                            " -disable-updater                     disables the update notifier\n" +
-                            " -debug                               enables debug"
+                            " -help                                   display help\n" +
+                            " -start                                  starts server right after load\n" +
+                            " -console                                console mode, without UI\n" +
+                            " -government-blacklist-from [URL]        automatically fill government blacklist from URL\n" +
+                            " -use-dns-sec                            enables DNSSec mode with the Google DNS servers\n" +
+                            " -use-dns-server [URL]                   overrides DNS settings (DNS over HTTPS supported)\n" +
+                            " -disallow-invalid-packets               HTTP packets without Host header will be thrown out (unrecommended)\n" +
+                            " -disable-chunking                       HTTPS: disables packet chunking (fragmentation)\n" +
+                            " -full-chunking                          HTTPS: enables chunking the whole packets (requires chunking enabled)\n" +
+                            " -chunk-size [size]                      HTTPS: sets size of one chunk\n" +
+                            " -sni-trick [trick]                      HTTPS: enable SNI tricks: 1 - spoil, 2 - erase, 3 - fake. Requires Root CA installation.\n" +
+                            " -sni-trick-fake-host [host]             HTTPS: host that will used with 'fake' SNI Trick\n" +
+                            " -line-break-get                         HTTP:  inserts a line break before 'GET' method\n" +
+                            " -space-after-get                        HTTP:  inserts a space after 'GET' method\n" +
+                            " -apply-http-https                       HTTP:  apply enabled HTTP tricks to HTTPS\n" +
+                            " -mix-host-case                          HTTP:  enables 'Host' header value case mix\n" +
+                            " -complete-mix-host-case                 HTTP:  complete 'Host' header value case mix\n" +
+                            " -disable-mix-host-header-case           HTTP:  disables 'Host' header case mix\n" +
+                            " -disable-dot-after-host-header          HTTP:  disables dot after host header\n" +
+                            " -send-payload [length]                  HTTP:  sends payload to bypass blocking, 21 is recommended\n" +
+                            " -ip [IP Address]                        sets IP Address\n" +
+                            " -port [Port]                            sets port\n" +
+                            " -upstream [ip:port]                     enables upstream proxy and sets its address\n" +
+                            " -upstream-auth [user:password]          sets upstream proxy authorization credentials\n" +
+                            " -port [Port]                            sets port\n" +
+                            " -enable-journal                         enables PowerTunnel journal (when UI enabled)\n" +
+                            " -enable-logs                            enables PowerTunnel logs (when UI enabled)\n" +
+                            " -enable-log-to-file                     enables PowerTunnel logger and log file\n" +
+                            " -with-web-ui [appendix]                 enables Web UI at http://" + String.format(PowerTunnelMonitor.FAKE_ADDRESS_TEMPLATE, "[appendix]") + "\n" +
+                            " -disable-auto-proxy-setup               disables auto proxy setup (supported OS: Windows)\n" +
+                            " -enable-proxy-pac                       enables generation of PAC file on startup\n" +
+                            " -auto-proxy-setup-win-ie                auto proxy setup using IE instead of native API on Windows\n" +
+                            " -full-output-mirroring                  fully mirrors system output to the log\n" +
+                            " -set-scale-factor [n]                   sets DPI scale factor (for testing purposes)\n" +
+                            " -disable-tray                           disables tray icon\n" +
+                            " -disable-native-lf                      disables native L&F (when UI enabled)\n" +
+                            " -disable-ui-scaling                     disables UI scaling (when UI enabled, Java 9 scaling will be applied)\n" +
+                            " -disable-updater                        disables the update notifier\n" +
+                            " -debug                                  enables debug"
                         );
                         System.exit(0);
                         break;
@@ -348,6 +359,31 @@ public class PowerTunnel {
                                     } catch (NumberFormatException ex) {
                                         Utility.print("[x] Invalid SNI Trick ID");
                                     }
+                                    break;
+                                }
+                                case "upstream": {
+                                    if(!IPUtility.hasPort(value)) {
+                                        Utility.print("[x] Missing upstream proxy port");
+                                    } else {
+                                        Object[] data = IPUtility.split(value);
+                                        if(data == null) {
+                                            Utility.print("[x] Invalid upstream proxy format");
+                                        } else {
+                                            UPSTREAM_PROXY_IP = ((String) data[0]);
+                                            UPSTREAM_PROXY_PORT = ((int) data[1]);
+                                            Utility.print("[x] Upstream proxy: '%s'", value);
+                                        }
+                                    }
+                                    break;
+                                }
+                                case "upstream-auth": {
+                                    String[] data;
+                                    if(!value.contains(":") || (data = value.split(":")).length != 2) {
+                                        Utility.print("[x] Invalid upstream proxy credentials format");
+                                        break;
+                                    }
+                                    UPSTREAM_PROXY_USERNAME = data[0];
+                                    UPSTREAM_PROXY_PASSWORD = data[1];
                                     break;
                                 }
                                 case "set-scale-factor": {
@@ -578,6 +614,12 @@ public class PowerTunnel {
                 Debugger.debug(ex);
             }
         }
+        if(UPSTREAM_PROXY_IP != null && !UPSTREAM_PROXY_IP.isEmpty()) {
+            if(UPSTREAM_PROXY_USERNAME != null && !UPSTREAM_PROXY_USERNAME.isEmpty()) {
+                UPSTREAM_PROXY_AUTH_CODE = HttpUtility.generateAuthCode(UPSTREAM_PROXY_USERNAME, UPSTREAM_PROXY_PASSWORD);
+            }
+            bootstrap.withName("Downstream").withChainProxyManager(new UpstreamProxyChainedProxyManager());
+        }
         try {
             SERVER = bootstrap.start();
             setStatus(ServerStatus.RUNNING);
@@ -590,13 +632,8 @@ public class PowerTunnel {
             Debugger.debug(ex);
             setStatus(ServerStatus.NOT_RUNNING);
             if(isUIEnabled()) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        JOptionPane.showMessageDialog(frame, "Cannot to start server: " + ex.getMessage(),
-                                NAME, JOptionPane.ERROR_MESSAGE);
-                    }
-                });
+                SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(frame, "Can't to start server: " + ex.getMessage(),
+                        NAME, JOptionPane.ERROR_MESSAGE));
             }
         }
         Utility.print();
@@ -750,6 +787,10 @@ public class PowerTunnel {
             }
         }
         return resolver;
+    }
+
+    public static InetSocketAddress resolveUpstreamProxyAddress() throws UnknownHostException {
+        return new InetSocketAddress(InetAddress.getByName(PowerTunnel.UPSTREAM_PROXY_IP), PowerTunnel.UPSTREAM_PROXY_PORT);
     }
 
     public static void loadSettings() {

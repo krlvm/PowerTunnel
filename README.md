@@ -67,42 +67,45 @@ You can specify some params that will override settings through CLI:
 $ java -jar PowerTunnel.jar -help
 
 Available arguments:
- -help                                display help
- -start                               starts server right after load
- -console                             console mode, without UI
- -government-blacklist-from [URL]     automatically fill government blacklist from URL
- -use-dns-sec                         enables DNSSec mode with the Google DNS servers
- -use-dns-server [URL]                overrides DNS settings (DNS over HTTPS supported)
- -disallow-invalid-packets            HTTP packets without Host header will be thrown out (unrecommended)
- -disable-chunking                    HTTPS: disables packet chunking (fragmentation)
- -full-chunking                       HTTPS: enables chunking the whole packets (requires chunking enabled)
- -chunk-size [size]                   HTTPS: sets size of one chunk
- -sni-trick [trick]                   HTTPS: enable SNI tricks: 1 - spoil, 2 - erase, 3 - fake; (requires Root CA installation)
- -sni-trick-fake-host [host]          HTTPS: host that will used with 'fake' SNI Trick
- -line-break-get                      HTTP:  inserts a line break before 'GET' method
- -space-after-get                     HTTP:  inserts a space after 'GET' method
- -apply-http-https                    HTTP:  apply enabled HTTP tricks to HTTPS
- -mix-host-case                       HTTP:  enables 'Host' header value case mix
- -complete-mix-host-case              HTTP:  complete 'Host' header value case mix
- -disable-mix-host-header-case        HTTP:  disables 'Host' header case mix
- -disable-dot-after-host-header       HTTP:  disables dot after host header
- -send-payload [length]               HTTP:  sends payload to bypass blocking, 21 is recommended
- -ip [IP Address]                     sets IP Address
- -port [Port]                         sets port
- -enable-journal                      enables PowerTunnel journal (when UI enabled)
- -enable-logs                         enables PowerTunnel logs (when UI enabled)
- -enable-log-to-file                  enables PowerTunnel logger and log file
- -with-web-ui [appendix]              enables Web UI at http://powertunnelmonitor[appendix].info
- -disable-auto-proxy-setup            disables auto proxy setup (supported OS: Windows)
- -enable-proxy-pac                    enables generation of PAC file on startup
- -auto-proxy-setup-win-ie             auto proxy setup using IE instead of native API on Windows
- -full-output-mirroring               fully mirrors system output to the log
- -set-scale-factor [n]                sets DPI scale factor (for testing purposes)
- -disable-tray                        disables tray icon
- -disable-native-lf                   disables native L&F (when UI enabled)
- -disable-ui-scaling                  disables UI scaling (when UI enabled, Java 9 scaling will be applied)
- -disable-updater                     disables the update notifier
- -debug                               enables debug
+ -help                                   display help
+ -start                                  starts server right after load
+ -console                                console mode, without UI
+ -government-blacklist-from [URL]        automatically fill government blacklist from URL
+ -use-dns-sec                            enables DNSSec mode with the Google DNS servers
+ -use-dns-server [URL]                   overrides DNS settings (DNS over HTTPS supported)
+ -disallow-invalid-packets               HTTP packets without Host header will be thrown out (unrecommended)
+ -disable-chunking                       HTTPS: disables packet chunking (fragmentation)
+ -full-chunking                          HTTPS: enables chunking the whole packets (requires chunking enabled)
+ -chunk-size [size]                      HTTPS: sets size of one chunk
+ -sni-trick [trick]                      HTTPS: enable SNI tricks: 1 - spoil, 2 - erase, 3 - fake. Requires Root CA installation.
+ -sni-trick-fake-host [host]             HTTPS: host that will used with 'fake' SNI Trick
+ -line-break-get                         HTTP:  inserts a line break before 'GET' method
+ -space-after-get                        HTTP:  inserts a space after 'GET' method
+ -apply-http-https                       HTTP:  apply enabled HTTP tricks to HTTPS
+ -mix-host-case                          HTTP:  enables 'Host' header value case mix
+ -complete-mix-host-case                 HTTP:  complete 'Host' header value case mix
+ -disable-mix-host-header-case           HTTP:  disables 'Host' header case mix
+ -disable-dot-after-host-header          HTTP:  disables dot after host header
+ -send-payload [length]                  HTTP:  sends payload to bypass blocking, 21 is recommended
+ -ip [IP Address]                        sets IP Address
+ -port [Port]                            sets port
+ -upstream [ip:port]                     enables upstream proxy and sets its address
+ -upstream-auth [user:password]          sets upstream proxy authorization credentials
+ -port [Port]                            sets port
+ -enable-journal                         enables PowerTunnel journal (when UI enabled)
+ -enable-logs                            enables PowerTunnel logs (when UI enabled)
+ -enable-log-to-file                     enables PowerTunnel logger and log file
+ -with-web-ui [appendix]                 enables Web UI at http://powertunnelmonitor[appendix].info
+ -disable-auto-proxy-setup               disables auto proxy setup (supported OS: Windows)
+ -enable-proxy-pac                       enables generation of PAC file on startup
+ -auto-proxy-setup-win-ie                auto proxy setup using IE instead of native API on Windows
+ -full-output-mirroring                  fully mirrors system output to the log
+ -set-scale-factor [n]                   sets DPI scale factor (for testing purposes)
+ -disable-tray                           disables tray icon
+ -disable-native-lf                      disables native L&F (when UI enabled)
+ -disable-ui-scaling                     disables UI scaling (when UI enabled, Java 9 scaling will be applied)
+ -disable-updater                        disables the update notifier
+ -debug                                  enables debug
 ```
 
 ## Spin-off projects
