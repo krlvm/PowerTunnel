@@ -346,7 +346,7 @@ public class PowerTunnel {
                                     }
                                     break;
                                 }
-                                case "erase-sni": {
+                                case "sni-trick": {
                                     try {
                                         int id = Integer.parseInt(value);
                                         SNITrick trick = SNITrick.fromID(id);
@@ -359,6 +359,11 @@ public class PowerTunnel {
                                     } catch (NumberFormatException ex) {
                                         Utility.print("[x] Invalid SNI Trick ID");
                                     }
+                                    break;
+                                }
+                                case "sni-trick-fake-host": {
+                                    SNI_TRICK_FAKE_HOST = value;
+                                    Utility.print("[#] SNI Fake host is set to '%s'", SNI_TRICK_FAKE_HOST);
                                     break;
                                 }
                                 case "upstream": {
