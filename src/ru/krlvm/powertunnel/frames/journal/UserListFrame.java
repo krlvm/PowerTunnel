@@ -4,8 +4,6 @@ import ru.krlvm.powertunnel.frames.ControlFrame;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public abstract class UserListFrame extends ControlFrame {
 
@@ -28,12 +26,15 @@ public abstract class UserListFrame extends ControlFrame {
                 userActed(swingList.getSelectedValue());
             }
         });
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.add(removeButton);
 
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(new JScrollPane(swingList));
         getContentPane().add(panel);
-        getContentPane().add(removeButton, "Last");
+        getContentPane().add(buttonsPanel, "Last");
         getRootPane().setDefaultButton(removeButton);
+        getRootPane().setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
         removeButton.requestFocus();
 
         refill();

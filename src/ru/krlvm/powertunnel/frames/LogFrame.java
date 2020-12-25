@@ -26,7 +26,7 @@ public class LogFrame extends ControlFrame {
         logArea = new JTextArea();
         logArea.setEditable(false);
         logArea.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-        logArea.setFont(logArea.getFont().deriveFont(14F));
+        logArea.setFont(logArea.getFont().deriveFont(13F));
         SwingDPI.scaleFont(logArea);
 
         panel = new JPanel(new BorderLayout());

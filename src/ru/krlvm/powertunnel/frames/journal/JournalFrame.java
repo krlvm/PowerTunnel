@@ -30,7 +30,7 @@ public class JournalFrame extends ControlFrame {
         model = ((DefaultListModel<String>) swingList.getModel());
         refill();
 
-        JButton addToWhitelist = new JButton("Allow");
+        JButton addToWhitelist = new JButton("Whitelist");
         addToWhitelist.addActionListener(e -> {
             String value = swingList.getSelectedValue();
             if(value != null) {
@@ -39,7 +39,7 @@ public class JournalFrame extends ControlFrame {
             }
         });
 
-        JButton addToBlacklist = new JButton("Block");
+        JButton addToBlacklist = new JButton("Blacklist");
         addToBlacklist.addActionListener(e -> {
             String value = swingList.getSelectedValue();
             if(value != null) {
@@ -56,16 +56,8 @@ public class JournalFrame extends ControlFrame {
         panel.add(addToWhitelist, BorderLayout.WEST);
         panel.add(addToBlacklist, BorderLayout.EAST);
         getContentPane().add(panel, "Last");
+        getRootPane().setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
         getRootPane().setDefaultButton(addToBlacklist);
-
-        //refillExecutor = Executors.newSingleThreadScheduledExecutor();
-        //refillExecutor.scheduleAtFixedRate(() ->
-        //        SwingUtilities.invokeLater(() -> {
-        //            if(isVisible()) {
-        //                refill();
-        //            }
-        //        }), REFILL_INTERVAL, REFILL_INTERVAL, TimeUnit.SECONDS
-        //);
 
         controlFrameInitialized();
     }
@@ -92,8 +84,4 @@ public class JournalFrame extends ControlFrame {
         }
         return list.toArray(new String[0]);
     }
-
-    //public void stopRefilling() {
-    //    refillExecutor.shutdown();
-    //}
 }
