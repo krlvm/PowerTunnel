@@ -241,6 +241,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import ru.krlvm.powertunnel.utilities.MITMUtility;
 import ru.krlvm.powertunnel.utilities.Utility;
 
 /**
@@ -437,6 +438,10 @@ public class BouncyCastleSslEngineSource implements SslEngineSource {
 
         Certificate cert = keystore.getCertificate(authority.alias());
         exportPem(authority.aliasFile(".pem"), cert);
+
+        /* ----- */
+        MITMUtility.copyCertificateWithExtensionChange();
+        /* ----- */
     }
 
     private void initializeSSLContext() throws GeneralSecurityException,

@@ -569,7 +569,7 @@ public class PowerTunnel {
         }
         if (SNI_TRICK != null) {
             try {
-                bootstrap.withManInTheMiddle(MITMUtility.mitmManager());
+                bootstrap.withManInTheMiddle(MITMUtility.initMitmManager());
                 Utility.print("[*] SNI Tricks is enabled\n" +
                         "    You have to install PowerTunnel Root CA\n" +
                         "    Please, read the following manual: " + SNITrick.SUPPORT_REFERENCE);
