@@ -445,6 +445,9 @@ public class PowerTunnel {
                 }
                 Debugger.debug("SwingDPI v" + SwingDPI.VERSION + " | Scale factor: " + SwingDPI.getScaleFactor());
             }
+            if(uiSettings[1]) {
+                UIUtility.tweakLook();
+            }
 
             //Initializing main frame and system outputs mirroring
             if(ENABLE_LOGS) {

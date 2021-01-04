@@ -8,7 +8,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
+import javax.swing.plaf.ColorUIResource;
 import java.awt.*;
 
 /**
@@ -40,6 +40,13 @@ public class UIUtility {
 
     public static float getResidualScaleFactor() {
         return SwingDPI.isScaleApplied() ? SwingDPI.getScaleFactor() : 1;
+    }
+
+    public static void tweakLook() {
+        if(!SystemUtility.OLD_OS) {
+            UIManager.put("ToolTip.background", new ColorUIResource(255, 255, 255)); // The color is #fff7c8.
+            UIManager.put("ToolTip.border", BorderFactory.createLineBorder(new Color(135,135,135)));
+        }
     }
 
     public static void setAWTName() {
