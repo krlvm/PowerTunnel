@@ -3,19 +3,17 @@ package ru.krlvm.powertunnel.frames;
 import ru.krlvm.powertunnel.PowerTunnel;
 import ru.krlvm.powertunnel.data.Settings;
 import ru.krlvm.powertunnel.enums.SNITrick;
+import ru.krlvm.powertunnel.ui.ModernToolTip;
 import ru.krlvm.powertunnel.ui.TextRightClickPopup;
-import ru.krlvm.powertunnel.ui.TooltipCheckBox;
-import ru.krlvm.powertunnel.ui.TooltipLabel;
 import ru.krlvm.powertunnel.updater.UpdateNotifier;
+import ru.krlvm.powertunnel.utilities.IPUtility;
 import ru.krlvm.powertunnel.utilities.SystemUtility;
 import ru.krlvm.powertunnel.utilities.UIUtility;
-import ru.krlvm.swingdpi.SwingDPI;
+import ru.krlvm.powertunnel.utilities.Utility;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
@@ -30,6 +28,8 @@ public class OptionsFrame extends ControlFrame {
     /* ------------------------------------ */
     private final JCheckBox autoSetup;
     private final JCheckBox proxyPac; // server restart
+    private final JTextField upstreamProxyAddress; // server restart
+    private final JTextField upstreamProxyCredentials; // server restart
     private final JCheckBox chunking;
     private final JCheckBox fullChunking;
     private final JTextField chunkSize;
@@ -55,6 +55,8 @@ public class OptionsFrame extends ControlFrame {
 
     //Restart required - previous values
     private boolean proxyPacVal;
+    private String upstreamProxyAddressVal;
+    private String upstreamProxyCredentialsVal;
     private boolean eraseSniVal;
     private boolean useDnsSecVal;
     private String dnsOverHttpsVal;
@@ -106,32 +108,51 @@ public class OptionsFrame extends ControlFrame {
 
         JPanel panel = new JPanel(new GridBagLayout());
 
-        autoSetup = new TooltipCheckBox("Auto system proxy setup",
+        autoSetup = new ModernToolTip.Checkbox("Auto system proxy setup",
                 "Automatically setting up system proxy server configuration.\nAt the moment available only on the Windows.\n\nWindows: automatic Internet Explorer start for a few seconds can be required.");
 
-        proxyPac = new TooltipCheckBox("Generate Proxy Auto Configuration file (PAC, server restart required)",
+        proxyPac = new ModernToolTip.Checkbox("Generate Proxy Auto Configuration file (PAC, server restart required)",
                 "Can increase performance by using proxy only for blocked resources.\nYou should fill the government blacklist to use this option.\nCan slowdown connections with big blacklists.");
+
+        JPanel upstreamProxyAddressPane = newOptionPanel();
+        upstreamProxyAddress = new JTextField(PowerTunnel.readUpstreamProxyAddress());
+        TextRightClickPopup.register(upstreamProxyAddress);
+        JLabel upstreamProxyAddressLabel = new ModernToolTip.Label("Upstream proxy address:",
+                "Upstream proxy address in format 'IP:Port'\nLeave empty to disable upstream proxy connection.");
+        upstreamProxyAddressPane.add(upstreamProxyAddressLabel);
+        upstreamProxyAddressPane.add(upstreamProxyAddress, gbc);
+
+        JPanel upstreamProxyCredentialsPanel = newOptionPanel();
+        upstreamProxyCredentials = new JTextField(PowerTunnel.readUpstreamProxyCredentials());
+        TextRightClickPopup.register(upstreamProxyCredentials);
+        JLabel upstreamProxyCredentialsLabel = new ModernToolTip.Label("Upstream proxy credentials:",
+                "Upstream proxy credentials in format 'username:password'\nLeave empty to disable upstream proxy authorization.");
+        upstreamProxyCredentialsPanel.add(upstreamProxyCredentialsLabel);
+        upstreamProxyCredentialsPanel.add(upstreamProxyCredentials, gbc);
 
         panel.add(generateBlock("Proxy connection",
                 (SystemUtility.IS_WINDOWS ? autoSetup : null),
-                proxyPac
+                proxyPac,
+                upstreamProxyAddressPane,
+                upstreamProxyCredentialsPanel
         ), gbc);
 
-        chunking = new TooltipCheckBox("HTTPS: Enable chunking",
+        chunking = new ModernToolTip.Checkbox("HTTPS: Enable chunking",
                 "Fragments your HTTPS packets");
 
-        fullChunking = new TooltipCheckBox("HTTPS: Full chunking mode (requires chunking enabled)",
+        fullChunking = new ModernToolTip.Checkbox("HTTPS: Full chunking mode (requires chunking enabled)",
                 "Enables full chunking mode.\nCan led to higher CPU utilization, some websites from\nthe government blacklist may not accept connections,\nbut more efficient than the default (quiet) method.");
 
         JPanel chunkPane = newOptionPanel();
         chunkSize = new JTextField(String.valueOf(PowerTunnel.CHUNK_SIZE));
         TextRightClickPopup.register(chunkSize);
-        JLabel chunkLabel = new TooltipLabel("Chunk size:", "Count of fragments HTTP packets be divided");
+        JLabel chunkLabel = new ModernToolTip.Label("Chunk size:",
+                "Count of fragments HTTP packets be divided");
         chunkPane.add(chunkLabel);
         chunkPane.add(chunkSize, gbc);
 
         JPanel sniPane = newOptionPanel();
-        enableSniTricks = new TooltipCheckBox("HTTPS: Enable SNI tricks (requires further setup, server restart required)",
+        enableSniTricks = new ModernToolTip.Checkbox("HTTPS: Enable SNI tricks (requires further setup, server restart required)",
                 "When it enabled, PowerTunnel does some magic with Server Name Indication in your HTTPS requests");
         enableSniTricks.setBorder(null);
         JEditorPane sniWikiRef = UIUtility.getLabelWithHyperlinkSupport("<a href=\"" + SNITrick.SUPPORT_REFERENCE + "\">Read more...</a>", null);
@@ -145,32 +166,32 @@ public class OptionsFrame extends ControlFrame {
         JPanel fakeSniPane = newOptionPanel();
         fakeSniHost = new JTextField(String.valueOf(PowerTunnel.SNI_TRICK_FAKE_HOST));
         TextRightClickPopup.register(fakeSniHost);
-        JLabel fakeSniLabel = new TooltipLabel("Fake SNI host:", "The fake SNI host sends instead of host of the blocked website you want connect to,\nthe fake host usually has to be a government resource host,\nor host of any not blocked website.\nUsed in combination with 'fake' SNI trick.");
+        JLabel fakeSniLabel = new ModernToolTip.Label("Fake SNI host:", "The fake SNI host sends instead of host of the blocked website you want connect to,\nthe fake host usually has to be a government resource host,\nor host of any not blocked website.\nUsed in combination with 'fake' SNI trick.");
         fakeSniPane.add(fakeSniLabel);
         fakeSniPane.add(fakeSniHost, gbc);
 
-        applyHttpHttps = new TooltipCheckBox("HTTPS: Apply HTTP tricks to HTTPS packets",
+        applyHttpHttps = new ModernToolTip.Checkbox("HTTPS: Apply HTTP tricks to HTTPS packets",
                 "When this option is enabled, selected HTTP tricks will be applied to HTTPS too");
 
-        payload = new TooltipCheckBox("HTTP: Send additional 21KB payload",
-                "When it enabled, PowerTunnel adding 21KB of useless data before the Host header");
+        payload = new ModernToolTip.Checkbox("HTTP: Send additional 21KB payload",
+                "When it enabled, PowerTunnel adds 21KB of useless data before the Host header");
 
-        mixHostCase = new TooltipCheckBox("HTTP: Mix host case",
+        mixHostCase = new ModernToolTip.Checkbox("HTTP: Mix host case",
                 "When it enabled, PowerTunnel mixes case of the host header value of the website you're trying to connect.\nSome websites, especially working on the old web servers, may not accept connection.");
 
-        completeMixHostCase = new TooltipCheckBox("HTTP: Complete mix host case",
+        completeMixHostCase = new ModernToolTip.Checkbox("HTTP: Complete mix host case",
                 "When it enabled, PowerTunnel mixes case of the host header completely, not just the last letter.");
 
-        mixHostHeaderCase = new TooltipCheckBox("HTTP: Mix host header case",
+        mixHostHeaderCase = new ModernToolTip.Checkbox("HTTP: Mix host header case",
                 "When it enabled, PowerTunnel mixes case of the host header.\nSome websites, especially working on the old web servers, may not accept connection.");
 
-        dotAfterHost = new TooltipCheckBox("HTTP: Dot after host",
+        dotAfterHost = new ModernToolTip.Checkbox("HTTP: Dot after host",
                 "When it enabled, PowerTunnel adds a dot after the host header.");
 
-        lineBreakGet = new TooltipCheckBox("HTTP: Line break before the GET method",
+        lineBreakGet = new ModernToolTip.Checkbox("HTTP: Line break before the GET method",
                 "When it enabled, PowerTunnel adds a line break before the GET method.");
 
-        spaceGet = new TooltipCheckBox("HTTP: Space after the GET method",
+        spaceGet = new ModernToolTip.Checkbox("HTTP: Space after the GET method",
                 "When it enabled, PowerTunnel adds a space after the GET method.");
 
         panel.add(generateBlock("DPI circumvention",
@@ -192,13 +213,13 @@ public class OptionsFrame extends ControlFrame {
         JPanel dohPane = newOptionPanel();
         dnsAddress = new JTextField(PowerTunnel.DNS_SERVER);
         TextRightClickPopup.register(dnsAddress);
-        dnsAddress.setPreferredSize(new Dimension(400, ((int) dnsAddress.getPreferredSize().getHeight())));
-        JLabel dohLabel = new TooltipLabel("DNS or DoH resolver (server restart required):", "DNS or DNS over HTTPS resolver address\nAddresses starts with 'https://' automatically recognizes as a DoH resolvers\nCompatible DoH addresses is listed in the repository readme");
+        JLabel dohLabel = new ModernToolTip.Label("DNS or DoH resolver (server restart required):",
+                "DNS or DNS over HTTPS resolver address\nAddresses starts with 'https://' automatically recognizes as a DoH resolvers\nCompatible DoH addresses is listed in the repository readme");
         dohPane.add(dohLabel);
         dohPane.add(dnsAddress, gbc);
 
-        useDnsSec = new TooltipCheckBox("Enable DNSSec (server restart required)",
-                "Enables validating DNS server responses with\nthe Google DNS servers and protects you from the DNS substitution.\nCan slow down your connection a bit.\nMake sure you restart the server\nafter changing this option.");
+        useDnsSec = new ModernToolTip.Checkbox("Enable DNSSec (server restart required)",
+                "Enables validating DNS server responses with\nthe Google DNS servers and protects you from the DNS substitution.\nCan slow down your connection a bit.\nMake sure you restart the server after changing this option.");
 
         panel.add(generateBlock("Domain name resolving",
                 dohPane,
@@ -208,20 +229,21 @@ public class OptionsFrame extends ControlFrame {
         JPanel mirrorPane = newOptionPanel();
         blacklistMirror = new JTextField(String.valueOf(PowerTunnel.CHUNK_SIZE));
         TextRightClickPopup.register(blacklistMirror);
-        JLabel blacklistLabel = new TooltipLabel("Government blacklist mirror:", "URL address from government blacklist automatically loads");
+        JLabel blacklistLabel = new ModernToolTip.Label("Government blacklist mirror:",
+                "URL address from government blacklist automatically loads");
         mirrorPane.add(blacklistLabel);
         mirrorPane.add(blacklistMirror, gbc);
 
-        allowInvalidPackets = new TooltipCheckBox("Allow invalid packets (recommended)",
+        allowInvalidPackets = new ModernToolTip.Checkbox("Allow invalid packets (recommended)",
                 "When this option is disabled, HTTP packets without Host header throws out");
 
-        allowRequestsToOriginServer = new TooltipCheckBox("Allow requests to origin server (server restart required)",
+        allowRequestsToOriginServer = new ModernToolTip.Checkbox("Allow requests to origin server (server restart required)",
                 "Experimental option, can fix some connectivity issues.");
 
-        enableJournal = new TooltipCheckBox("Enable PowerTunnel Journal (restart required)",
+        enableJournal = new ModernToolTip.Checkbox("Enable PowerTunnel Journal (restart required)",
                 "Enables PowerTunnel Journal, collecting\nall websites you've been visited with timestamps.\nThis data doesn't sending anywhere.");
 
-        enableLogs = new TooltipCheckBox("Enable PowerTunnel Logs (restart required)",
+        enableLogs = new ModernToolTip.Checkbox("Enable PowerTunnel Logs (restart required)",
                 "Enables PowerTunnel Logs that need for troubleshooting and debugging\nfrom the user interface.");
 
         panel.add(generateBlock("Proxy settings",
@@ -247,6 +269,8 @@ public class OptionsFrame extends ControlFrame {
         setResizable(true);
 
         pack(); // calculate the first size estimate
+        upstreamProxyAddress.setPreferredSize(new Dimension(upstreamProxyAddressPane.getWidth()-upstreamProxyAddressLabel.getWidth(), upstreamProxyAddress.getHeight()));
+        upstreamProxyCredentials.setPreferredSize(new Dimension(upstreamProxyCredentialsPanel.getWidth()-upstreamProxyCredentialsLabel.getWidth(), upstreamProxyCredentials.getHeight()));
         fakeSniHost.setPreferredSize(new Dimension(fakeSniPane.getWidth()-fakeSniLabel.getWidth(), fakeSniHost.getHeight()));
         chunkSize.setPreferredSize(new Dimension(chunkPane.getWidth()-chunkLabel.getWidth(), chunkSize.getHeight()));
         blacklistMirror.setPreferredSize(new Dimension(mirrorPane.getWidth()-blacklistLabel.getWidth(), blacklistMirror.getHeight()));
@@ -281,6 +305,12 @@ public class OptionsFrame extends ControlFrame {
 
         proxyPac.setSelected(proxyPacVal = PowerTunnel.SETTINGS.getBooleanOption(Settings.PROXY_PAC_ENABLED));
         proxyPac.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.PROXY_PAC_ENABLED));
+
+        upstreamProxyAddress.setText(upstreamProxyAddressVal = PowerTunnel.SETTINGS.getOption(Settings.UPSTREAM_PROXY_ADDRESS));
+        upstreamProxyAddress.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.UPSTREAM_PROXY_ADDRESS));
+
+        upstreamProxyCredentials.setText(upstreamProxyCredentialsVal = PowerTunnel.readUpstreamProxyCredentialsFromSettings());
+        upstreamProxyCredentials.setEnabled(!(PowerTunnel.SETTINGS.isTemporary(Settings.UPSTREAM_PROXY_USERNAME) && PowerTunnel.SETTINGS.isTemporary(Settings.UPSTREAM_PROXY_PASSWORD)));
 
         chunking.setSelected(PowerTunnel.SETTINGS.getBooleanOption(Settings.ENABLE_CHUNKING));
         chunking.setEnabled(!PowerTunnel.SETTINGS.isTemporary(Settings.ENABLE_CHUNKING));
@@ -346,6 +376,8 @@ public class OptionsFrame extends ControlFrame {
     private void save() {
         final boolean suggestRestart = (
                 proxyPacVal != proxyPac.isSelected() ||
+                !upstreamProxyAddressVal.equals(upstreamProxyAddress.getText()) ||
+                !upstreamProxyCredentialsVal.equals(upstreamProxyCredentials.getText()) ||
                 useDnsSecVal != useDnsSec.isSelected() ||
                 !dnsOverHttpsVal.equals(dnsAddress.getText()) ||
                 allowRequestsToOriginServerVal != allowRequestsToOriginServer.isSelected() ||
@@ -374,6 +406,25 @@ public class OptionsFrame extends ControlFrame {
         PowerTunnel.SETTINGS.setBooleanOption(Settings.ALLOW_REQUESTS_TO_ORIGIN_SERVER, allowRequestsToOriginServer.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.ENABLE_JOURNAL, enableJournal.isSelected());
         PowerTunnel.SETTINGS.setBooleanOption(Settings.ENABLE_LOGS, enableLogs.isSelected());
+        /* --- */
+        Object[] upstreamAddress = PowerTunnel.parseUpstreamProxyAddress(upstreamProxyAddress.getText());
+        if(upstreamAddress != null) {
+            if (upstreamAddress.length == 1) {
+                showError((String) upstreamAddress[0]);
+            } else {
+                PowerTunnel.SETTINGS.setOption(Settings.UPSTREAM_PROXY_ADDRESS, upstreamAddress[0] + ":" + upstreamAddress[1]);
+            }
+        }
+        String[] upstreamAuth = PowerTunnel.parseUpstreamProxyCredentials(upstreamProxyCredentials.getText());
+        if(upstreamAuth != null) {
+            if (upstreamAuth.length == 1) {
+                showError(upstreamAuth[0]);
+            } else {
+                PowerTunnel.SETTINGS.setOption(Settings.UPSTREAM_PROXY_USERNAME, upstreamAuth[0]);
+                PowerTunnel.SETTINGS.setOption(Settings.UPSTREAM_PROXY_PASSWORD, upstreamAuth[1]);
+            }
+        }
+        /* --- */
         PowerTunnel.loadSettings();
 
         if (suggestRestart && PowerTunnel.isRunning()) {
@@ -381,6 +432,10 @@ public class OptionsFrame extends ControlFrame {
                 new Thread(PowerTunnel::restartServer, "Server Restart Thread").start();
             }
         }
+    }
+
+    private void showError(String text) {
+        JOptionPane.showMessageDialog(OptionsFrame.this, text, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
     private int determineSniTrick() {

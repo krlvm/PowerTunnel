@@ -367,28 +367,18 @@ public class PowerTunnel {
                                     break;
                                 }
                                 case "upstream": {
-                                    if(!IPUtility.hasPort(value)) {
-                                        Utility.print("[x] Missing upstream proxy port");
-                                    } else {
-                                        Object[] data = IPUtility.split(value);
-                                        if(data == null) {
-                                            Utility.print("[x] Invalid upstream proxy format");
-                                        } else {
-                                            UPSTREAM_PROXY_IP = ((String) data[0]);
-                                            UPSTREAM_PROXY_PORT = ((int) data[1]);
-                                            Utility.print("[x] Upstream proxy: '%s'", value);
-                                        }
-                                    }
+                                    loadUpstreamAddressSetting(value);
                                     break;
                                 }
                                 case "upstream-auth": {
-                                    String[] data;
-                                    if(!value.contains(":") || (data = value.split(":")).length != 2) {
-                                        Utility.print("[x] Invalid upstream proxy credentials format");
-                                        break;
+                                    String[] result = parseUpstreamProxyCredentials(value);
+                                    if(result == null) break;
+                                    if(result.length == 1) {
+                                        Utility.print("[x] " + result[0]);
+                                    } else {
+                                        UPSTREAM_PROXY_USERNAME = result[0];
+                                        UPSTREAM_PROXY_PASSWORD = result[1];
                                     }
-                                    UPSTREAM_PROXY_USERNAME = data[0];
-                                    UPSTREAM_PROXY_PASSWORD = data[1];
                                     break;
                                 }
                                 case "set-scale-factor": {
@@ -801,6 +791,53 @@ public class PowerTunnel {
         return new InetSocketAddress(InetAddress.getByName(PowerTunnel.UPSTREAM_PROXY_IP), PowerTunnel.UPSTREAM_PROXY_PORT);
     }
 
+    public static Object[] parseUpstreamProxyAddress(String raw) {
+        if(raw == null || raw.isEmpty()) return null;
+        if(!IPUtility.hasPort(raw)) {
+            return new Object[] { "Missing upstream proxy port" };
+        } else {
+            Object[] data = IPUtility.split(raw);
+            if(data == null) {
+                return new Object[] { "Invalid upstream proxy format" };
+            } else {
+                return data;
+            }
+        }
+    }
+    public static String[] parseUpstreamProxyCredentials(String raw) {
+        if(raw == null || raw.isEmpty()) return null;
+        String[] data;
+        if(!raw.contains(":") || (data = raw.split(":")).length != 2) {
+            return new String[] { "Invalid upstream proxy credentials format" };
+        }
+        return data;
+    }
+    public static String readUpstreamProxyAddress() {
+        if(UPSTREAM_PROXY_IP == null || UPSTREAM_PROXY_IP.isEmpty()) return "";
+        return UPSTREAM_PROXY_IP + ":" + UPSTREAM_PROXY_PORT;
+    }
+    public static String readUpstreamProxyCredentials() {
+        if(UPSTREAM_PROXY_USERNAME == null || UPSTREAM_PROXY_USERNAME.isEmpty()) return "";
+        return UPSTREAM_PROXY_USERNAME + ":" + UPSTREAM_PROXY_PASSWORD;
+    }
+    public static String readUpstreamProxyCredentialsFromSettings() {
+        String username = SETTINGS.getOption(Settings.UPSTREAM_PROXY_USERNAME);
+        String password = SETTINGS.getOption(Settings.UPSTREAM_PROXY_PASSWORD);
+        if(username.isEmpty() && password.isEmpty()) return "";
+        return username + ":" + password;
+    }
+
+    public static void loadUpstreamAddressSetting(String raw) {
+        Object[] result = parseUpstreamProxyAddress(raw);
+        if(result == null) return;
+        if(result.length == 1) {
+            Utility.print("[x] " + result[0]);
+        } else {
+            UPSTREAM_PROXY_IP = ((String) result[0]);
+            UPSTREAM_PROXY_PORT = ((int) result[1]);
+            Utility.print("[x] Upstream proxy: '%s'", raw);
+        }
+    }
     public static void loadSettings() {
         ENABLE_JOURNAL = SETTINGS.getBooleanOption(Settings.ENABLE_JOURNAL);
         ENABLE_LOGS = SETTINGS.getBooleanOption(Settings.ENABLE_LOGS);
@@ -831,6 +868,10 @@ public class PowerTunnel {
 
         ALLOW_REQUESTS_TO_ORIGIN_SERVER = SETTINGS.getBooleanOption(Settings.ALLOW_REQUESTS_TO_ORIGIN_SERVER);
         APPLY_HTTP_TRICKS_TO_HTTPS = SETTINGS.getBooleanOption(Settings.APPLY_HTTP_TRICKS_TO_HTTPS);
+
+        loadUpstreamAddressSetting(SETTINGS.getOption(Settings.UPSTREAM_PROXY_ADDRESS));
+        UPSTREAM_PROXY_USERNAME = SETTINGS.getOption(Settings.UPSTREAM_PROXY_USERNAME);
+        UPSTREAM_PROXY_PASSWORD = SETTINGS.getOption(Settings.UPSTREAM_PROXY_PASSWORD);
     }
 
     public static TrayManager getTray() {
