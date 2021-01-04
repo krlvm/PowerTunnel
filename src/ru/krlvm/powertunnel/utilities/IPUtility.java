@@ -40,7 +40,7 @@ public class IPUtility {
         try {
             return new Object[]{
                     address.substring(0, index).replace("[", "").replace("]", ""),
-                    Integer.parseInt(address.substring(index))
+                    Integer.parseInt(address.substring(index+1))
             };
         } catch (NumberFormatException ex) {
             return null;
@@ -56,14 +56,14 @@ public class IPUtility {
     }
 
     public static Object[] splitIPv4(String address) {
-        if(!isIPv6WithPort(address)) {
+        if(!isIPv4WithPort(address)) {
             return null;
         }
         int index = address.lastIndexOf(":");
         try {
             return new Object[]{
                     address.substring(0, index),
-                    Integer.parseInt(address.substring(index))
+                    Integer.parseInt(address.substring(index+1))
             };
         } catch (NumberFormatException ex) {
             return null;
