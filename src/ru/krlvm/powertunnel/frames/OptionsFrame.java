@@ -117,24 +117,18 @@ public class OptionsFrame extends ControlFrame {
         JPanel upstreamProxyAddressPane = newOptionPanel();
         upstreamProxyAddress = new JTextField(PowerTunnel.readUpstreamProxyAddress());
         TextRightClickPopup.register(upstreamProxyAddress);
-        JLabel upstreamProxyAddressLabel = new ModernToolTip.Label("Upstream proxy address:",
-                "Upstream proxy address in format 'IP:Port'\nLeave empty to disable upstream proxy connection.");
-        upstreamProxyAddressPane.add(upstreamProxyAddressLabel);
-        upstreamProxyAddressPane.add(upstreamProxyAddress, gbc);
-
-        JPanel upstreamProxyCredentialsPanel = newOptionPanel();
         upstreamProxyCredentials = new JTextField(PowerTunnel.readUpstreamProxyCredentials());
         TextRightClickPopup.register(upstreamProxyCredentials);
-        JLabel upstreamProxyCredentialsLabel = new ModernToolTip.Label("Upstream proxy credentials:",
-                "Upstream proxy credentials in format 'username:password'\nLeave empty to disable upstream proxy authorization.");
-        upstreamProxyCredentialsPanel.add(upstreamProxyCredentialsLabel);
-        upstreamProxyCredentialsPanel.add(upstreamProxyCredentials, gbc);
+        JLabel upstreamProxyAddressLabel = new ModernToolTip.Label("Upstream proxy address/credentials:",
+                "Upstream proxy address in format 'IP:Port'\nLeave empty to disable upstream proxy connection.\n\nUpstream proxy credentials in format 'username:password'\nLeave empty to disable upstream proxy authorization.");
+        upstreamProxyAddressPane.add(upstreamProxyAddressLabel);
+        upstreamProxyAddressPane.add(upstreamProxyAddress, gbc);
+        upstreamProxyAddressPane.add(upstreamProxyCredentials, gbc);
 
         panel.add(generateBlock("Proxy connection",
                 (SystemUtility.IS_WINDOWS ? autoSetup : null),
                 proxyPac,
-                upstreamProxyAddressPane,
-                upstreamProxyCredentialsPanel
+                upstreamProxyAddressPane
         ), gbc);
 
         chunking = new ModernToolTip.Checkbox("HTTPS: Enable chunking",
@@ -269,8 +263,9 @@ public class OptionsFrame extends ControlFrame {
         setResizable(true);
 
         pack(); // calculate the first size estimate
-        upstreamProxyAddress.setPreferredSize(new Dimension(upstreamProxyAddressPane.getWidth()-upstreamProxyAddressLabel.getWidth(), upstreamProxyAddress.getHeight()));
-        upstreamProxyCredentials.setPreferredSize(new Dimension(upstreamProxyCredentialsPanel.getWidth()-upstreamProxyCredentialsLabel.getWidth(), upstreamProxyCredentials.getHeight()));
+        int upstreamProxyInputWidth = (upstreamProxyAddressPane.getWidth()-upstreamProxyAddressLabel.getWidth())/2;
+        upstreamProxyAddress.setPreferredSize(new Dimension(upstreamProxyInputWidth, upstreamProxyAddress.getHeight()));
+        upstreamProxyCredentials.setPreferredSize(new Dimension(upstreamProxyInputWidth, upstreamProxyCredentials.getHeight()));
         fakeSniHost.setPreferredSize(new Dimension(fakeSniPane.getWidth()-fakeSniLabel.getWidth(), fakeSniHost.getHeight()));
         chunkSize.setPreferredSize(new Dimension(chunkPane.getWidth()-chunkLabel.getWidth(), chunkSize.getHeight()));
         blacklistMirror.setPreferredSize(new Dimension(mirrorPane.getWidth()-blacklistLabel.getWidth(), blacklistMirror.getHeight()));
