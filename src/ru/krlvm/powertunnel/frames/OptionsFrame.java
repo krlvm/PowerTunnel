@@ -3,13 +3,11 @@ package ru.krlvm.powertunnel.frames;
 import ru.krlvm.powertunnel.PowerTunnel;
 import ru.krlvm.powertunnel.data.Settings;
 import ru.krlvm.powertunnel.enums.SNITrick;
-import ru.krlvm.powertunnel.ui.ModernToolTip;
+import ru.krlvm.powertunnel.ui.Tooltipped;
 import ru.krlvm.powertunnel.ui.TextRightClickPopup;
 import ru.krlvm.powertunnel.updater.UpdateNotifier;
-import ru.krlvm.powertunnel.utilities.IPUtility;
 import ru.krlvm.powertunnel.utilities.SystemUtility;
 import ru.krlvm.powertunnel.utilities.UIUtility;
-import ru.krlvm.powertunnel.utilities.Utility;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -108,10 +106,10 @@ public class OptionsFrame extends ControlFrame {
 
         JPanel panel = new JPanel(new GridBagLayout());
 
-        autoSetup = new ModernToolTip.Checkbox("Auto system proxy setup",
+        autoSetup = new Tooltipped.Checkbox("Auto system proxy setup",
                 "Automatically setting up system proxy server configuration.\nAt the moment available only on the Windows.\n\nWindows: automatic Internet Explorer start for a few seconds can be required.");
 
-        proxyPac = new ModernToolTip.Checkbox("Generate Proxy Auto Configuration file (PAC, server restart required)",
+        proxyPac = new Tooltipped.Checkbox("Generate Proxy Auto Configuration file (PAC, server restart required)",
                 "Can increase performance by using proxy only for blocked resources.\nYou should fill the government blacklist to use this option.\nCan slowdown connections with big blacklists.");
 
         JPanel upstreamProxyAddressPane = newOptionPanel();
@@ -119,7 +117,7 @@ public class OptionsFrame extends ControlFrame {
         TextRightClickPopup.register(upstreamProxyAddress);
         upstreamProxyCredentials = new JTextField(PowerTunnel.readUpstreamProxyCredentials());
         TextRightClickPopup.register(upstreamProxyCredentials);
-        JLabel upstreamProxyAddressLabel = new ModernToolTip.Label("Upstream proxy address/credentials:",
+        JLabel upstreamProxyAddressLabel = new Tooltipped.Label("Upstream proxy address/credentials:",
                 "Upstream proxy address in format 'IP:Port'\nLeave empty to disable upstream proxy connection.\n\nUpstream proxy credentials in format 'username:password'\nLeave empty to disable upstream proxy authorization.");
         upstreamProxyAddressPane.add(upstreamProxyAddressLabel);
         upstreamProxyAddressPane.add(upstreamProxyAddress, gbc);
@@ -131,22 +129,22 @@ public class OptionsFrame extends ControlFrame {
                 upstreamProxyAddressPane
         ), gbc);
 
-        chunking = new ModernToolTip.Checkbox("HTTPS: Enable chunking",
+        chunking = new Tooltipped.Checkbox("HTTPS: Enable chunking",
                 "Fragments your HTTPS packets");
 
-        fullChunking = new ModernToolTip.Checkbox("HTTPS: Full chunking mode (requires chunking enabled)",
+        fullChunking = new Tooltipped.Checkbox("HTTPS: Full chunking mode (requires chunking enabled)",
                 "Enables full chunking mode.\nCan led to higher CPU utilization, some websites from\nthe government blacklist may not accept connections,\nbut more efficient than the default (quiet) method.");
 
         JPanel chunkPane = newOptionPanel();
         chunkSize = new JTextField(String.valueOf(PowerTunnel.CHUNK_SIZE));
         TextRightClickPopup.register(chunkSize);
-        JLabel chunkLabel = new ModernToolTip.Label("Chunk size:",
+        JLabel chunkLabel = new Tooltipped.Label("Chunk size:",
                 "Count of fragments HTTP packets be divided");
         chunkPane.add(chunkLabel);
         chunkPane.add(chunkSize, gbc);
 
         JPanel sniPane = newOptionPanel();
-        enableSniTricks = new ModernToolTip.Checkbox("HTTPS: Enable SNI tricks (requires further setup, server restart required)",
+        enableSniTricks = new Tooltipped.Checkbox("HTTPS: Enable SNI tricks (requires further setup, server restart required)",
                 "When it enabled, PowerTunnel does some magic with Server Name Indication in your HTTPS requests");
         enableSniTricks.setBorder(null);
         JEditorPane sniWikiRef = UIUtility.getLabelWithHyperlinkSupport("<a href=\"" + SNITrick.SUPPORT_REFERENCE + "\">Read more...</a>", null);
@@ -160,32 +158,32 @@ public class OptionsFrame extends ControlFrame {
         JPanel fakeSniPane = newOptionPanel();
         fakeSniHost = new JTextField(String.valueOf(PowerTunnel.SNI_TRICK_FAKE_HOST));
         TextRightClickPopup.register(fakeSniHost);
-        JLabel fakeSniLabel = new ModernToolTip.Label("Fake SNI host:", "The fake SNI host sends instead of host of the blocked website you want connect to,\nthe fake host usually has to be a government resource host,\nor host of any not blocked website.\nUsed in combination with 'fake' SNI trick.");
+        JLabel fakeSniLabel = new Tooltipped.Label("Fake SNI host:", "The fake SNI host sends instead of host of the blocked website you want connect to,\nthe fake host usually has to be a government resource host,\nor host of any not blocked website.\nUsed in combination with 'fake' SNI trick.");
         fakeSniPane.add(fakeSniLabel);
         fakeSniPane.add(fakeSniHost, gbc);
 
-        applyHttpHttps = new ModernToolTip.Checkbox("HTTPS: Apply HTTP tricks to HTTPS packets",
+        applyHttpHttps = new Tooltipped.Checkbox("HTTPS: Apply HTTP tricks to HTTPS packets",
                 "When this option is enabled, selected HTTP tricks will be applied to HTTPS too");
 
-        payload = new ModernToolTip.Checkbox("HTTP: Send additional 21KB payload",
+        payload = new Tooltipped.Checkbox("HTTP: Send additional 21KB payload",
                 "When it enabled, PowerTunnel adds 21KB of useless data before the Host header");
 
-        mixHostCase = new ModernToolTip.Checkbox("HTTP: Mix host case",
+        mixHostCase = new Tooltipped.Checkbox("HTTP: Mix host case",
                 "When it enabled, PowerTunnel mixes case of the host header value of the website you're trying to connect.\nSome websites, especially working on the old web servers, may not accept connection.");
 
-        completeMixHostCase = new ModernToolTip.Checkbox("HTTP: Complete mix host case",
+        completeMixHostCase = new Tooltipped.Checkbox("HTTP: Complete mix host case",
                 "When it enabled, PowerTunnel mixes case of the host header completely, not just the last letter.");
 
-        mixHostHeaderCase = new ModernToolTip.Checkbox("HTTP: Mix host header case",
+        mixHostHeaderCase = new Tooltipped.Checkbox("HTTP: Mix host header case",
                 "When it enabled, PowerTunnel mixes case of the host header.\nSome websites, especially working on the old web servers, may not accept connection.");
 
-        dotAfterHost = new ModernToolTip.Checkbox("HTTP: Dot after host",
+        dotAfterHost = new Tooltipped.Checkbox("HTTP: Dot after host",
                 "When it enabled, PowerTunnel adds a dot after the host header.");
 
-        lineBreakGet = new ModernToolTip.Checkbox("HTTP: Line break before the GET method",
+        lineBreakGet = new Tooltipped.Checkbox("HTTP: Line break before the GET method",
                 "When it enabled, PowerTunnel adds a line break before the GET method.");
 
-        spaceGet = new ModernToolTip.Checkbox("HTTP: Space after the GET method",
+        spaceGet = new Tooltipped.Checkbox("HTTP: Space after the GET method",
                 "When it enabled, PowerTunnel adds a space after the GET method.");
 
         panel.add(generateBlock("DPI circumvention",
@@ -207,12 +205,12 @@ public class OptionsFrame extends ControlFrame {
         JPanel dohPane = newOptionPanel();
         dnsAddress = new JTextField(PowerTunnel.DNS_SERVER);
         TextRightClickPopup.register(dnsAddress);
-        JLabel dohLabel = new ModernToolTip.Label("DNS or DoH resolver (server restart required):",
+        JLabel dohLabel = new Tooltipped.Label("DNS or DoH resolver (server restart required):",
                 "DNS or DNS over HTTPS resolver address\nAddresses starts with 'https://' automatically recognizes as a DoH resolvers\nCompatible DoH addresses is listed in the repository readme");
         dohPane.add(dohLabel);
         dohPane.add(dnsAddress, gbc);
 
-        useDnsSec = new ModernToolTip.Checkbox("Enable DNSSec (server restart required)",
+        useDnsSec = new Tooltipped.Checkbox("Enable DNSSec (server restart required)",
                 "Enables validating DNS server responses with\nthe Google DNS servers and protects you from the DNS substitution.\nCan slow down your connection a bit.\nMake sure you restart the server after changing this option.");
 
         panel.add(generateBlock("Domain name resolving",
@@ -223,21 +221,21 @@ public class OptionsFrame extends ControlFrame {
         JPanel mirrorPane = newOptionPanel();
         blacklistMirror = new JTextField(String.valueOf(PowerTunnel.CHUNK_SIZE));
         TextRightClickPopup.register(blacklistMirror);
-        JLabel blacklistLabel = new ModernToolTip.Label("Government blacklist mirror:",
+        JLabel blacklistLabel = new Tooltipped.Label("Government blacklist mirror:",
                 "URL address from government blacklist automatically loads");
         mirrorPane.add(blacklistLabel);
         mirrorPane.add(blacklistMirror, gbc);
 
-        allowInvalidPackets = new ModernToolTip.Checkbox("Allow invalid packets (recommended)",
+        allowInvalidPackets = new Tooltipped.Checkbox("Allow invalid packets (recommended)",
                 "When this option is disabled, HTTP packets without Host header throws out");
 
-        allowRequestsToOriginServer = new ModernToolTip.Checkbox("Allow requests to origin server (server restart required)",
+        allowRequestsToOriginServer = new Tooltipped.Checkbox("Allow requests to origin server (server restart required)",
                 "Experimental option, can fix some connectivity issues.");
 
-        enableJournal = new ModernToolTip.Checkbox("Enable PowerTunnel Journal (restart required)",
+        enableJournal = new Tooltipped.Checkbox("Enable PowerTunnel Journal (restart required)",
                 "Enables PowerTunnel Journal, collecting\nall websites you've been visited with timestamps.\nThis data doesn't sending anywhere.");
 
-        enableLogs = new ModernToolTip.Checkbox("Enable PowerTunnel Logs (restart required)",
+        enableLogs = new Tooltipped.Checkbox("Enable PowerTunnel Logs (restart required)",
                 "Enables PowerTunnel Logs that need for troubleshooting and debugging\nfrom the user interface.");
 
         panel.add(generateBlock("Proxy settings",

@@ -4,6 +4,7 @@ import ru.krlvm.powertunnel.PowerTunnel;
 import ru.krlvm.powertunnel.data.Settings;
 import ru.krlvm.powertunnel.enums.ServerStatus;
 import ru.krlvm.powertunnel.ui.TextRightClickPopup;
+import ru.krlvm.powertunnel.ui.Tooltipped;
 import ru.krlvm.powertunnel.utilities.UIUtility;
 import ru.krlvm.swingdpi.SwingDPI;
 
@@ -56,22 +57,20 @@ public class AdvancedMainFrame extends MainFrame {
                 PowerTunnel.SETTINGS.isTemporary(Settings.SERVER_PORT)
         };
 
-        final JTextField ipInput = new JTextField();
+        final JTextField ipInput = new Tooltipped.TextField("IP Address");
         TextRightClickPopup.register(ipInput);
         Insets insets = ipInput.getInsets();
         ipInput.setPreferredSize(new Dimension(SwingDPI.scale(200)+insets.left+insets.right,
                 SwingDPI.scale(22)+insets.top+insets.bottom));
-        ipInput.setToolTipText("IP Address");
         //ipInput.setHorizontalAlignment(SwingConstants.CENTER);
         ipInput.setText(String.valueOf(PowerTunnel.SERVER_IP_ADDRESS));
         ipInput.setEnabled(!inputsDisabled[0]);
 
-        final JTextField portInput = new JTextField();
+        final JTextField portInput = new Tooltipped.TextField("Port");
         TextRightClickPopup.register(portInput);
         insets = portInput.getInsets();
         portInput.setPreferredSize(SwingDPI.scale(75+insets.left+insets.right,
                 22+insets.top+insets.bottom));
-        portInput.setToolTipText("Port");
         //portInput.setHorizontalAlignment(SwingConstants.CENTER);
         portInput.setText(String.valueOf(PowerTunnel.SERVER_PORT));
         portInput.setEnabled(!inputsDisabled[1]);
