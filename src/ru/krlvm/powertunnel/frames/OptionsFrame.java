@@ -229,7 +229,7 @@ public class OptionsFrame extends ControlFrame {
         allowInvalidPackets = new Tooltipped.Checkbox("Allow invalid packets (recommended)",
                 "When this option is disabled, HTTP packets without Host header throws out");
 
-        allowRequestsToOriginServer = new Tooltipped.Checkbox("Allow requests to origin server (server restart required)",
+        allowRequestsToOriginServer = new Tooltipped.Checkbox("Allow requests to origin server (recommended, server restart required)",
                 "Experimental option, can fix some connectivity issues.");
 
         enableJournal = new Tooltipped.Checkbox("Enable PowerTunnel Journal (restart required)",
