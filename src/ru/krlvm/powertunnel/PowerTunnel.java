@@ -61,7 +61,7 @@ public class PowerTunnel {
             NAME + " version " + VERSION + "\n" +
             "Simple, scalable, cross-platform and effective solution against government censorship\n" +
             REPOSITORY_URL + "\n" +
-            "(c) krlvm, 2019-2020\n";
+            "(c) krlvm, 2019-2021\n";
 
     private static HttpProxyServer SERVER;
     private static ServerStatus STATUS = ServerStatus.NOT_RUNNING;

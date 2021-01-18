@@ -105,7 +105,7 @@ public class PowerTunnelMonitor {
             "    <div id=\"about\">\n" +
             "        <b>PowerTunnel v" + PowerTunnel.VERSION + "<br><a href=\"" + PowerTunnel.REPOSITORY_URL + "\">" + PowerTunnel.REPOSITORY_URL + "</a></b>\n" +
             "        <br>\n" +
-            "        (c) krlvm, 2019-2020\n" +
+            "        (c) krlvm, 2019-2021\n" +
             "    </div>\n" +
             "</body>\n" +
             "</html>";

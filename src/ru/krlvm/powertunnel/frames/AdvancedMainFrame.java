@@ -32,7 +32,7 @@ public class AdvancedMainFrame extends MainFrame {
             "Licensed under the<br>" +
             "<a href=\"https://raw.githubusercontent.com/krlvm/PowerTunnel/master/LICENSE\">MIT License</a>" +
             "<br><br>" +
-            "(c) krlvm, 2019-2020";
+            "(c) krlvm, 2019-2021";
 
     private final JLabel header;
     private final JButton stateButton;
@@ -165,7 +165,7 @@ public class AdvancedMainFrame extends MainFrame {
         pane.add(generalButtonsPane, gbc);
         pane.add(UIUtility.getLabelWithHyperlinkSupport("<a href=\"" + PowerTunnel.REPOSITORY_URL + "/issues\">Submit a bug</a> | <a href=\"https://t.me/powertunnel_dpi\">Telegram Channel</a> | " + "<a href=\"" + PowerTunnel.REPOSITORY_URL + "/wiki\">Help</a><br>" +
                 "<b><a style=\"color: black\" href=\"" + PowerTunnel.REPOSITORY_URL + "\">" + PowerTunnel.REPOSITORY_URL + "</a>" +
-                "</b><br><br>(c) krlvm, 2019-2020", "text-align: center"), gbc);
+                "</b><br><br>(c) krlvm, 2019-2021", "text-align: center"), gbc);
 
         pack();
         setResizable(false);

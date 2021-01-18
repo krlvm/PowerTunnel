@@ -19,7 +19,7 @@ public class TrayManager {
 
         popup.add(TrayUtility.getItem(PowerTunnel.NAME, null, true));
         popup.add(TrayUtility.getItem("Version " + PowerTunnel.VERSION, null, true));
-        popup.add(TrayUtility.getItem("(c) krlvm, 2019-2020", null, true));
+        popup.add(TrayUtility.getItem("(c) krlvm, 2019-2021", null, true));
 
         popup.addSeparator();
 
