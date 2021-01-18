@@ -120,7 +120,7 @@ public class AdvancedMainFrame extends MainFrame {
             try {
                 PowerTunnel.loadLists();
                 JOptionPane.showMessageDialog(AdvancedMainFrame.this,
-                        "Government blacklist and user lists has been reloaded",
+                        "Government blacklist and user lists have been reloaded",
                         PowerTunnel.NAME, JOptionPane.INFORMATION_MESSAGE);
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(AdvancedMainFrame.this,
