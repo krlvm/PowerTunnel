@@ -170,7 +170,7 @@ public class AdvancedMainFrame extends MainFrame {
         pack();
         setResizable(false);
         controlFrameInitialized();
-        setVisible(true);
+        setVisible(!PowerTunnel.RUN_MINIMIZED);
 
         stateButton.requestFocus();
         stateButton.requestFocusInWindow();

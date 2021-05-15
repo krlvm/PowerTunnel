@@ -102,6 +102,7 @@ public class PowerTunnel {
     public static String UPSTREAM_PROXY_PASSWORD = null;
     public static String UPSTREAM_PROXY_AUTH_CODE = null;
 
+    public static boolean RUN_MINIMIZED = false;
     public static boolean FULL_OUTPUT_MIRRORING = false;
 
     private static final Map<String, String> JOURNAL = new LinkedHashMap<>();
@@ -180,6 +181,7 @@ public class PowerTunnel {
                             " -auto-proxy-setup-win-ie                auto proxy setup using IE instead of native API on Windows\n" +
                             " -full-output-mirroring                  fully mirrors system output to the log\n" +
                             " -set-scale-factor [n]                   sets DPI scale factor (for testing purposes)\n" +
+                            " -minimized                              run UI in tray mode by default (use with '-start')\n" +
                             " -disable-tray                           disables tray icon\n" +
                             " -disable-native-lf                      disables native L&F (when UI enabled)\n" +
                             " -disable-ui-scaling                     disables UI scaling (when UI enabled, Java 9 scaling will be applied)\n" +
@@ -273,6 +275,10 @@ public class PowerTunnel {
                     }
                     case "auto-proxy-setup-win-ie": {
                         WindowsProxyHandler.USE_WINDOWS_NATIVE_API = false;
+                        break;
+                    }
+                    case "minimized": {
+                        RUN_MINIMIZED = true;
                         break;
                     }
                     case "disable-tray": {
