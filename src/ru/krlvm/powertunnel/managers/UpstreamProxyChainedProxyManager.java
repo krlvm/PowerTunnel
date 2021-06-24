@@ -20,7 +20,7 @@ public class UpstreamProxyChainedProxyManager implements ChainedProxyManager {
             try {
                 adapter = new UpstreamChainedProxyAdapter(PowerTunnel.resolveUpstreamProxyAddress());
             } catch (UnknownHostException ex) {
-                System.out.println("[x] Failed to cache upstream proxy address: " + ex.getMessage());
+                System.out.println("[x] Failed to cache upstream proxy address - resolution failed: " + ex.getMessage());
                 ex.printStackTrace();
             }
         }
