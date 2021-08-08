@@ -7,7 +7,7 @@ plugins {
 group 'io.github.krlvm'
 version '1.15-SNAPSHOT'
 ext {
-    isReleaseVersion = !version.endsWith("SNAPSHOT")
+    isReleaseVersion = !version.endsWith('SNAPSHOT')
 }
 
 java {
@@ -15,8 +15,8 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8"
-    options.compilerArgs += ["-Xlint:deprecation"]
+    options.encoding = 'UTF-8'
+    options.compilerArgs += ['-Xlint:deprecation']
 }
 
 application {
@@ -49,7 +49,14 @@ test {
     useJUnitPlatform()
 }
 
-jar {
+run {
+    File wd = new File('build/run/')
+    wd.mkdirs()
+    workingDir = wd
+}
+
+task fatJar(type: Jar) {
+    archiveClassifier = 'all'
     duplicatesStrategy DuplicatesStrategy.EXCLUDE
     manifest {
         attributes(
@@ -61,10 +68,5 @@ jar {
     } {
         exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
     }
-}
-
-run {
-    File wd = new File('build/run/')
-    wd.mkdirs()
-    workingDir = wd
+    with jar
 }
