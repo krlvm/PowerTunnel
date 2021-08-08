@@ -6,6 +6,7 @@ import org.jitsi.dnssec.validator.ValidatingResolver;
 import org.littleshoot.proxy.*;
 import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
 import org.xbill.DNS.*;
+import org.xbill.DNS.Record;
 import ru.krlvm.powertunnel.data.DataStore;
 import ru.krlvm.powertunnel.enums.SNITrick;
 import ru.krlvm.powertunnel.enums.ServerStatus;
