@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/images/logo.png" height="192px" width="192px" />
+<img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/.github/images/logo.png" height="192px" width="192px" />
 <br><h1>PowerTunnel</h1><br>
 Simple, scalable, cross-platform and effective solution against government censorship
 <!-- That does not mean the battle is finished -->
@@ -14,7 +14,7 @@ Simple, scalable, cross-platform and effective solution against government censo
 <a href="https://github.com/krlvm/PowerTunnel/releases"><img src="https://img.shields.io/github/downloads/krlvm/PowerTunnel/total?style=flat-square" alt="Downloads"/></a>
 <a href="https://github.com/krlvm/PowerTunnel/wiki"><img src="https://img.shields.io/badge/help-wiki-yellow?style=flat-square" alt="Help on the Wiki"/></a>
 <br>
-<img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/images/ui.png" alt="PowerTunnel User Interface" />
+<img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/.github/images/ui.png" alt="PowerTunnel User Interface" />
 </div>
 
 ### What is it
@@ -57,7 +57,7 @@ DoH servers tested with PowerTunnel:
 You can test if you're using DoH [here](http://www.whatsmydnsserver.com/). If you have problems with DoH on PowerTunnel try disabling DNSSec mode.
 
 ### From User Interface
-![User Interface for configuring the program](https://raw.githubusercontent.com/krlvm/PowerTunnel/master/images/options.png "User Interface for configuring the program")
+![User Interface for configuring the program](https://raw.githubusercontent.com/krlvm/PowerTunnel/master/.github/images/options.png "User Interface for configuring the program")
 
 Hover over option to get more info
 ### Launch arguments
