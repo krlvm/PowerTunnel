@@ -1,6 +1,6 @@
 <div align="center">
-<img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/images/logo.png" height="192px" width="192px" />
-<br><h1>PowerTunnel</h1><br>
+<img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/.github/images/logo.png" height="192px" width="192px" />
+<br><h1>PowerTunnel</h1>
 Simple, scalable, cross-platform and effective solution against government censorship
 <!-- That does not mean the battle is finished -->
 <!--<h3><b>Please, read <a href="https://gist.github.com/krlvm/76595f2fec7e23cf5e20f8ccfa43997a">important announcement</a></b></h3>-->
@@ -14,7 +14,7 @@ Simple, scalable, cross-platform and effective solution against government censo
 <a href="https://github.com/krlvm/PowerTunnel/releases"><img src="https://img.shields.io/github/downloads/krlvm/PowerTunnel/total?style=flat-square" alt="Downloads"/></a>
 <a href="https://github.com/krlvm/PowerTunnel/wiki"><img src="https://img.shields.io/badge/help-wiki-yellow?style=flat-square" alt="Help on the Wiki"/></a>
 <br>
-<img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/images/ui.png" alt="PowerTunnel User Interface" />
+<img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/.github/images/ui.png" alt="PowerTunnel User Interface" style="max-width: 90%; height: auto"/>
 </div>
 
 ### What is it
@@ -57,9 +57,10 @@ DoH servers tested with PowerTunnel:
 You can test if you're using DoH [here](http://www.whatsmydnsserver.com/). If you have problems with DoH on PowerTunnel try disabling DNSSec mode.
 
 ### From User Interface
-![User Interface for configuring the program](https://raw.githubusercontent.com/krlvm/PowerTunnel/master/images/options.png "User Interface for configuring the program")
 
-Hover over option to get more info
+<img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/.github/images/options.png" alt="User Interface for configuring the application" style="max-height: 600px; width: auto"/>
+
+Hover over option to get details
 ### Launch arguments
 You can specify some params that will override settings through CLI:
 
