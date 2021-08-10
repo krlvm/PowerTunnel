@@ -18,6 +18,7 @@
 package io.github.krlvm.powertunnel.sdk.proxy;
 
 import io.github.krlvm.powertunnel.sdk.http.ProxyRequest;
+import io.github.krlvm.powertunnel.sdk.http.ProxyResponse;
 import org.jetbrains.annotations.NotNull;
 
 public interface ProxyListener {
@@ -25,6 +26,6 @@ public interface ProxyListener {
     void onClientToProxyRequest(@NotNull ProxyRequest request);
     void onProxyToServerRequest(@NotNull ProxyRequest request);
 
-    void onServerToProxyResponse(@NotNull ProxyRequest request);
-    void onProxyToClientResponse(@NotNull ProxyRequest request);
+    void onServerToProxyResponse(@NotNull ProxyResponse request);
+    void onProxyToClientResponse(@NotNull ProxyResponse request);
 }

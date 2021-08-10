@@ -19,7 +19,7 @@ package io.github.krlvm.powertunnel.sdk.http;
 
 import org.jetbrains.annotations.NotNull;
 
-interface ProxyMessage {
+public interface ProxyMessage {
     @NotNull HttpHeaders headers();
 
     void setRaw(@NotNull String raw);
