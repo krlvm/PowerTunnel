@@ -19,18 +19,18 @@ package io.github.krlvm.powertunnel.sdk.proxy;
 
 import org.jetbrains.annotations.NotNull;
 
-public class ProxyAddress {
+public class ProxyAddress implements Cloneable {
 
-    private final String ip;
+    private final String host;
     private final int port;
 
-    public ProxyAddress(@NotNull String ip, int port) {
-        this.ip = ip;
+    public ProxyAddress(@NotNull String host, int port) {
+        this.host = host;
         this.port = port;
     }
 
-    public String getIp() {
-        return ip;
+    public String getHost() {
+        return host;
     }
 
     public int getPort() {
