@@ -112,7 +112,7 @@ public interface ProxyServer {
      *
      * @return proxy server authorization credentials
      */
-    @NotNull ProxyCredentials getAuthorizationCredentials();
+    @Nullable ProxyCredentials getAuthorizationCredentials();
 
     // endregion
 
@@ -168,7 +168,7 @@ public interface ProxyServer {
      *
      * @return upstream proxy server authorization credentials
      */
-    @NotNull ProxyCredentials getUpstreamProxyServerAuthorizationCredentials();
+    @Nullable ProxyCredentials getUpstreamProxyServerAuthorizationCredentials();
 
     // endregion
 
