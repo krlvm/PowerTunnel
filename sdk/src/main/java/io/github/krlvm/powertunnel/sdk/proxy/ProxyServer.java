@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 
 public interface ProxyServer {
 
@@ -29,8 +30,9 @@ public interface ProxyServer {
     /**
      * Sets proxy server address
      * @param address proxy server address
+     * @throws UnknownHostException if hostname resolving failed
      */
-    void setAddress(@NotNull ProxyAddress address);
+    void setAddress(@NotNull ProxyAddress address) throws UnknownHostException;
 
     /**
      * Returns proxy server address
