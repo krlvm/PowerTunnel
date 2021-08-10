@@ -15,10 +15,6 @@
  * along with PowerTunnel.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-
-
-
 plugins {
     id 'java'
 }
@@ -50,9 +46,4 @@ dependencies {
 
 test {
     useJUnitPlatform()
-}
-
-run {
-    workingDir = new File('build/run')
-    workingDir.mkdirs()
 }
