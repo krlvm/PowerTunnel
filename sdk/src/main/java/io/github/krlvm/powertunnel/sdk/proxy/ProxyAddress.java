@@ -19,6 +19,10 @@ package io.github.krlvm.powertunnel.sdk.proxy;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
+
 public class ProxyAddress implements Cloneable {
 
     private final String host;
@@ -35,5 +39,9 @@ public class ProxyAddress implements Cloneable {
 
     public int getPort() {
         return port;
+    }
+
+    public InetSocketAddress resolve() throws UnknownHostException {
+        return new InetSocketAddress(InetAddress.getByName(this.host), this.port);
     }
 }
