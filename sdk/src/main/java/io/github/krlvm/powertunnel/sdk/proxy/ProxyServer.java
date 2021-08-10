@@ -136,6 +136,22 @@ public interface ProxyServer {
 
     // endregion
 
+    // region Max Chunk Size
+
+    /**
+     * Sets proxy server max chunk size
+     * @param maxChunkSize max chunk size
+     */
+    void setMaxChunkSize(int maxChunkSize);
+
+    /**
+     * Returns proxy server max chunk size
+     * @return proxy server max chunk size
+     */
+    int getMaxChunkSize();
+
+    // endregion
+
     // region Full Packets
 
     /**
