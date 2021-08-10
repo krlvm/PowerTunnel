@@ -124,7 +124,7 @@ public interface ProxyServer {
      *
      * @param credentials upstream proxy server authorization credentials
      */
-    void seUpstreamProxyServerAuthorizationCredentials(@Nullable ProxyCredentials credentials);
+    void setUpstreamProxyServerAuthorizationCredentials(@Nullable ProxyCredentials credentials);
 
     /**
      * Returns upstream proxy server authorization credentials or null
