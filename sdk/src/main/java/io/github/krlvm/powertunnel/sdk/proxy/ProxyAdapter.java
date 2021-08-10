@@ -30,8 +30,8 @@ public abstract class ProxyAdapter implements ProxyListener {
     public void onProxyToServerRequest(@NotNull ProxyRequest request) {}
 
     @Override
-    public void onServerToProxyResponse(@NotNull ProxyResponse request) {}
+    public void onServerToProxyResponse(@NotNull ProxyResponse response) {}
 
     @Override
-    public void onProxyToClientResponse(@NotNull ProxyResponse request) {}
+    public void onProxyToClientResponse(@NotNull ProxyResponse response) {}
 }

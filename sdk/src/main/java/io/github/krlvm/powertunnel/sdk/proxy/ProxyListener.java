@@ -26,6 +26,6 @@ public interface ProxyListener {
     void onClientToProxyRequest(@NotNull ProxyRequest request);
     void onProxyToServerRequest(@NotNull ProxyRequest request);
 
-    void onServerToProxyResponse(@NotNull ProxyResponse request);
-    void onProxyToClientResponse(@NotNull ProxyResponse request);
+    void onServerToProxyResponse(@NotNull ProxyResponse response);
+    void onProxyToClientResponse(@NotNull ProxyResponse response);
 }
