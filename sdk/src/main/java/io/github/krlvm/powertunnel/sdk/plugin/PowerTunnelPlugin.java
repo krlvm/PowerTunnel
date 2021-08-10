@@ -33,7 +33,7 @@ public abstract class PowerTunnelPlugin implements ServerListener {
      *
      * @param server PowerTunnel server instance
      */
-    protected final void attachServer(@NotNull PowerTunnelServer server) {
+    public final void attachServer(@NotNull PowerTunnelServer server) {
         if(this.server != null) throw new IllegalStateException("A server is already attached");
         this.server = server;
     }
