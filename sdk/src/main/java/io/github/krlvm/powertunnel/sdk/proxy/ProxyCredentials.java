@@ -19,6 +19,9 @@ package io.github.krlvm.powertunnel.sdk.proxy;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
 public class ProxyCredentials {
 
     private final String username;
@@ -35,5 +38,11 @@ public class ProxyCredentials {
 
     public String getPassword() {
         return password;
+    }
+
+    public String toAuthorizationCode() {
+        final String credential = this.username + ":" + this.password;
+        final byte[] data = credential.getBytes(StandardCharsets.UTF_8);
+        return Base64.getEncoder().encodeToString(data).trim();
     }
 }
