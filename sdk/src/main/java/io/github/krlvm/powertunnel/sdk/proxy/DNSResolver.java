@@ -20,7 +20,8 @@ package io.github.krlvm.powertunnel.sdk.proxy;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 
 public interface DNSResolver {
-    @NotNull InetSocketAddress resolve(@NotNull String host, int port);
+    @NotNull InetSocketAddress resolve(@NotNull String host, int port) throws UnknownHostException;
 }

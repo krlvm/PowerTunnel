@@ -122,13 +122,33 @@ public interface ProxyServer {
      * Sets DNS Resolver
      * @param resolver DNS Resolver
      */
-    void setResolver(@NotNull DNSResolver resolver);
+    void setResolver(@Nullable DNSResolver resolver);
 
     /**
      * Returns DNS Resolver
      * @return DNS Resolver
      */
     @Nullable DNSResolver getResolver();
+
+    // endregion
+
+    // region Allow Fallback DNS Resolver
+
+    /**
+     * Sets whether it is allowed to resolve DNS by a standard resolver
+     * if the custom resolver cannot resolve the domain name
+     *
+     * @param allow whether it is allowed to resolve DNS by a standard resolver
+     */
+    void setAllowFallbackDNSResolver(boolean allow);
+
+    /**
+     * Returns whether it is allowed to resolve DNS by a standard resolver
+     * if the custom resolver cannot resolve the domain name
+     *
+     * @return whether it is allowed to resolve DNS by a standard resolver
+     */
+    boolean isAllowFallbackDNSResolver();
 
     // endregion
 
@@ -140,7 +160,7 @@ public interface ProxyServer {
      *
      * @param proxy upstream proxy server address
      */
-    void setUpstreamProxyServer(@NotNull ProxyAddress proxy);
+    void setUpstreamProxyServer(@NotNull UpstreamProxyServer proxy);
 
     /**
      * Returns upstream proxy server or null
@@ -148,7 +168,27 @@ public interface ProxyServer {
      *
      * @return upstream proxy server address
      */
-    @Nullable ProxyAddress getUpstreamProxyServer();
+    @Nullable UpstreamProxyServer getUpstreamProxyServer();
+
+    // endregion
+
+    // region Upstream Proxy Server Address
+
+    /**
+     * Sets upstream proxy server address to specified server
+     * or disables it if provided proxy address is null
+     *
+     * @param address upstream proxy server address
+     */
+    void setUpstreamProxyServerAddress(@NotNull ProxyAddress address);
+
+    /**
+     * Returns upstream proxy server address or null
+     * if upstream proxy server is not specified
+     *
+     * @return upstream proxy server address
+     */
+    @Nullable ProxyAddress getUpstreamProxyServerAddress();
 
     // endregion
 

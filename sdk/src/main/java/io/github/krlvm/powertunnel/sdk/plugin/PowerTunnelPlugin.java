@@ -17,7 +17,7 @@
 
 package io.github.krlvm.powertunnel.sdk.plugin;
 
-import io.github.krlvm.powertunnel.sdk.IPowerTunnel;
+import io.github.krlvm.powertunnel.sdk.PowerTunnelServer;
 import io.github.krlvm.powertunnel.sdk.ServerListener;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyListener;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class PowerTunnelPlugin implements ServerListener {
 
-    private IPowerTunnel server;
+    private PowerTunnelServer server;
 
     /**
      * Attaches PowerTunnel server instance to current server instance
@@ -33,7 +33,7 @@ public abstract class PowerTunnelPlugin implements ServerListener {
      *
      * @param server PowerTunnel server instance
      */
-    protected final void attachServer(@NotNull IPowerTunnel server) {
+    protected final void attachServer(@NotNull PowerTunnelServer server) {
         if(this.server != null) throw new IllegalStateException("A server is already attached");
         this.server = server;
     }
@@ -44,7 +44,7 @@ public abstract class PowerTunnelPlugin implements ServerListener {
      * @return attached PowerTunnel server instance
      */
     @Nullable
-    public IPowerTunnel getServer() {
+    public PowerTunnelServer getServer() {
         return this.server;
     }
 

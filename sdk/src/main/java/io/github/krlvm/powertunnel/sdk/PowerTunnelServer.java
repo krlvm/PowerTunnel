@@ -24,7 +24,7 @@ import io.github.krlvm.powertunnel.sdk.proxy.ProxyStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface IPowerTunnel {
+public interface PowerTunnelServer {
 
     /**
      * Starts proxy server
