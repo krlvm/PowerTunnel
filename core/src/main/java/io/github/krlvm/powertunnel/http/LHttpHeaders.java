@@ -33,56 +33,56 @@ public class LHttpHeaders implements HttpHeaders {
 
     @Override
     public @Nullable String get(String name) {
-        return null;
+        return headers.get(name);
     }
 
     @Override
     public void set(@NotNull String name, @NotNull String value) {
-
+        headers.set(name, value);
     }
 
     @Override
     public @Nullable Integer getInt(String name) {
-        return null;
+        return headers.getInt(name);
     }
 
     @Override
     public void setInt(@NotNull String name, int value) {
-
+        headers.setInt(name, value);
     }
 
     @Override
     public @Nullable Short getShort(String name) {
-        return null;
+        return headers.getShort(name);
     }
 
     @Override
     public void setShort(@NotNull String name, short value) {
-
+        headers.setShort(name, value);
     }
 
     @Override
     public @NotNull Set<String> names() {
-        return null;
+        return headers.names();
     }
 
     @Override
     public boolean contains(@NotNull String name) {
-        return false;
+        return headers.contains(name);
     }
 
     @Override
     public void remove(@NotNull String name) {
-
+        headers.remove(name);
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return headers.isEmpty();
     }
 
     @Override
     public int size() {
-        return 0;
+        return headers.size();
     }
 }
