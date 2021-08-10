@@ -20,6 +20,8 @@ package io.github.krlvm.powertunnel.sdk.proxy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.net.InetSocketAddress;
+
 public interface ProxyServer {
 
     // region Address
@@ -35,6 +37,38 @@ public interface ProxyServer {
      * @return proxy server address
      */
     @NotNull ProxyAddress getAddress();
+
+    // endregion
+
+    // region InetSocketAddress
+
+    /**
+     * Sets proxy server raw address
+     * @param address raw address
+     */
+    void setInetSocketAddress(@NotNull InetSocketAddress address);
+
+    /**
+     * Returns proxy server raw address
+     * @return proxy server raw address
+     */
+    @NotNull InetSocketAddress getInetSocketAddress();
+
+    // endregion
+
+    // region Port
+
+    /**
+     * Sets proxy server port
+     * @param port port
+     */
+    void setPort(int port);
+
+    /**
+     * Returns proxy server port
+     * @return proxy server port
+     */
+    int getPort();
 
     // endregion
 
