@@ -17,62 +17,44 @@
 
 package io.github.krlvm.powertunnel;
 
-import io.github.krlvm.powertunnel.http.LProxyResponse;
-import io.github.krlvm.powertunnel.sdk.http.ProxyRequest;
+import io.github.krlvm.powertunnel.plugin.PluginLoader;
+import io.github.krlvm.powertunnel.sdk.exceptions.PluginLoadException;
+import io.github.krlvm.powertunnel.sdk.exceptions.ProxyStartException;
+import io.github.krlvm.powertunnel.sdk.plugin.PluginInfo;
 import io.github.krlvm.powertunnel.sdk.plugin.PowerTunnelPlugin;
-import io.github.krlvm.powertunnel.sdk.proxy.ProxyAdapter;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyAddress;
-import io.github.krlvm.powertunnel.sdk.proxy.ProxyServer;
-import io.github.krlvm.powertunnel.sdk.proxy.ProxyStatus;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.handler.codec.http.*;
-import org.jetbrains.annotations.NotNull;
-
-import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
 
 public class TestBootstrap {
 
+    private static final ProxyAddress ADDRESS = new ProxyAddress("127.0.0.1", 8085);
+
     public static void main(String[] args) {
-        final Server server = new Server();
-        server.registerPlugin(new TestPlugin());
-        server.start();
-    }
+        System.out.println("PowerTunnel Core Preview");
+        System.out.println("(c) krlvm, 2019-2021");
+        System.out.println();
 
-    public static class TestPlugin extends PowerTunnelPlugin {
+        final Server server = new Server(ADDRESS);
 
-        @Override
-        public void onProxyInitialization(@NotNull ProxyServer proxy) {
-            try {
-                proxy.setAddress(new ProxyAddress("127.0.0.1", 8085));
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            }
-            this.registerProxyListener(new ProxyAdapter() {
-                @Override
-                public void onClientToProxyRequest(@NotNull ProxyRequest request) {
-                    System.out.println("onClientToProxyRequest");
-                    String body = "PowerTunnel Test Plugin";
-                    byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
-                    ByteBuf content = Unpooled.copiedBuffer(bytes);
-                    HttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, content);
-                    response.headers().set(HttpHeaderNames.CONTENT_LENGTH, bytes.length);
-                    response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/html; charset=UTF-8");
-                    response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
-                    request.setResponse(new LProxyResponse(response));
-                }
-            });
+        System.out.println("Loading plugins...");
+        try {
+            PluginLoader.loadPlugins(server);
+        } catch (PluginLoadException ex) {
+            ex.printStackTrace();
         }
 
-        @Override
-        public void beforeProxyStatusChanged(@NotNull ProxyStatus status) {
-
+        for (PowerTunnelPlugin plugin : server.getPlugins()) {
+            final PluginInfo info = plugin.getInfo();
+            System.out.printf(" - Loaded %s [%s] v%s by %s%n",
+                    info.getName(), info.getId(), info.getVersion(), info.getAuthor());
         }
 
-        @Override
-        public void onProxyStatusChanged(@NotNull ProxyStatus status) {
-
+        System.out.println("Starting proxy server...");
+        try {
+            server.start();
+        } catch (ProxyStartException ex) {
+            System.out.println("Failed to start proxy: " + ex.getMessage());
+            ex.printStackTrace();
         }
+        System.out.println("Proxy server is serving at " + ADDRESS);
     }
 }
