@@ -60,10 +60,8 @@ public abstract class LProxyMessage<T> implements ProxyMessage {
             } else {
                 contentField = httpObject.getClass().getSuperclass().getDeclaredField("content");
             }
-            boolean accessibility = contentField.isAccessible();
             contentField.setAccessible(true);
             contentField.set(httpObject, Unpooled.copiedBuffer(bytes));
-            contentField.setAccessible(accessibility);
             ((HttpMessage) httpObject).headers().set(HttpHeaderNames.CONTENT_LENGTH, bytes.length);
         } catch (ReflectiveOperationException ex) {
             // TODO: Handle "Failed to set HttpObject content" error
