@@ -24,6 +24,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.LastHttpContent;
 import org.littleshoot.proxy.HttpFiltersAdapter;
 
 public class ProxyFilter extends HttpFiltersAdapter {
@@ -41,6 +42,7 @@ public class ProxyFilter extends HttpFiltersAdapter {
 
     @Override
     public HttpResponse clientToProxyRequest(HttpObject httpObject) {
+        if(!(httpObject instanceof HttpRequest)) return null;
         LProxyRequest req = new LProxyRequest(((HttpRequest) httpObject));
         listener.onClientToProxyRequest(req);
         return req.getLittleProxyResponse();
@@ -48,6 +50,7 @@ public class ProxyFilter extends HttpFiltersAdapter {
 
     @Override
     public HttpResponse proxyToServerRequest(HttpObject httpObject) {
+        if(!(httpObject instanceof HttpRequest)) return null;
         LProxyRequest req = new LProxyRequest(((HttpRequest) httpObject));
         listener.onProxyToServerRequest(req);
         return req.getLittleProxyResponse();
@@ -55,6 +58,7 @@ public class ProxyFilter extends HttpFiltersAdapter {
 
     @Override
     public HttpObject serverToProxyResponse(HttpObject httpObject) {
+        if(!(httpObject instanceof HttpResponse)) return null;
         LProxyResponse res = new LProxyResponse(((HttpResponse) httpObject));
         listener.onServerToProxyResponse(res);
         return res.getLittleProxyObject();
@@ -62,6 +66,7 @@ public class ProxyFilter extends HttpFiltersAdapter {
 
     @Override
     public HttpObject proxyToClientResponse(HttpObject httpObject) {
+        if(!(httpObject instanceof HttpResponse)) return null;
         LProxyResponse res = new LProxyResponse(((HttpResponse) httpObject));
         listener.onProxyToClientResponse(res);
         return res.getLittleProxyObject();
