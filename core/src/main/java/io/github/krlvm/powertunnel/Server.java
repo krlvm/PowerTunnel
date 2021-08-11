@@ -44,19 +44,19 @@ public class Server implements PowerTunnelServer {
         if(this.server != null) throw new IllegalStateException("Proxy Server is already running");
         this.server = new LittleProxyServer();
 
-        status = ProxyStatus.STARTING;
+        setStatus(ProxyStatus.STARTING);
         for (PowerTunnelPlugin plugin : plugins) plugin.onProxyInitialization(this.server);
         this.server.start(new CoreProxyListener());
-        status = ProxyStatus.RUNNING;
+        setStatus(ProxyStatus.RUNNING);
     }
 
     @Override
     public void stop() {
         if(this.server == null) throw new IllegalStateException("Proxy Server has not been created");
 
-        status = ProxyStatus.STOPPING;
+        setStatus(ProxyStatus.STOPPING);
         this.server.stop();
-        status = ProxyStatus.NOT_RUNNING;
+        setStatus(ProxyStatus.NOT_RUNNING);
 
         this.server = null;
     }
