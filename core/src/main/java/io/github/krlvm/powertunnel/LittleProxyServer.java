@@ -23,6 +23,7 @@ import io.github.krlvm.powertunnel.http.LProxyResponse;
 import io.github.krlvm.powertunnel.managers.ProxyAuthenticationManager;
 import io.github.krlvm.powertunnel.managers.UpstreamProxyChainedProxyManager;
 import io.github.krlvm.powertunnel.resolvers.DNSResolverWrapper;
+import io.github.krlvm.powertunnel.sdk.exceptions.ProxyStartException;
 import io.github.krlvm.powertunnel.sdk.http.ProxyResponse;
 import io.github.krlvm.powertunnel.sdk.proxy.*;
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import org.littleshoot.proxy.*;
 import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
 
+import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 
@@ -52,7 +54,7 @@ public class LittleProxyServer implements ProxyServer {
     /**
      * Starts LittleProxy server
      */
-    public void start(ProxyListener listener) {
+    public void start(ProxyListener listener) throws ProxyStartException, BindException {
         ensureBootstrapAvailable();
 
         if(this.upstreamProxyServer != null) {
@@ -61,8 +63,7 @@ public class LittleProxyServer implements ProxyServer {
                         new UpstreamChainedProxyAdapter(this.upstreamProxyServer)
                 ));
             } catch (UnknownHostException ex) {
-                // TODO: Handle "Failed to resolve upstream proxy address" error
-                ex.printStackTrace();
+                throw new ProxyStartException("Failed to resolve upstream proxy server address", ex);
             }
         }
         this.bootstrap.withFiltersSource(new ProxyFiltersSourceAdapter(listener, isFullRequest, isFullResponse));
