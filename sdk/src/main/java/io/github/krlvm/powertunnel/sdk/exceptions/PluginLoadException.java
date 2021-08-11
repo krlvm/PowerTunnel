@@ -21,8 +21,13 @@ public class PluginLoadException extends Exception {
 
     private final String jarFile;
 
-    public PluginLoadException(String jarFile, Throwable cause) {
-        super(cause);
+    public PluginLoadException(String message, String jarFile, Throwable cause) {
+        super(message, cause);
+        this.jarFile = jarFile;
+    }
+
+    public PluginLoadException(String message, String jarFile) {
+        super(message);
         this.jarFile = jarFile;
     }
 
