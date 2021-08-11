@@ -19,9 +19,11 @@ package io.github.krlvm.powertunnel;
 
 import io.github.krlvm.powertunnel.adapters.ProxyFiltersSourceAdapter;
 import io.github.krlvm.powertunnel.adapters.UpstreamChainedProxyAdapter;
+import io.github.krlvm.powertunnel.http.LProxyResponse;
 import io.github.krlvm.powertunnel.managers.ProxyAuthenticationManager;
 import io.github.krlvm.powertunnel.managers.UpstreamProxyChainedProxyManager;
 import io.github.krlvm.powertunnel.resolvers.DNSResolverWrapper;
+import io.github.krlvm.powertunnel.sdk.http.ProxyResponse;
 import io.github.krlvm.powertunnel.sdk.proxy.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -124,6 +126,16 @@ public class LittleProxyServer implements ProxyServer {
 
     private void ensureBootstrapAvailable() {
         if(bootstrap == null) throw new IllegalStateException("LittleProxy Server has already started");
+    }
+
+    @Override
+    public ProxyResponse.Builder getResponseBuilder(String content) {
+        return new LProxyResponse.Builder(content);
+    }
+
+    @Override
+    public ProxyResponse.Builder getResponseBuilder(String content, int code) {
+        return new LProxyResponse.Builder(content, code);
     }
 
     @Override
