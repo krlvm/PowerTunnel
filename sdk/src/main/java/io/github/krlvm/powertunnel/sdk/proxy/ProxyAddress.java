@@ -44,4 +44,9 @@ public class ProxyAddress implements Cloneable {
     public InetSocketAddress resolve() throws UnknownHostException {
         return new InetSocketAddress(InetAddress.getByName(this.host), this.port);
     }
+
+    @Override
+    public String toString() {
+        return host + ":" + port;
+    }
 }
