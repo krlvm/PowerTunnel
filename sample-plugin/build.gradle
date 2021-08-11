@@ -15,8 +15,24 @@
  * along with PowerTunnel.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-rootProject.name = 'PowerTunnel'
-include 'sdk'
-include 'core'
-include 'sample-plugin'
+plugins {
+    id 'java'
+}
 
+group 'io.github.krlvm'
+version '2.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':sdk')
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+test {
+    useJUnitPlatform()
+}
