@@ -17,6 +17,7 @@
 
 package io.github.krlvm.powertunnel.sdk.proxy;
 
+import io.github.krlvm.powertunnel.sdk.http.ProxyResponse;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,6 +25,25 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 
 public interface ProxyServer {
+
+    /**
+     * Returns proxy server response builder with given content
+     * and status code 200 OK
+     *
+     * @param content response content
+     * @return proxy server response builder
+     */
+    ProxyResponse.Builder getResponseBuilder(String content);
+
+    /**
+     * Returns proxy server response builder with given content
+     * and status code
+     *
+     * @param content response content
+     * @param code response status code
+     * @return proxy server response builder
+     */
+    ProxyResponse.Builder getResponseBuilder(String content, int code);
 
     // region Address
 
