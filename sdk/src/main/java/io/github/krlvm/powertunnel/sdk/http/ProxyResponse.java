@@ -20,4 +20,13 @@ package io.github.krlvm.powertunnel.sdk.http;
 public interface ProxyResponse extends ProxyMessage {
     int code();
     void setCode(int code);
+
+    interface Builder {
+        Builder code(int code);
+        Builder content(String content);
+        Builder header(String name, String value);
+        Builder header(String name, int value);
+        Builder header(String name, short value);
+        ProxyResponse build();
+    }
 }
