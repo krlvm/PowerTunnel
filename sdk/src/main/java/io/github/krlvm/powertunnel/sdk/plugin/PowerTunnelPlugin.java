@@ -43,7 +43,6 @@ public abstract class PowerTunnelPlugin implements ServerListener {
      *
      * @return attached PowerTunnel server instance
      */
-    @Nullable
     public PowerTunnelServer getServer() {
         return this.server;
     }

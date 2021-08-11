@@ -83,5 +83,5 @@ public interface PowerTunnelServer {
      *
      * @return proxy server
      */
-    @Nullable ProxyServer getProxyServer();
+    ProxyServer getProxyServer();
 }
