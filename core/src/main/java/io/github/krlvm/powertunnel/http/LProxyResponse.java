@@ -69,10 +69,10 @@ public class LProxyResponse extends LProxyMessage<HttpResponse> implements Proxy
         }
 
         public Builder(HttpResponseStatus status, String content) {
-            response = new DefaultFullHttpResponse(
-                    HttpVersion.HTTP_1_1, status,
-                    Unpooled.copiedBuffer(content.getBytes(StandardCharsets.UTF_8))
-            );
+            final byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
+            response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status, Unpooled.copiedBuffer(bytes));
+            response.headers().set(HttpHeaderNames.CONTENT_LENGTH, bytes.length);
+            response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
         }
 
         @Override
@@ -84,6 +84,12 @@ public class LProxyResponse extends LProxyMessage<HttpResponse> implements Proxy
         @Override
         public ProxyResponse.Builder content(String content) {
             LProxyMessage.setHttpObjectContent(response, content);
+            return this;
+        }
+
+        @Override
+        public ProxyResponse.Builder contentType(String contentType) {
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, contentType + "; charset=UTF-8");
             return this;
         }
 

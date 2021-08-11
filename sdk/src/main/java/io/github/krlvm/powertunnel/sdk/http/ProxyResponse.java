@@ -24,6 +24,7 @@ public interface ProxyResponse extends ProxyMessage {
     interface Builder {
         Builder code(int code);
         Builder content(String content);
+        Builder contentType(String contentType);
         Builder header(String name, String value);
         Builder header(String name, int value);
         Builder header(String name, short value);
