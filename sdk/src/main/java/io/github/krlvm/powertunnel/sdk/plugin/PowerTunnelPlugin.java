@@ -19,13 +19,16 @@ package io.github.krlvm.powertunnel.sdk.plugin;
 
 import io.github.krlvm.powertunnel.sdk.PowerTunnelServer;
 import io.github.krlvm.powertunnel.sdk.ServerListener;
+import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyListener;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
 
 public abstract class PowerTunnelPlugin implements ServerListener {
 
     private PowerTunnelServer server;
+    private PluginInfo info;
 
     /**
      * Attaches PowerTunnel server instance to current server instance
@@ -33,18 +36,26 @@ public abstract class PowerTunnelPlugin implements ServerListener {
      *
      * @param server PowerTunnel server instance
      */
-    public final void attachServer(@NotNull PowerTunnelServer server) {
+    public final void attachServer(@NotNull PowerTunnelServer server, @NotNull PluginInfo info) {
         if(this.server != null) throw new IllegalStateException("A server is already attached");
         this.server = server;
+        this.info = info;
     }
 
     /**
      * Returns attached PowerTunnel server instance
-     *
      * @return attached PowerTunnel server instance
      */
     public PowerTunnelServer getServer() {
         return this.server;
+    }
+
+    /**
+     * Returns information about the plugin
+     * @return plugin information
+     */
+    public PluginInfo getInfo() {
+        return info;
     }
 
     /**
@@ -61,5 +72,10 @@ public abstract class PowerTunnelPlugin implements ServerListener {
     public int registerProxyListener(@NotNull ProxyListener listener, int priority) {
         validateServer();
         return getServer().registerProxyListener(this, listener, priority);
+    }
+
+    public Configuration readConfiguration() {
+        validateServer();
+        return getServer().readConfiguration(new File("configs" + File.separator + info.getId() + ".ini"));
     }
 }

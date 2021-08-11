@@ -17,19 +17,23 @@
 
 package io.github.krlvm.powertunnel.sdk;
 
+import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
+import io.github.krlvm.powertunnel.sdk.exceptions.ProxyStartException;
 import io.github.krlvm.powertunnel.sdk.plugin.PowerTunnelPlugin;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyListener;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyServer;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyStatus;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
 
 public interface PowerTunnelServer {
 
     /**
      * Starts proxy server
+     * @throws ProxyStartException if proxy server failed to start
      */
-    void start();
+    void start() throws ProxyStartException;
 
     /**
      * Stops proxy server
@@ -76,6 +80,14 @@ public interface PowerTunnelServer {
      * @param id proxy server listener ID
      */
     void unregisterProxyListener(int id);
+
+    /**
+     * Reads configuration and returns the store
+     *
+     * @param file configuration file
+     * @return configuration store
+     */
+    Configuration readConfiguration(@NotNull File file);
 
     /**
      * Returns proxy server
