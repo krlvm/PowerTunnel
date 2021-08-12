@@ -155,7 +155,6 @@ public class LittleProxyServer implements ProxyServer {
     public void setAddress(@NotNull ProxyAddress address) throws UnknownHostException {
         ensureBootstrapAvailable();
         bootstrap.withAddress(address.resolve());
-        bootstrap.withPort(address.getPort());
     }
 
     @Override
