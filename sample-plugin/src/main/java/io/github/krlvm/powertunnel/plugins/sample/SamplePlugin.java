@@ -22,7 +22,6 @@ import io.github.krlvm.powertunnel.sdk.http.ProxyResponse;
 import io.github.krlvm.powertunnel.sdk.plugin.PowerTunnelPlugin;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyAdapter;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyServer;
-import io.github.krlvm.powertunnel.sdk.proxy.ProxyStatus;
 
 public class SamplePlugin extends PowerTunnelPlugin {
 
@@ -40,10 +39,4 @@ public class SamplePlugin extends PowerTunnelPlugin {
             }
         });
     }
-
-    @Override
-    public void beforeProxyStatusChanged(ProxyStatus status) {}
-
-    @Override
-    public void onProxyStatusChanged(ProxyStatus status) {}
 }

@@ -36,3 +36,7 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+jar {
+    destinationDirectory.set(file("$rootDir/core/build/run/plugins"))
+}
