@@ -47,7 +47,7 @@ dependencies {
     implementation project(':sdk')
     implementation 'org.jetbrains:annotations:16.0.2'
 
-    implementation 'xyz.rogfam:littleproxy:2.0.2'
+    implementation 'xyz.rogfam:littleproxy:2.0.5'
     implementation 'org.slf4j:slf4j-simple:1.7.32'
     implementation 'org.bouncycastle:bcpkix-jdk15on:1.65'
 
