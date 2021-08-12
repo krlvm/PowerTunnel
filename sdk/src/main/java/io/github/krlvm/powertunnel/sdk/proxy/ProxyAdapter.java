@@ -19,6 +19,7 @@ package io.github.krlvm.powertunnel.sdk.proxy;
 
 import io.github.krlvm.powertunnel.sdk.http.ProxyRequest;
 import io.github.krlvm.powertunnel.sdk.http.ProxyResponse;
+import io.github.krlvm.powertunnel.sdk.types.FullAddress;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class ProxyAdapter implements ProxyListener {
@@ -34,4 +35,14 @@ public abstract class ProxyAdapter implements ProxyListener {
 
     @Override
     public void onProxyToClientResponse(@NotNull ProxyResponse response) {}
+
+    @Override
+    public int onGetChunkSize(@NotNull String hostname) {
+        return 0;
+    }
+
+    @Override
+    public String onGetSNI(@NotNull String hostname) {
+        return hostname;
+    }
 }

@@ -17,15 +17,13 @@
 
 package io.github.krlvm.powertunnel.listener;
 
-import io.github.krlvm.powertunnel.Server;
-import io.github.krlvm.powertunnel.sdk.ServerListener;
 import io.github.krlvm.powertunnel.sdk.http.ProxyRequest;
 import io.github.krlvm.powertunnel.sdk.http.ProxyResponse;
-import io.github.krlvm.powertunnel.sdk.plugin.PowerTunnelPlugin;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CoreProxyListener implements ProxyListener {
 
@@ -37,28 +35,40 @@ public class CoreProxyListener implements ProxyListener {
 
     @Override
     public void onClientToProxyRequest(@NotNull ProxyRequest request) {
-        callProxyListeners(listener -> listener.onClientToProxyRequest(request));
+        callProxyListeners((ProxyListenerCallback.Void) listener -> listener.onClientToProxyRequest(request));
     }
 
     @Override
     public void onProxyToServerRequest(@NotNull ProxyRequest request) {
-        callProxyListeners(listener -> listener.onProxyToServerRequest(request));
+        callProxyListeners((ProxyListenerCallback.Void) listener -> listener.onProxyToServerRequest(request));
     }
 
     @Override
     public void onServerToProxyResponse(@NotNull ProxyResponse response) {
-        callProxyListeners(listener -> listener.onServerToProxyResponse(response));
+        callProxyListeners((ProxyListenerCallback.Void) listener -> listener.onServerToProxyResponse(response));
     }
 
     @Override
     public void onProxyToClientResponse(@NotNull ProxyResponse response) {
-        callProxyListeners(listener -> listener.onProxyToClientResponse(response));
+        callProxyListeners((ProxyListenerCallback.Void) listener -> listener.onProxyToClientResponse(response));
     }
 
-    private void callProxyListeners(ProxyListenerCallback callback) {
+    @Override
+    public int onGetChunkSize(final @NotNull String hostname) {
+        return ((int) callProxyListeners(listener -> listener.onGetChunkSize(hostname)));
+    }
+
+    @Override
+    public String onGetSNI(@NotNull String hostname) {
+        final String sni = ((String) callProxyListeners(listener -> listener.onGetSNI(hostname)));
+        return sni != null ? sni : hostname;
+    }
+
+    private Object callProxyListeners(ProxyListenerCallback callback) {
+        Object result = null;
         for (Map.Entry<ProxyListener, ProxyListenerInfo> entry : proxyListeners.entrySet()) {
             try {
-                callback.call(entry.getKey());
+                result = callback.call(entry.getKey());
             } catch (Exception ex) {
                 // TODO: Use Logger
                 System.out.printf(
@@ -70,5 +80,6 @@ public class CoreProxyListener implements ProxyListener {
                 ex.printStackTrace();
             }
         }
+        return result;
     }
 }

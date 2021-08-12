@@ -85,12 +85,13 @@ public class ProxyFilter extends HttpFiltersAdapter {
 
     @Override
     public int chunkSize() {
-        return super.chunkSize();
+        if(address == null) return super.chunkSize();
+        return listener.onGetChunkSize(address.getHost());
     }
 
     @Override
     public String mitmGetSNI(String hostname) {
-        return super.mitmGetSNI(hostname);
+        return listener.onGetSNI(hostname);
     }
 
     static {

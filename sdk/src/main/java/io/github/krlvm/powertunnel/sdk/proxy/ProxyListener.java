@@ -28,4 +28,7 @@ public interface ProxyListener {
 
     void onServerToProxyResponse(@NotNull ProxyResponse response);
     void onProxyToClientResponse(@NotNull ProxyResponse response);
+
+    int onGetChunkSize(@NotNull String hostname);
+    String onGetSNI(@NotNull String hostname);
 }

@@ -20,5 +20,15 @@ package io.github.krlvm.powertunnel.listener;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyListener;
 
 public interface ProxyListenerCallback {
-    void call(ProxyListener listener);
+    Object call(ProxyListener listener);
+
+    interface Void extends ProxyListenerCallback {
+        void callVoid(ProxyListener listener);
+
+        @Override
+        default Object call(ProxyListener listener) {
+            callVoid(listener);
+            return null;
+        }
+    }
 }
