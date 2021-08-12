@@ -303,4 +303,16 @@ public class LittleProxyServer implements ProxyServer {
     public boolean isFullResponse() {
         return this.isFullResponse;
     }
+
+    @Override
+    public void setAllowRequestsToOriginServer(boolean allow) {
+        ensureBootstrapAvailable();
+        bootstrap.withAllowRequestToOriginServer(allow);
+    }
+
+    @Override
+    public boolean isAllowRequestsToOriginServer() {
+        ensureServerAvailable();
+        return server.isAllowRequestsToOriginServer();
+    }
 }

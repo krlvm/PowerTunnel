@@ -26,6 +26,8 @@ import java.net.UnknownHostException;
 
 public interface ProxyServer {
 
+    // region Utilities
+
     /**
      * Returns proxy server response builder with given content
      * and status code 200 OK
@@ -44,6 +46,8 @@ public interface ProxyServer {
      * @return proxy server response builder
      */
     ProxyResponse.Builder getResponseBuilder(String content, int code);
+
+    // endregion
 
     // region Address
 
@@ -280,6 +284,22 @@ public interface ProxyServer {
      * @return whether proxy server collects all HTTPS response chunks
      */
     boolean isFullResponse();
+
+    // endregion
+
+    // region Allow Requests To Origin Server
+
+    /**
+     * Sets whether it is allowed to send requests to origin server
+     * @param allow whether it is allowed to send requests to origin server
+     */
+    void setAllowRequestsToOriginServer(boolean allow);
+
+    /**
+     * Returns whether it is allowed to send requests to origin server
+     * @return whether it is allowed to send requests to origin server
+     */
+    boolean isAllowRequestsToOriginServer();
 
     // endregion
 }
