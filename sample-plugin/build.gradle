@@ -19,7 +19,7 @@ plugins {
     id 'java'
 }
 
-group 'io.github.krlvm'
+group 'io.github.krlvm.powertunnel.plugins'
 version '2.0-SNAPSHOT'
 
 repositories {
