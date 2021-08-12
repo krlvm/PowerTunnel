@@ -61,7 +61,7 @@ public class Server implements PowerTunnelServer {
         this.server = new LittleProxyServer();
 
         setStatus(ProxyStatus.STARTING);
-        for (PowerTunnelPlugin plugin : plugins) plugin.onProxyInitialization(this.server);
+        callPluginsProxyInitializationCallback();
         try {
             this.startServer();
             setStatus(ProxyStatus.RUNNING);
@@ -191,5 +191,19 @@ public class Server implements PowerTunnelServer {
 
     public List<PowerTunnelPlugin> getPlugins() {
         return plugins;
+    }
+
+    private void callPluginsProxyInitializationCallback() {
+        for (PowerTunnelPlugin plugin : plugins) {
+            try {
+                plugin.onProxyInitialization(server);
+            } catch (Exception ex) {
+                // TODO: Use Logger
+                System.out.printf(
+                        "An error occurred when plugin '%s' was handling proxy initialization: %s%n",
+                        plugin.getInfo().getId(), ex.getMessage()
+                );
+            }
+        }
     }
 }
