@@ -1,0 +1,54 @@
+[
+  {
+    "key": "test-check",
+    "title": "Test Preference (check)",
+    "description": "Checkbox Test Preference Description",
+    "defaultValue": "true",
+    "type": "checkbox"
+  },
+  {
+    "key": "test-switch",
+    "title": "Test Preference (switch)",
+    "description": "Switch Test Preference Description",
+    "defaultValue": "false",
+    "type": "switch"
+  },
+  {
+    "key": "test-str",
+    "title": "Test Preference (str)",
+    "description": "String Test Preference Description",
+    "defaultValue": "default value of test-str",
+    "type": "string"
+  },
+  {
+    "key": "test-number",
+    "title": "Test Preference (number)",
+    "description": "number Test Preference Description",
+    "defaultValue": "5",
+    "type": "number"
+  },
+
+  {
+    "key": "test-number-d",
+    "title": "Test Preference (number) dependent on 'test-check'",
+    "description": "number Test-C Preference Description",
+    "type": "number",
+    "dependency": "test-check"
+  },
+  {
+    "key": "test-number-d",
+    "title": "Test Preference (number) dependent on 'test-str' (val='value')",
+    "description": "number Test-S Preference Description",
+    "type": "number",
+    "dependency": "test-str",
+    "dependencyValue": "value"
+  },
+  {
+    "key": "test-number-n",
+    "title": "Test Preference (number) dependent on 'test-number' (val='5')",
+    "description": "number Test-S Preference Description",
+    "type": "number",
+    "dependency": "test-number",
+    "dependencyValue": "5"
+  }
+]

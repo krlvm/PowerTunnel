@@ -46,6 +46,7 @@ repositories {
 dependencies {
     implementation project(':sdk')
     implementation 'org.jetbrains:annotations:16.0.2'
+    implementation 'org.json:json:20210307'
 
     implementation project(':littleproxy')
     implementation 'org.slf4j:slf4j-simple:1.7.32'
