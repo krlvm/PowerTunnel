@@ -17,6 +17,7 @@
 
 plugins {
     id 'java'
+    id 'java-library'
 }
 
 group 'io.github.krlvm.powertunnel.proxy'
@@ -36,8 +37,8 @@ repositories {
 }
 
 dependencies {
-    implementation 'xyz.rogfam:littleproxy:2.0.5'
-    implementation 'org.bouncycastle:bcpkix-jdk15on:1.65'
+    api 'xyz.rogfam:littleproxy:2.0.5'
+    api 'org.bouncycastle:bcpkix-jdk15on:1.65'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
