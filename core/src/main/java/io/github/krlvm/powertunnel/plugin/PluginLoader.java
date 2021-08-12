@@ -53,22 +53,24 @@ public class PluginLoader {
     }
 
     public static PowerTunnelPlugin loadPlugin(File file) throws PluginLoadException {
+        final String jarName = file.getName();
+
         final JarFile jar;
         try {
             jar = new JarFile(file);
         } catch (IOException ex) {
-            throw new PluginLoadException(file.getName(), "Failed to read plugin .jar file", ex);
+            throw new PluginLoadException(jarName, "Failed to read plugin .jar file", ex);
         }
 
         final JarEntry manifest = jar.getJarEntry(PLUGIN_MANIFEST);
         if (manifest == null)
-            throw new PluginLoadException(file.getName(), "Plugin .jar file doesn't have manifest (" + PLUGIN_MANIFEST + ")");
+            throw new PluginLoadException(jarName, "Plugin .jar file doesn't have manifest (" + PLUGIN_MANIFEST + ")");
 
         final ConfigurationStore store = new ConfigurationStore();
         try(final InputStream in = jar.getInputStream(manifest)) {
             store.read(in);
         } catch (IOException ex) {
-            throw new PluginLoadException(file.getName(), "Failed to read plugin manifest");
+            throw new PluginLoadException(jarName, "Failed to read plugin manifest");
         }
 
         if (!store.contains(PluginInfoFields.ID) ||
@@ -88,25 +90,29 @@ public class PluginLoader {
                 store.get(PluginInfoFields.MAIN_CLASS, null),
                 store.getInt(PluginInfoFields.TARGET_VERSION, 0)
         );
+
+        if(info.getTargetCoreVersion() > Server.VERSION.getVersionCode())
+            throw new PluginLoadException(jarName, "Plugin requires a newer PowerTunnel version to run");
+
         try {
             injectPlugin(file);
         } catch (MalformedURLException | ReflectiveOperationException ex) {
-            throw new PluginLoadException(file.getName(), "Failed to load plugin .jar file", ex);
+            throw new PluginLoadException(jarName, "Failed to load plugin .jar file", ex);
         }
         final Class<?> clazz;
         try {
             clazz = Class.forName(info.getMainClass());
         } catch (ClassNotFoundException ex) {
-            throw new PluginLoadException(file.getName(), "Can't load plugin main class", ex);
+            throw new PluginLoadException(jarName, "Can't load plugin main class", ex);
         }
         final Object instance;
         try {
             instance = clazz.newInstance();
         } catch (ReflectiveOperationException ex) {
-            throw new PluginLoadException(file.getName(), "Can't instantiate plugin main class", ex);
+            throw new PluginLoadException(jarName, "Can't instantiate plugin main class", ex);
         }
         if(!(instance instanceof PowerTunnelPlugin)) {
-            throw new PluginLoadException(file.getName(), "Plugin main class doesn't extend PowerTunnelPlugin");
+            throw new PluginLoadException(jarName, "Plugin main class doesn't extend PowerTunnelPlugin");
         }
         final PowerTunnelPlugin plugin = ((PowerTunnelPlugin) instance);
         plugin.attachInfo(info);
