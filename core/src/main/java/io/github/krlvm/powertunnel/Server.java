@@ -30,6 +30,7 @@ import io.github.krlvm.powertunnel.sdk.proxy.ProxyAddress;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyListener;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyServer;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyStatus;
+import io.github.krlvm.powertunnel.sdk.types.VersionInfo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,6 +41,8 @@ import java.net.UnknownHostException;
 import java.util.*;
 
 public class Server implements PowerTunnelServer {
+
+    public static final VersionInfo VERSION = new VersionInfo(BuildConstants.VERSION, BuildConstants.VERSION_CODE);
 
     private LittleProxyServer server;
     private ProxyStatus status = ProxyStatus.NOT_RUNNING;
@@ -205,5 +208,10 @@ public class Server implements PowerTunnelServer {
                 );
             }
         }
+    }
+
+    @Override
+    public VersionInfo getVersion() {
+        return VERSION;
     }
 }
