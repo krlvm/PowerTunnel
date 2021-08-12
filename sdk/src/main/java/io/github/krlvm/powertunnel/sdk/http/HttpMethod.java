@@ -17,17 +17,14 @@
 
 package io.github.krlvm.powertunnel.sdk.http;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-public interface ProxyRequest extends ProxyMessage {
-
-    @NotNull HttpMethod getMethod();
-    void setMethod(@NotNull HttpMethod method);
-    default boolean isEncrypted() {
-        return getMethod() == HttpMethod.CONNECT;
-    }
-
-    @Nullable ProxyResponse getResponse();
-    void setResponse(@NotNull ProxyResponse response);
+public enum HttpMethod {
+    OPTIONS,
+    GET,
+    HEAD,
+    POST,
+    PUT,
+    PATCH,
+    DELETE,
+    TRACE,
+    CONNECT,
 }

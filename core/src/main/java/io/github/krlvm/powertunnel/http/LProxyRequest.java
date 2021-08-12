@@ -17,6 +17,7 @@
 
 package io.github.krlvm.powertunnel.http;
 
+import io.github.krlvm.powertunnel.sdk.http.HttpMethod;
 import io.github.krlvm.powertunnel.sdk.http.ProxyRequest;
 import io.github.krlvm.powertunnel.sdk.http.ProxyResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -32,6 +33,21 @@ public class LProxyRequest extends LProxyMessage<HttpRequest> implements ProxyRe
 
     public LProxyRequest(HttpRequest request) {
         super(request);
+    }
+
+    @Override
+    public @NotNull HttpMethod getMethod() {
+        return HttpMethod.valueOf(httpObject.method().name());
+    }
+
+    @Override
+    public void setMethod(@NotNull HttpMethod method) {
+        httpObject.setMethod(io.netty.handler.codec.http.HttpMethod.valueOf(method.name()));
+    }
+
+    @Override
+    public boolean isEncrypted() {
+        return httpObject.method() == io.netty.handler.codec.http.HttpMethod.CONNECT;
     }
 
     @Override
