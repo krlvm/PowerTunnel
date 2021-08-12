@@ -51,7 +51,11 @@ public class LittleProxyServer implements ProxyServer {
     private boolean isFullRequest = false, isFullResponse = false;
 
     protected LittleProxyServer() {
-        this.bootstrap = DefaultHttpProxyServer.bootstrap();
+        this(true);
+    }
+
+    protected LittleProxyServer(boolean transparent) {
+        this.bootstrap = DefaultHttpProxyServer.bootstrap().withTransparent(transparent);
     }
 
     /**
