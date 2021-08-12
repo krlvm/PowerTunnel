@@ -1514,4 +1514,8 @@ public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
     protected int _powerTunnelGetChunkSize() {
         return currentFilters.chunkSize();
     }
+    @Override
+    protected boolean _powerTunnelIsFullChunking() {
+        return currentFilters.fullChunking();
+    }
 }

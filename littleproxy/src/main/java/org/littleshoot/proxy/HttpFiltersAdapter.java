@@ -338,6 +338,11 @@ public class HttpFiltersAdapter implements HttpFilters {
     }
 
     @Override
+    public boolean fullChunking() {
+        return false;
+    }
+
+    @Override
     public String mitmGetSNI(String hostname) {
         return hostname;
     }

@@ -479,23 +479,26 @@ abstract class ProxyConnection<I extends HttpObject> extends
      */
     private boolean _powerTunnelIsChunked = false;
     protected void writeRaw(ByteBuf buf) {
-        final int chunkSize = _powerTunnelGetChunkSize();
-        if(!_powerTunnelIsChunked && chunkSize != 0) {
-            for (byte[] byteChunk : _powerTunnelChunk(buf, chunkSize)) {
-                writeToChannel(Unpooled.wrappedBuffer(byteChunk));
+        if(!_powerTunnelIsChunked) {
+            final int chunkSize = _powerTunnelGetChunkSize();
+            if(chunkSize > 0) {
+                for (byte[] byteChunk : _powerTunnelChunk(buf, chunkSize, _powerTunnelIsFullChunking())) {
+                    writeToChannel(Unpooled.wrappedBuffer(byteChunk));
+                }
+                _powerTunnelIsChunked = true;
+                return;
             }
-            _powerTunnelIsChunked = true;
-        } else {
-            writeToChannel(buf);
         }
+        writeToChannel(buf);
     }
-    protected int _powerTunnelGetChunkSize() { return -2; } // -1 = Disabled ; 0 = Full
-    public static Collection<byte[]> _powerTunnelChunk(ByteBuf buf, int chunkSize) {
+    protected int _powerTunnelGetChunkSize() { return 0; } // 0 to disable
+    protected boolean _powerTunnelIsFullChunking() { return false; }
+    public static Collection<byte[]> _powerTunnelChunk(ByteBuf buf, int chunkSize, boolean fullChunking) {
         byte[] bytes = new byte[buf.readableBytes()];
         buf.readBytes(bytes);
         int len = bytes.length;
         Collection<byte[]> byteChunks = new ArrayList<>();
-        if(chunkSize == -1) {
+        if(fullChunking) {
             // Full Chunking
             int i = 0;
             while (i < len) {

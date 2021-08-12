@@ -55,7 +55,14 @@ public class CoreProxyListener implements ProxyListener {
 
     @Override
     public int onGetChunkSize(final @NotNull String hostname) {
-        return ((int) callProxyListeners(listener -> listener.onGetChunkSize(hostname)));
+        Object result = callProxyListeners(listener -> listener.onGetChunkSize(hostname));
+        return result != null ? ((int) result) : 0;
+    }
+
+    @Override
+    public boolean isFullChunking(@NotNull String hostname) {
+        Object result = callProxyListeners(listener -> listener.isFullChunking(hostname));
+        return result != null && ((boolean) result);
     }
 
     @Override

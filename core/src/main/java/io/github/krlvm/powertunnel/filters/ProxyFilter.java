@@ -47,7 +47,7 @@ public class ProxyFilter extends HttpFiltersAdapter {
     @Override
     public InetSocketAddress proxyToServerResolutionStarted(String resolvingServerHostAndPort) {
         final HostAndPort hostAndPort = HostAndPort.fromString(resolvingServerHostAndPort);
-        this.address = new FullAddress(hostAndPort.getHost(), hostAndPort.getPort());
+        this.address = new FullAddress(hostAndPort.getHost(), hostAndPort.hasPort() ? hostAndPort.getPort() : -1);
         return null;
     }
 
@@ -87,6 +87,12 @@ public class ProxyFilter extends HttpFiltersAdapter {
     public int chunkSize() {
         if(address == null) return super.chunkSize();
         return listener.onGetChunkSize(address.getHost());
+    }
+
+    @Override
+    public boolean fullChunking() {
+        if(address == null) return super.fullChunking();
+        return listener.isFullChunking(address.getHost());
     }
 
     @Override

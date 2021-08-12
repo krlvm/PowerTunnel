@@ -30,5 +30,6 @@ public interface ProxyListener {
     void onProxyToClientResponse(@NotNull ProxyResponse response);
 
     int onGetChunkSize(@NotNull String hostname);
+    boolean isFullChunking(@NotNull String hostname);
     String onGetSNI(@NotNull String hostname);
 }

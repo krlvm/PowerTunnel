@@ -42,6 +42,11 @@ public abstract class ProxyAdapter implements ProxyListener {
     }
 
     @Override
+    public boolean isFullChunking(@NotNull String hostname) {
+        return false;
+    }
+
+    @Override
     public String onGetSNI(@NotNull String hostname) {
         return hostname;
     }

@@ -442,6 +442,7 @@ public interface HttpFilters {
 
     // MODIFIED
     int chunkSize();
+    boolean fullChunking();
     String mitmGetSNI(String hostname);
 
 }
