@@ -15,9 +15,18 @@
  * along with PowerTunnel.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-rootProject.name = 'PowerTunnel'
-include 'sdk'
-include 'core'
-include 'sample-plugin'
-include 'legacy' // TODO: Remove legacy project
+package ru.krlvm.powertunnel.pac;
 
+import ru.krlvm.powertunnel.data.DataStore;
+
+public class PACScriptStore extends DataStore {
+
+    public PACScriptStore() {
+        super("powertunnel");
+    }
+
+    @Override
+    public String getFileExtension() {
+        return "pac";
+    }
+}

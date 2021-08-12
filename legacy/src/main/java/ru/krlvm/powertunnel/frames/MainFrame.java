@@ -15,9 +15,15 @@
  * along with PowerTunnel.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-rootProject.name = 'PowerTunnel'
-include 'sdk'
-include 'core'
-include 'sample-plugin'
-include 'legacy' // TODO: Remove legacy project
+package ru.krlvm.powertunnel.frames;
 
+import ru.krlvm.powertunnel.PowerTunnel;
+
+public abstract class MainFrame extends ControlFrame {
+
+    public MainFrame() {
+        setTitle(PowerTunnel.NAME);
+    }
+
+    public abstract void update();
+}

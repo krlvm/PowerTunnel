@@ -15,9 +15,16 @@
  * along with PowerTunnel.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-rootProject.name = 'PowerTunnel'
-include 'sdk'
-include 'core'
-include 'sample-plugin'
-include 'legacy' // TODO: Remove legacy project
+package ru.krlvm.powertunnel.exceptions;
 
+/**
+ * Exactly says about DataStore load failure
+ *
+ * @author krlvm
+ */
+public class DataStoreException extends Exception {
+
+    public DataStoreException(String message, Throwable cause) {
+        super(message, cause);
+    }
+}
