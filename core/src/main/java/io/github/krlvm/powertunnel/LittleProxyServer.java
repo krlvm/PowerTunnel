@@ -55,7 +55,9 @@ public class LittleProxyServer implements ProxyServer {
     }
 
     protected LittleProxyServer(boolean transparent) {
-        this.bootstrap = DefaultHttpProxyServer.bootstrap().withTransparent(transparent);
+        this.bootstrap = DefaultHttpProxyServer.bootstrap()
+                .withTransparent(transparent)
+                .withAllowRequestToOriginServer(true);
     }
 
     /**
