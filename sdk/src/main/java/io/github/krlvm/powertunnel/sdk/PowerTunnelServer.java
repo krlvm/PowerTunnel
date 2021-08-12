@@ -23,6 +23,7 @@ import io.github.krlvm.powertunnel.sdk.plugin.PowerTunnelPlugin;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyListener;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyServer;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyStatus;
+import io.github.krlvm.powertunnel.sdk.types.VersionInfo;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -107,4 +108,10 @@ public interface PowerTunnelServer {
      * @return proxy server
      */
     ProxyServer getProxyServer();
+
+    /**
+     * Returns PowerTunnel Core version info
+     * @return Core version info
+     */
+    VersionInfo getVersion();
 }
