@@ -17,14 +17,10 @@
 
 plugins {
     id 'java'
-    id 'application'
 }
 
-group 'io.github.krlvm.powertunnel'
+group 'io.github.krlvm.powertunnel.proxy'
 version '2.0-SNAPSHOT'
-ext {
-    isReleaseVersion = !version.endsWith('SNAPSHOT')
-}
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -35,30 +31,18 @@ tasks.withType(JavaCompile) {
     options.compilerArgs += ['-Xlint:deprecation']
 }
 
-application {
-    mainClass = 'io.github.krlvm.powertunnel.TestBootstrap'
-}
-
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation project(':sdk')
-    implementation 'org.jetbrains:annotations:16.0.2'
+    implementation 'xyz.rogfam:littleproxy:2.0.5'
+    implementation 'org.bouncycastle:bcpkix-jdk15on:1.65'
 
-    implementation project(':littleproxy')
-    implementation 'org.slf4j:slf4j-simple:1.7.32'
-
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }
 
 test {
     useJUnitPlatform()
-}
-
-run {
-    workingDir = new File('build/run')
-    workingDir.mkdirs()
 }

@@ -17,7 +17,7 @@
 
 rootProject.name = 'PowerTunnel'
 include 'sdk'
-include 'core'
+include 'littleproxy', 'core'
 include 'sample-plugin'
 include 'legacy' // TODO: Remove legacy project
 
