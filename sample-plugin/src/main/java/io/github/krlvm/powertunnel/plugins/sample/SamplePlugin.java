@@ -34,6 +34,7 @@ public class SamplePlugin extends PowerTunnelPlugin {
                 final ProxyResponse response = getServer()
                         .getProxyServer()
                         .getResponseBuilder("PowerTunnel Test Plugin")
+                        .header("X-PT-Test", "OK")
                         .build();
                 request.setResponse(response);
             }
