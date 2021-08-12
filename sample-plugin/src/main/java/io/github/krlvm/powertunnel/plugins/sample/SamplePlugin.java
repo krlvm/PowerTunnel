@@ -30,6 +30,7 @@ public class SamplePlugin extends PowerTunnelPlugin {
         this.registerProxyListener(new ProxyAdapter() {
             @Override
             public void onClientToProxyRequest(ProxyRequest request) {
+                if(request.isEncrypted()) return;
                 final ProxyResponse response = getServer()
                         .getProxyServer()
                         .getResponseBuilder("PowerTunnel Test Plugin")
