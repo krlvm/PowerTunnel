@@ -26,7 +26,7 @@ import io.github.krlvm.powertunnel.sdk.proxy.ProxyAddress;
 
 public class TestBootstrap {
 
-    private static final ProxyAddress ADDRESS = new ProxyAddress("127.0.0.1", 8085);
+    private static final ProxyAddress ADDRESS = new ProxyAddress("0.0.0.0", 8085);
 
     public static void main(String[] args) {
         System.out.println("PowerTunnel Core Preview");
