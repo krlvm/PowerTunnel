@@ -15,25 +15,25 @@
  * along with PowerTunnel.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.krlvm.powertunnel.resolvers;
+package io.github.krlvm.powertunnel.listener;
 
-import io.github.krlvm.powertunnel.sdk.proxy.DNSResolver;
-import org.jetbrains.annotations.NotNull;
-import org.littleshoot.proxy.HostResolver;
+import io.github.krlvm.powertunnel.sdk.plugin.PowerTunnelPlugin;
 
-import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
+public class ProxyListenerInfo {
 
-public class DNSResolverWrapper implements DNSResolver {
+    private final PowerTunnelPlugin plugin;
+    private final int priority;
 
-    private final HostResolver resolver;
-
-    public DNSResolverWrapper(@NotNull HostResolver resolver) {
-        this.resolver = resolver;
+    public ProxyListenerInfo(PowerTunnelPlugin plugin, int priority) {
+        this.plugin = plugin;
+        this.priority = priority;
     }
 
-    @Override
-    public @NotNull InetSocketAddress resolve(@NotNull String host, int port) throws UnknownHostException {
-        return resolver.resolve(host, port);
+    public PowerTunnelPlugin getPlugin() {
+        return plugin;
+    }
+
+    public int getPriority() {
+        return priority;
     }
 }

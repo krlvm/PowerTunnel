@@ -15,27 +15,10 @@
  * along with PowerTunnel.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.krlvm.powertunnel.sdk;
+package io.github.krlvm.powertunnel.listener;
 
-import io.github.krlvm.powertunnel.sdk.proxy.ProxyServer;
-import io.github.krlvm.powertunnel.sdk.proxy.ProxyStatus;
-import org.jetbrains.annotations.NotNull;
+import io.github.krlvm.powertunnel.sdk.ServerListener;
 
-public interface ServerListener {
-
-    /**
-     * Called before server status changing,
-     * e.g. after user stopped the server
-     *
-     * @param status new server status
-     */
-    void beforeProxyStatusChanged(@NotNull ProxyStatus status);
-
-    /**
-     * Called after server status has changed,
-     * e.g. server stopped
-     *
-     * @param status new server status
-     */
-    void onProxyStatusChanged(@NotNull ProxyStatus status);
+public interface ServerListenerCallback {
+    void call(ServerListener listener);
 }

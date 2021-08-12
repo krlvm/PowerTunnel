@@ -22,7 +22,8 @@ import io.github.krlvm.powertunnel.adapters.UpstreamChainedProxyAdapter;
 import io.github.krlvm.powertunnel.http.LProxyResponse;
 import io.github.krlvm.powertunnel.managers.ProxyAuthenticationManager;
 import io.github.krlvm.powertunnel.managers.UpstreamProxyChainedProxyManager;
-import io.github.krlvm.powertunnel.resolvers.DNSResolverWrapper;
+import io.github.krlvm.powertunnel.resolver.DNSResolverWrapper;
+import io.github.krlvm.powertunnel.resolver.LDNSResolver;
 import io.github.krlvm.powertunnel.sdk.exceptions.ProxyStartException;
 import io.github.krlvm.powertunnel.sdk.http.ProxyResponse;
 import io.github.krlvm.powertunnel.sdk.proxy.*;
@@ -44,7 +45,9 @@ public class LittleProxyServer implements ProxyServer {
     private ProxyCredentials credentials;
     private UpstreamProxyServer upstreamProxyServer;
 
-    private HostResolver fallbackResolver;
+    private DNSResolver resolver;
+    private boolean allowFallbackResolver;
+
     private boolean isFullRequest = false, isFullResponse = false;
 
     protected LittleProxyServer() {
@@ -65,6 +68,11 @@ public class LittleProxyServer implements ProxyServer {
             } catch (UnknownHostException ex) {
                 throw new ProxyStartException("Failed to resolve upstream proxy server address", ex);
             }
+        }
+        if(this.resolver != null) {
+            this.bootstrap.withServerResolver(new LDNSResolver(
+                    this.resolver, this.allowFallbackResolver ? new DefaultHostResolver() : null
+            ));
         }
         this.bootstrap.withFiltersSource(new ProxyFiltersSourceAdapter(listener, isFullRequest, isFullResponse));
 
@@ -204,17 +212,7 @@ public class LittleProxyServer implements ProxyServer {
     @Override
     public void setResolver(@Nullable DNSResolver resolver) {
         ensureBootstrapAvailable();
-        bootstrap.withServerResolver(resolver == null ? null : ((host, port) -> {
-            try {
-                return resolver.resolve(host, port);
-            } catch (UnknownHostException ex) {
-                // TODO: Handle "DNS Resolver can't resolve host" error
-                ex.printStackTrace();
-
-                if(this.fallbackResolver != null) return this.fallbackResolver.resolve(host, port);
-                return null;
-            }
-        }));
+        this.resolver = resolver;
     }
 
     @Override
@@ -226,12 +224,13 @@ public class LittleProxyServer implements ProxyServer {
 
     @Override
     public void setAllowFallbackDNSResolver(boolean allow) {
-        if(this.fallbackResolver != null) this.fallbackResolver = new DefaultHostResolver();
+        ensureBootstrapAvailable();
+        this.allowFallbackResolver = allow;
     }
 
     @Override
     public boolean isAllowFallbackDNSResolver() {
-        return this.fallbackResolver != null;
+        return this.allowFallbackResolver;
     }
 
     @Override

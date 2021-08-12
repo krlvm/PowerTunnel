@@ -61,7 +61,7 @@ public interface PowerTunnelServer {
      * @param listener proxy server listener
      * @return ID of registered listener
      */
-    int registerProxyListener(@NotNull PowerTunnelPlugin plugin, @NotNull ProxyListener listener);
+    void registerProxyListener(@NotNull PowerTunnelPlugin plugin, @NotNull ProxyListener listener);
 
     /**
      * Registers proxy server listener
@@ -69,17 +69,28 @@ public interface PowerTunnelServer {
      * @param plugin registrant plugin
      * @param listener proxy server listeners
      * @param priority proxy server listener priority
-     * @return ID of registered listener
      */
-    int registerProxyListener(@NotNull PowerTunnelPlugin plugin, @NotNull ProxyListener listener, int priority);
+    void registerProxyListener(@NotNull PowerTunnelPlugin plugin, @NotNull ProxyListener listener, int priority);
 
     /**
      * Unregisters proxy server listener
-     * with given ID
-     *
-     * @param id proxy server listener ID
+     * @param listener registered proxy server listener
      */
-    void unregisterProxyListener(int id);
+    void unregisterProxyListener(@NotNull ProxyListener listener);
+
+    /**
+     * Registers server listener
+     *
+     * @param plugin registrant plugin
+     * @param listener proxy listener
+     */
+    void registerServerListener(@NotNull PowerTunnelPlugin plugin, @NotNull ServerListener listener);
+
+    /**
+     * Unregisters server listener
+     * @param listener registered server listener
+     */
+    void unregisterServerListener(@NotNull ServerListener listener);
 
     /**
      * Reads configuration and returns the store

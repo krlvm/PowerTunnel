@@ -18,12 +18,13 @@
 package io.github.krlvm.powertunnel;
 
 import io.github.krlvm.powertunnel.configuration.ConfigurationStore;
+import io.github.krlvm.powertunnel.listener.CoreProxyListener;
+import io.github.krlvm.powertunnel.listener.ProxyListenerInfo;
+import io.github.krlvm.powertunnel.listener.ServerListenerCallback;
 import io.github.krlvm.powertunnel.sdk.PowerTunnelServer;
+import io.github.krlvm.powertunnel.sdk.ServerListener;
 import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
 import io.github.krlvm.powertunnel.sdk.exceptions.ProxyStartException;
-import io.github.krlvm.powertunnel.sdk.http.ProxyRequest;
-import io.github.krlvm.powertunnel.sdk.http.ProxyResponse;
-import io.github.krlvm.powertunnel.sdk.plugin.PluginInfo;
 import io.github.krlvm.powertunnel.sdk.plugin.PowerTunnelPlugin;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyAddress;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyListener;
@@ -36,8 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.BindException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Server implements PowerTunnelServer {
 
@@ -46,7 +46,9 @@ public class Server implements PowerTunnelServer {
     private final ProxyAddress address;
 
     private final List<PowerTunnelPlugin> plugins = new ArrayList<>();
-    private final List<ProxyListener> listeners = new ArrayList<>();
+
+    private final Map<ServerListener, PowerTunnelPlugin> serverListeners = new HashMap<>();
+    private final Map<ProxyListener, ProxyListenerInfo> proxyListeners = new LinkedHashMap<>();
     private static final int DEFAULT_LISTENER_PRIORITY = 0;
 
     public Server(ProxyAddress address) {
@@ -75,7 +77,7 @@ public class Server implements PowerTunnelServer {
     }
 
     public void stop(boolean graceful) {
-        if(this.server == null) throw new IllegalStateException("Proxy Server has not been created");
+        if(this.server == null) throw new IllegalStateException("Proxy Server has not been initialized");
 
         setStatus(ProxyStatus.STOPPING);
         this.server.stop(graceful);
@@ -91,7 +93,7 @@ public class Server implements PowerTunnelServer {
             throw new ProxyStartException("Failed to resolve proxy server address", ex);
         }
         try {
-            this.server.start(new CoreProxyListener());
+            this.server.start(new CoreProxyListener(proxyListeners));
         } catch (BindException ex) {
             throw new ProxyStartException("Failed to bind proxy server port", ex);
         }
@@ -108,26 +110,62 @@ public class Server implements PowerTunnelServer {
     }
 
     private void setStatus(ProxyStatus status) {
-        for (PowerTunnelPlugin plugin : plugins) plugin.beforeProxyStatusChanged(status);
+        callServerListeners((listener -> listener.beforeProxyStatusChanged(status)));
         this.status = status;
-        for (PowerTunnelPlugin plugin : plugins) plugin.onProxyStatusChanged(status);
+        callServerListeners((listener -> listener.onProxyStatusChanged(status)));
+    }
+
+    // region Proxy Listeners Management
+
+    @Override
+    public void registerProxyListener(@NotNull PowerTunnelPlugin plugin, @NotNull ProxyListener listener) {
+        this.registerProxyListener(plugin, listener, DEFAULT_LISTENER_PRIORITY);
     }
 
     @Override
-    public int registerProxyListener(@NotNull PowerTunnelPlugin plugin, @NotNull ProxyListener listener) {
-        return this.registerProxyListener(plugin, listener, DEFAULT_LISTENER_PRIORITY);
+    public void registerProxyListener(@NotNull PowerTunnelPlugin plugin, @NotNull ProxyListener listener, int priority) {
+        if(proxyListeners.containsKey(listener)) throw new IllegalStateException("Proxy Listener is already registered");
+        // TODO: Sort listeners by priority
+        proxyListeners.put(listener, new ProxyListenerInfo(plugin, priority));
     }
 
     @Override
-    public int registerProxyListener(@NotNull PowerTunnelPlugin plugin, @NotNull ProxyListener listener, int priority) {
-        listeners.add(listener);
-        return 0;
+    public void unregisterProxyListener(@NotNull ProxyListener listener) {
+        if(!proxyListeners.containsKey(listener)) throw new IllegalStateException("Proxy Listener is not registered");
+    }
+
+    // endregion
+
+    // region Server Listeners Management
+
+    @Override
+    public void registerServerListener(@NotNull PowerTunnelPlugin plugin, @NotNull ServerListener listener) {
+        if(serverListeners.containsKey(listener)) throw new IllegalStateException("Server Listener is already registered");
+        serverListeners.put(listener, plugin);
     }
 
     @Override
-    public void unregisterProxyListener(int id) {
-        // TODO: Listeners ID
+    public void unregisterServerListener(@NotNull ServerListener listener) {
+        if(!serverListeners.containsKey(listener)) throw new IllegalStateException("Server Listener is not registered");
+        serverListeners.remove(listener);
     }
+
+    private void callServerListeners(@NotNull ServerListenerCallback callback) {
+        for (Map.Entry<ServerListener, PowerTunnelPlugin> entry : serverListeners.entrySet()) {
+            try {
+                callback.call(entry.getKey());
+            } catch (Exception ex) {
+                // TODO: Use Logger
+                System.out.printf(
+                        "An error occurred in ServerListener of plugin '%s' [class=%s]: %s%n",
+                        entry.getValue().getInfo().getId(), entry.getKey().getClass().getSimpleName(), ex.getMessage()
+                );
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    // endregion
 
     @Override
     public @Nullable ProxyServer getProxyServer() {
@@ -153,32 +191,5 @@ public class Server implements PowerTunnelServer {
 
     public List<PowerTunnelPlugin> getPlugins() {
         return plugins;
-    }
-
-    private class CoreProxyListener implements ProxyListener {
-        @Override
-        public void onClientToProxyRequest(@NotNull ProxyRequest request) {
-            for (ProxyListener listener : listeners) {
-                listener.onClientToProxyRequest(request);
-            }
-        }
-        @Override
-        public void onProxyToServerRequest(@NotNull ProxyRequest request) {
-            for (ProxyListener listener : listeners) {
-                listener.onProxyToServerRequest(request);
-            }
-        }
-        @Override
-        public void onServerToProxyResponse(@NotNull ProxyResponse response) {
-            for (ProxyListener listener : listeners) {
-                listener.onServerToProxyResponse(response);
-            }
-        }
-        @Override
-        public void onProxyToClientResponse(@NotNull ProxyResponse response) {
-            for (ProxyListener listener : listeners) {
-                listener.onProxyToClientResponse(response);
-            }
-        }
     }
 }

@@ -21,11 +21,12 @@ import io.github.krlvm.powertunnel.sdk.PowerTunnelServer;
 import io.github.krlvm.powertunnel.sdk.ServerListener;
 import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyListener;
+import io.github.krlvm.powertunnel.sdk.proxy.ProxyServer;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
-public abstract class PowerTunnelPlugin implements ServerListener {
+public abstract class PowerTunnelPlugin {
 
     private PowerTunnelServer server;
     private PluginInfo info;
@@ -73,17 +74,26 @@ public abstract class PowerTunnelPlugin implements ServerListener {
         if(getServer() == null) throw new IllegalStateException("Server is not initialized yet");
     }
 
-    public int registerProxyListener(@NotNull ProxyListener listener) {
+    public void registerProxyListener(@NotNull ProxyListener listener) {
         validateServer();
-        return getServer().registerProxyListener(this, listener);
+        getServer().registerProxyListener(this, listener);
     }
-    public int registerProxyListener(@NotNull ProxyListener listener, int priority) {
+    public void registerProxyListener(@NotNull ProxyListener listener, int priority) {
         validateServer();
-        return getServer().registerProxyListener(this, listener, priority);
+        getServer().registerProxyListener(this, listener, priority);
     }
 
     public Configuration readConfiguration() {
         validateServer();
         return getServer().readConfiguration(new File("configs" + File.separator + info.getId() + ".ini"));
     }
+
+
+    /**
+     * Called after proxy server creation
+     * and before proxy server start
+     *
+     * @param proxy PowerTunnel Proxy Server
+     */
+    public void onProxyInitialization(@NotNull ProxyServer proxy) {}
 }
