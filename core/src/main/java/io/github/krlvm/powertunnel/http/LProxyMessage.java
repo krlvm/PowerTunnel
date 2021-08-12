@@ -19,6 +19,7 @@ package io.github.krlvm.powertunnel.http;
 
 import io.github.krlvm.powertunnel.sdk.http.HttpHeaders;
 import io.github.krlvm.powertunnel.sdk.http.ProxyMessage;
+import io.github.krlvm.powertunnel.sdk.types.FullAddress;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpMessage;
@@ -33,8 +34,16 @@ public abstract class LProxyMessage<T> implements ProxyMessage {
     protected final T httpObject;
     protected HttpHeaders headers;
 
-    protected LProxyMessage(T httpObject) {
+    protected final FullAddress address;
+
+    protected LProxyMessage(T httpObject, FullAddress address) {
         this.httpObject = httpObject;
+        this.address = address;
+    }
+
+    @Override
+    public @NotNull FullAddress address() {
+        return address;
     }
 
     @Override

@@ -17,9 +17,13 @@
 
 package io.github.krlvm.powertunnel.sdk.http;
 
+import io.github.krlvm.powertunnel.sdk.types.FullAddress;
 import org.jetbrains.annotations.NotNull;
 
 public interface ProxyMessage {
+
+    @NotNull FullAddress address();
+
     @NotNull HttpHeaders headers();
 
     void setRaw(@NotNull String raw);

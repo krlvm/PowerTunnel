@@ -20,6 +20,7 @@ package io.github.krlvm.powertunnel.http;
 import io.github.krlvm.powertunnel.sdk.http.HttpMethod;
 import io.github.krlvm.powertunnel.sdk.http.ProxyRequest;
 import io.github.krlvm.powertunnel.sdk.http.ProxyResponse;
+import io.github.krlvm.powertunnel.sdk.types.FullAddress;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpRequest;
@@ -31,8 +32,8 @@ public class LProxyRequest extends LProxyMessage<HttpRequest> implements ProxyRe
 
     private ProxyResponse response;
 
-    public LProxyRequest(HttpRequest request) {
-        super(request);
+    public LProxyRequest(HttpRequest request, FullAddress address) {
+        super(request, address);
     }
 
     @Override

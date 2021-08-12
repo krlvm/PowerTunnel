@@ -17,19 +17,23 @@
 
 package io.github.krlvm.powertunnel.filters;
 
+import com.google.common.net.HostAndPort;
 import io.github.krlvm.powertunnel.http.LProxyRequest;
 import io.github.krlvm.powertunnel.http.LProxyResponse;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyListener;
+import io.github.krlvm.powertunnel.sdk.types.FullAddress;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
-import io.netty.handler.codec.http.LastHttpContent;
 import org.littleshoot.proxy.HttpFiltersAdapter;
+
+import java.net.InetSocketAddress;
 
 public class ProxyFilter extends HttpFiltersAdapter {
 
     private final ProxyListener listener;
+    private FullAddress address;
 
     public ProxyFilter(ProxyListener listener, HttpRequest originalRequest) {
         this(listener, originalRequest, null);
@@ -41,9 +45,16 @@ public class ProxyFilter extends HttpFiltersAdapter {
     }
 
     @Override
+    public InetSocketAddress proxyToServerResolutionStarted(String resolvingServerHostAndPort) {
+        final HostAndPort hostAndPort = HostAndPort.fromString(resolvingServerHostAndPort);
+        this.address = new FullAddress(hostAndPort.getHost(), hostAndPort.getPort());
+        return null;
+    }
+
+    @Override
     public HttpResponse clientToProxyRequest(HttpObject httpObject) {
         if(!(httpObject instanceof HttpRequest)) return null;
-        LProxyRequest req = new LProxyRequest(((HttpRequest) httpObject));
+        LProxyRequest req = new LProxyRequest(((HttpRequest) httpObject), address);
         listener.onClientToProxyRequest(req);
         return req.getLittleProxyResponse();
     }
@@ -51,7 +62,7 @@ public class ProxyFilter extends HttpFiltersAdapter {
     @Override
     public HttpResponse proxyToServerRequest(HttpObject httpObject) {
         if(!(httpObject instanceof HttpRequest)) return null;
-        LProxyRequest req = new LProxyRequest(((HttpRequest) httpObject));
+        LProxyRequest req = new LProxyRequest(((HttpRequest) httpObject), address);
         listener.onProxyToServerRequest(req);
         return req.getLittleProxyResponse();
     }
@@ -59,7 +70,7 @@ public class ProxyFilter extends HttpFiltersAdapter {
     @Override
     public HttpObject serverToProxyResponse(HttpObject httpObject) {
         if(!(httpObject instanceof HttpResponse)) return null;
-        LProxyResponse res = new LProxyResponse(((HttpResponse) httpObject));
+        LProxyResponse res = new LProxyResponse(((HttpResponse) httpObject), address);
         listener.onServerToProxyResponse(res);
         return res.getLittleProxyObject();
     }
@@ -67,9 +78,19 @@ public class ProxyFilter extends HttpFiltersAdapter {
     @Override
     public HttpObject proxyToClientResponse(HttpObject httpObject) {
         if(!(httpObject instanceof HttpResponse)) return null;
-        LProxyResponse res = new LProxyResponse(((HttpResponse) httpObject));
+        LProxyResponse res = new LProxyResponse(((HttpResponse) httpObject), address);
         listener.onProxyToClientResponse(res);
         return res.getLittleProxyObject();
+    }
+
+    @Override
+    public int chunkSize() {
+        return super.chunkSize();
+    }
+
+    @Override
+    public String mitmGetSNI(String hostname) {
+        return super.mitmGetSNI(hostname);
     }
 
     static {

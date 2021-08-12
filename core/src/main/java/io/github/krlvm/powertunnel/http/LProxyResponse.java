@@ -18,6 +18,7 @@
 package io.github.krlvm.powertunnel.http;
 
 import io.github.krlvm.powertunnel.sdk.http.ProxyResponse;
+import io.github.krlvm.powertunnel.sdk.types.FullAddress;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.*;
 import org.jetbrains.annotations.NotNull;
@@ -26,8 +27,8 @@ import java.nio.charset.StandardCharsets;
 
 public class LProxyResponse extends LProxyMessage<HttpResponse> implements ProxyResponse {
 
-    public LProxyResponse(HttpResponse response) {
-        super(response);
+    public LProxyResponse(HttpResponse response, FullAddress address) {
+        super(response, address);
     }
 
     @Override
@@ -113,7 +114,7 @@ public class LProxyResponse extends LProxyMessage<HttpResponse> implements Proxy
 
         @Override
         public ProxyResponse build() {
-            return new LProxyResponse(response);
+            return new LProxyResponse(response, null);
         }
     }
 }

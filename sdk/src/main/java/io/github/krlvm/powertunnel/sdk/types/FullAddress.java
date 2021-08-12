@@ -15,14 +15,38 @@
  * along with PowerTunnel.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.krlvm.powertunnel.sdk.proxy;
+package io.github.krlvm.powertunnel.sdk.types;
 
-import io.github.krlvm.powertunnel.sdk.types.FullAddress;
 import org.jetbrains.annotations.NotNull;
 
-public class ProxyAddress extends FullAddress {
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 
-    public ProxyAddress(@NotNull String host, int port) {
-        super(host, port);
+public class FullAddress implements Cloneable {
+
+    private final String host;
+    private final int port;
+
+    public FullAddress(@NotNull String host, int port) {
+        this.host = host;
+        this.port = port;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public InetSocketAddress resolve() throws UnknownHostException {
+        return new InetSocketAddress(InetAddress.getByName(this.host), this.port);
+    }
+
+    @Override
+    public String toString() {
+        return host + ":" + port;
     }
 }
