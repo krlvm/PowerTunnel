@@ -33,7 +33,7 @@ public class TestBootstrap {
         System.out.println("(c) krlvm, 2019-2021");
         System.out.println();
 
-        final Server server = new Server(ADDRESS);
+        final PowerTunnel server = new PowerTunnel(ADDRESS);
 
         System.out.println("Loading plugins...");
         try {

@@ -17,7 +17,7 @@
 
 package io.github.krlvm.powertunnel.plugin;
 
-import io.github.krlvm.powertunnel.Server;
+import io.github.krlvm.powertunnel.PowerTunnel;
 import io.github.krlvm.powertunnel.configuration.ConfigurationStore;
 import io.github.krlvm.powertunnel.sdk.exceptions.PluginLoadException;
 import io.github.krlvm.powertunnel.sdk.plugin.PluginInfo;
@@ -49,7 +49,7 @@ public class PluginLoader {
         return new File[] {};
     }
 
-    public static void loadPlugins(Server server) throws PluginLoadException {
+    public static void loadPlugins(PowerTunnel server) throws PluginLoadException {
         File[] files = enumeratePlugins();
         for (File file : files) {
             if(file.isDirectory()) continue;
@@ -98,7 +98,7 @@ public class PluginLoader {
                 store.getInt(PluginInfoFields.TARGET_VERSION, 0)
         );
 
-        if(info.getTargetCoreVersion() > Server.VERSION.getVersionCode())
+        if(info.getTargetCoreVersion() > PowerTunnel.VERSION.getVersionCode())
             throw new PluginLoadException(jarName, "Plugin requires a newer PowerTunnel version to run");
 
         try {

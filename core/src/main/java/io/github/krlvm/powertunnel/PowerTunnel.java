@@ -40,7 +40,7 @@ import java.net.BindException;
 import java.net.UnknownHostException;
 import java.util.*;
 
-public class Server implements PowerTunnelServer {
+public class PowerTunnel implements PowerTunnelServer {
 
     public static final VersionInfo VERSION = new VersionInfo(BuildConstants.VERSION, BuildConstants.VERSION_CODE);
 
@@ -54,7 +54,7 @@ public class Server implements PowerTunnelServer {
     private final Map<ProxyListener, ProxyListenerInfo> proxyListeners = new LinkedHashMap<>();
     private static final int DEFAULT_LISTENER_PRIORITY = 0;
 
-    public Server(ProxyAddress address) {
+    public PowerTunnel(ProxyAddress address) {
         this.address = address;
     }
 
