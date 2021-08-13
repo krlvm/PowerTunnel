@@ -35,17 +35,22 @@ import java.util.jar.JarFile;
 
 public class PluginLoader {
 
+    private static final String PLUGINS_DIR = "plugins";
     private static final String PLUGIN_MANIFEST = "plugin.ini";
 
-    public static void loadPlugins(Server server) throws PluginLoadException {
-        File folder = new File("plugins");
+    public static File[] enumeratePlugins() {
+        final File folder = new File(PLUGINS_DIR);
         if(!folder.exists()) {
             folder.mkdir();
-            return;
+        } else {
+            final File[] result = folder.listFiles(file -> file.getName().toLowerCase().endsWith(".jar"));
+            if(result != null) return result;
         }
+        return new File[] {};
+    }
 
-        File[] files = folder.listFiles(file -> file.getName().toLowerCase().endsWith(".jar"));
-        if(files == null) return;
+    public static void loadPlugins(Server server) throws PluginLoadException {
+        File[] files = enumeratePlugins();
         for (File file : files) {
             if(file.isDirectory()) continue;
             server.registerPlugin(PluginLoader.loadPlugin(file));
