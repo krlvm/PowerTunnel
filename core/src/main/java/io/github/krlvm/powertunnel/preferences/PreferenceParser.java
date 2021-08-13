@@ -52,19 +52,28 @@ public class PreferenceParser {
                 throw new PreferenceParseException(source, "Unsupported preference type: '" + rawType + '"', ex);
             }
 
-            final String defaultValue = jso.getString(PreferencesSchemaFields.DEFAULT_VALUE);
+            final Object defaultValue = getObjectOrNull(jso, PreferencesSchemaFields.DEFAULT_VALUE);
+            final Object dependencyValue = getObjectOrNull(jso, PreferencesSchemaFields.DEPENDENCY_VALUE);
 
             preferences.add(new Preference(
-                    jso.getString(PreferencesSchemaFields.KEY),
-                    jso.getString(PreferencesSchemaFields.TITLE),
-                    jso.getString(PreferencesSchemaFields.DESCRIPTION),
-                    defaultValue != null ? defaultValue : type.getDefaultValue(),
+                    getStringOrNull(jso, PreferencesSchemaFields.KEY),
+                    getStringOrNull(jso, PreferencesSchemaFields.TITLE),
+                    getStringOrNull(jso, PreferencesSchemaFields.DESCRIPTION),
+                    defaultValue != null ? defaultValue.toString() : type.getDefaultValue(),
                     type,
-                    jso.getString(PreferencesSchemaFields.DEPENDENCY),
-                    jso.getString(PreferencesSchemaFields.DEPENDENCY_VALUE)
+                    getStringOrNull(jso, PreferencesSchemaFields.DEPENDENCY),
+                    dependencyValue != null ? dependencyValue.toString() : null
             ));
         }
         return preferences;
+    }
+
+    private static String getStringOrNull(JSONObject jso, String key) {
+        return jso.has(key) ? jso.getString(key) : null;
+    }
+
+    private static Object getObjectOrNull(JSONObject jso, String key) {
+        return jso.has(key) ? jso.get(key) : null;
     }
 
 

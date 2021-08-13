@@ -3,14 +3,14 @@
     "key": "test-check",
     "title": "Test Preference (check)",
     "description": "Checkbox Test Preference Description",
-    "defaultValue": "true",
+    "defaultValue": true,
     "type": "checkbox"
   },
   {
     "key": "test-switch",
     "title": "Test Preference (switch)",
     "description": "Switch Test Preference Description",
-    "defaultValue": "false",
+    "defaultValue": false,
     "type": "switch"
   },
   {
@@ -24,7 +24,7 @@
     "key": "test-number",
     "title": "Test Preference (number)",
     "description": "number Test Preference Description",
-    "defaultValue": "5",
+    "defaultValue": 5,
     "type": "number"
   },
 
@@ -49,6 +49,6 @@
     "description": "number Test-S Preference Description",
     "type": "number",
     "dependency": "test-number",
-    "dependencyValue": "5"
+    "dependencyValue": 5
   }
 ]
