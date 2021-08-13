@@ -24,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class ConfigurationStore implements Configuration {
 
@@ -58,12 +59,16 @@ public class ConfigurationStore implements Configuration {
     public void save(File file) throws IOException {
         int current = 0;
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-        for(Map.Entry<String, String> entry : data.entrySet()) {
+        for(Map.Entry<String, String> entry : entries()) {
             writer.write(entry.getKey() + DELIMITER + entry.getValue());
             if(++current != data.size()) {
                 writer.write("\r\n");
             }
         }
+    }
+
+    protected Set<Map.Entry<String, String>> entries() {
+        return data.entrySet();
     }
 
 
