@@ -80,6 +80,7 @@ public class PluginLoader {
 
         if (!store.contains(PluginInfoFields.ID) ||
                 !store.contains(PluginInfoFields.VERSION) ||
+                !store.contains(PluginInfoFields.VERSION_CODE) ||
                 !store.contains(PluginInfoFields.NAME) ||
                 !store.contains(PluginInfoFields.MAIN_CLASS) ||
                 !store.contains(PluginInfoFields.TARGET_VERSION)
@@ -88,6 +89,7 @@ public class PluginLoader {
         final PluginInfo info = new PluginInfo(
                 store.get(PluginInfoFields.ID, null),
                 store.get(PluginInfoFields.VERSION, null),
+                store.getInt(PluginInfoFields.VERSION_CODE, 1),
                 store.get(PluginInfoFields.NAME, null),
                 store.get(PluginInfoFields.DESCRIPTION, null),
                 store.get(PluginInfoFields.AUTHOR, null),
@@ -140,6 +142,7 @@ public class PluginLoader {
     static class PluginInfoFields {
         static final String ID = "id";
         static final String VERSION = "version";
+        static final String VERSION_CODE = "versionCode";
         static final String NAME = "name";
         static final String DESCRIPTION = "description";
         static final String AUTHOR = "author";

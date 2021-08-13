@@ -21,6 +21,8 @@ public class PluginInfo {
 
     private final String id;
     private final String version;
+    private final int versionCode;
+
     private final String name;
     private final String description;
     private final String author;
@@ -41,6 +43,7 @@ public class PluginInfo {
     public PluginInfo(
             String id,
             String version,
+            int versionCode,
             String name,
             String description,
             String author,
@@ -50,6 +53,7 @@ public class PluginInfo {
     ) {
         this.id = id;
         this.version = version;
+        this.versionCode = versionCode;
         this.name = name;
         this.description = description;
         this.author = author;
@@ -59,20 +63,24 @@ public class PluginInfo {
         this.targetCoreVersion = targetCoreVersion;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
     public String getId() {
         return id;
     }
 
     public String getVersion() {
         return version;
+    }
+
+    public int getVersionCode() {
+        return versionCode;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public String getAuthor() {
