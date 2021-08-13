@@ -19,6 +19,7 @@ package io.github.krlvm.powertunnel.sdk;
 
 import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
 import io.github.krlvm.powertunnel.sdk.exceptions.ProxyStartException;
+import io.github.krlvm.powertunnel.sdk.plugin.PluginInfo;
 import io.github.krlvm.powertunnel.sdk.plugin.PowerTunnelPlugin;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyListener;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyServer;
@@ -62,7 +63,7 @@ public interface PowerTunnelServer {
      * @param listener proxy server listener
      * @return ID of registered listener
      */
-    void registerProxyListener(@NotNull PowerTunnelPlugin plugin, @NotNull ProxyListener listener);
+    void registerProxyListener(@NotNull PluginInfo pluginInfo, @NotNull ProxyListener listener);
 
     /**
      * Registers proxy server listener
@@ -71,7 +72,7 @@ public interface PowerTunnelServer {
      * @param listener proxy server listeners
      * @param priority proxy server listener priority
      */
-    void registerProxyListener(@NotNull PowerTunnelPlugin plugin, @NotNull ProxyListener listener, int priority);
+    void registerProxyListener(@NotNull PluginInfo pluginInfo, @NotNull ProxyListener listener, int priority);
 
     /**
      * Unregisters proxy server listener
@@ -85,7 +86,7 @@ public interface PowerTunnelServer {
      * @param plugin registrant plugin
      * @param listener proxy listener
      */
-    void registerServerListener(@NotNull PowerTunnelPlugin plugin, @NotNull ServerListener listener);
+    void registerServerListener(@NotNull PluginInfo pluginInfo, @NotNull ServerListener listener);
 
     /**
      * Unregisters server listener

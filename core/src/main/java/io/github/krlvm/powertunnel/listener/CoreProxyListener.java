@@ -80,7 +80,7 @@ public class CoreProxyListener implements ProxyListener {
                 // TODO: Use Logger
                 System.out.printf(
                         "An error occurred in ProxyListener of plugin '%s' [class=%s, priority=%s]: %s%n",
-                        entry.getValue().getPlugin().getInfo().getId(),
+                        entry.getValue().getPluginInfo().getId(),
                         entry.getKey().getClass().getSimpleName(), entry.getValue().getPriority(),
                         ex.getMessage()
                 );

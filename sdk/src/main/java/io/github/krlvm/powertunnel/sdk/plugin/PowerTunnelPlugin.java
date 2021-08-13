@@ -76,11 +76,11 @@ public abstract class PowerTunnelPlugin {
 
     public void registerProxyListener(@NotNull ProxyListener listener) {
         validateServer();
-        getServer().registerProxyListener(this, listener);
+        getServer().registerProxyListener(getInfo(), listener);
     }
     public void registerProxyListener(@NotNull ProxyListener listener, int priority) {
         validateServer();
-        getServer().registerProxyListener(this, listener, priority);
+        getServer().registerProxyListener(getInfo(), listener, priority);
     }
 
     public Configuration readConfiguration() {

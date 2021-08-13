@@ -17,20 +17,20 @@
 
 package io.github.krlvm.powertunnel.listener;
 
-import io.github.krlvm.powertunnel.sdk.plugin.PowerTunnelPlugin;
+import io.github.krlvm.powertunnel.sdk.plugin.PluginInfo;
 
 public class ProxyListenerInfo {
 
-    private final PowerTunnelPlugin plugin;
+    private final PluginInfo pluginInfo;
     private final int priority;
 
-    public ProxyListenerInfo(PowerTunnelPlugin plugin, int priority) {
-        this.plugin = plugin;
+    public ProxyListenerInfo(PluginInfo pluginInfo, int priority) {
+        this.pluginInfo = pluginInfo;
         this.priority = priority;
     }
 
-    public PowerTunnelPlugin getPlugin() {
-        return plugin;
+    public PluginInfo getPluginInfo() {
+        return pluginInfo;
     }
 
     public int getPriority() {

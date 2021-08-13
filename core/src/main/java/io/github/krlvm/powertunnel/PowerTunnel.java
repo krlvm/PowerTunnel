@@ -25,6 +25,7 @@ import io.github.krlvm.powertunnel.sdk.PowerTunnelServer;
 import io.github.krlvm.powertunnel.sdk.ServerListener;
 import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
 import io.github.krlvm.powertunnel.sdk.exceptions.ProxyStartException;
+import io.github.krlvm.powertunnel.sdk.plugin.PluginInfo;
 import io.github.krlvm.powertunnel.sdk.plugin.PowerTunnelPlugin;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyAddress;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyListener;
@@ -50,7 +51,7 @@ public class PowerTunnel implements PowerTunnelServer {
 
     private final List<PowerTunnelPlugin> plugins = new ArrayList<>();
 
-    private final Map<ServerListener, PowerTunnelPlugin> serverListeners = new HashMap<>();
+    private final Map<ServerListener, PluginInfo> serverListeners = new HashMap<>();
     private final Map<ProxyListener, ProxyListenerInfo> proxyListeners = new LinkedHashMap<>();
     private static final int DEFAULT_LISTENER_PRIORITY = 0;
 
@@ -121,15 +122,15 @@ public class PowerTunnel implements PowerTunnelServer {
     // region Proxy Listeners Management
 
     @Override
-    public void registerProxyListener(@NotNull PowerTunnelPlugin plugin, @NotNull ProxyListener listener) {
-        this.registerProxyListener(plugin, listener, DEFAULT_LISTENER_PRIORITY);
+    public void registerProxyListener(@NotNull PluginInfo pluginInfo, @NotNull ProxyListener listener) {
+        this.registerProxyListener(pluginInfo, listener, DEFAULT_LISTENER_PRIORITY);
     }
 
     @Override
-    public void registerProxyListener(@NotNull PowerTunnelPlugin plugin, @NotNull ProxyListener listener, int priority) {
+    public void registerProxyListener(@NotNull PluginInfo pluginInfo, @NotNull ProxyListener listener, int priority) {
         if(proxyListeners.containsKey(listener)) throw new IllegalStateException("Proxy Listener is already registered");
         // TODO: Sort listeners by priority
-        proxyListeners.put(listener, new ProxyListenerInfo(plugin, priority));
+        proxyListeners.put(listener, new ProxyListenerInfo(pluginInfo, priority));
     }
 
     @Override
@@ -142,9 +143,9 @@ public class PowerTunnel implements PowerTunnelServer {
     // region Server Listeners Management
 
     @Override
-    public void registerServerListener(@NotNull PowerTunnelPlugin plugin, @NotNull ServerListener listener) {
+    public void registerServerListener(@NotNull PluginInfo pluginInfo, @NotNull ServerListener listener) {
         if(serverListeners.containsKey(listener)) throw new IllegalStateException("Server Listener is already registered");
-        serverListeners.put(listener, plugin);
+        serverListeners.put(listener, pluginInfo);
     }
 
     @Override
@@ -154,14 +155,14 @@ public class PowerTunnel implements PowerTunnelServer {
     }
 
     private void callServerListeners(@NotNull ServerListenerCallback callback) {
-        for (Map.Entry<ServerListener, PowerTunnelPlugin> entry : serverListeners.entrySet()) {
+        for (Map.Entry<ServerListener, PluginInfo> entry : serverListeners.entrySet()) {
             try {
                 callback.call(entry.getKey());
             } catch (Exception ex) {
                 // TODO: Use Logger
                 System.out.printf(
                         "An error occurred in ServerListener of plugin '%s' [class=%s]: %s%n",
-                        entry.getValue().getInfo().getId(), entry.getKey().getClass().getSimpleName(), ex.getMessage()
+                        entry.getValue().getId(), entry.getKey().getClass().getSimpleName(), ex.getMessage()
                 );
                 ex.printStackTrace();
             }
