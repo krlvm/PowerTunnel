@@ -37,11 +37,11 @@ public class ConfigurationStore implements Configuration {
         this.read(new FileReader(file));
     }
 
-    public void read(InputStream in) {
+    public void read(InputStream in) throws IOException {
         this.read(new InputStreamReader(in, StandardCharsets.UTF_8));
     }
 
-    public void read(Reader source) {
+    public void read(Reader source) throws IOException {
         data.clear();
 
         final BufferedReader reader = new BufferedReader(source);
@@ -52,7 +52,7 @@ public class ConfigurationStore implements Configuration {
                 line.substring(pos + DELIMITER_LENGTH)
             );
         });
-        //reader.close();
+        reader.close();
     }
 
     public void save(File file) throws IOException {
