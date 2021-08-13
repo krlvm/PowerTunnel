@@ -20,6 +20,7 @@ package io.github.krlvm.powertunnel.listener;
 import io.github.krlvm.powertunnel.sdk.http.ProxyRequest;
 import io.github.krlvm.powertunnel.sdk.http.ProxyResponse;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyListener;
+import io.github.krlvm.powertunnel.sdk.types.FullAddress;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,14 +59,14 @@ public class CoreProxyListener implements ProxyListener {
     }
 
     @Override
-    public int onGetChunkSize(final @NotNull String hostname) {
-        Object result = callProxyListeners(listener -> listener.onGetChunkSize(hostname));
+    public int onGetChunkSize(final @NotNull FullAddress address) {
+        Object result = callProxyListeners(listener -> listener.onGetChunkSize(address));
         return result != null ? ((int) result) : 0;
     }
 
     @Override
-    public boolean isFullChunking(@NotNull String hostname) {
-        Object result = callProxyListeners(listener -> listener.isFullChunking(hostname));
+    public boolean isFullChunking(@NotNull FullAddress address) {
+        Object result = callProxyListeners(listener -> listener.isFullChunking(address));
         return result != null && ((boolean) result);
     }
 

@@ -37,12 +37,12 @@ public abstract class ProxyAdapter implements ProxyListener {
     public void onProxyToClientResponse(@NotNull ProxyResponse response) {}
 
     @Override
-    public int onGetChunkSize(@NotNull String hostname) {
+    public int onGetChunkSize(@NotNull FullAddress address) {
         return 0;
     }
 
     @Override
-    public boolean isFullChunking(@NotNull String hostname) {
+    public boolean isFullChunking(@NotNull FullAddress address) {
         return false;
     }
 

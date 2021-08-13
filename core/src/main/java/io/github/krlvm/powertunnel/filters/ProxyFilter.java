@@ -86,13 +86,13 @@ public class ProxyFilter extends HttpFiltersAdapter {
     @Override
     public int chunkSize() {
         if(address == null) return super.chunkSize();
-        return listener.onGetChunkSize(address.getHost());
+        return listener.onGetChunkSize(address);
     }
 
     @Override
     public boolean fullChunking() {
         if(address == null) return super.fullChunking();
-        return listener.isFullChunking(address.getHost());
+        return listener.isFullChunking(address);
     }
 
     @Override

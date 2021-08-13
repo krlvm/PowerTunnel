@@ -19,6 +19,7 @@ package io.github.krlvm.powertunnel.sdk.proxy;
 
 import io.github.krlvm.powertunnel.sdk.http.ProxyRequest;
 import io.github.krlvm.powertunnel.sdk.http.ProxyResponse;
+import io.github.krlvm.powertunnel.sdk.types.FullAddress;
 import org.jetbrains.annotations.NotNull;
 
 public interface ProxyListener {
@@ -29,7 +30,7 @@ public interface ProxyListener {
     void onServerToProxyResponse(@NotNull ProxyResponse response);
     void onProxyToClientResponse(@NotNull ProxyResponse response);
 
-    int onGetChunkSize(@NotNull String hostname);
-    boolean isFullChunking(@NotNull String hostname);
+    int onGetChunkSize(@NotNull FullAddress address);
+    boolean isFullChunking(@NotNull FullAddress address);
     String onGetSNI(@NotNull String hostname);
 }
