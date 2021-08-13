@@ -30,7 +30,7 @@ public class ConfigurationStore implements Configuration {
     private static final String DELIMITER = ": ";
     private static final int DELIMITER_LENGTH = DELIMITER.length();
 
-    private final Map<String, String> data = new HashMap<>();
+    protected final Map<String, String> data = new HashMap<>();
 
     public void read(File file) throws IOException {
         file.createNewFile();
