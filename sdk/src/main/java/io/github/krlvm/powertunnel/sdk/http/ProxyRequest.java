@@ -28,6 +28,9 @@ public interface ProxyRequest extends ProxyMessage {
         return getMethod() == HttpMethod.CONNECT;
     }
 
+    void setBlocked(boolean blocked);
+    boolean isBlocked();
+
     @Nullable ProxyResponse getResponse();
     void setResponse(@NotNull ProxyResponse response);
 }

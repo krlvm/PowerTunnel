@@ -52,6 +52,23 @@ public class LProxyRequest extends LProxyMessage<HttpRequest> implements ProxyRe
     }
 
     @Override
+    public void setBlocked(boolean blocked) {
+        if (blocked) {
+            setResponse(new LProxyResponse.Builder("Access denied by proxy server", 403)
+                    .contentType("text/plain")
+                    .build()
+            );
+        } else {
+            this.response = null;
+        }
+    }
+
+    @Override
+    public boolean isBlocked() {
+        return this.response != null;
+    }
+
+    @Override
     public @Nullable ProxyResponse getResponse() {
         return this.response;
     }
