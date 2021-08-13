@@ -22,4 +22,15 @@ public class BuildConstants {
     public static final String REPO = "https://github.com/krlvm/PowerTunnel/tree/next";
     public static final String VERSION = "v2.0-alpha";
     public static final int VERSION_CODE = 90;
+
+    public static boolean IS_RELEASE = isReleaseVersion(VERSION);
+    public static final boolean DEBUG = !IS_RELEASE;
+
+    public static boolean isReleaseVersion(final String version) {
+        return version.contains("-dev") ||
+                version.contains("-alpha") ||
+                version.contains("-beta") ||
+                version.contains("-preview") ||
+                version.contains("-rc");
+    }
 }
