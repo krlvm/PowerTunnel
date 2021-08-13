@@ -16,21 +16,11 @@
  */
 
 plugins {
-    id 'java'
     id 'java-library'
 }
 
 group 'io.github.krlvm.powertunnel.proxy'
 version '2.0-SNAPSHOT'
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-    options.compilerArgs += ['-Xlint:deprecation']
-}
 
 repositories {
     mavenCentral()
@@ -42,8 +32,4 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-}
-
-test {
-    useJUnitPlatform()
 }

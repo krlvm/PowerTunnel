@@ -16,32 +16,30 @@
  */
 
 plugins {
-    id 'java'
     id 'application'
     id 'distribution'
 }
 
-group 'io.github.krlvm'
 version '2.0-SNAPSHOT'
-ext {
-    isReleaseVersion = !version.endsWith('SNAPSHOT')
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-    options.compilerArgs += ['-Xlint:deprecation']
-}
 
 application {
     mainClass = 'ru.krlvm.powertunnel.PowerTunnel'
 }
 
-repositories {
-    mavenCentral()
+task fatJar(type: Jar) {
+    archiveClassifier = 'all'
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes(
+                'Main-Class': application.mainClass
+        )
+    }
+    from {
+        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+    } {
+        exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+    }
+    with jar
 }
 
 dependencies {
@@ -60,29 +58,4 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
-}
-
-test {
-    useJUnitPlatform()
-}
-
-run {
-    workingDir = new File('build/run/')
-    workingDir.mkdirs()
-}
-
-task fatJar(type: Jar) {
-    archiveClassifier = 'all'
-    duplicatesStrategy DuplicatesStrategy.EXCLUDE
-    manifest {
-        attributes(
-                'Main-Class': application.mainClass
-        )
-    }
-    from {
-        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
-    } {
-        exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
-    }
-    with jar
 }

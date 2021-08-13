@@ -22,8 +22,8 @@ plugins {
 group 'io.github.krlvm.powertunnel.plugins'
 version '2.0-SNAPSHOT'
 
-repositories {
-    mavenCentral()
+jar {
+    destinationDirectory.set(file("$rootDir/core/build/run/plugins"))
 }
 
 dependencies {
@@ -31,12 +31,4 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-}
-
-test {
-    useJUnitPlatform()
-}
-
-jar {
-    destinationDirectory.set(file("$rootDir/core/build/run/plugins"))
 }
