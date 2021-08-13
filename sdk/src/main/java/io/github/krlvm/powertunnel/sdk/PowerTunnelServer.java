@@ -59,7 +59,7 @@ public interface PowerTunnelServer {
     /**
      * Registers proxy server listener
      *
-     * @param plugin registrant plugin
+     * @param pluginInfo registrant plugin
      * @param listener proxy server listener
      * @return ID of registered listener
      */
@@ -68,7 +68,7 @@ public interface PowerTunnelServer {
     /**
      * Registers proxy server listener
      *
-     * @param plugin registrant plugin
+     * @param pluginInfo registrant plugin
      * @param listener proxy server listeners
      * @param priority proxy server listener priority
      */
@@ -83,7 +83,7 @@ public interface PowerTunnelServer {
     /**
      * Registers server listener
      *
-     * @param plugin registrant plugin
+     * @param pluginInfo registrant plugin
      * @param listener proxy listener
      */
     void registerServerListener(@NotNull PluginInfo pluginInfo, @NotNull ServerListener listener);
