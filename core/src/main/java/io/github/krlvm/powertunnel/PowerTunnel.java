@@ -31,6 +31,7 @@ import io.github.krlvm.powertunnel.sdk.proxy.ProxyAddress;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyListener;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyServer;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyStatus;
+import io.github.krlvm.powertunnel.sdk.types.PowerTunnelPlatform;
 import io.github.krlvm.powertunnel.sdk.types.VersionInfo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -53,6 +54,7 @@ public class PowerTunnel implements PowerTunnelServer {
     private ProxyStatus status = ProxyStatus.NOT_RUNNING;
     private final ProxyAddress address;
 
+    private final PowerTunnelPlatform platform;
     private final List<PowerTunnelPlugin> plugins = new ArrayList<>();
 
     private final Map<ServerListener, PluginInfo> serverListeners = new HashMap<>();
@@ -60,7 +62,12 @@ public class PowerTunnel implements PowerTunnelServer {
     private static final int DEFAULT_LISTENER_PRIORITY = 0;
 
     public PowerTunnel(ProxyAddress address) {
+        this(address, PowerTunnelPlatform.DESKTOP);
+    }
+
+    public PowerTunnel(ProxyAddress address, PowerTunnelPlatform platform) {
         this.address = address;
+        this.platform = platform;
     }
 
     @Override
@@ -221,6 +228,11 @@ public class PowerTunnel implements PowerTunnelServer {
                 );
             }
         }
+    }
+
+    @Override
+    public PowerTunnelPlatform getPlatform() {
+        return platform;
     }
 
     @Override
