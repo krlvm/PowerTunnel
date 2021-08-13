@@ -56,7 +56,7 @@ public class PowerTunnel implements PowerTunnelServer {
     private final List<PowerTunnelPlugin> plugins = new ArrayList<>();
 
     private final Map<ServerListener, PluginInfo> serverListeners = new HashMap<>();
-    private final Map<ProxyListener, ProxyListenerInfo> proxyListeners = new LinkedHashMap<>();
+    private final Map<ProxyListenerInfo, ProxyListener> proxyListeners = new TreeMap<>(Comparator.comparingInt(ProxyListenerInfo::getPriority));
     private static final int DEFAULT_LISTENER_PRIORITY = 0;
 
     public PowerTunnel(ProxyAddress address) {
@@ -136,14 +136,14 @@ public class PowerTunnel implements PowerTunnelServer {
 
     @Override
     public void registerProxyListener(@NotNull PluginInfo pluginInfo, @NotNull ProxyListener listener, int priority) {
-        if(proxyListeners.containsKey(listener)) throw new IllegalStateException("Proxy Listener is already registered");
-        // TODO: Sort listeners by priority
-        proxyListeners.put(listener, new ProxyListenerInfo(pluginInfo, priority));
+        if(proxyListeners.containsValue(listener)) throw new IllegalStateException("Proxy Listener is already registered");
+        proxyListeners.put(new ProxyListenerInfo(pluginInfo, priority), listener);
     }
 
     @Override
     public void unregisterProxyListener(@NotNull ProxyListener listener) {
-        if(!proxyListeners.containsKey(listener)) throw new IllegalStateException("Proxy Listener is not registered");
+        if(!proxyListeners.containsValue(listener)) throw new IllegalStateException("Proxy Listener is not registered");
+        proxyListeners.values().remove(listener);
     }
 
     // endregion

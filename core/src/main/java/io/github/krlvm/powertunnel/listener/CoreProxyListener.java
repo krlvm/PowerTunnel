@@ -31,9 +31,9 @@ public class CoreProxyListener implements ProxyListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CoreProxyListener.class);
 
-    private final Map<ProxyListener, ProxyListenerInfo> proxyListeners;
+    private final Map<ProxyListenerInfo, ProxyListener> proxyListeners;
 
-    public CoreProxyListener(Map<ProxyListener, ProxyListenerInfo> proxyListeners) {
+    public CoreProxyListener(Map<ProxyListenerInfo, ProxyListener> proxyListeners) {
         this.proxyListeners = proxyListeners;
     }
 
@@ -77,14 +77,14 @@ public class CoreProxyListener implements ProxyListener {
 
     private Object callProxyListeners(ProxyListenerCallback callback) {
         Object result = null;
-        for (Map.Entry<ProxyListener, ProxyListenerInfo> entry : proxyListeners.entrySet()) {
+        for (Map.Entry<ProxyListenerInfo, ProxyListener> entry : proxyListeners.entrySet()) {
             try {
-                result = callback.call(entry.getKey());
+                result = callback.call(entry.getValue());
             } catch (Exception ex) {
                 LOGGER.error(
                         "An error occurred in ProxyListener of '{}' [{}, priority={}]: {}",
-                        entry.getValue().getPluginInfo().getId(),
-                        entry.getKey().getClass().getSimpleName(), entry.getValue().getPriority(),
+                        entry.getKey().getPluginInfo().getId(),
+                        entry.getValue().getClass().getSimpleName(), entry.getKey().getPriority(),
                         ex.getMessage(),
                         ex
                 );
