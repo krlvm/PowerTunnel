@@ -34,6 +34,8 @@ import io.github.krlvm.powertunnel.sdk.proxy.ProxyStatus;
 import io.github.krlvm.powertunnel.sdk.types.VersionInfo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,6 +46,8 @@ import java.util.*;
 public class PowerTunnel implements PowerTunnelServer {
 
     public static final VersionInfo VERSION = new VersionInfo(BuildConstants.VERSION, BuildConstants.VERSION_CODE);
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PowerTunnel.class);
 
     private LittleProxyServer server;
     private ProxyStatus status = ProxyStatus.NOT_RUNNING;
@@ -114,9 +118,13 @@ public class PowerTunnel implements PowerTunnelServer {
     }
 
     private void setStatus(ProxyStatus status) {
+        LOGGER.debug("Proxy server status is changing from {} to {}", this.status.name(), status.name());
+
         callServerListeners((listener -> listener.beforeProxyStatusChanged(status)));
         this.status = status;
         callServerListeners((listener -> listener.onProxyStatusChanged(status)));
+
+        LOGGER.debug("Proxy server status has changed to {}", status.name());
     }
 
     // region Proxy Listeners Management
@@ -159,12 +167,11 @@ public class PowerTunnel implements PowerTunnelServer {
             try {
                 callback.call(entry.getKey());
             } catch (Exception ex) {
-                // TODO: Use Logger
-                System.out.printf(
-                        "An error occurred in ServerListener of plugin '%s' [class=%s]: %s%n",
-                        entry.getValue().getId(), entry.getKey().getClass().getSimpleName(), ex.getMessage()
+                LOGGER.error(
+                        "An error occurred in ServerListener of plugin '{}' [{}]: {}",
+                        entry.getValue().getId(), entry.getKey().getClass().getSimpleName(), ex.getMessage(),
+                        ex
                 );
-                ex.printStackTrace();
             }
         }
     }
@@ -182,8 +189,7 @@ public class PowerTunnel implements PowerTunnelServer {
         try {
             configuration.read(file);
         } catch (IOException ex) {
-            // TODO: Handle error
-            ex.printStackTrace();
+            LOGGER.error("Failed to read configuration file '{}'", file.getName(), ex);
         }
         return configuration;
     }
@@ -191,6 +197,12 @@ public class PowerTunnel implements PowerTunnelServer {
     public void registerPlugin(PowerTunnelPlugin plugin) {
         this.plugins.add(plugin);
         plugin.attachServer(this);
+
+        final PluginInfo info = plugin.getInfo();
+        LOGGER.info(
+                "Registered plugin '{}' [{}] v{} ({}) by {}",
+                info.getName(), info.getId(), info.getVersion(), info.getVersionCode(), info.getAuthor()
+        );
     }
 
     public List<PowerTunnelPlugin> getPlugins() {
@@ -202,10 +214,10 @@ public class PowerTunnel implements PowerTunnelServer {
             try {
                 plugin.onProxyInitialization(server);
             } catch (Exception ex) {
-                // TODO: Use Logger
-                System.out.printf(
-                        "An error occurred when plugin '%s' was handling proxy initialization: %s%n",
-                        plugin.getInfo().getId(), ex.getMessage()
+                LOGGER.error(
+                        "An error occurred when plugin '{}' was handling proxy initialization: {}",
+                        plugin.getInfo().getId(), ex.getMessage(),
+                        ex
                 );
             }
         }

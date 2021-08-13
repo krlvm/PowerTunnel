@@ -96,4 +96,11 @@ public abstract class PowerTunnelPlugin {
      * @param proxy PowerTunnel Proxy Server
      */
     public void onProxyInitialization(@NotNull ProxyServer proxy) {}
+
+    @Override
+    public String toString() {
+        return "PowerTunnelPlugin{" +
+                "info=" + info +
+                '}';
+    }
 }

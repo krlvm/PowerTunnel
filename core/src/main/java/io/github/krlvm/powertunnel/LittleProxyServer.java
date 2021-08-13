@@ -31,12 +31,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.littleshoot.proxy.*;
 import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 
 public class LittleProxyServer implements ProxyServer {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(LittleProxyServer.class);
 
     private DefaultHttpProxyServer server;
     private HttpProxyServerBootstrap bootstrap;
@@ -66,6 +70,7 @@ public class LittleProxyServer implements ProxyServer {
     public void start(ProxyListener listener) throws ProxyStartException, BindException {
         ensureBootstrapAvailable();
 
+        LOGGER.info("Starting LittleProxy Server...");
         if(this.upstreamProxyServer != null) {
             try {
                 this.bootstrap.withChainProxyManager(new UpstreamProxyChainedProxyManager(
@@ -83,7 +88,7 @@ public class LittleProxyServer implements ProxyServer {
         this.bootstrap.withFiltersSource(new ProxyFiltersSourceAdapter(listener, isFullRequest, isFullResponse));
 
         this.server = ((DefaultHttpProxyServer) this.bootstrap.start());
-        // TODO: Log "Server started"
+        LOGGER.info("LittleProxy Server is listening at {}", getAddress());
 
         this.isRunning = true;
         this.bootstrap = null;
@@ -99,19 +104,23 @@ public class LittleProxyServer implements ProxyServer {
     /**
      * Immediately shutdowns LittleProxy server
      */
-    public void kills() {
+    public void kill() {
         this.stop(false);
     }
 
     public void stop(boolean graceful) {
         ensureServerAvailable();
+
+        LOGGER.info("Stopping LittleProxy Server{}...", graceful ? "" : " (non-graceful)");
         if(graceful) {
             this.server.stop();
         } else {
             this.server.abort();
         }
+        this.server = null;
+
         System.gc();
-        // TODO: Log "Server stopped"
+        LOGGER.info("LittleProxy Server has stopped");
     }
 
     public boolean isRunning() {
@@ -163,7 +172,7 @@ public class LittleProxyServer implements ProxyServer {
     public @NotNull ProxyAddress getAddress() {
         ensureServerAvailable();
         final InetSocketAddress address = server.getListenAddress();
-        return new ProxyAddress(address.getHostName(), address.getPort());
+        return new ProxyAddress(address.getHostString(), address.getPort());
     }
 
     @Override

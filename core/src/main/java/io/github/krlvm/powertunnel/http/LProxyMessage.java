@@ -25,11 +25,15 @@ import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpObject;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 
 public abstract class LProxyMessage<T> implements ProxyMessage {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(LProxyMessage.class);
 
     protected final T httpObject;
     protected HttpHeaders headers;
@@ -73,8 +77,7 @@ public abstract class LProxyMessage<T> implements ProxyMessage {
             contentField.set(httpObject, Unpooled.copiedBuffer(bytes));
             ((HttpMessage) httpObject).headers().set(HttpHeaderNames.CONTENT_LENGTH, bytes.length);
         } catch (ReflectiveOperationException ex) {
-            // TODO: Handle "Failed to set HttpObject content" error
-            ex.printStackTrace();
+            LOGGER.error("Failed to set HttpObject content: {}", ex.getMessage(), ex);
         }
     }
     public static void setHttpObjectContent(HttpObject httpObject, String content) {

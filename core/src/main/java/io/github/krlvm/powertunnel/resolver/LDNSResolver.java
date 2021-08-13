@@ -19,11 +19,15 @@ package io.github.krlvm.powertunnel.resolver;
 
 import io.github.krlvm.powertunnel.sdk.proxy.DNSResolver;
 import org.littleshoot.proxy.HostResolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 
 public class LDNSResolver implements HostResolver {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(LDNSResolver.class);
 
     private final DNSResolver resolver;
     private final HostResolver fallbackResolver;
@@ -38,10 +42,11 @@ public class LDNSResolver implements HostResolver {
         try {
             return resolver.resolve(host, port);
         } catch (UnknownHostException ex) {
-            // TODO: Use Logger, print hostname to debug output
-            System.out.printf("DNS Resolver [%s] failed to resolve hostname: %s%n", resolver.getClass().getSimpleName(), ex.getMessage());
-            ex.printStackTrace();
-
+            LOGGER.error(
+                    "DNS Resolver [{}] has failed to resolve hostname: {}",
+                    resolver.getClass().getSimpleName(), ex.getMessage(),
+                    ex)
+            ;
             if(this.fallbackResolver != null) return this.fallbackResolver.resolve(host, port);
             return null;
         }

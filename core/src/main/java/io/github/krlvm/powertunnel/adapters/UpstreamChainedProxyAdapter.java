@@ -24,11 +24,15 @@ import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
 import org.littleshoot.proxy.ChainedProxyAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 
 public class UpstreamChainedProxyAdapter extends ChainedProxyAdapter {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UpstreamChainedProxyAdapter.class);
 
     private final InetSocketAddress address;
     private final String authorizationCode;
@@ -142,8 +146,7 @@ public class UpstreamChainedProxyAdapter extends ChainedProxyAdapter {
         try {
             return address != null ? address : this.upstreamProxyAddress.resolve();
         } catch (UnknownHostException ex) {
-            // TODO: Handle "Failed to resolve upstream proxy address" error (not cached)
-            ex.printStackTrace();
+            LOGGER.error("Failed to resolve upstream proxy address");
             return null;
         }
     }

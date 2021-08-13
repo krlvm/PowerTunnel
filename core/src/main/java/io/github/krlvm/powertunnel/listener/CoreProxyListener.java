@@ -21,11 +21,15 @@ import io.github.krlvm.powertunnel.sdk.http.ProxyRequest;
 import io.github.krlvm.powertunnel.sdk.http.ProxyResponse;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyListener;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CoreProxyListener implements ProxyListener {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CoreProxyListener.class);
 
     private final Map<ProxyListener, ProxyListenerInfo> proxyListeners;
 
@@ -77,14 +81,13 @@ public class CoreProxyListener implements ProxyListener {
             try {
                 result = callback.call(entry.getKey());
             } catch (Exception ex) {
-                // TODO: Use Logger
-                System.out.printf(
-                        "An error occurred in ProxyListener of plugin '%s' [class=%s, priority=%s]: %s%n",
+                LOGGER.error(
+                        "An error occurred in ProxyListener of '{}' [{}, priority={}]: {}",
                         entry.getValue().getPluginInfo().getId(),
                         entry.getKey().getClass().getSimpleName(), entry.getValue().getPriority(),
-                        ex.getMessage()
+                        ex.getMessage(),
+                        ex
                 );
-                ex.printStackTrace();
             }
         }
         return result;
