@@ -70,7 +70,7 @@ public class MainFrame extends AppFrame {
     private final JPanel extensibleButtonsPanel;
 
     public MainFrame(GraphicalApp app) {
-        super(BuildConstants.NAME, app);
+        super(null, app);
 
         final GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
