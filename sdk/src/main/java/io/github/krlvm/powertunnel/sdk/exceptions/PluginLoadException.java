@@ -17,7 +17,7 @@
 
 package io.github.krlvm.powertunnel.sdk.exceptions;
 
-public class PluginLoadException extends Exception {
+public class PluginLoadException extends ProxyStartException {
 
     private final String jarFile;
 
