@@ -27,10 +27,12 @@ public class BuildConstants {
     public static final boolean DEBUG = !IS_RELEASE;
 
     public static boolean isReleaseVersion(final String version) {
-        return version.contains("-dev") ||
+        return !(
+                version.contains("-dev") ||
                 version.contains("-alpha") ||
                 version.contains("-beta") ||
                 version.contains("-preview") ||
-                version.contains("-rc");
+                version.contains("-rc")
+        );
     }
 }
