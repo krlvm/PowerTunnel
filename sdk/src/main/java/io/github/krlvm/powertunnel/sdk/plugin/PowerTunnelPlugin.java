@@ -85,15 +85,7 @@ public abstract class PowerTunnelPlugin {
 
     public Configuration readConfiguration() {
         validateServer();
-        return getServer().readConfiguration(new File(
-                getConfigurationDirectory().getPath() + File.separator + info.getId() + ".ini")
-        );
-    }
-
-    public File getConfigurationDirectory() {
-        final File file = new File("configs");
-        file.mkdir();
-        return file;
+        return getServer().readConfiguration(getConfiguration(getInfo()));
     }
 
 
@@ -110,5 +102,12 @@ public abstract class PowerTunnelPlugin {
         return "PowerTunnelPlugin{" +
                 "info=" + info +
                 '}';
+    }
+
+    public static File getConfiguration(PluginInfo pluginInfo) {
+        return new File(Configuration.getConfigurationDirectory().getPath() +
+                File.separator +
+                pluginInfo.getId() + ".ini"
+        );
     }
 }

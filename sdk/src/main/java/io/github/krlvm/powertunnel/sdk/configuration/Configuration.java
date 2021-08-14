@@ -40,4 +40,11 @@ public interface Configuration {
 
     Collection<String> keys();
     void clear();
+
+
+    static File getConfigurationDirectory() {
+        final File dir = new File("configs");
+        dir.mkdir();
+        return dir;
+    }
 }
