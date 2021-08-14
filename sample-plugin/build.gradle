@@ -23,7 +23,7 @@ group 'io.github.krlvm.powertunnel.plugins'
 version '2.0-SNAPSHOT'
 
 jar {
-    destinationDirectory.set(file("$rootDir/core/build/run/plugins"))
+    destinationDirectory.set(file("$rootDir/desktop/build/run/plugins"))
 }
 
 dependencies {
