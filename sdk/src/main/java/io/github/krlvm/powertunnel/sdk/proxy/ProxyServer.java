@@ -302,4 +302,20 @@ public interface ProxyServer {
     boolean isAllowRequestsToOriginServer();
 
     // endregion
+
+    // region MITM
+
+    /**
+     * Sets whether MITM is enabled
+     * @param enabled whether MITM is enabled
+     */
+    void setMITMEnabled(boolean enabled);
+
+    /**
+     * Returns whether MITM is enabled
+     * @return whether MITM is enabled
+     */
+    boolean isMITMEnabled();
+
+    // endregion
 }
