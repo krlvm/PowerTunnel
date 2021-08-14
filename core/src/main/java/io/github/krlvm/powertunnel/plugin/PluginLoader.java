@@ -57,7 +57,10 @@ public class PluginLoader {
     }
 
     public static void loadPlugins(PowerTunnel server) throws PluginLoadException {
-        File[] files = enumeratePlugins();
+        loadPlugins(enumeratePlugins(), server);
+    }
+
+    public static void loadPlugins(File[] files, PowerTunnel server) throws PluginLoadException {
         for (File file : files) {
             if(file.isDirectory()) continue;
             server.registerPlugin(PluginLoader.loadPlugin(file));
