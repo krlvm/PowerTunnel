@@ -30,6 +30,7 @@ public class MITMAuthority {
     }
 
     public static Authority create(File certificateDirectory, char[] password) {
+        if(!certificateDirectory.exists()) certificateDirectory.mkdir();
         return new Authority(certificateDirectory, CERTIFICATE_ALIAS, password,
                 "PowerTunnel Root CA",
                 "PowerTunnel",
