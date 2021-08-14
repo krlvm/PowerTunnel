@@ -31,6 +31,22 @@ public class UIUtility {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UIUtility.class);
 
+    public static void showInfoDialog(JFrame parent, String message) {
+        showInfoDialog(parent, BuildConstants.NAME, message);
+    }
+
+    public static void showInfoDialog(JFrame parent, String title, String message) {
+        JOptionPane.showMessageDialog(parent, message, title, JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public static void showErrorDialog(JFrame parent, String message) {
+        showErrorDialog(parent, "Error", message);
+    }
+
+    public static void showErrorDialog(JFrame parent, String title, String message) {
+        JOptionPane.showMessageDialog(parent, message, title, JOptionPane.ERROR_MESSAGE);
+    }
+
     public static void setTooltip(JComponent component, String tooltip) {
         component.setToolTipText("<html>" + tooltip.replace("\n", "<br>") + "</html>");
     }

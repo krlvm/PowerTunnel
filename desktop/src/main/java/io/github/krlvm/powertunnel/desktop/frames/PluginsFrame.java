@@ -17,22 +17,31 @@
 
 package io.github.krlvm.powertunnel.desktop.frames;
 
+import io.github.krlvm.powertunnel.configuration.ConfigurationStore;
 import io.github.krlvm.powertunnel.desktop.BuildConstants;
 import io.github.krlvm.powertunnel.desktop.application.DesktopApp;
 import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
 import io.github.krlvm.powertunnel.desktop.ui.PluginInfoRenderer;
+import io.github.krlvm.powertunnel.desktop.utilities.UIUtility;
 import io.github.krlvm.powertunnel.desktop.utilities.Utility;
+import io.github.krlvm.powertunnel.exceptions.PreferenceParseException;
 import io.github.krlvm.powertunnel.plugin.PluginLoader;
+import io.github.krlvm.powertunnel.preferences.PreferenceGroup;
+import io.github.krlvm.powertunnel.preferences.PreferenceParser;
+import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
 import io.github.krlvm.powertunnel.sdk.exceptions.PluginLoadException;
 import io.github.krlvm.powertunnel.sdk.plugin.PluginInfo;
+import io.github.krlvm.powertunnel.sdk.plugin.PowerTunnelPlugin;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class PluginsFrame extends AppFrame {
 
@@ -59,7 +68,7 @@ public class PluginsFrame extends AppFrame {
         settingsButton.addActionListener(e -> {
             PluginInfo value = list.getSelectedValue();
             if(value == null) return;
-
+            openPreferences(value);
         });
 
         list.addListSelectionListener(e -> {
@@ -68,6 +77,7 @@ public class PluginsFrame extends AppFrame {
         });
 
         final JPanel controlPanel = new JPanel(new GridBagLayout());
+        controlPanel.setBorder(BorderFactory.createEmptyBorder(PADDING, 0, 0, 0));
         controlPanel.add(homepageButton, gbc);
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.weightx = 1;
@@ -138,5 +148,69 @@ public class PluginsFrame extends AppFrame {
                 }
             }
         }
+    }
+
+    private void openPreferences(PluginInfo pluginInfo) {
+        final InputStream in;
+        try {
+            in = PluginLoader.getJarEntry(
+                    new File(PluginLoader.PLUGINS_DIR + File.separator + pluginInfo.getSource()),
+                    PreferenceParser.FILE
+            );
+        } catch (IOException ex) {
+            UIUtility.showErrorDialog(
+                    this, "Failed to open plugin preferences",
+                    "Failed to open plugin jar file: " + ex.getMessage()
+            );
+            ex.printStackTrace();
+            return;
+        }
+        if(in == null) {
+            UIUtility.showInfoDialog(this, "Plugin doesn't have preferences");
+            return;
+        }
+        final String json;
+
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
+            json = reader.lines().collect(Collectors.joining(""));
+        } catch (IOException ex) {
+            UIUtility.showErrorDialog(
+                    this, "Failed to open plugin preferences",
+                    "Failed to read preferences schema: " + ex.getMessage()
+            );
+            ex.printStackTrace();
+            return;
+        }
+
+        final List<PreferenceGroup> preferences;
+        try {
+            preferences = PreferenceParser.parsePreferences(pluginInfo.getSource(), json);
+        } catch (PreferenceParseException ex) {
+            UIUtility.showErrorDialog(
+                    this, "Failed to open plugin preferences",
+                    "Failed to parse preferences: " + ex.getMessage()
+            );
+            return;
+        }
+
+        if(preferences.isEmpty()) {
+            UIUtility.showInfoDialog(this, "Plugin preferences is empty");
+            return;
+        }
+
+        final File configurationFile = PowerTunnelPlugin.getConfiguration(pluginInfo);
+        final Configuration configuration = new ConfigurationStore();
+        try {
+            configuration.read(configurationFile);
+        } catch (IOException ex) {
+            UIUtility.showErrorDialog(
+                    this, "Failed to open plugin preferences",
+                    "Failed to load configuration: " + ex.getMessage()
+            );
+            ex.printStackTrace();
+            return;
+        }
+
+        new PreferencesFrame(pluginInfo, configurationFile, configuration, preferences).showFrame();
     }
 }

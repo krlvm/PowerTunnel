@@ -24,6 +24,7 @@ import io.github.krlvm.powertunnel.desktop.frames.OptionsFrame;
 import io.github.krlvm.powertunnel.desktop.frames.PluginsFrame;
 import io.github.krlvm.powertunnel.desktop.managers.TrayManager;
 import io.github.krlvm.powertunnel.desktop.ui.JPanelCallback;
+import io.github.krlvm.powertunnel.desktop.utilities.UIUtility;
 import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
 import io.github.krlvm.powertunnel.sdk.exceptions.ProxyStartException;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyStatus;
@@ -74,6 +75,7 @@ public class GraphicalApp extends DesktopApp {
     public void start() {
         final ProxyStartException ex = startInternal();
         if(ex == null) return;
+        UIUtility.showErrorDialog(frame, "Failed to start server", ex.getMessage());
         JOptionPane.showMessageDialog(frame, ex.getMessage(), "Failed to start server", JOptionPane.ERROR_MESSAGE);
     }
 

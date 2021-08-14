@@ -53,7 +53,8 @@ public abstract class DesktopApp implements ServerListener {
             "krlvm",
             BuildConstants.REPO,
             null,
-            io.github.krlvm.powertunnel.BuildConstants.VERSION_CODE
+            io.github.krlvm.powertunnel.BuildConstants.VERSION_CODE,
+            null
     );
 
     protected final Configuration configuration;
