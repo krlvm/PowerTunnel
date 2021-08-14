@@ -27,6 +27,8 @@ import java.util.List;
 
 public class PreferenceParser {
 
+    public static final String FILE = "preferences.json";
+
     public static List<PreferenceGroup> parsePreferences(String source, String json) throws PreferenceParseException {
         final JSONArray array;
         try {
