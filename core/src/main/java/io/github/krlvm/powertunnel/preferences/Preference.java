@@ -82,7 +82,9 @@ public class Preference {
         return dependencyValue;
     }
 
-
+    public List<SelectItem> getItems() {
+        return items;
+    }
 
     public static class SelectItem {
         private final String key;
