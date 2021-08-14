@@ -20,8 +20,10 @@ package io.github.krlvm.powertunnel.desktop.application;
 import io.github.krlvm.powertunnel.PowerTunnel;
 import io.github.krlvm.powertunnel.desktop.BuildConstants;
 import io.github.krlvm.powertunnel.mitm.MITMAuthority;
+import io.github.krlvm.powertunnel.plugin.PluginLoader;
 import io.github.krlvm.powertunnel.sdk.ServerListener;
 import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
+import io.github.krlvm.powertunnel.sdk.exceptions.PluginLoadException;
 import io.github.krlvm.powertunnel.sdk.exceptions.ProxyStartException;
 import io.github.krlvm.powertunnel.sdk.plugin.PluginInfo;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyAddress;
@@ -29,7 +31,6 @@ import io.github.krlvm.powertunnel.sdk.proxy.ProxyStatus;
 import io.github.krlvm.powertunnel.sdk.types.PowerTunnelPlatform;
 import io.github.krlvm.powertunnel.sdk.types.VersionInfo;
 import org.jetbrains.annotations.NotNull;
-import org.littleshoot.proxy.mitm.Authority;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +40,8 @@ import java.util.UUID;
 public abstract class DesktopApp implements ServerListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DesktopApp.class);
+
+    public static File[] LOADED_PLUGINS = null;
 
     public static final VersionInfo VERSION = new VersionInfo(BuildConstants.VERSION, BuildConstants.VERSION_CODE);
     private static final PluginInfo PLUGIN_INFO = new PluginInfo(
@@ -88,6 +91,13 @@ public abstract class DesktopApp implements ServerListener {
         );
         this.server.registerServerListener(PLUGIN_INFO, this);
         try {
+            if(LOADED_PLUGINS == null) LOADED_PLUGINS = PluginLoader.enumeratePlugins();
+            PluginLoader.loadPlugins(LOADED_PLUGINS, this.server);
+        } catch (PluginLoadException ex) {
+            LOGGER.error("Failed to load plugin ({}): {}", ex.getJarFile(), ex.getMessage(), ex);
+            return ex;
+        }
+        try {
             this.server.start();
         } catch (ProxyStartException ex) {
             LOGGER.error("Failed to start PowerTunnel: {}", ex.getMessage(), ex);
@@ -118,6 +128,10 @@ public abstract class DesktopApp implements ServerListener {
 
     @Override
     public void onProxyStatusChanged(@NotNull ProxyStatus status) {}
+
+    public Configuration getConfiguration() {
+        return configuration;
+    }
 
     public PowerTunnel getServer() {
         return server;

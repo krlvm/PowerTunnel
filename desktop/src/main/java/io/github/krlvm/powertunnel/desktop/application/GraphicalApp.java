@@ -20,6 +20,8 @@ package io.github.krlvm.powertunnel.desktop.application;
 import io.github.krlvm.powertunnel.desktop.BuildConstants;
 import io.github.krlvm.powertunnel.desktop.Main;
 import io.github.krlvm.powertunnel.desktop.frames.MainFrame;
+import io.github.krlvm.powertunnel.desktop.frames.OptionsFrame;
+import io.github.krlvm.powertunnel.desktop.frames.PluginsFrame;
 import io.github.krlvm.powertunnel.desktop.managers.TrayManager;
 import io.github.krlvm.powertunnel.desktop.ui.JPanelCallback;
 import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
@@ -39,8 +41,10 @@ public class GraphicalApp extends DesktopApp {
     );
 
     private final TrayManager trayManager;
-
     private final MainFrame frame;
+
+    public PluginsFrame pluginsFrame = null;
+    public OptionsFrame optionsFrame = null;
 
     public GraphicalApp(Configuration configuration, boolean start, boolean minimized, boolean tray) {
         super(configuration, start);
@@ -96,11 +100,13 @@ public class GraphicalApp extends DesktopApp {
     }
 
     public void showPluginsFrame() {
-
+        if(pluginsFrame == null) pluginsFrame = new PluginsFrame();
+        pluginsFrame.showFrame();
     }
 
     public void showOptionsFrame() {
-
+        if(optionsFrame == null) optionsFrame = new OptionsFrame();
+        optionsFrame.showFrame();
     }
 
     public void extendButtonsPanel(JPanelCallback callback) {

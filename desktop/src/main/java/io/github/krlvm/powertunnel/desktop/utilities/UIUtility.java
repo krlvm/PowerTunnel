@@ -58,6 +58,10 @@ public class UIUtility {
         return "<html><div style='text-align: center;'>" + text + "</div></html>";
     }
 
+    public static JEditorPane getLabelWithHyperlinkSupport(String html) {
+        return getLabelWithHyperlinkSupport(html, null, 0);
+    }
+
     public static JEditorPane getLabelWithHyperlinkSupport(String html, String styles) {
         return getLabelWithHyperlinkSupport(html, styles, 0);
     }
@@ -70,6 +74,12 @@ public class UIUtility {
      * @return JEditorPane with hyperlink action support
      */
     public static JEditorPane getLabelWithHyperlinkSupport(String html, String styles, int padding) {
+        final JEditorPane pane = new JEditorPane();
+        setEditorPaneContent(pane, html, styles, padding, true);
+        return pane;
+    }
+
+    public static void setEditorPaneContent(JEditorPane pane, String html, String styles, int padding, boolean setBackground) {
         final JLabel label = new JLabel();
         final Color background = label.getBackground();
         final Font font = label.getFont();
@@ -78,14 +88,12 @@ public class UIUtility {
 
         String style = "font-family:" + font.getFamily() + ";" +
                 "font-weight:" + (font.isBold() ? "bold" : "normal") + ";" +
-                "font-size:" + font.getSize() + "pt;" +
-                "background-color:#" + Integer.toHexString(background.getRGB()).substring(2) + ";";
+                "font-size:" + font.getSize() + "pt;";
+        if(setBackground) style += "background-color:#" + Integer.toHexString(background.getRGB()).substring(2) + ";";
         if(styles != null) style += styles;
 
-        JEditorPane pane = new JEditorPane(
-                "text/html",
-                "<html><body style=\"" + style + "\">" + html + "</body></html>"
-        );
+        pane.setContentType("text/html");
+        pane.setText("<html><body style=\"" + style + "\">" + html + "</body></html>");
 
         pane.addHyperlinkListener(e -> {
             if (!e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)) return;
@@ -100,7 +108,5 @@ public class UIUtility {
         pane.setBorder(BorderFactory.createEmptyBorder(padding, padding, padding, padding));
         pane.setBackground(label.getBackground());
         pane.setHighlighter(null);
-
-        return pane;
     }
 }
