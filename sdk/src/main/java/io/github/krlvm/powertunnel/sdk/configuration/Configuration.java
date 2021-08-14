@@ -17,9 +17,14 @@
 
 package io.github.krlvm.powertunnel.sdk.configuration;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 
 public interface Configuration {
+
+    void read(File file) throws IOException;
+    void save(File file) throws IOException;
 
     String get(String key, String defaultValue);
     void set(String key, String value);
