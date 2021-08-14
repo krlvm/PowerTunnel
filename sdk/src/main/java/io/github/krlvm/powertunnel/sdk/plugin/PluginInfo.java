@@ -31,6 +31,8 @@ public class PluginInfo {
     private final String mainClass;
     private final int targetCoreVersion;
 
+    private final String source;
+
     /**
      * @param name plugin name
      * @param description plugin description
@@ -39,6 +41,7 @@ public class PluginInfo {
      * @param homepage plugin homepage
      * @param mainClass plugin main class
      * @param targetCoreVersion plugin target Core version
+     * @param source source jar
      */
     public PluginInfo(
             String id,
@@ -49,7 +52,8 @@ public class PluginInfo {
             String author,
             String homepage,
             String mainClass,
-            int targetCoreVersion
+            int targetCoreVersion,
+            String source
     ) {
         this.id = id;
         this.version = version;
@@ -61,6 +65,8 @@ public class PluginInfo {
 
         this.mainClass = mainClass;
         this.targetCoreVersion = targetCoreVersion;
+
+        this.source = source;
     }
 
     public String getId() {
@@ -97,5 +103,9 @@ public class PluginInfo {
 
     public int getTargetCoreVersion() {
         return targetCoreVersion;
+    }
+
+    public String getSource() {
+        return source;
     }
 }

@@ -88,7 +88,8 @@ public class PluginLoader {
                 store.get(PluginInfoFields.AUTHOR, null),
                 store.get(PluginInfoFields.HOMEPAGE, null),
                 store.get(PluginInfoFields.MAIN_CLASS, null),
-                store.getInt(PluginInfoFields.TARGET_VERSION, 0)
+                store.getInt(PluginInfoFields.TARGET_VERSION, 0),
+                fileName
         );
     }
 
