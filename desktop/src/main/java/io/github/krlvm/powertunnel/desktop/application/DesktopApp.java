@@ -19,16 +19,22 @@ package io.github.krlvm.powertunnel.desktop.application;
 
 import io.github.krlvm.powertunnel.PowerTunnel;
 import io.github.krlvm.powertunnel.desktop.BuildConstants;
+import io.github.krlvm.powertunnel.mitm.MITMAuthority;
 import io.github.krlvm.powertunnel.sdk.ServerListener;
 import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
 import io.github.krlvm.powertunnel.sdk.exceptions.ProxyStartException;
 import io.github.krlvm.powertunnel.sdk.plugin.PluginInfo;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyAddress;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyStatus;
+import io.github.krlvm.powertunnel.sdk.types.PowerTunnelPlatform;
 import io.github.krlvm.powertunnel.sdk.types.VersionInfo;
 import org.jetbrains.annotations.NotNull;
+import org.littleshoot.proxy.mitm.Authority;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.UUID;
 
 public abstract class DesktopApp implements ServerListener {
 
@@ -71,7 +77,15 @@ public abstract class DesktopApp implements ServerListener {
             LOGGER.warn("Attempted to start server when it is already running");
             return null;
         }
-        this.server = new PowerTunnel(address);
+        this.server = new PowerTunnel(
+                address,
+                PowerTunnelPlatform.DESKTOP,
+                configuration.getBoolean("transparent", true),
+                MITMAuthority.create(
+                        new File("cert"),
+                        configuration.get("certificate", UUID.randomUUID().toString()).toCharArray()
+                )
+        );
         this.server.registerServerListener(PLUGIN_INFO, this);
         try {
             this.server.start();
