@@ -35,8 +35,8 @@ import java.util.jar.JarFile;
 
 public class PluginLoader {
 
-    private static final String PLUGINS_DIR = "plugins";
-    private static final String PLUGIN_MANIFEST = "plugin.ini";
+    public static final String PLUGINS_DIR = "plugins";
+    public static final String PLUGIN_MANIFEST = "plugin.ini";
 
     public static File[] enumeratePlugins() {
         final File folder = new File(PLUGINS_DIR);
@@ -67,6 +67,31 @@ public class PluginLoader {
         }
     }
 
+    public static PluginInfo parsePluginInfo(String fileName, InputStream in) throws IOException, PluginLoadException {
+        final ConfigurationStore store = new ConfigurationStore();
+        store.read(in);
+
+        if (!store.contains(PluginInfoFields.ID) ||
+                !store.contains(PluginInfoFields.VERSION) ||
+                !store.contains(PluginInfoFields.VERSION_CODE) ||
+                !store.contains(PluginInfoFields.NAME) ||
+                !store.contains(PluginInfoFields.MAIN_CLASS) ||
+                !store.contains(PluginInfoFields.TARGET_VERSION)
+        ) throw new PluginLoadException(fileName, "Incomplete manifest");
+
+        return new PluginInfo(
+                store.get(PluginInfoFields.ID, null),
+                store.get(PluginInfoFields.VERSION, null),
+                store.getInt(PluginInfoFields.VERSION_CODE, 1),
+                store.get(PluginInfoFields.NAME, null),
+                store.get(PluginInfoFields.DESCRIPTION, null),
+                store.get(PluginInfoFields.AUTHOR, null),
+                store.get(PluginInfoFields.HOMEPAGE, null),
+                store.get(PluginInfoFields.MAIN_CLASS, null),
+                store.getInt(PluginInfoFields.TARGET_VERSION, 0)
+        );
+    }
+
     public static PowerTunnelPlugin loadPlugin(File file) throws PluginLoadException {
         final String jarName = file.getName();
 
@@ -81,32 +106,12 @@ public class PluginLoader {
         if (manifest == null)
             throw new PluginLoadException(jarName, "Plugin .jar file doesn't have manifest (" + PLUGIN_MANIFEST + ")");
 
-        final ConfigurationStore store = new ConfigurationStore();
+        final PluginInfo info;
         try(final InputStream in = jar.getInputStream(manifest)) {
-            store.read(in);
+            info = parsePluginInfo(file.getName(), in);
         } catch (IOException ex) {
             throw new PluginLoadException(jarName, "Failed to read plugin manifest");
         }
-
-        if (!store.contains(PluginInfoFields.ID) ||
-                !store.contains(PluginInfoFields.VERSION) ||
-                !store.contains(PluginInfoFields.VERSION_CODE) ||
-                !store.contains(PluginInfoFields.NAME) ||
-                !store.contains(PluginInfoFields.MAIN_CLASS) ||
-                !store.contains(PluginInfoFields.TARGET_VERSION)
-        ) throw new PluginLoadException(file.getName(), "Incomplete manifest");
-
-        final PluginInfo info = new PluginInfo(
-                store.get(PluginInfoFields.ID, null),
-                store.get(PluginInfoFields.VERSION, null),
-                store.getInt(PluginInfoFields.VERSION_CODE, 1),
-                store.get(PluginInfoFields.NAME, null),
-                store.get(PluginInfoFields.DESCRIPTION, null),
-                store.get(PluginInfoFields.AUTHOR, null),
-                store.get(PluginInfoFields.HOMEPAGE, null),
-                store.get(PluginInfoFields.MAIN_CLASS, null),
-                store.getInt(PluginInfoFields.TARGET_VERSION, 0)
-        );
 
         if(info.getTargetCoreVersion() > PowerTunnel.VERSION.getVersionCode())
             throw new PluginLoadException(jarName, "Plugin requires a newer PowerTunnel version to run");
