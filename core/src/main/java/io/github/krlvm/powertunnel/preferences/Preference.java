@@ -32,6 +32,8 @@ public class Preference {
 
     private final List<SelectItem> items;
 
+    public Object binding;
+
     public Preference(
             String key,
             String title,
