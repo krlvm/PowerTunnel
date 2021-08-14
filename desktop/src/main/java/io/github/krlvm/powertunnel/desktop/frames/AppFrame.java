@@ -44,7 +44,7 @@ public abstract class AppFrame extends ScalableJFrame {
     }
 
     public AppFrame(String title, GraphicalApp app) {
-        super((title == null ? " - " : "") + BuildConstants.NAME);
+        super((title != null ? title + " - " : "") + BuildConstants.NAME);
         this.app = app;
 
         setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
