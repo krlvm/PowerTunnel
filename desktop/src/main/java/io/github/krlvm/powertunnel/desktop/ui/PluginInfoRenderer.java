@@ -22,8 +22,6 @@ import io.github.krlvm.powertunnel.sdk.plugin.PluginInfo;
 import ru.krlvm.swingdpi.SwingDPI;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 // https://stackoverflow.com/a/26476427
@@ -31,14 +29,13 @@ public class PluginInfoRenderer extends JPanel implements ListCellRenderer<Plugi
 
     private static final int PADDING = 0;
 
-    private static final Border SAFE_NO_FOCUS_BORDER = new EmptyBorder(1, 1, 1, 1);
-    private static final Border DEFAULT_NO_FOCUS_BORDER = new EmptyBorder(1, 1, 1, 1);
-    private static final Border noFocusBorder = DEFAULT_NO_FOCUS_BORDER;
-
     private final JEditorPane infoLabel = new JEditorPane();
 
     public PluginInfoRenderer() {
-        setBorder(BorderFactory.createEmptyBorder(PADDING, PADDING, PADDING, PADDING));
+        setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 0, 1, 0, Color.DARK_GRAY),
+                BorderFactory.createEmptyBorder(PADDING, PADDING, PADDING, PADDING)
+        ));
         add(infoLabel);
     }
 
@@ -50,21 +47,6 @@ public class PluginInfoRenderer extends JPanel implements ListCellRenderer<Plugi
     @Override
     public Dimension getPreferredSize() {
         return getMinimumSize();
-    }
-
-    protected Border getNoFocusBorder() {
-        Border border = UIManager.getBorder("List.cellNoFocusBorder");
-        if (System.getSecurityManager() != null) {
-            if (border != null) return border;
-            return SAFE_NO_FOCUS_BORDER;
-        } else {
-            if (border != null &&
-                    (noFocusBorder == null ||
-                            noFocusBorder == DEFAULT_NO_FOCUS_BORDER)) {
-                return border;
-            }
-            return noFocusBorder;
-        }
     }
 
     @Override
@@ -91,6 +73,8 @@ public class PluginInfoRenderer extends JPanel implements ListCellRenderer<Plugi
         if (isSelected) {
             setBackground(backgroundColor == null ? list.getSelectionBackground() : backgroundColor);
             setForeground(foregroundColor == null ? list.getSelectionForeground() : foregroundColor);
+
+            setBackground(Color.LIGHT_GRAY);
         } else {
             setBackground(list.getBackground());
             setForeground(list.getForeground());
@@ -107,19 +91,6 @@ public class PluginInfoRenderer extends JPanel implements ListCellRenderer<Plugi
         infoLabel.setForeground(getForeground());
 
         setEnabled(list.isEnabled());
-
-        Border border = null;
-        if (cellHasFocus) {
-            if (isSelected) {
-                border = UIManager.getBorder("List.focusSelectedCellHighlightBorder");
-            }
-            if (border == null) {
-                border = UIManager.getBorder("List.focusCellHighlightBorder");
-            }
-        } else {
-            border = getNoFocusBorder();
-        }
-        setBorder(border);
 
         return this;
     }
