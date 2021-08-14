@@ -44,6 +44,7 @@ task fatJar(type: Jar) {
     } {
         exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
     }
+    with jar
 }
 
 dependencies {
