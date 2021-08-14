@@ -17,6 +17,8 @@
 
 package io.github.krlvm.powertunnel.preferences;
 
+import java.util.List;
+
 public class Preference {
 
     private final String key;
@@ -28,9 +30,7 @@ public class Preference {
     private final String dependency;
     private final String dependencyValue;
 
-    public Preference(String key, String title, String description, String defaultValue, PreferenceType type) {
-        this(key, title, description, defaultValue, type, null, null);
-    }
+    private final List<SelectItem> items;
 
     public Preference(
             String key,
@@ -39,7 +39,8 @@ public class Preference {
             String defaultValue,
             PreferenceType type,
             String dependency,
-            String dependencyValue
+            String dependencyValue,
+            List<SelectItem> items
     ) {
         this.key = key;
         this.title = title;
@@ -49,6 +50,8 @@ public class Preference {
 
         this.dependency = dependency;
         this.dependencyValue = dependencyValue;
+
+        this.items = items;
     }
 
     public String getKey() {
@@ -77,5 +80,25 @@ public class Preference {
 
     public String getDependencyValue() {
         return dependencyValue;
+    }
+
+
+
+    public static class SelectItem {
+        private final String key;
+        private final String name;
+
+        public SelectItem(String key, String name) {
+            this.key = key;
+            this.name = name;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public String getName() {
+            return name;
+        }
     }
 }

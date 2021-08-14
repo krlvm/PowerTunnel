@@ -22,7 +22,8 @@ public enum PreferenceType {
     CHECKBOX("false"),
     SWITCH("false"),
     STRING(""),
-    NUMBER("0");
+    NUMBER("0"),
+    SELECT(null);
 
     final String defaultValue;
 

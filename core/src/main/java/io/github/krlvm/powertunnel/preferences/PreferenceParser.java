@@ -81,22 +81,43 @@ public class PreferenceParser {
         final String rawType = jso.getString(PreferencesSchemaFields.TYPE);
         final PreferenceType type;
         try {
-            type = PreferenceType.valueOf(rawType);
+            type = PreferenceType.valueOf(rawType.toUpperCase());
         } catch (IllegalArgumentException ex) {
             throw new PreferenceParseException(source, "Unsupported preference type: '" + rawType + '"', ex);
+        }
+
+        List<Preference.SelectItem> items = null;
+        if(type == PreferenceType.SELECT) {
+            if(!jso.has(PreferencesSchemaFields.ITEMS)) {
+                throw new PreferenceParseException(source, "Preference with type 'select' doesn't have items list");
+            }
+            items = new ArrayList<>();
+
+            final Object jsoItemsList = jso.get(PreferencesGroupSchemaFields.PREFERENCES);
+            if(!(jsoItemsList instanceof JSONArray)) throw new PreferenceParseException(source, "Select Preference item list should be array");
+            final JSONArray itemsArray = ((JSONArray) jsoItemsList);
+            for (Object o : itemsArray) {
+                if(!(o instanceof JSONObject))
+                    throw new PreferenceParseException(source, "Malformed select preference items structure");
+                final JSONObject ijo = ((JSONObject) o);
+                if(!ijo.has(PreferencesSelectItemSchemaFields.KEY) || !ijo.has(PreferencesSelectItemSchemaFields.NAME))
+                    throw new PreferenceParseException(source, "One of select preferences items is incomplete (missing 'key' and (or) 'name')");
+                items.add(new Preference.SelectItem(ijo.getString(PreferencesSelectItemSchemaFields.KEY), PreferencesSelectItemSchemaFields.NAME));
+            }
         }
 
         final Object defaultValue = getObjectOrNull(jso, PreferencesSchemaFields.DEFAULT_VALUE);
         final Object dependencyValue = getObjectOrNull(jso, PreferencesSchemaFields.DEPENDENCY_VALUE);
 
         return new Preference(
-                getStringOrNull(jso, PreferencesSchemaFields.KEY),
+                jso.getString(PreferencesSchemaFields.KEY),
                 getStringOrNull(jso, PreferencesSchemaFields.TITLE),
                 getStringOrNull(jso, PreferencesSchemaFields.DESCRIPTION),
                 defaultValue != null ? defaultValue.toString() : type.getDefaultValue(),
                 type,
                 getStringOrNull(jso, PreferencesSchemaFields.DEPENDENCY),
-                dependencyValue != null ? dependencyValue.toString() : null
+                dependencyValue != null ? dependencyValue.toString() : null,
+                items
         );
     }
 
@@ -118,11 +139,18 @@ public class PreferenceParser {
 
         static final String DEPENDENCY = "dependency";
         static final String DEPENDENCY_VALUE = "dependencyValue";
+
+        static final String ITEMS = "items";
     }
 
     static class PreferencesGroupSchemaFields {
         static final String TITLE = "group";
         static final String DESCRIPTION = "description";
         static final String PREFERENCES = "preferences";
+    }
+
+    static class PreferencesSelectItemSchemaFields {
+        static final String KEY = "key";
+        static final String NAME = "name";
     }
 }
