@@ -33,6 +33,7 @@ public class ConfigurationStore implements Configuration {
 
     protected final Map<String, String> data = new HashMap<>();
 
+    @Override
     public void read(File file) throws IOException {
         file.createNewFile();
         this.read(new FileReader(file));
@@ -56,6 +57,7 @@ public class ConfigurationStore implements Configuration {
         reader.close();
     }
 
+    @Override
     public void save(File file) throws IOException {
         int current = 0;
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
