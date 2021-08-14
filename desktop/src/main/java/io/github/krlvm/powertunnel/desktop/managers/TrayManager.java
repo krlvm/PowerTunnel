@@ -65,7 +65,7 @@ public class TrayManager {
 
         trayIcon = new TrayIcon(GraphicalApp.ICON, BuildConstants.NAME, popup);
         trayIcon.setImageAutoSize(true);
-        trayIcon.setToolTip(BuildConstants.NAME + " " + BuildConstants.VERSION);
+        trayIcon.setToolTip(BuildConstants.NAME);
         trayIcon.addActionListener(openAppListener);
 
         freeFonts();
