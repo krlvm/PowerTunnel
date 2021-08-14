@@ -95,7 +95,7 @@ public class PreferenceParser {
             }
             items = new ArrayList<>();
 
-            final Object jsoItemsList = jso.get(PreferencesGroupSchemaFields.PREFERENCES);
+            final Object jsoItemsList = jso.get(PreferencesSchemaFields.ITEMS);
             if(!(jsoItemsList instanceof JSONArray)) throw new PreferenceParseException(source, "Select Preference item list should be array");
             final JSONArray itemsArray = ((JSONArray) jsoItemsList);
             for (Object o : itemsArray) {
