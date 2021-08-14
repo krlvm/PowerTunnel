@@ -69,7 +69,7 @@ public class ProxyFilter extends HttpFiltersAdapter {
 
     @Override
     public HttpObject serverToProxyResponse(HttpObject httpObject) {
-        if(!(httpObject instanceof HttpResponse)) return null;
+        if(!(httpObject instanceof HttpResponse)) return httpObject;
         LProxyResponse res = new LProxyResponse(((HttpResponse) httpObject), address);
         listener.onServerToProxyResponse(res);
         return res.getLittleProxyObject();
@@ -77,7 +77,7 @@ public class ProxyFilter extends HttpFiltersAdapter {
 
     @Override
     public HttpObject proxyToClientResponse(HttpObject httpObject) {
-        if(!(httpObject instanceof HttpResponse)) return null;
+        if(!(httpObject instanceof HttpResponse)) return httpObject;
         LProxyResponse res = new LProxyResponse(((HttpResponse) httpObject), address);
         listener.onProxyToClientResponse(res);
         return res.getLittleProxyObject();
