@@ -67,7 +67,7 @@ public class LittleProxyServer implements ProxyServer {
     /**
      * Starts LittleProxy server
      */
-    public void start(ProxyListener listener) throws ProxyStartException, BindException {
+    public void start(ProxyListener listener) throws ProxyStartException {
         ensureBootstrapAvailable();
 
         LOGGER.info("Starting LittleProxy Server...");

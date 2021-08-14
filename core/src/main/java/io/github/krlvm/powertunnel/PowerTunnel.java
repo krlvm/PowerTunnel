@@ -81,7 +81,8 @@ public class PowerTunnel implements PowerTunnelServer {
             this.startServer();
             setStatus(ProxyStatus.RUNNING);
         } catch (ProxyStartException ex) {
-            this.stop(false);
+            this.server = null;
+            setStatus(ProxyStatus.NOT_RUNNING);
             throw ex;
         }
     }
@@ -109,8 +110,10 @@ public class PowerTunnel implements PowerTunnelServer {
         }
         try {
             this.server.start(new CoreProxyListener(proxyListeners));
-        } catch (BindException ex) {
-            throw new ProxyStartException("Failed to bind proxy server port", ex);
+        } catch (RuntimeException ex) {
+            if(ex.getCause() != null && ex.getCause() instanceof BindException)
+                throw new ProxyStartException("Failed to bind proxy server port", ex);
+            throw new ProxyStartException("Unexpected error: " + ex.getMessage(), ex);
         }
     }
 
