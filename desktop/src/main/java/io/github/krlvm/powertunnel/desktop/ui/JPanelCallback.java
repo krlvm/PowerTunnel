@@ -15,10 +15,10 @@
  * along with PowerTunnel.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-rootProject.name = 'PowerTunnel'
-include 'sdk'
-include 'littleproxy', 'core'
-include 'sample-plugin'
-include 'legacy' // TODO: Remove legacy project
-include 'desktop'
+package io.github.krlvm.powertunnel.desktop.ui;
 
+import javax.swing.*;
+
+public interface JPanelCallback {
+    void call(JPanel panel);
+}

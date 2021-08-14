@@ -1,0 +1,62 @@
+/*
+ * This file is part of PowerTunnel.
+ *
+ * PowerTunnel is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * PowerTunnel is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with PowerTunnel.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+plugins {
+    id 'application'
+    id 'distribution'
+}
+
+version '2.0-SNAPSHOT'
+
+run {
+    workingDir = new File('build/run')
+    workingDir.mkdirs()
+}
+
+application {
+    mainClass = 'io.github.krlvm.powertunnel.desktop.Main'
+}
+
+task fatJar(type: Jar) {
+    archiveClassifier = 'all'
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes(
+                'Main-Class': application.mainClass
+        )
+    }
+    from {
+        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+    } {
+        exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'org.slf4j:slf4j-simple:1.7.32'
+    implementation project(':core')
+    implementation 'commons-cli:commons-cli:1.4'
+
+    implementation 'org.apache.logging.log4j:log4j-api:2.14.1'
+    implementation 'org.apache.logging.log4j:log4j-core:2.14.1'
+    implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.14.1'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
