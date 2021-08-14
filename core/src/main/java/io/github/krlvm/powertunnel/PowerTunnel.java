@@ -35,6 +35,7 @@ import io.github.krlvm.powertunnel.sdk.types.PowerTunnelPlatform;
 import io.github.krlvm.powertunnel.sdk.types.VersionInfo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.littleshoot.proxy.mitm.Authority;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,25 +56,26 @@ public class PowerTunnel implements PowerTunnelServer {
     private final ProxyAddress address;
 
     private final PowerTunnelPlatform platform;
+    private final boolean transparent;
+    private final Authority mitmAuthority;
+
     private final List<PowerTunnelPlugin> plugins = new ArrayList<>();
 
     private final Map<ServerListener, PluginInfo> serverListeners = new HashMap<>();
     private final Map<ProxyListenerInfo, ProxyListener> proxyListeners = new TreeMap<>(Comparator.comparingInt(ProxyListenerInfo::getPriority));
     private static final int DEFAULT_LISTENER_PRIORITY = 0;
 
-    public PowerTunnel(ProxyAddress address) {
-        this(address, PowerTunnelPlatform.DESKTOP);
-    }
-
-    public PowerTunnel(ProxyAddress address, PowerTunnelPlatform platform) {
+    public PowerTunnel(ProxyAddress address, PowerTunnelPlatform platform, boolean transparent, Authority mitmAuthority) {
         this.address = address;
         this.platform = platform;
+        this.transparent = transparent;
+        this.mitmAuthority = mitmAuthority;
     }
 
     @Override
     public void start() throws ProxyStartException {
         if(this.server != null) throw new IllegalStateException("Proxy Server is already running");
-        this.server = new LittleProxyServer();
+        this.server = new LittleProxyServer(transparent, mitmAuthority);
 
         setStatus(ProxyStatus.STARTING);
         callPluginsProxyInitializationCallback();

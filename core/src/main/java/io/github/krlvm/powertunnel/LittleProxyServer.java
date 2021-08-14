@@ -31,10 +31,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.littleshoot.proxy.*;
 import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
+import org.littleshoot.proxy.mitm.Authority;
+import org.littleshoot.proxy.mitm.CertificateSniffingMitmManager;
+import org.littleshoot.proxy.mitm.RootCertificateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 
@@ -52,16 +54,16 @@ public class LittleProxyServer implements ProxyServer {
     private DNSResolver resolver;
     private boolean allowFallbackResolver;
 
+    private boolean mitmEnabled = false;
+    private final Authority mitmAuthority;
+
     private boolean isFullRequest = false, isFullResponse = false;
 
-    protected LittleProxyServer() {
-        this(true);
-    }
-
-    protected LittleProxyServer(boolean transparent) {
+    protected LittleProxyServer(boolean transparent, Authority mitmAuthority) {
         this.bootstrap = DefaultHttpProxyServer.bootstrap()
                 .withTransparent(transparent)
                 .withAllowRequestToOriginServer(true);
+        this.mitmAuthority = mitmAuthority;
     }
 
     /**
@@ -85,6 +87,14 @@ public class LittleProxyServer implements ProxyServer {
                     this.resolver, this.allowFallbackResolver ? new DefaultHostResolver() : null
             ));
         }
+        if(mitmEnabled) {
+            try {
+                this.bootstrap.withManInTheMiddle(new CertificateSniffingMitmManager(mitmAuthority));
+            } catch (RootCertificateException ex) {
+                throw new ProxyStartException("Failed to initialize MITM manager: " + ex.getMessage(), ex);
+            }
+        }
+
         this.bootstrap.withFiltersSource(new ProxyFiltersSourceAdapter(listener, isFullRequest, isFullResponse));
 
         this.server = ((DefaultHttpProxyServer) this.bootstrap.start());
@@ -325,5 +335,16 @@ public class LittleProxyServer implements ProxyServer {
     public boolean isAllowRequestsToOriginServer() {
         ensureServerAvailable();
         return server.isAllowRequestsToOriginServer();
+    }
+
+    @Override
+    public void setMITMEnabled(boolean enabled) {
+        ensureBootstrapAvailable();
+        mitmEnabled = enabled;
+    }
+
+    @Override
+    public boolean isMITMEnabled() {
+        return mitmEnabled;
     }
 }
