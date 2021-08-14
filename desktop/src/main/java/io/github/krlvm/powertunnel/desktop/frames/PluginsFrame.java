@@ -21,6 +21,7 @@ import io.github.krlvm.powertunnel.desktop.BuildConstants;
 import io.github.krlvm.powertunnel.desktop.application.DesktopApp;
 import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
 import io.github.krlvm.powertunnel.desktop.ui.PluginInfoRenderer;
+import io.github.krlvm.powertunnel.desktop.utilities.Utility;
 import io.github.krlvm.powertunnel.plugin.PluginLoader;
 import io.github.krlvm.powertunnel.sdk.exceptions.PluginLoadException;
 import io.github.krlvm.powertunnel.sdk.plugin.PluginInfo;
@@ -48,7 +49,23 @@ public class PluginsFrame extends AppFrame {
 
 
         final JButton homepageButton = new JButton("Visit homepage");
+        homepageButton.addActionListener(e -> {
+            PluginInfo value = list.getSelectedValue();
+            if(value == null || value.getHomepage() == null) return;
+            Utility.launchBrowser(value.getHomepage());
+        });
+        homepageButton.setEnabled(false);
         final JButton settingsButton = new JButton("Configure");
+        settingsButton.addActionListener(e -> {
+            PluginInfo value = list.getSelectedValue();
+            if(value == null) return;
+
+        });
+
+        list.addListSelectionListener(e -> {
+            if (e.getValueIsAdjusting()) return;
+            homepageButton.setEnabled(list.getSelectedValue().getHomepage() != null);
+        });
 
         final JPanel controlPanel = new JPanel(new GridBagLayout());
         controlPanel.add(homepageButton, gbc);
