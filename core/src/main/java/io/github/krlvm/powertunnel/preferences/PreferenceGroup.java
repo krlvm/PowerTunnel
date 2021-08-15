@@ -42,4 +42,20 @@ public class PreferenceGroup {
     public List<Preference> getPreferences() {
         return preferences;
     }
+
+    public Preference findPreference(String key) {
+        for (Preference preference : preferences) {
+            if(key.equals(preference.getKey())) return preference;
+        }
+        return null;
+    }
+
+
+    public static Preference findPreference(List<PreferenceGroup> groups, String key) {
+        for (PreferenceGroup group : groups) {
+            final Preference preference = group.findPreference(key);
+            if(preference != null) return preference;
+        }
+        return null;
+    }
 }
