@@ -19,6 +19,7 @@ package io.github.krlvm.powertunnel.desktop.frames;
 
 import io.github.krlvm.powertunnel.desktop.BuildConstants;
 import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
+import io.github.krlvm.powertunnel.desktop.ui.FieldFilter;
 import io.github.krlvm.powertunnel.desktop.ui.JPanelCallback;
 import io.github.krlvm.powertunnel.desktop.ui.TextRightClickPopup;
 import io.github.krlvm.powertunnel.desktop.utilities.UIUtility;
@@ -27,6 +28,7 @@ import io.github.krlvm.powertunnel.sdk.proxy.ProxyStatus;
 import ru.krlvm.swingdpi.SwingDPI;
 
 import javax.swing.*;
+import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -82,7 +84,9 @@ public class MainFrame extends AppFrame {
         // region Proxy Control Pane
 
         ipField = createField("IP Address", 200, 22);
+        ((PlainDocument) ipField.getDocument()).setDocumentFilter(new FieldFilter.IP());
         portField = createField("Port", 75, 22);
+        ((PlainDocument) portField.getDocument()).setDocumentFilter(new FieldFilter.Number());
 
         stateButton = new JButton("Start server");
         stateButton.setPreferredSize(new Dimension(
@@ -152,7 +156,7 @@ public class MainFrame extends AppFrame {
 
         final JRootPane root = getRootPane();
         root.setLayout(new BorderLayout());
-        root.setBorder(BorderFactory.createEmptyBorder(0, 8, 8, 8));
+        root.setBorder(BORDER);
         root.add(panel, BorderLayout.NORTH);
         
         pack();
