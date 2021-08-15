@@ -117,7 +117,7 @@ public class PreferenceParser {
                 defaultValue != null ? defaultValue.toString() : type.getDefaultValue(),
                 type,
                 getStringOrNull(jso, PreferencesSchemaFields.DEPENDENCY),
-                dependencyValue != null ? dependencyValue.toString() : null,
+                dependencyValue != null ? dependencyValue.toString() : "true",
                 items
         );
     }
