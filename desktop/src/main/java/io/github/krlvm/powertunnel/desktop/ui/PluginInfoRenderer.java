@@ -22,20 +22,22 @@ import io.github.krlvm.powertunnel.sdk.plugin.PluginInfo;
 import ru.krlvm.swingdpi.SwingDPI;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 
 // https://stackoverflow.com/a/26476427
 public class PluginInfoRenderer extends JPanel implements ListCellRenderer<PluginInfo> {
 
     private static final int PADDING = 0;
+    private static final Border BORDER = BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(0, 0, 0, 0.25F)),
+            BorderFactory.createEmptyBorder(PADDING, PADDING, PADDING, PADDING)
+    );
 
     private final JEditorPane infoLabel = new JEditorPane();
 
     public PluginInfoRenderer() {
-        setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(0, 0, 1, 0, Color.DARK_GRAY),
-                BorderFactory.createEmptyBorder(PADDING, PADDING, PADDING, PADDING)
-        ));
+        setBorder(BORDER);
         add(infoLabel);
     }
 
