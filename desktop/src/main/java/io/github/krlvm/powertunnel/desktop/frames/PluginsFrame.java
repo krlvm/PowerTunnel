@@ -40,7 +40,6 @@ import java.awt.event.WindowEvent;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class PluginsFrame extends AppFrame {
@@ -100,8 +99,12 @@ public class PluginsFrame extends AppFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         root.add(controlPanel, gbc);
 
-        setSize(350, 400);
+        setSize(new Dimension(300, 350));
+        setResizable(false);
         frameInitialized();
+
+        list.requestFocus();
+        list.requestFocusInWindow();
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -151,6 +154,11 @@ public class PluginsFrame extends AppFrame {
     }
 
     private void openPreferences(PluginInfo pluginInfo) {
+        if(PreferencesFrame.OPENED_IDS.containsKey(pluginInfo.getId())) {
+            PreferencesFrame.OPENED_IDS.get(pluginInfo.getId()).showFrame();
+            return;
+        }
+
         final InputStream in;
         try {
             in = PluginLoader.getJarEntry(

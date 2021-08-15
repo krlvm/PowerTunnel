@@ -22,12 +22,16 @@ import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
 import ru.krlvm.swingdpi.ScalableJFrame;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 
 /**
  * Base implementation of JFrame (SwingDPI/ScalableJFrame)
  */
 public abstract class AppFrame extends ScalableJFrame {
+
+    public static final int PADDING = 8;
+    public static final Border BORDER = BorderFactory.createEmptyBorder(PADDING, PADDING, PADDING, PADDING);
 
     protected final GraphicalApp app;
 
@@ -58,7 +62,7 @@ public abstract class AppFrame extends ScalableJFrame {
         requestFocus();
     }
 
-    protected final void frameInitialized() {
+    protected void frameInitialized() {
         setLocationRelativeTo(null);
     }
 }
