@@ -19,6 +19,7 @@ package io.github.krlvm.powertunnel.preferences;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Preference {
 
@@ -87,5 +88,30 @@ public class Preference {
 
     public Map<String, String> getItems() {
         return items;
+    }
+
+    public List<SelectPreferenceItem> getItemsAsModels() {
+        return items.entrySet().stream()
+                .map(entry -> new SelectPreferenceItem(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
+    }
+
+    public static class SelectPreferenceItem {
+
+        private final String key;
+        private final String name;
+
+        public SelectPreferenceItem(String key, String name) {
+            this.key = key;
+            this.name = name;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public String getName() {
+            return name;
+        }
     }
 }
