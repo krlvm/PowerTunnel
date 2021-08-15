@@ -22,8 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class PreferenceParser {
 
@@ -88,12 +87,12 @@ public class PreferenceParser {
             throw new PreferenceParseException(source, "Unsupported preference type: '" + rawType + '"', ex);
         }
 
-        List<Preference.SelectItem> items = null;
+        Map<String, String> items = null;
         if(type == PreferenceType.SELECT) {
             if(!jso.has(PreferencesSchemaFields.ITEMS)) {
                 throw new PreferenceParseException(source, "Preference with type 'select' doesn't have items list");
             }
-            items = new ArrayList<>();
+            items = new LinkedHashMap<>();
 
             final Object jsoItemsList = jso.get(PreferencesSchemaFields.ITEMS);
             if(!(jsoItemsList instanceof JSONArray)) throw new PreferenceParseException(source, "Select Preference item list should be array");
@@ -104,7 +103,7 @@ public class PreferenceParser {
                 final JSONObject ijo = ((JSONObject) o);
                 if(!ijo.has(PreferencesSelectItemSchemaFields.KEY) || !ijo.has(PreferencesSelectItemSchemaFields.NAME))
                     throw new PreferenceParseException(source, "One of select preferences items is incomplete (missing 'key' and (or) 'name')");
-                items.add(new Preference.SelectItem(ijo.getString(PreferencesSelectItemSchemaFields.KEY), PreferencesSelectItemSchemaFields.NAME));
+                items.put(ijo.getString(PreferencesSelectItemSchemaFields.KEY), ijo.getString(PreferencesSelectItemSchemaFields.NAME));
             }
         }
 
