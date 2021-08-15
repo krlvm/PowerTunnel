@@ -41,6 +41,7 @@ public abstract class DesktopApp implements ServerListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DesktopApp.class);
 
+    public static final File CONFIGURATION_FILE = new File("config.ini");
     public static File[] LOADED_PLUGINS = null;
 
     public static final VersionInfo VERSION = new VersionInfo(BuildConstants.VERSION, BuildConstants.VERSION_CODE);

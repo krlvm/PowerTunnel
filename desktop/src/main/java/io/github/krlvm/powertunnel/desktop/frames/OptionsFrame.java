@@ -17,17 +17,124 @@
 
 package io.github.krlvm.powertunnel.desktop.frames;
 
+import io.github.krlvm.powertunnel.desktop.application.DesktopApp;
 import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
+import io.github.krlvm.powertunnel.desktop.utilities.SystemUtility;
+import io.github.krlvm.powertunnel.preferences.Preference;
+import io.github.krlvm.powertunnel.preferences.PreferenceGroup;
+import io.github.krlvm.powertunnel.preferences.PreferenceType;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 
-public class OptionsFrame extends AppFrame {
+public class OptionsFrame extends PreferencesFrame {
+
+    private static List<PreferenceGroup> getPreferences() {
+        final List<PreferenceGroup> groups = new ArrayList<>();
+        List<Preference> preferences;
+
+        {
+            preferences = new ArrayList<>();
+
+            if (SystemUtility.IS_WINDOWS) {
+                preferences.add(new Preference(
+                        "auto-proxy-setup",
+                        "Auto proxy setup",
+                        "Automatically setting up system proxy server configuration..\n\nWindows: Internet Explorer can be started for a few seconds to apply changes.",
+                        "true",
+                        PreferenceType.SWITCH,
+                        null, null, null
+                ));
+            }
+
+            preferences.add(new Preference(
+                    "upstream-proxy-enabled",
+                    "Connect via upstream proxy server",
+                    "Use a proxy server to connect to the Internet",
+                    "false",
+                    PreferenceType.SWITCH,
+                    null, null, null
+            ));
+            preferences.add(new Preference(
+                    "upstream-proxy-host",
+                    "Upstream proxy host",
+                    null,
+                    "",
+                    PreferenceType.STRING,
+                    "upstream-proxy-enabled", "true", null
+            ));
+            preferences.add(new Preference(
+                    "upstream-proxy-port",
+                    "Upstream proxy port",
+                    null,
+                    "",
+                    PreferenceType.STRING,
+                    "upstream-proxy-enabled", "true", null
+            ));
+
+            preferences.add(new Preference(
+                    "upstream-proxy-auth-enabled",
+                    "Upstream proxy authorization",
+                    "Authenticate on upstream proxy server",
+                    "false",
+                    PreferenceType.SWITCH,
+                    null, null, null
+            ));
+            preferences.add(new Preference(
+                    "upstream-proxy-auth-username",
+                    "Upstream proxy username",
+                    null,
+                    "",
+                    PreferenceType.STRING,
+                    "upstream-proxy-auth-enabled", "true", null
+            ));
+            preferences.add(new Preference(
+                    "upstream-proxy-auth-password",
+                    "Upstream proxy password",
+                    null,
+                    "",
+                    PreferenceType.STRING,
+                    "upstream-proxy-auth-enabled", "true", null
+            ));
+
+            groups.add(new PreferenceGroup("Proxy connection", null, preferences));
+        }
+
+        {
+            preferences = new ArrayList<>();
+
+            preferences.add(new Preference(
+                    "transparent-mode",
+                    "Run proxy in transparent mode (recommended)",
+                    "When proxy server is in transparent mode, it declares that it does not modify requests and responses and does not set 'Via' header",
+                    "true",
+                    PreferenceType.SWITCH,
+                    null, null, null
+            ));
+            preferences.add(new Preference(
+                    "allow-requests-to-origin-server",
+                    "Allow requests to origin server (recommended)",
+                    "Experimental option, fixed many connectivity issues.",
+                    "true",
+                    PreferenceType.SWITCH,
+                    null, null, null
+            ));
+
+            groups.add(new PreferenceGroup("Proxy settings", null, preferences));
+        }
+
+        return groups;
+    }
 
     public OptionsFrame() {
-        setSize(200, 200);
-        frameInitialized();
+        super("Options", "desktop-app-options",
+                DesktopApp.CONFIGURATION_FILE, GraphicalApp.getInstance().getConfiguration(),
+                getPreferences()
+        );
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -36,5 +143,16 @@ public class OptionsFrame extends AppFrame {
                 GraphicalApp.getInstance().optionsFrame = null;
             }
         });
+    }
+
+    @Override
+    protected void frameInitialized() {
+        final JPanel notePanel = new JPanel();
+        notePanel.setBorder(BorderFactory.createEmptyBorder(4, 0, 4, 0));
+        notePanel.add(new JLabel("<html><b>NOTE:</b> Some features have been moved to plugins,<br>so you need to open their settings for configuring</html>"));
+        insertComponent(notePanel);
+
+        // TODO: Insert updater
+        super.frameInitialized();
     }
 }

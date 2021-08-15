@@ -18,6 +18,7 @@
 package io.github.krlvm.powertunnel.desktop;
 
 import io.github.krlvm.powertunnel.desktop.application.ConsoleApp;
+import io.github.krlvm.powertunnel.desktop.application.DesktopApp;
 import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
 import io.github.krlvm.powertunnel.desktop.configuration.AdvancedConfiguration;
 import io.github.krlvm.powertunnel.desktop.parser.ArgumentParser;
@@ -87,7 +88,7 @@ public class Main {
 
         final AdvancedConfiguration configuration = new AdvancedConfiguration();
         try {
-            configuration.read(new File("config.ini"));
+            configuration.read(DesktopApp.CONFIGURATION_FILE);
         } catch (IOException ex) {
             System.err.println("Failed to read configuration: " + ex.getMessage());
             ex.printStackTrace();

@@ -63,7 +63,7 @@ public class PluginsFrame extends AppFrame {
             Utility.launchBrowser(value.getHomepage());
         });
         homepageButton.setEnabled(false);
-        final JButton settingsButton = new JButton("Configure");
+        final JButton settingsButton = new JButton("Settings");
         settingsButton.addActionListener(e -> {
             PluginInfo value = list.getSelectedValue();
             if(value == null) return;
@@ -218,7 +218,14 @@ public class PluginsFrame extends AppFrame {
             ex.printStackTrace();
             return;
         }
+        System.out.println();
+        for (String key : configuration.keys()) {
+            System.out.printf(" [%s] : [%s]%n", key, configuration.get(key, "unset"));
+        }
 
-        new PreferencesFrame(pluginInfo, configurationFile, configuration, preferences).showFrame();
+        new PreferencesFrame(
+                pluginInfo.getName() + " preferences",
+                pluginInfo.getId(), configurationFile, configuration, preferences
+        ).showFrame();
     }
 }

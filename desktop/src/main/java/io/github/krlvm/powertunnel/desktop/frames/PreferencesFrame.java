@@ -18,7 +18,6 @@
 package io.github.krlvm.powertunnel.desktop.frames;
 
 import io.github.krlvm.powertunnel.desktop.BuildConstants;
-import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
 import io.github.krlvm.powertunnel.desktop.ui.ComboBoxScroll;
 import io.github.krlvm.powertunnel.desktop.ui.FieldFilter;
 import io.github.krlvm.powertunnel.desktop.ui.SelectPreferenceRenderer;
@@ -28,7 +27,6 @@ import io.github.krlvm.powertunnel.preferences.Preference;
 import io.github.krlvm.powertunnel.preferences.PreferenceGroup;
 import io.github.krlvm.powertunnel.preferences.PreferenceType;
 import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
-import io.github.krlvm.powertunnel.sdk.plugin.PluginInfo;
 import ru.krlvm.swingdpi.SwingDPI;
 
 import javax.swing.*;
@@ -51,12 +49,13 @@ public class PreferencesFrame extends AppFrame {
     private final List<PreferenceGroup> preferences;
 
     public PreferencesFrame(
-            PluginInfo pluginInfo,
+            String title,
+            String id,
             File configurationFile,
             Configuration configuration,
             List<PreferenceGroup> preferences
     ) {
-        super(pluginInfo.getName() + " preferences");
+        super(title);
 
         this.configurationFile = configurationFile;
         this.configuration = configuration;
@@ -82,7 +81,7 @@ public class PreferencesFrame extends AppFrame {
                 if(preference.getType() != PreferenceType.CHECKBOX && preference.getType() != PreferenceType.SWITCH) {
                     c.ipadx = SwingDPI.scale(5);
                     final JLabel label = new JLabel(preference.getTitle() + ":");
-                    UIUtility.setTooltip(label, preference.getDescription());
+                    if(preference.getDescription() != null) UIUtility.setTooltip(label, preference.getDescription());
                     panel.add(label, c);
                     c.gridx++;
                 }
@@ -95,7 +94,7 @@ public class PreferencesFrame extends AppFrame {
                     case CHECKBOX: {
                         value = new JCheckBox(preference.getTitle(), getBooleanOption(preference));
                         ((JCheckBox) value).addItemListener(itemListener);
-                        UIUtility.setTooltip(value, preference.getDescription());
+                        if(preference.getDescription() != null) UIUtility.setTooltip(value, preference.getDescription());
                         break;
                     }
                     case STRING:
@@ -122,8 +121,10 @@ public class PreferencesFrame extends AppFrame {
                         break;
                     }
                     case SELECT: {
-                        final JComboBox<Preference.SelectPreferenceItem> comboBox = new JComboBox<>(
-                                preference.getItemsAsModels().toArray(new Preference.SelectPreferenceItem[0])
+                        final List<Preference.SelectPreferenceItem> models = preference.getItemsAsModels();
+                        final JComboBox<Preference.SelectPreferenceItem> comboBox = new JComboBox<>(models.toArray(new Preference.SelectPreferenceItem[0]));
+                        comboBox.setSelectedItem(models.stream().filter(m -> m.getKey().equals(getStringOption(preference)))
+                                .findFirst().orElse(models.get(0))
                         );
                         comboBox.setLightWeightPopupEnabled(false);
                         comboBox.setRenderer(new SelectPreferenceRenderer());
@@ -152,16 +153,16 @@ public class PreferencesFrame extends AppFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 final int result = JOptionPane.showConfirmDialog(PreferencesFrame.this,
-                        "Save preferences?", BuildConstants.NAME, JOptionPane.YES_NO_OPTION
+                        "Do you want to save changes?", BuildConstants.NAME, JOptionPane.YES_NO_OPTION
                 );
                 if (result == JOptionPane.YES_OPTION) {
                     save();
                 }
                 dispose();
-                OPENED_IDS.remove(pluginInfo.getId());
+                OPENED_IDS.remove(id);
             }
         });
-        OPENED_IDS.put(pluginInfo.getId(), this);
+        OPENED_IDS.put(id, this);
 
         requestSpacing();
         frameInitialized();
@@ -190,6 +191,10 @@ public class PreferencesFrame extends AppFrame {
 
         actionPanel.add(wrapper, BorderLayout.EAST);
         insertComponent(actionPanel);
+
+        saveButton.requestFocus();
+        saveButton.requestFocusInWindow();
+        getRootPane().setDefaultButton(saveButton);
 
         updateDependencies();
         pack();
