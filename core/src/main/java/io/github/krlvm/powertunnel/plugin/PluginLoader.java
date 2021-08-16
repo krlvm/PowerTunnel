@@ -38,6 +38,10 @@ public class PluginLoader {
     public static final String PLUGINS_DIR = "plugins";
     public static final String PLUGIN_MANIFEST = "plugin.ini";
 
+    public static File getPluginFile(String fileName) {
+        return new File(PluginLoader.PLUGINS_DIR + File.separator + fileName);
+    }
+
     public static File[] enumeratePlugins() {
         final File folder = new File(PLUGINS_DIR);
         if(!folder.exists()) {
@@ -52,7 +56,7 @@ public class PluginLoader {
     public static InputStream getJarEntry(File jarFile, String entryName) throws IOException {
         final JarFile jar = new JarFile(jarFile);
         final JarEntry entry = jar.getJarEntry(entryName);
-        if(entry == null) return null;
+        if (entry == null) return null;
         return jar.getInputStream(entry);
     }
 
@@ -96,22 +100,19 @@ public class PluginLoader {
     public static PowerTunnelPlugin loadPlugin(File file) throws PluginLoadException {
         final String jarName = file.getName();
 
-        final JarFile jar;
-        try {
-            jar = new JarFile(file);
+        final PluginInfo info;
+
+        try(JarFile jar = new JarFile(file)) {
+            final JarEntry manifest = jar.getJarEntry(PLUGIN_MANIFEST);
+            if (manifest == null)
+                throw new PluginLoadException(jarName, "Plugin .jar file doesn't have manifest (" + PLUGIN_MANIFEST + ")");
+            try(final InputStream in = jar.getInputStream(manifest)) {
+                info = parsePluginInfo(file.getName(), in);
+            } catch (IOException ex) {
+                throw new PluginLoadException(jarName, "Failed to read plugin manifest");
+            }
         } catch (IOException ex) {
             throw new PluginLoadException(jarName, "Failed to read plugin .jar file", ex);
-        }
-
-        final JarEntry manifest = jar.getJarEntry(PLUGIN_MANIFEST);
-        if (manifest == null)
-            throw new PluginLoadException(jarName, "Plugin .jar file doesn't have manifest (" + PLUGIN_MANIFEST + ")");
-
-        final PluginInfo info;
-        try(final InputStream in = jar.getInputStream(manifest)) {
-            info = parsePluginInfo(file.getName(), in);
-        } catch (IOException ex) {
-            throw new PluginLoadException(jarName, "Failed to read plugin manifest");
         }
 
         if(info.getTargetCoreVersion() > PowerTunnel.VERSION.getVersionCode())

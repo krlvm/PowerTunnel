@@ -18,7 +18,6 @@
 package io.github.krlvm.powertunnel.desktop.frames;
 
 import io.github.krlvm.powertunnel.configuration.ConfigurationStore;
-import io.github.krlvm.powertunnel.desktop.BuildConstants;
 import io.github.krlvm.powertunnel.desktop.application.DesktopApp;
 import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
 import io.github.krlvm.powertunnel.desktop.ui.PluginInfoRenderer;
@@ -32,6 +31,7 @@ import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
 import io.github.krlvm.powertunnel.sdk.exceptions.PluginLoadException;
 import io.github.krlvm.powertunnel.sdk.plugin.PluginInfo;
 import io.github.krlvm.powertunnel.sdk.plugin.PowerTunnelPlugin;
+import io.github.krlvm.powertunnel.utility.JarLoader;
 
 import javax.swing.*;
 import java.awt.*;
@@ -122,33 +122,21 @@ public class PluginsFrame extends AppFrame {
 
         final File[] plugins = DesktopApp.LOADED_PLUGINS != null ? DesktopApp.LOADED_PLUGINS : PluginLoader.enumeratePlugins();
         for (File plugin : plugins) {
-            final InputStream in;
             try {
-                in = PluginLoader.getJarEntry(plugin, PluginLoader.PLUGIN_MANIFEST);
+                JarLoader.open(plugin, PluginLoader.PLUGIN_MANIFEST, (in) -> {
+                    try {
+                        model.addElement(PluginLoader.parsePluginInfo(plugin.getName(), in));
+                    } catch (IOException ex) {
+                        System.err.printf("Failed to read manifest of '%s': %s%n", plugin.getName(), ex.getMessage());
+                        ex.printStackTrace();
+                    } catch (PluginLoadException ex) {
+                        System.err.printf("Failed to parse manifest of '%s': %s%n", plugin.getName(), ex.getMessage());
+                        ex.printStackTrace();
+                    }
+                });
             } catch (IOException ex) {
                 System.err.printf("Failed to open plugin '%s' jar file: %s%n", plugin.getName(), ex.getMessage());
                 ex.printStackTrace();
-                continue;
-            }
-            if(in == null) {
-                System.err.printf("Failed to find manifest of plugin '%s'%n", plugin.getName());
-                continue;
-            }
-            try {
-                model.addElement(PluginLoader.parsePluginInfo(plugin.getName(), in));
-            } catch (IOException ex) {
-                System.err.printf("Failed to read manifest of '%s': %s%n", plugin.getName(), ex.getMessage());
-                ex.printStackTrace();
-            } catch (PluginLoadException ex) {
-                System.err.printf("Failed to parse manifest of '%s': %s%n", plugin.getName(), ex.getMessage());
-                ex.printStackTrace();
-            } finally {
-                try {
-                    in.close();
-                } catch (IOException ex) {
-                    System.err.printf("Failed to close plugin manifest InputStream: %s%n", ex.getMessage());
-                    ex.printStackTrace();
-                }
             }
         }
     }
@@ -159,24 +147,25 @@ public class PluginsFrame extends AppFrame {
             return;
         }
 
-        final InputStream in;
         try {
-            in = PluginLoader.getJarEntry(
-                    new File(PluginLoader.PLUGINS_DIR + File.separator + pluginInfo.getSource()),
-                    PreferenceParser.FILE
-            );
+            JarLoader.open(PluginLoader.getPluginFile(pluginInfo.getSource()), PreferenceParser.FILE, (in) -> {
+                if(in == null) {
+                    UIUtility.showInfoDialog(this, "Plugin is not configurable");
+                    return;
+                }
+                openPreferences(pluginInfo, in);
+            }, true);
         } catch (IOException ex) {
             UIUtility.showErrorDialog(
-                    this, "Failed to open plugin preferences",
+                    this, "Failed to read plugin preferences",
                     "Failed to open plugin jar file: " + ex.getMessage()
             );
+            System.err.printf("Failed to open plugin '%s' jar file: %s%n", pluginInfo.getName(), ex.getMessage());
             ex.printStackTrace();
-            return;
         }
-        if(in == null) {
-            UIUtility.showInfoDialog(this, "Plugin doesn't have preferences");
-            return;
-        }
+    }
+
+    private void openPreferences(PluginInfo pluginInfo, InputStream in) {
         final String json;
 
         try(BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
@@ -217,10 +206,6 @@ public class PluginsFrame extends AppFrame {
             );
             ex.printStackTrace();
             return;
-        }
-        System.out.println();
-        for (String key : configuration.keys()) {
-            System.out.printf(" [%s] : [%s]%n", key, configuration.get(key, "unset"));
         }
 
         new PreferencesFrame(

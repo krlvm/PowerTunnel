@@ -23,6 +23,7 @@ import io.github.krlvm.powertunnel.desktop.utilities.SystemUtility;
 import io.github.krlvm.powertunnel.preferences.Preference;
 import io.github.krlvm.powertunnel.preferences.PreferenceGroup;
 import io.github.krlvm.powertunnel.preferences.PreferenceType;
+import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
 
 import javax.swing.*;
 import java.awt.*;
@@ -130,9 +131,9 @@ public class OptionsFrame extends PreferencesFrame {
         return groups;
     }
 
-    public OptionsFrame() {
+    public OptionsFrame(Configuration configuration) {
         super("Options", "desktop-app-options",
-                DesktopApp.CONFIGURATION_FILE, GraphicalApp.getInstance().getConfiguration(),
+                DesktopApp.CONFIGURATION_FILE, configuration,
                 getPreferences()
         );
 
