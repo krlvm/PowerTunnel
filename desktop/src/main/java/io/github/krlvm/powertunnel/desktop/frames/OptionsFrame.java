@@ -73,7 +73,7 @@ public class OptionsFrame extends PreferencesFrame {
                     "Upstream proxy port",
                     null,
                     "",
-                    PreferenceType.STRING,
+                    PreferenceType.NUMBER,
                     "upstream_proxy_enabled", "true", null
             ));
 
