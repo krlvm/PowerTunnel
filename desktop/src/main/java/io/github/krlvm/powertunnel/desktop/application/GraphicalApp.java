@@ -19,6 +19,7 @@ package io.github.krlvm.powertunnel.desktop.application;
 
 import io.github.krlvm.powertunnel.desktop.BuildConstants;
 import io.github.krlvm.powertunnel.desktop.Main;
+import io.github.krlvm.powertunnel.desktop.configuration.ServerConfiguration;
 import io.github.krlvm.powertunnel.desktop.frames.MainFrame;
 import io.github.krlvm.powertunnel.desktop.frames.OptionsFrame;
 import io.github.krlvm.powertunnel.desktop.frames.PluginsFrame;
@@ -32,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 public class GraphicalApp extends DesktopApp {
 
@@ -47,7 +49,7 @@ public class GraphicalApp extends DesktopApp {
     public PluginsFrame pluginsFrame = null;
     public OptionsFrame optionsFrame = null;
 
-    public GraphicalApp(Configuration configuration, boolean start, boolean minimized, boolean tray) {
+    public GraphicalApp(ServerConfiguration configuration, boolean start, boolean minimized, boolean tray) {
         super(configuration, start);
         instance = this;
 
@@ -74,18 +76,28 @@ public class GraphicalApp extends DesktopApp {
     @Override
     public void start() {
         final ProxyStartException ex = startInternal();
-        if(ex == null) return;
+        if(ex == null) {
+            try {
+                configuration.save();
+            } catch (IOException e) {
+                System.err.println("Failed to save configuration: " + e.getMessage());
+                e.printStackTrace();
+            }
+            return;
+        }
         UIUtility.showErrorDialog(frame, "Failed to start server", ex.getMessage());
         JOptionPane.showMessageDialog(frame, ex.getMessage(), "Failed to start server", JOptionPane.ERROR_MESSAGE);
     }
 
     @Override
     public void beforeProxyStatusChanged(@NotNull ProxyStatus status) {
+        super.beforeProxyStatusChanged(status);
         frame.update();
     }
 
     @Override
     public void onProxyStatusChanged(@NotNull ProxyStatus status) {
+        super.beforeProxyStatusChanged(status);
         frame.update();
     }
 

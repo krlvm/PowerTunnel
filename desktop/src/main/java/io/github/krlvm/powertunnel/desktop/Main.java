@@ -21,6 +21,7 @@ import io.github.krlvm.powertunnel.desktop.application.ConsoleApp;
 import io.github.krlvm.powertunnel.desktop.application.DesktopApp;
 import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
 import io.github.krlvm.powertunnel.desktop.configuration.AdvancedConfiguration;
+import io.github.krlvm.powertunnel.desktop.configuration.ServerConfiguration;
 import io.github.krlvm.powertunnel.desktop.parser.ArgumentParser;
 import io.github.krlvm.powertunnel.desktop.types.AutoSetupMode;
 import io.github.krlvm.powertunnel.desktop.utilities.SystemUtility;
@@ -41,7 +42,7 @@ public class Main {
                 BuildConstants.NAME, BuildConstants.VERSION, BuildConstants.DESCRIPTION
         );
         System.out.println();
-        if(!BuildConstants.IS_RELEASE) {
+        if (!BuildConstants.IS_RELEASE) {
             System.out.println("WARNING: Running a pre-release version of " + BuildConstants.NAME);
             System.out.println();
         }
@@ -74,21 +75,21 @@ public class Main {
             return;
         }
 
-        if(cli.hasOption(ArgumentParser.Arguments.HELP)) {
+        if (cli.has(ArgumentParser.Arguments.HELP)) {
             cli.printHelp();
             System.exit(0);
             return;
         }
-        if(cli.hasOption(ArgumentParser.Arguments.VERSION)) {
+        if (cli.has(ArgumentParser.Arguments.VERSION)) {
             System.out.printf("[Application] Version: %s, code: %s%n", BuildConstants.VERSION, BuildConstants.VERSION_CODE);
             System.out.printf("[Core] Version: %s, code: %s%n", io.github.krlvm.powertunnel.BuildConstants.VERSION, io.github.krlvm.powertunnel.BuildConstants.VERSION_CODE);
             System.exit(0);
             return;
         }
 
-        final AdvancedConfiguration configuration = new AdvancedConfiguration();
+        final ServerConfiguration configuration = new ServerConfiguration();
         try {
-            configuration.read(DesktopApp.CONFIGURATION_FILE);
+            configuration.read();
         } catch (IOException ex) {
             System.err.println("Failed to read configuration: " + ex.getMessage());
             ex.printStackTrace();
@@ -96,20 +97,25 @@ public class Main {
             return;
         }
 
-        final boolean consoleMode = cli.hasOption(ArgumentParser.Arguments.CONSOLE) || SystemUtility.IS_TERMINAL;
+        final boolean consoleMode = cli.has(ArgumentParser.Arguments.CONSOLE) || SystemUtility.IS_TERMINAL;
 
-        configuration.protect("ip", cli.getOption(ArgumentParser.Arguments.IP, "127.0.0.1"));
-        configuration.protectInt("port", cli.getIntOption(ArgumentParser.Arguments.PORT, 8085));
-        configuration.protect("auto-proxy-setup",
-                cli.hasOption(ArgumentParser.Arguments.DISABLE_AUTO_PROXY_STARTUP) || consoleMode ? "false" :
-                        (cli.hasOption(ArgumentParser.Arguments.AUTO_PROXY_STARTUP_IE) ?
-                                AutoSetupMode.IE.name() : AutoSetupMode.NATIVE.name())
-        );
-
+        if (cli.has(ArgumentParser.Arguments.IP)) {
+            configuration.protect("ip", cli.get(ArgumentParser.Arguments.IP));
+        }
+        if (cli.has(ArgumentParser.Arguments.PORT)) {
+            configuration.protectInt("port", cli.getInt(ArgumentParser.Arguments.PORT));
+        }
+        if (cli.has(ArgumentParser.Arguments.DISABLE_AUTO_PROXY_STARTUP)) {
+            configuration.protect("auto-proxy-setup",
+                    cli.has(ArgumentParser.Arguments.DISABLE_AUTO_PROXY_STARTUP) || consoleMode ? "false" :
+                            (cli.has(ArgumentParser.Arguments.AUTO_PROXY_STARTUP_IE) ?
+                                    AutoSetupMode.IE.name() : AutoSetupMode.NATIVE.name())
+            );
+        }
         if(consoleMode) {
             new ConsoleApp(configuration);
         } else {
-            if(!cli.hasOption(ArgumentParser.Arguments.DISABLE_NATIVE_SKIN)) {
+            if(!cli.has(ArgumentParser.Arguments.DISABLE_NATIVE_SKIN)) {
                 try {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 } catch (Exception ex) {
@@ -117,23 +123,23 @@ public class Main {
                     ex.printStackTrace();
                 }
             }
-            if(!cli.hasOption(ArgumentParser.Arguments.DISABLE_UI_SCALING)) {
-                if(cli.hasOption(ArgumentParser.Arguments.SET_UI_SCALE_FACTOR)) {
+            if(!cli.has(ArgumentParser.Arguments.DISABLE_UI_SCALING)) {
+                if(cli.has(ArgumentParser.Arguments.SET_UI_SCALE_FACTOR)) {
                     SwingDPI.setScaleFactor(cli.getFloat(ArgumentParser.Arguments.SET_UI_SCALE_FACTOR, 1));
                     SwingDPI.setScaleApplied(true);
                 } else {
                     SwingDPI.applyScalingAutomatically();
                 }
             }
-            if(!cli.hasOption(ArgumentParser.Arguments.DISABLE_NATIVE_SKIN)) {
+            if(!cli.has(ArgumentParser.Arguments.DISABLE_NATIVE_SKIN)) {
                 UIUtility.tweakLook();
             }
 
             new GraphicalApp(
                     configuration,
-                    cli.hasOption(ArgumentParser.Arguments.START),
-                    cli.hasOption(ArgumentParser.Arguments.MINIMIZED),
-                    !cli.hasOption(ArgumentParser.Arguments.DISABLE_TRAY)
+                    cli.has(ArgumentParser.Arguments.START),
+                    cli.has(ArgumentParser.Arguments.MINIMIZED),
+                    !cli.has(ArgumentParser.Arguments.DISABLE_TRAY)
             );
         }
     }

@@ -15,13 +15,19 @@
  * along with PowerTunnel.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.krlvm.powertunnel.desktop.application;
+package io.github.krlvm.powertunnel.desktop.configuration;
 
-import io.github.krlvm.powertunnel.desktop.configuration.ServerConfiguration;
+import io.github.krlvm.powertunnel.desktop.application.DesktopApp;
 
-public class ConsoleApp extends DesktopApp {
+import java.io.IOException;
 
-    public ConsoleApp(ServerConfiguration configuration) {
-        super(configuration, true);
+public class ServerConfiguration extends AdvancedConfiguration {
+
+    public void read() throws IOException {
+        read(DesktopApp.CONFIGURATION_FILE);
+    }
+
+    public void save() throws IOException {
+        save(DesktopApp.CONFIGURATION_FILE);
     }
 }

@@ -97,10 +97,11 @@ public class MainFrame extends AppFrame {
             if (app.getStatus() == ProxyStatus.RUNNING) {
                 app.stop();
             } else {
-                app.setAddress(new ProxyAddress(
-                        ipField.getText(),
-                        Integer.parseInt(portField.getText())
-                ));
+                final String ip = ipField.getText();
+                final int port = Integer.parseInt(portField.getText());
+                app.getConfiguration().set("ip", ip);
+                app.getConfiguration().setInt("port", port);
+                app.setAddress(new ProxyAddress(ip, port));
                 app.start();
             }
         }).start());

@@ -43,7 +43,7 @@ public class OptionsFrame extends PreferencesFrame {
 
             if (SystemUtility.IS_WINDOWS) {
                 preferences.add(new Preference(
-                        "auto-proxy-setup",
+                        "auto_proxy_setup",
                         "Auto proxy setup",
                         "Automatically setting up system proxy server configuration..\n\nWindows: Internet Explorer can be started for a few seconds to apply changes.",
                         "true",
@@ -53,7 +53,7 @@ public class OptionsFrame extends PreferencesFrame {
             }
 
             preferences.add(new Preference(
-                    "upstream-proxy-enabled",
+                    "upstream_proxy_enabled",
                     "Connect via upstream proxy server",
                     "Use a proxy server to connect to the Internet",
                     "false",
@@ -61,45 +61,45 @@ public class OptionsFrame extends PreferencesFrame {
                     null, null, null
             ));
             preferences.add(new Preference(
-                    "upstream-proxy-host",
+                    "upstream_proxy_host",
                     "Upstream proxy host",
                     null,
                     "",
                     PreferenceType.STRING,
-                    "upstream-proxy-enabled", "true", null
+                    "upstream_proxy_enabled", "true", null
             ));
             preferences.add(new Preference(
-                    "upstream-proxy-port",
+                    "upstream_proxy_port",
                     "Upstream proxy port",
                     null,
                     "",
                     PreferenceType.STRING,
-                    "upstream-proxy-enabled", "true", null
+                    "upstream_proxy_enabled", "true", null
             ));
 
             preferences.add(new Preference(
-                    "upstream-proxy-auth-enabled",
+                    "upstream_proxy_auth_enabled",
                     "Upstream proxy authorization",
                     "Authenticate on upstream proxy server",
                     "false",
                     PreferenceType.SWITCH,
-                    "upstream-proxy-enabled", "true", null
+                    "upstream_proxy_enabled", "true", null
             ));
             preferences.add(new Preference(
-                    "upstream-proxy-auth-username",
+                    "upstream_proxy_auth_username",
                     "Upstream proxy username",
                     null,
                     "",
                     PreferenceType.STRING,
-                    "upstream-proxy-auth-enabled", "true", null
+                    "upstream_proxy_auth_enabled", "true", null
             ));
             preferences.add(new Preference(
-                    "upstream-proxy-auth-password",
+                    "upstream_proxy_auth_password",
                     "Upstream proxy password",
                     null,
                     "",
                     PreferenceType.STRING,
-                    "upstream-proxy-auth-enabled", "true", null
+                    "upstream_proxy_auth_enabled", "true", null
             ));
 
             groups.add(new PreferenceGroup("Proxy connection", null, preferences));
@@ -109,7 +109,7 @@ public class OptionsFrame extends PreferencesFrame {
             preferences = new ArrayList<>();
 
             preferences.add(new Preference(
-                    "transparent-mode",
+                    "transparent_mode",
                     "Run proxy in transparent mode (recommended)",
                     "When proxy server is in transparent mode, it declares that it does not modify requests and responses and does not set 'Via' header",
                     "true",
@@ -117,7 +117,7 @@ public class OptionsFrame extends PreferencesFrame {
                     null, null, null
             ));
             preferences.add(new Preference(
-                    "allow-requests-to-origin-server",
+                    "allow_requests_to_origin_server",
                     "Allow requests to origin server (recommended)",
                     "Experimental option, fixed many connectivity issues.",
                     "true",

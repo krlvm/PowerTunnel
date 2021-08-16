@@ -46,16 +46,22 @@ public class ArgumentParser {
         new HelpFormatter().printHelp(BuildConstants.NAME, options);
     }
 
-    public boolean hasOption(String key) {
+    public boolean has(String key) {
         return cli.hasOption(key);
     }
 
-    public String getOption(String key, String defaultValue) {
+    public String get(String key) {
+        return get(key, null);
+    }
+    public String get(String key, String defaultValue) {
         return cli.getOptionValue(key, defaultValue);
     }
 
-    public int getIntOption(String key, int defaultValue) {
-        final String value = getOption(key, String.valueOf(defaultValue));
+    public int getInt(String key) {
+        return getInt(key, 0);
+    }
+    public int getInt(String key, int defaultValue) {
+        final String value = get(key, String.valueOf(defaultValue));
         try {
             return Integer.parseInt(value);
         } catch (NumberFormatException ex) {
@@ -65,8 +71,11 @@ public class ArgumentParser {
         }
     }
 
+    public float getFloat(String key) {
+        return getFloat(key, 0);
+    }
     public float getFloat(String key, float defaultValue) {
-        final String value = getOption(key, String.valueOf(defaultValue));
+        final String value = get(key, String.valueOf(defaultValue));
         try {
             return Float.parseFloat(value);
         } catch (NumberFormatException ex) {

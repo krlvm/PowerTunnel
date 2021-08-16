@@ -19,6 +19,7 @@ package io.github.krlvm.powertunnel.desktop.application;
 
 import io.github.krlvm.powertunnel.PowerTunnel;
 import io.github.krlvm.powertunnel.desktop.BuildConstants;
+import io.github.krlvm.powertunnel.desktop.configuration.ServerConfiguration;
 import io.github.krlvm.powertunnel.mitm.MITMAuthority;
 import io.github.krlvm.powertunnel.plugin.PluginLoader;
 import io.github.krlvm.powertunnel.sdk.ServerListener;
@@ -26,8 +27,7 @@ import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
 import io.github.krlvm.powertunnel.sdk.exceptions.PluginLoadException;
 import io.github.krlvm.powertunnel.sdk.exceptions.ProxyStartException;
 import io.github.krlvm.powertunnel.sdk.plugin.PluginInfo;
-import io.github.krlvm.powertunnel.sdk.proxy.ProxyAddress;
-import io.github.krlvm.powertunnel.sdk.proxy.ProxyStatus;
+import io.github.krlvm.powertunnel.sdk.proxy.*;
 import io.github.krlvm.powertunnel.sdk.types.PowerTunnelPlatform;
 import io.github.krlvm.powertunnel.sdk.types.VersionInfo;
 import org.jetbrains.annotations.NotNull;
@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.UUID;
 
 public abstract class DesktopApp implements ServerListener {
@@ -58,12 +59,12 @@ public abstract class DesktopApp implements ServerListener {
             null
     );
 
-    protected final Configuration configuration;
+    protected final ServerConfiguration configuration;
 
     protected PowerTunnel server;
     protected ProxyAddress address;
 
-    public DesktopApp(Configuration configuration, boolean start) {
+    public DesktopApp(ServerConfiguration configuration, boolean start) {
         this.configuration = configuration;
         this.address = new ProxyAddress(
                 configuration.get("ip", "127.0.0.1"),
@@ -85,10 +86,10 @@ public abstract class DesktopApp implements ServerListener {
         this.server = new PowerTunnel(
                 address,
                 PowerTunnelPlatform.DESKTOP,
-                configuration.getBoolean("transparent", true),
+                configuration.getBoolean("transparent_mode", true),
                 MITMAuthority.create(
                         new File("cert"),
-                        configuration.get("certificate", UUID.randomUUID().toString()).toCharArray()
+                        configuration.get("cert_password", UUID.randomUUID().toString()).toCharArray()
                 )
         );
         this.server.registerServerListener(PLUGIN_INFO, this);
@@ -126,7 +127,31 @@ public abstract class DesktopApp implements ServerListener {
     }
 
     @Override
-    public void beforeProxyStatusChanged(@NotNull ProxyStatus status) {}
+    public void beforeProxyStatusChanged(@NotNull ProxyStatus status) {
+        if(status == ProxyStatus.STARTING) {
+            final ProxyServer proxy = server.getProxyServer();
+            assert proxy != null;
+
+            if(configuration.getBoolean("upstream_proxy_enabled", false)) {
+                ProxyCredentials credentials = null;
+                if(configuration.getBoolean("upstream_proxy_auth_enabled", false)) {
+                    credentials = new ProxyCredentials(
+                            configuration.get("upstream_proxy_auth_username", ""),
+                            configuration.get("upstream_proxy_auth_password", "")
+                    );
+                }
+                proxy.setUpstreamProxyServer(new UpstreamProxyServer(
+                        new ProxyAddress(
+                                configuration.get("upstream_proxy_host", ""),
+                                configuration.getInt("upstream_proxy_port", 0)
+                        ),
+                        credentials
+                ));
+            }
+
+            proxy.setAllowRequestsToOriginServer(configuration.getBoolean("allow_requests_to_origin_server", true));
+        }
+    }
 
     @Override
     public void onProxyStatusChanged(@NotNull ProxyStatus status) {}
