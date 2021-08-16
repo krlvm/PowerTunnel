@@ -148,17 +148,21 @@ public class PreferencesFrame extends AppFrame {
             }
         }
 
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 final int result = JOptionPane.showConfirmDialog(PreferencesFrame.this,
-                        "Do you want to save changes?", BuildConstants.NAME, JOptionPane.YES_NO_OPTION
+                        "Do you want to save changes?", BuildConstants.NAME, JOptionPane.YES_NO_CANCEL_OPTION
                 );
                 if (result == JOptionPane.YES_OPTION) {
                     save();
+                } else if(result == JOptionPane.NO_OPTION) {
+                    dispose();
                 }
-                dispose();
+            }
+            @Override
+            public void windowClosed(WindowEvent e) {
                 OPENED_IDS.remove(id);
             }
         });
@@ -176,6 +180,18 @@ public class PreferencesFrame extends AppFrame {
     protected void frameInitialized() {
         final JPanel actionPanel = new JPanel(new BorderLayout());
 
+        final JButton resetButton = new JButton("Reset");
+        resetButton.addActionListener(e -> {
+            final int result = JOptionPane.showConfirmDialog(PreferencesFrame.this,
+                    "Do you want to reset configuration?", BuildConstants.NAME, JOptionPane.YES_NO_OPTION
+            );
+            if (result == JOptionPane.YES_OPTION) {
+                configuration.clear();
+                saveConfiguration();
+                dispose();
+            }
+        });
+
         final JButton cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(e -> dispose());
 
@@ -185,11 +201,15 @@ public class PreferencesFrame extends AppFrame {
             dispose();
         });
 
-        final JPanel wrapper = new JPanel(new FlowLayout());
-        wrapper.add(cancelButton);
-        wrapper.add(saveButton);
+        final JPanel westWrapper = new JPanel(new FlowLayout());
+        westWrapper.add(resetButton);
 
-        actionPanel.add(wrapper, BorderLayout.EAST);
+        final JPanel eastWrapper = new JPanel(new FlowLayout());
+        eastWrapper.add(cancelButton);
+        eastWrapper.add(saveButton);
+
+        actionPanel.add(westWrapper, BorderLayout.WEST);
+        actionPanel.add(eastWrapper, BorderLayout.EAST);
         insertComponent(actionPanel);
 
         saveButton.requestFocus();
@@ -261,6 +281,9 @@ public class PreferencesFrame extends AppFrame {
                 configuration.set(preference.getKey(), getBindingValue(preference));
             }
         }
+        saveConfiguration();
+    }
+    private void saveConfiguration() {
         try {
             configuration.save(configurationFile);
         } catch (IOException ex) {
