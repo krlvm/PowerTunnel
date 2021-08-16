@@ -22,6 +22,7 @@ import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
 import io.github.krlvm.powertunnel.desktop.configuration.ServerConfiguration;
 import io.github.krlvm.powertunnel.desktop.parser.ArgumentParser;
 import io.github.krlvm.powertunnel.desktop.system.windows.WindowsProxyHandler;
+import io.github.krlvm.powertunnel.desktop.updater.UpdateNotifier;
 import io.github.krlvm.powertunnel.desktop.utilities.SystemUtility;
 import io.github.krlvm.powertunnel.desktop.utilities.UIUtility;
 import ru.krlvm.swingdpi.SwingDPI;
@@ -46,25 +47,25 @@ public class Main {
 
         final ArgumentParser.Builder builder = new ArgumentParser.Builder()
                 .option(ArgumentParser.Arguments.HELP, "display help")
-                .option(ArgumentParser.Arguments.VERSION, "display version details")
-                .option(ArgumentParser.Arguments.START, "start proxy server immediately after load")
-                .argument(ArgumentParser.Arguments.IP, "sets proxy server IP address [127.0.0.1]")
-                .argument(ArgumentParser.Arguments.PORT, "sets proxy server port [8085]");
+                .option(ArgumentParser.Arguments.VERSION, "print version details")
+                .option(ArgumentParser.Arguments.START, "start proxy server after load")
+                .argument(ArgumentParser.Arguments.IP, "set proxy server IP address [127.0.0.1]")
+                .argument(ArgumentParser.Arguments.PORT, "set proxy server port [8085]");
         if (SystemUtility.IS_WINDOWS) {
             builder
-                    .option(ArgumentParser.Arguments.DISABLE_AUTO_PROXY_STARTUP, "disables auto proxy setup (Windows)")
-                    .option(ArgumentParser.Arguments.AUTO_PROXY_STARTUP_IE, "setup proxy using IE instead of native API (Windows)");
+                    .option(ArgumentParser.Arguments.DISABLE_AUTO_PROXY_STARTUP, "disable auto proxy setup")
+                    .option(ArgumentParser.Arguments.AUTO_PROXY_STARTUP_IE, "setup proxy using Internet Explorer");
         }
         if (!SystemUtility.IS_TERMINAL) {
             builder
-                    .option(ArgumentParser.Arguments.CONSOLE, "run application in console mode without user interface")
+                    .option(ArgumentParser.Arguments.CONSOLE, "run application in console mode")
                     .option(ArgumentParser.Arguments.MINIMIZED, "minimize UI to tray after start")
-                    .option(ArgumentParser.Arguments.DISABLE_TRAY, "disables tray mode")
-                    .argument(ArgumentParser.Arguments.DISABLE_NATIVE_SKIN, "disables platform native UI skin")
-                    .argument(ArgumentParser.Arguments.SET_UI_SCALE_FACTOR, "sets UI scale factor")
-                    .argument(ArgumentParser.Arguments.DISABLE_UI_SCALING, "disables UI scaling");
+                    .option(ArgumentParser.Arguments.DISABLE_TRAY, "disable tray mode")
+                    .argument(ArgumentParser.Arguments.DISABLE_NATIVE_SKIN, "disable platform native UI skin")
+                    .argument(ArgumentParser.Arguments.SET_UI_SCALE_FACTOR, "set UI scale factor")
+                    .argument(ArgumentParser.Arguments.DISABLE_UI_SCALING, "disable UI scaling");
         }
-        builder.option(ArgumentParser.Arguments.DISABLE_UPDATER, "disables the Update Notifier");
+        builder.option(ArgumentParser.Arguments.DISABLE_UPDATER, "disable the Update Notifier");
 
         final ArgumentParser cli = builder.build();
         if (!cli.parse(args)) {
@@ -92,6 +93,10 @@ public class Main {
             ex.printStackTrace();
             System.exit(1);
             return;
+        }
+
+        if(cli.has(ArgumentParser.Arguments.DISABLE_UPDATER)) {
+            UpdateNotifier.ENABLED = false;
         }
 
         final boolean consoleMode = cli.has(ArgumentParser.Arguments.CONSOLE) || SystemUtility.IS_TERMINAL;
@@ -136,6 +141,13 @@ public class Main {
                     cli.has(ArgumentParser.Arguments.MINIMIZED),
                     !cli.has(ArgumentParser.Arguments.DISABLE_TRAY)
             );
+        }
+
+        if(UpdateNotifier.ENABLED) {
+            new Thread(
+                    () -> UpdateNotifier.checkAndNotify(BuildConstants.NAME, BuildConstants.REPO, false),
+                    "Main App Update Checking Thread"
+            ).start();
         }
     }
 }

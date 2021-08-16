@@ -18,9 +18,12 @@
 package io.github.krlvm.powertunnel.desktop.frames;
 
 import io.github.krlvm.powertunnel.configuration.ConfigurationStore;
+import io.github.krlvm.powertunnel.desktop.BuildConstants;
 import io.github.krlvm.powertunnel.desktop.application.DesktopApp;
 import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
+import io.github.krlvm.powertunnel.desktop.updater.UpdateNotifier;
 import io.github.krlvm.powertunnel.desktop.utilities.SystemUtility;
+import io.github.krlvm.powertunnel.desktop.utilities.UIUtility;
 import io.github.krlvm.powertunnel.preferences.Preference;
 import io.github.krlvm.powertunnel.preferences.PreferenceGroup;
 import io.github.krlvm.powertunnel.preferences.PreferenceType;
@@ -152,8 +155,41 @@ public class OptionsFrame extends PreferencesFrame {
         notePanel.add(new JLabel("<html><b>NOTE:</b> Some features have been moved to plugins,<br>so you need to open their settings for configuring</html>"));
         insertComponent(notePanel);
 
-        // TODO: Insert updater
+        if(UpdateNotifier.ENABLED) {
+            final JPanel updatePanel = new JPanel(new BorderLayout());
+            final JLabel updateLabel = new JLabel();
+            final JButton updateButton = new JButton("Check for updates");
+
+            updateButton.addActionListener(e -> {
+                updateButton.setEnabled(false);
+                setUpdateInfo(updateLabel, true);
+                new Thread(() -> {
+                    if(!UpdateNotifier.checkAndNotify(BuildConstants.NAME, BuildConstants.REPO, true)) {
+                        UIUtility.showErrorDialog(OptionsFrame.this, "Failed to check for updates");
+                    }
+                    setUpdateInfo(updateLabel, false);
+                    updateButton.setEnabled(true);
+                }, "App Update Checker").start();
+            });
+
+            updatePanel.add(updateLabel, BorderLayout.WEST);
+            updatePanel.add(updateButton, BorderLayout.EAST);
+            updatePanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+            insertComponent(updatePanel);
+
+            setUpdateInfo(updateLabel, false);
+        }
+
         super.frameInitialized();
+    }
+
+    private void setUpdateInfo(JLabel label, boolean checking) {
+        label.setText("<html><b>" +
+                (checking ? "Checking for updates..." : (UpdateNotifier.NEW_VERSION == null ?
+                        "No updates are available" : "An update is available: " + UpdateNotifier.NEW_VERSION
+                )) +
+                "</b></html>"
+        );
     }
 
     @Override

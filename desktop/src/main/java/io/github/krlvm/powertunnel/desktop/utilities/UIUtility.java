@@ -40,7 +40,7 @@ public class UIUtility {
     }
 
     public static void showErrorDialog(JFrame parent, String message) {
-        showErrorDialog(parent, "Error", message);
+        showErrorDialog(parent, BuildConstants.NAME, message);
     }
 
     public static void showErrorDialog(JFrame parent, String title, String message) {
