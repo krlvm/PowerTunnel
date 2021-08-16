@@ -63,6 +63,8 @@ public abstract class DesktopApp implements ServerListener {
     protected PowerTunnel server;
     protected ProxyAddress address;
 
+    private Exception initializationException = null;
+
     public DesktopApp(ServerConfiguration configuration, boolean start) {
         this.configuration = configuration;
         this.address = new ProxyAddress(
@@ -109,11 +111,14 @@ public abstract class DesktopApp implements ServerListener {
     }
 
     public void stop() {
+        stop(true);
+    }
+    public void stop(boolean graceful) {
         if(this.server == null) {
             LOGGER.warn("Attempted to stop server when it is not running");
             return;
         }
-        this.server.stop();
+        this.server.stop(graceful);
         this.server = null;
     }
 
@@ -127,33 +132,47 @@ public abstract class DesktopApp implements ServerListener {
 
     @Override
     public void beforeProxyStatusChanged(@NotNull ProxyStatus status) {
-        if(status == ProxyStatus.STARTING) {
-            final ProxyServer proxy = server.getProxyServer();
-            assert proxy != null;
+        if (status == ProxyStatus.STARTING) {
+            try {
+                final ProxyServer proxy = server.getProxyServer();
+                assert proxy != null;
 
-            if(configuration.getBoolean("upstream_proxy_enabled", false)) {
-                ProxyCredentials credentials = null;
-                if(configuration.getBoolean("upstream_proxy_auth_enabled", false)) {
-                    credentials = new ProxyCredentials(
-                            configuration.get("upstream_proxy_auth_username", ""),
-                            configuration.get("upstream_proxy_auth_password", "")
-                    );
+                if (configuration.getBoolean("upstream_proxy_enabled", false)) {
+                    ProxyCredentials credentials = null;
+                    if (configuration.getBoolean("upstream_proxy_auth_enabled", false)) {
+                        credentials = new ProxyCredentials(
+                                configuration.get("upstream_proxy_auth_username", ""),
+                                configuration.get("upstream_proxy_auth_password", "")
+                        );
+                    }
+                    proxy.setUpstreamProxyServer(new UpstreamProxyServer(
+                            new ProxyAddress(
+                                    configuration.get("upstream_proxy_host", ""),
+                                    configuration.getInt("upstream_proxy_port", 0)
+                            ),
+                            credentials
+                    ));
                 }
-                proxy.setUpstreamProxyServer(new UpstreamProxyServer(
-                        new ProxyAddress(
-                                configuration.get("upstream_proxy_host", ""),
-                                configuration.getInt("upstream_proxy_port", 0)
-                        ),
-                        credentials
-                ));
-            }
 
-            proxy.setAllowRequestsToOriginServer(configuration.getBoolean("allow_requests_to_origin_server", true));
+                proxy.setAllowRequestsToOriginServer(configuration.getBoolean("allow_requests_to_origin_server", true));
+            } catch (Exception ex) {
+                initializationException = ex;
+            }
+        } else if(status == ProxyStatus.RUNNING) {
+            if(initializationException != null) {
+                stop(false);
+                onUnexpectedProxyInitializationError(initializationException);
+                initializationException = null;
+            }
         }
     }
 
     @Override
     public void onProxyStatusChanged(@NotNull ProxyStatus status) {}
+
+    protected void onUnexpectedProxyInitializationError(Exception ex) {
+        LOGGER.error("Unexpected error occurred when initializing proxy server: {}", ex.getMessage(), ex);
+    }
 
     public Configuration getConfiguration() {
         return configuration;

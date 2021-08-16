@@ -85,8 +85,8 @@ public class GraphicalApp extends DesktopApp {
             }
             return;
         }
-        UIUtility.showErrorDialog(frame, "Failed to start server", ex.getMessage());
-        JOptionPane.showMessageDialog(frame, ex.getMessage(), "Failed to start server", JOptionPane.ERROR_MESSAGE);
+        UIUtility.showErrorDialog(getVisibleMainFrame(), "Failed to start server", ex.getMessage());
+        JOptionPane.showMessageDialog(getVisibleMainFrame(), ex.getMessage(), "Failed to start server", JOptionPane.ERROR_MESSAGE);
     }
 
     @Override
@@ -108,6 +108,13 @@ public class GraphicalApp extends DesktopApp {
         }
     }
 
+    @Override
+    protected void onUnexpectedProxyInitializationError(Exception ex) {
+        super.onUnexpectedProxyInitializationError(ex);
+        Thread.dumpStack();
+        UIUtility.showErrorDialog(getVisibleMainFrame(), "Unexpected error during proxy server initialization: " + ex.getMessage());
+    }
+
     public boolean isTrayAvailable() {
         return trayManager != null && trayManager.isLoaded();
     }
@@ -116,18 +123,22 @@ public class GraphicalApp extends DesktopApp {
         if(isTrayAvailable()) trayManager.showNotification(message);
     }
 
+    private JFrame getVisibleMainFrame() {
+        return frame;
+    }
+
     public void showFrame() {
         frame.showFrame();
     }
 
     public void showPluginsFrame() {
         if(pluginsFrame == null) pluginsFrame = new PluginsFrame();
-        pluginsFrame.showFrame(frame.isVisible() ? frame : null);
+        pluginsFrame.showFrame(getVisibleMainFrame());
     }
 
     public void showOptionsFrame() {
         if(optionsFrame == null) optionsFrame = new OptionsFrame(configuration);
-        optionsFrame.showFrame(frame.isVisible() ? frame : null);
+        optionsFrame.showFrame(getVisibleMainFrame());
     }
 
     public void extendButtonsPanel(JPanelCallback callback) {
