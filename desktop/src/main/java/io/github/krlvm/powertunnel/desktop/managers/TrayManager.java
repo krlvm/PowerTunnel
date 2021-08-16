@@ -71,6 +71,8 @@ public class TrayManager {
         freeFonts();
 
         SystemTray.getSystemTray().add(trayIcon);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(this::unload, "Tray Unload Thread"));
     }
 
     public void unload() {
