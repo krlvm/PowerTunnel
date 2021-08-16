@@ -56,6 +56,10 @@ public abstract class AppFrame extends ScalableJFrame {
     }
 
     public void showFrame() {
+        showFrame(null);
+    }
+    public void showFrame(JFrame parent) {
+        setLocationRelativeTo(parent);
         setVisible(true);
         setState(Frame.NORMAL);
         toFront();

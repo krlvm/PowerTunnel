@@ -122,12 +122,12 @@ public class GraphicalApp extends DesktopApp {
 
     public void showPluginsFrame() {
         if(pluginsFrame == null) pluginsFrame = new PluginsFrame();
-        pluginsFrame.showFrame();
+        pluginsFrame.showFrame(frame.isVisible() ? frame : null);
     }
 
     public void showOptionsFrame() {
         if(optionsFrame == null) optionsFrame = new OptionsFrame(configuration);
-        optionsFrame.showFrame();
+        optionsFrame.showFrame(frame.isVisible() ? frame : null);
     }
 
     public void extendButtonsPanel(JPanelCallback callback) {

@@ -211,6 +211,6 @@ public class PluginsFrame extends AppFrame {
         new PreferencesFrame(
                 pluginInfo.getName() + " preferences",
                 pluginInfo.getId(), configurationFile, configuration, preferences
-        ).showFrame();
+        ).showFrame(this);
     }
 }
