@@ -144,10 +144,12 @@ public class Main {
         }
 
         if(UpdateNotifier.ENABLED) {
-            new Thread(
+            final Thread updateThread = new Thread(
                     () -> UpdateNotifier.checkAndNotify(BuildConstants.NAME, BuildConstants.REPO, false),
                     "Main App Update Checking Thread"
-            ).start();
+            );
+            updateThread.setDaemon(true);
+            updateThread.start();
         }
     }
 }
