@@ -30,7 +30,6 @@ import io.github.krlvm.powertunnel.preferences.PreferenceParser;
 import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
 import io.github.krlvm.powertunnel.sdk.exceptions.PluginLoadException;
 import io.github.krlvm.powertunnel.sdk.plugin.PluginInfo;
-import io.github.krlvm.powertunnel.sdk.plugin.PowerTunnelPlugin;
 import io.github.krlvm.powertunnel.utility.JarLoader;
 
 import javax.swing.*;
@@ -40,6 +39,7 @@ import java.awt.event.WindowEvent;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class PluginsFrame extends AppFrame {
@@ -47,36 +47,48 @@ public class PluginsFrame extends AppFrame {
     private static final int PADDING = 8;
     private final DefaultListModel<PluginInfo> model = new DefaultListModel<>();
 
+    private final JList<PluginInfo> list;
+
     public PluginsFrame() {
         super("Plugins");
 
         GridBagConstraints gbc = new GridBagConstraints();
 
-        final JList<PluginInfo> list = new JList<>(model);
+        list = new JList<>(model);
         list.setCellRenderer(new PluginInfoRenderer());
 
 
-        final JButton homepageButton = new JButton("Visit homepage");
-        homepageButton.addActionListener(e -> {
-            PluginInfo value = list.getSelectedValue();
-            if(value == null || value.getHomepage() == null) return;
-            Utility.launchBrowser(value.getHomepage());
-        });
+        final JButton homepageButton = new JButton("Homepage");
+        homepageButton.addActionListener(e -> withSelectedValue(pluginInfo -> {
+            if(pluginInfo.getHomepage() != null) Utility.launchBrowser(pluginInfo.getHomepage());
+        }));
         homepageButton.setEnabled(false);
+
+        final JButton disableButton = new JButton("Disable");
+        disableButton.addActionListener(e -> withSelectedValue(pluginInfo -> {
+            if(isPluginEnabled(pluginInfo)) {
+                disablePlugin(pluginInfo);
+                disableButton.setText("Enable");
+            } else {
+                enablePlugin(pluginInfo);
+                disableButton.setText("Disable");
+            }
+        }));
+        disableButton.setEnabled(!GraphicalApp.getInstance().isRunning());
+
         final JButton settingsButton = new JButton("Settings");
-        settingsButton.addActionListener(e -> {
-            PluginInfo value = list.getSelectedValue();
-            if(value == null) return;
-            openPreferences(value);
-        });
+        settingsButton.addActionListener(e -> withSelectedValue(this::openPreferences));
+        settingsButton.setEnabled(!GraphicalApp.getInstance().isRunning());
 
         list.addListSelectionListener(e -> {
             if (e.getValueIsAdjusting()) return;
             homepageButton.setEnabled(list.getSelectedValue().getHomepage() != null);
+            disableButton.setText(isPluginEnabled(list.getSelectedValue()) ? "Disable" : "Enable");
         });
 
         final JPanel controlPanel = new JPanel(new GridBagLayout());
         controlPanel.setBorder(BorderFactory.createEmptyBorder(PADDING, 0, 0, 0));
+        controlPanel.add(disableButton, gbc);
         controlPanel.add(homepageButton, gbc);
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.weightx = 1;
@@ -84,6 +96,14 @@ public class PluginsFrame extends AppFrame {
         gbc.insets = new Insets(2, 2, 2, 2);
         controlPanel.add(settingsButton, gbc);
 
+        final JPanel notePanel = new JPanel();
+        notePanel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
+        notePanel.add(UIUtility.getLabelWithHyperlinkSupport("<html><center>" +
+                "Plugins can't be configured when server is running<br>" +
+                "Verify before installing as they may be malicious<br>" +
+                "<a href=\"https://github.com/krlvm/PowerTunnel-Plugins\">Visit official plugins registry</a>" +
+                "</center></html>")
+        );
 
         final JRootPane root = getRootPane();
         root.setLayout(new GridBagLayout());
@@ -94,12 +114,16 @@ public class PluginsFrame extends AppFrame {
         gbc.weightx = gbc.weighty = 1;
         gbc.fill = GridBagConstraints.BOTH;
         root.add(new JScrollPane(list), gbc);
+
         gbc.gridy = 1;
         gbc.weightx = gbc.weighty = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
+        root.add(notePanel, gbc);
+
+        gbc.gridy = 2;
         root.add(controlPanel, gbc);
 
-        setSize(new Dimension(300, 350));
+        setSize(new Dimension(325, 375));
         setResizable(false);
         frameInitialized();
 
@@ -115,6 +139,26 @@ public class PluginsFrame extends AppFrame {
         });
 
         update();
+    }
+
+    private boolean isPluginEnabled(PluginInfo plugin) {
+        return !GraphicalApp.getInstance().getConfiguration().get("disabled_plugins", "")
+                .contains(";" + plugin.getSource());
+    }
+    private void enablePlugin(PluginInfo plugin) {
+        final Configuration configuration = GraphicalApp.getInstance().getConfiguration();
+        final String val = configuration.get("disabled_plugins", "");
+        configuration.set("disabled_plugins", val.replace(";" + plugin.getSource(), ""));
+    }
+    private void disablePlugin(PluginInfo plugin) {
+        final Configuration configuration = GraphicalApp.getInstance().getConfiguration();
+        final String val = configuration.get("disabled_plugins", "");
+        configuration.set("disabled_plugins", val + ";" + plugin.getSource());
+    }
+
+    private void withSelectedValue(Consumer<PluginInfo> consumer) {
+        PluginInfo value = list.getSelectedValue();
+        if(value != null) consumer.accept(value);
     }
 
     private void update() {

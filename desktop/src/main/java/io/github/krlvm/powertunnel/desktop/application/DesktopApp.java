@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -101,7 +102,9 @@ public abstract class DesktopApp implements ServerListener {
         this.server.registerServerListener(PLUGIN_INFO, this);
         try {
             if(LOADED_PLUGINS == null) LOADED_PLUGINS = PluginLoader.enumeratePlugins();
-            PluginLoader.loadPlugins(LOADED_PLUGINS, this.server);
+            PluginLoader.loadPlugins(Arrays.stream(LOADED_PLUGINS).filter(plugin ->
+                    !configuration.get("disabled_plugins", "").contains(";" + plugin.getName())
+            ).toArray(File[]::new), this.server);
         } catch (PluginLoadException ex) {
             LOGGER.error("Failed to load plugin ({}): {}", ex.getJarFile(), ex.getMessage(), ex);
             return ex;
