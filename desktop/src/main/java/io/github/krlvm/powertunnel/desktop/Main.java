@@ -18,18 +18,15 @@
 package io.github.krlvm.powertunnel.desktop;
 
 import io.github.krlvm.powertunnel.desktop.application.ConsoleApp;
-import io.github.krlvm.powertunnel.desktop.application.DesktopApp;
 import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
-import io.github.krlvm.powertunnel.desktop.configuration.AdvancedConfiguration;
 import io.github.krlvm.powertunnel.desktop.configuration.ServerConfiguration;
 import io.github.krlvm.powertunnel.desktop.parser.ArgumentParser;
-import io.github.krlvm.powertunnel.desktop.types.AutoSetupMode;
+import io.github.krlvm.powertunnel.desktop.system.windows.WindowsProxyHandler;
 import io.github.krlvm.powertunnel.desktop.utilities.SystemUtility;
 import io.github.krlvm.powertunnel.desktop.utilities.UIUtility;
 import ru.krlvm.swingdpi.SwingDPI;
 
 import javax.swing.*;
-import java.io.File;
 import java.io.IOException;
 
 public class Main {
@@ -105,16 +102,14 @@ public class Main {
         if (cli.has(ArgumentParser.Arguments.PORT)) {
             configuration.protectInt("port", cli.getInt(ArgumentParser.Arguments.PORT));
         }
-        if (cli.has(ArgumentParser.Arguments.DISABLE_AUTO_PROXY_STARTUP)) {
-            configuration.protect("auto-proxy-setup",
-                    cli.has(ArgumentParser.Arguments.DISABLE_AUTO_PROXY_STARTUP) || consoleMode ? "false" :
-                            (cli.has(ArgumentParser.Arguments.AUTO_PROXY_STARTUP_IE) ?
-                                    AutoSetupMode.IE.name() : AutoSetupMode.NATIVE.name())
-            );
-        }
         if(consoleMode) {
             new ConsoleApp(configuration);
         } else {
+            if (cli.has(ArgumentParser.Arguments.DISABLE_AUTO_PROXY_STARTUP)) {
+                configuration.protectBoolean("auto_proxy_setup", false);
+            } else if(cli.has(ArgumentParser.Arguments.AUTO_PROXY_STARTUP_IE)) {
+                WindowsProxyHandler.USE_IE = true;
+            }
             if(!cli.has(ArgumentParser.Arguments.DISABLE_NATIVE_SKIN)) {
                 try {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

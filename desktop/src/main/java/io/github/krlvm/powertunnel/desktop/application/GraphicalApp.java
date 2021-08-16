@@ -24,9 +24,9 @@ import io.github.krlvm.powertunnel.desktop.frames.MainFrame;
 import io.github.krlvm.powertunnel.desktop.frames.OptionsFrame;
 import io.github.krlvm.powertunnel.desktop.frames.PluginsFrame;
 import io.github.krlvm.powertunnel.desktop.managers.TrayManager;
+import io.github.krlvm.powertunnel.desktop.system.SystemProxy;
 import io.github.krlvm.powertunnel.desktop.ui.JPanelCallback;
 import io.github.krlvm.powertunnel.desktop.utilities.UIUtility;
-import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
 import io.github.krlvm.powertunnel.sdk.exceptions.ProxyStartException;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyStatus;
 import org.jetbrains.annotations.NotNull;
@@ -99,6 +99,13 @@ public class GraphicalApp extends DesktopApp {
     public void onProxyStatusChanged(@NotNull ProxyStatus status) {
         super.beforeProxyStatusChanged(status);
         frame.update();
+
+        if(!configuration.getBoolean("auto_proxy_setup", true)) return;
+        if(status == ProxyStatus.RUNNING) {
+            SystemProxy.enableProxy(address);
+        } else if(status == ProxyStatus.STOPPING) {
+            SystemProxy.disableProxy();
+        }
     }
 
     public boolean isTrayAvailable() {

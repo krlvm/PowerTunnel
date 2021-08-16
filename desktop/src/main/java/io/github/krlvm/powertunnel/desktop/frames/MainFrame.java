@@ -19,6 +19,7 @@ package io.github.krlvm.powertunnel.desktop.frames;
 
 import io.github.krlvm.powertunnel.desktop.BuildConstants;
 import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
+import io.github.krlvm.powertunnel.desktop.system.SystemProxy;
 import io.github.krlvm.powertunnel.desktop.ui.FieldFilter;
 import io.github.krlvm.powertunnel.desktop.ui.JPanelCallback;
 import io.github.krlvm.powertunnel.desktop.ui.TextRightClickPopup;
@@ -44,7 +45,7 @@ public class MainFrame extends AppFrame {
             " • <a href=\"https://github.com/dnsjava/dnsjava\">dnsjava</a> - DNS library, DoH realization<br>" +
             " • <a href=\"https://github.com/ibauersachs/dnssecjava\">dnssecjava</a> - DNSSec realization for dnsjava<br>" +
             " • <a href=\"https://github.com/adamfisk/DNSSEC4J\">DNSSEC4J</a> - DNSSec realization for LittleProxy<br>" +
-            " • <a href=\"https://github.com/java-native-access/jna\">Java Native Access</a> - library for accessing system native API<br>" +
+            " • <a href=\"https://github.com/java-native-access/jna\">Java Native Access</a> - accessing system native API<br>" +
             " • <a href=\"https://github.com/krlvm/SwingDPI\">SwingDPI</a> - High DPI scaling" +
             "<br><br>" +
             "Get <a href=\"https://github.com/krlvm/PowerTunnel-Android\">version for Android</a>" +
@@ -102,6 +103,15 @@ public class MainFrame extends AppFrame {
                 app.getConfiguration().set("ip", ip);
                 app.getConfiguration().setInt("port", port);
                 app.setAddress(new ProxyAddress(ip, port));
+
+                if(SystemProxy.isSupported() && app.getConfiguration().getBoolean("auto_proxy_setup_ask", true)) {
+                    final int result = JOptionPane.showConfirmDialog(this,
+                            "Configure system proxy automatically?", BuildConstants.NAME, JOptionPane.YES_NO_OPTION
+                    );
+                    app.getConfiguration().setBoolean("auto_proxy_setup", result == JOptionPane.YES_OPTION);
+                    app.getConfiguration().setBoolean("auto_proxy_setup_ask", false);
+                }
+
                 app.start();
             }
         }).start());

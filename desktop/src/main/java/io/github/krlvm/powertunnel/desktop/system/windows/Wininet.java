@@ -15,9 +15,20 @@
  * along with PowerTunnel.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.krlvm.powertunnel.desktop.types;
+package io.github.krlvm.powertunnel.desktop.system.windows;
 
-public enum AutoSetupMode {
-    NATIVE,
-    IE
+import com.sun.jna.Native;
+import com.sun.jna.Pointer;
+import com.sun.jna.win32.StdCallLibrary;
+import com.sun.jna.win32.W32APIOptions;
+
+public interface Wininet extends StdCallLibrary {
+
+    Wininet INSTANCE = (Wininet)Native.loadLibrary("Wininet", Wininet.class,
+            W32APIOptions.DEFAULT_OPTIONS);
+
+    int INTERNET_OPTION_SETTINGS_CHANGED = 39;
+    int INTERNET_OPTION_REFRESH = 37;
+
+    boolean InternetSetOptionW(int unused, int dwOption, Pointer lpBuffer, int dwBufferLength);
 }

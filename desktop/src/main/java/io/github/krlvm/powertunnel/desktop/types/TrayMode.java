@@ -19,5 +19,6 @@ package io.github.krlvm.powertunnel.desktop.types;
 
 public enum TrayMode {
     STANDARD,
-    MINIMIZED
+    MINIMIZED,
+    DISABLED
 }
