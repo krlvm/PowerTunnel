@@ -31,6 +31,12 @@ application {
     mainClass = 'io.github.krlvm.powertunnel.desktop.Main'
 }
 
+jar {
+    if (!project.version.endsWith('SNAPSHOT')) {
+        exclude 'icon_dev.png'
+    }
+}
+
 task fatJar(type: Jar) {
     archiveClassifier = 'all'
     duplicatesStrategy DuplicatesStrategy.EXCLUDE
@@ -45,6 +51,10 @@ task fatJar(type: Jar) {
         exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
     }
     with jar
+}
+configure(fatJar) {
+    group = 'build'
+    description = 'Assembles a jar archive containing the main classes and all dependencies.'
 }
 
 dependencies {
