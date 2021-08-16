@@ -137,7 +137,11 @@ public class GraphicalApp extends DesktopApp {
     }
 
     public void showOptionsFrame() {
-        if(optionsFrame == null) optionsFrame = new OptionsFrame(configuration);
+        if(optionsFrame == null) {
+            final OptionsFrame frame = new OptionsFrame(configuration);
+            if(frame.isFailedToInitialize()) return;
+            optionsFrame = frame;
+        }
         optionsFrame.showFrame(getVisibleMainFrame());
     }
 

@@ -72,7 +72,7 @@ public class OptionsFrame extends PreferencesFrame {
                     "upstream_proxy_port",
                     "Upstream proxy port",
                     null,
-                    "",
+                    "8080",
                     PreferenceType.NUMBER,
                     "upstream_proxy_enabled", "true", null
             ));
@@ -140,7 +140,7 @@ public class OptionsFrame extends PreferencesFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                GraphicalApp.getInstance().optionsFrame = null;
+                resetAppOptionsFrame();
             }
         });
     }
@@ -154,5 +154,15 @@ public class OptionsFrame extends PreferencesFrame {
 
         // TODO: Insert updater
         super.frameInitialized();
+    }
+
+    @Override
+    protected void onFailedToInitialize() {
+        super.onFailedToInitialize();
+        resetAppOptionsFrame();
+    }
+
+    private void resetAppOptionsFrame() {
+        GraphicalApp.getInstance().optionsFrame = null;
     }
 }

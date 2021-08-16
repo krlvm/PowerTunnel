@@ -35,6 +35,8 @@ public abstract class AppFrame extends ScalableJFrame {
 
     protected final GraphicalApp app;
 
+    private boolean failedToInitialize = false;
+
     public AppFrame() {
         this(null, null);
     }
@@ -59,6 +61,7 @@ public abstract class AppFrame extends ScalableJFrame {
         showFrame(null);
     }
     public void showFrame(JFrame parent) {
+        if(failedToInitialize) return;
         setLocationRelativeTo(parent);
         setVisible(true);
         setState(Frame.NORMAL);
@@ -68,5 +71,13 @@ public abstract class AppFrame extends ScalableJFrame {
 
     protected void frameInitialized() {
         setLocationRelativeTo(null);
+    }
+    protected void onFailedToInitialize() {
+        failedToInitialize = true;
+        dispose();
+        //throw new RuntimeException();
+    }
+    public boolean isFailedToInitialize() {
+        return failedToInitialize;
     }
 }

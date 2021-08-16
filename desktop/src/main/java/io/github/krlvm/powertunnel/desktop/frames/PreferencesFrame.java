@@ -99,10 +99,23 @@ public class PreferencesFrame extends AppFrame {
                     }
                     case STRING:
                     case NUMBER: {
-                        final JTextField field = new JTextField(preference.getType() == PreferenceType.STRING ?
-                                getStringOption(preference) :
-                                String.valueOf(getIntOption(preference))
-                        );
+                        final String val;
+                        if(preference.getType() == PreferenceType.NUMBER) {
+                            try {
+                                val = String.valueOf(getIntOption(preference));
+                            } catch (NumberFormatException ex) {
+                                ex.printStackTrace();
+                                showResetPrompt(
+                                        "Incorrect configuration detected, do you want to reset it?",
+                                        null
+                                );
+                                onFailedToInitialize();
+                                return;
+                            }
+                        } else {
+                            val = getStringOption(preference);
+                        }
+                        final JTextField field = new JTextField(val);
                         if (preference.getType() == PreferenceType.NUMBER) {
                             ((PlainDocument) field.getDocument()).setDocumentFilter(new FieldFilter.Number());
                             field.addKeyListener(new KeyAdapter() {
@@ -181,16 +194,7 @@ public class PreferencesFrame extends AppFrame {
         final JPanel actionPanel = new JPanel(new BorderLayout());
 
         final JButton resetButton = new JButton("Reset");
-        resetButton.addActionListener(e -> {
-            final int result = JOptionPane.showConfirmDialog(PreferencesFrame.this,
-                    "Do you want to reset configuration?", BuildConstants.NAME, JOptionPane.YES_NO_OPTION
-            );
-            if (result == JOptionPane.YES_OPTION) {
-                configuration.clear();
-                saveConfiguration();
-                dispose();
-            }
-        });
+        resetButton.addActionListener(e -> showResetPrompt("Do you want to reset configuration?", this));
 
         final JButton cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(e -> dispose());
@@ -275,6 +279,22 @@ public class PreferencesFrame extends AppFrame {
                 throw new IllegalStateException("Unsupported type: " + preference.getType());
         }
     }
+
+    private void showResetPrompt(String message, JFrame parent) {
+        final int result = JOptionPane.showConfirmDialog(parent,
+                message, BuildConstants.NAME, JOptionPane.YES_NO_OPTION
+        );
+        if (result == JOptionPane.YES_OPTION) {
+            System.out.println("RESET");
+            reset();
+            dispose();
+        }
+    }
+    private void reset() {
+        configuration.clear();
+        saveConfiguration();
+    }
+
     private void save() {
         for (PreferenceGroup group : preferences) {
             for (Preference preference : group.getPreferences()) {
@@ -292,6 +312,7 @@ public class PreferencesFrame extends AppFrame {
             ex.printStackTrace();
         }
     }
+
     private void updateDependencies() {
         for (PreferenceGroup group : preferences) {
             for (Preference preference : group.getPreferences()) {
