@@ -65,7 +65,6 @@ public class MainFrame extends AppFrame {
     private final JLabel header;
     private final JButton stateButton;
 
-    private final JPanel proxyControlPanel;
     private final JTextField ipField;
     private final JTextField portField;
 
@@ -118,7 +117,7 @@ public class MainFrame extends AppFrame {
 
         // endregion
 
-        proxyControlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel proxyControlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         proxyControlPanel.add(ipField);
         proxyControlPanel.add(portField);
         proxyControlPanel.add(stateButton);
@@ -200,9 +199,10 @@ public class MainFrame extends AppFrame {
             final ProxyStatus status = app.getStatus();
             stateButton.setText((app.isRunning() ? "Stop" : "Start") + " server");
             stateButton.setEnabled(status != ProxyStatus.STARTING && status != ProxyStatus.STOPPING);
-            for (Component component : proxyControlPanel.getComponents()) {
-                if(component instanceof JTextField) component.setEnabled(status == ProxyStatus.NOT_RUNNING);
-            }
+
+            final boolean notRunning = status == ProxyStatus.NOT_RUNNING;
+            ipField.setEnabled(notRunning && !app.getConfiguration().getImmutableKeys().contains("ip"));
+            portField.setEnabled(notRunning && !app.getConfiguration().getImmutableKeys().contains("port"));
 
             final ProxyAddress address = app.getAddress();
             ipField.setText(address.getHost());

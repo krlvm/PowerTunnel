@@ -135,7 +135,7 @@ public class OptionsFrame extends PreferencesFrame {
     }
 
     public OptionsFrame(ConfigurationStore configuration) {
-        super("Options", "desktop-app-options",
+        super("Options", "",
                 DesktopApp.CONFIGURATION_FILE, configuration,
                 getPreferences()
         );

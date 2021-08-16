@@ -184,7 +184,7 @@ public abstract class DesktopApp implements ServerListener {
                 .collect(Collectors.toMap(key -> key, key -> configuration.get(key, null)));
     }
 
-    public Configuration getConfiguration() {
+    public ServerConfiguration getConfiguration() {
         return configuration;
     }
 

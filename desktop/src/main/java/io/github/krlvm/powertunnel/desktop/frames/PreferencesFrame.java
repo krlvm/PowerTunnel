@@ -19,6 +19,7 @@ package io.github.krlvm.powertunnel.desktop.frames;
 
 import io.github.krlvm.powertunnel.configuration.ConfigurationStore;
 import io.github.krlvm.powertunnel.desktop.BuildConstants;
+import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
 import io.github.krlvm.powertunnel.desktop.ui.ComboBoxScroll;
 import io.github.krlvm.powertunnel.desktop.ui.FieldFilter;
 import io.github.krlvm.powertunnel.desktop.ui.SelectPreferenceRenderer;
@@ -27,7 +28,6 @@ import io.github.krlvm.powertunnel.desktop.utilities.UIUtility;
 import io.github.krlvm.powertunnel.preferences.Preference;
 import io.github.krlvm.powertunnel.preferences.PreferenceGroup;
 import io.github.krlvm.powertunnel.preferences.PreferenceType;
-import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
 import ru.krlvm.swingdpi.SwingDPI;
 
 import javax.swing.*;
@@ -45,6 +45,7 @@ public class PreferencesFrame extends AppFrame {
 
     protected static Map<String, PreferencesFrame> OPENED_IDS = new HashMap<>();
 
+    private final String id;
     private final File configurationFile;
     private final ConfigurationStore configuration;
     private final List<PreferenceGroup> preferences;
@@ -57,6 +58,7 @@ public class PreferencesFrame extends AppFrame {
             List<PreferenceGroup> preferences
     ) {
         super(title);
+        this.id = id;
 
         this.configurationFile = configurationFile;
         this.configuration = configuration;
@@ -181,6 +183,13 @@ public class PreferencesFrame extends AppFrame {
             }
         });
         OPENED_IDS.put(id, this);
+
+        if(!GraphicalApp.getInstance().getConfiguration().getImmutableKeys().isEmpty()) {
+            final JPanel notePanel = new JPanel();
+            notePanel.setBorder(BorderFactory.createEmptyBorder(4, 0, 4, 0));
+            notePanel.add(new JLabel("<html>Some preferences may not be available<br>because they were set from the CLI</html>"));
+            insertComponent(notePanel);
+        }
 
         requestSpacing();
         frameInitialized();
@@ -317,11 +326,15 @@ public class PreferencesFrame extends AppFrame {
     private void updateDependencies() {
         for (PreferenceGroup group : preferences) {
             for (Preference preference : group.getPreferences()) {
+                if(preference.binding == null) continue;
                 ((JComponent) preference.binding).setEnabled(isSatisfied(preference));
             }
         }
     }
     private boolean isSatisfied(Preference preference) {
+        if(GraphicalApp.getInstance().getConfiguration().getImmutableKeys()
+                .contains((id.isEmpty() ? "" : id + ".") + preference.getKey())) return false;
+
         if(preference.binding == null) return true;
         final String dependency = preference.getDependency();
         if(dependency == null) return true;
