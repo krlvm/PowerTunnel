@@ -82,7 +82,7 @@ public class OptionsFrame extends PreferencesFrame {
                     "Authenticate on upstream proxy server",
                     "false",
                     PreferenceType.SWITCH,
-                    null, null, null
+                    "upstream-proxy-enabled", "true", null
             ));
             preferences.add(new Preference(
                     "upstream-proxy-auth-username",

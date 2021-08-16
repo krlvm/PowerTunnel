@@ -272,17 +272,19 @@ public class PreferencesFrame extends AppFrame {
     private void updateDependencies() {
         for (PreferenceGroup group : preferences) {
             for (Preference preference : group.getPreferences()) {
-                if(preference.binding == null) continue;
-                final String dependency = preference.getDependency();
-                if(dependency == null) continue;
-                final Preference target = PreferenceGroup.findPreference(preferences, dependency);
-                if(target == null) continue;
-                if(target.binding == null) continue;
-
-                final boolean satisfied = getBindingValue(target).equals(preference.getDependencyValue());
-                ((JComponent) preference.binding).setEnabled(satisfied);
+                ((JComponent) preference.binding).setEnabled(isSatisfied(preference));
             }
         }
+    }
+    private boolean isSatisfied(Preference preference) {
+        if(preference.binding == null) return true;
+        final String dependency = preference.getDependency();
+        if(dependency == null) return true;
+        final Preference target = PreferenceGroup.findPreference(preferences, dependency);
+        if(target == null) return true;
+        if(target.binding == null) return true;
+
+        return getBindingValue(target).equals(preference.getDependencyValue()) && isSatisfied(target);
     }
 
 
