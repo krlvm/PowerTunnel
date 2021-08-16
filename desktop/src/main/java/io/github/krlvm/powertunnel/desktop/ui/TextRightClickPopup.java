@@ -18,24 +18,34 @@
 package io.github.krlvm.powertunnel.desktop.ui;
 
 import javax.swing.*;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.text.JTextComponent;
 import javax.swing.undo.UndoManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-/**
- * Cut/Copy/Paste/Delete context menu
- * for Java Swing Inputs
- */
 public class TextRightClickPopup {
 
     public static void register(JTextComponent input) {
-        JPopupMenu popup = new JPopupMenu();
+        final JPopupMenu popup = new JPopupMenu();
 
-        UndoManager undoManager = new UndoManager();
+        popup.addPopupMenuListener(new PopupMenuListener() {
+            @Override
+            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+                input.requestFocus();
+                input.requestFocusInWindow();
+            }
+            @Override
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {}
+            @Override
+            public void popupMenuCanceled(PopupMenuEvent e) {}
+        });
+
+        final UndoManager undoManager = new UndoManager();
         input.getDocument().addUndoableEditListener(undoManager);
 
-        Action undoAction = new AbstractAction("Undo") {
+        final Action undoAction = new AbstractAction("Undo") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(undoManager.canUndo()) {
@@ -43,7 +53,7 @@ public class TextRightClickPopup {
                 }
             }
         };
-        Action redoAction = new AbstractAction("Redo") {
+        final Action redoAction = new AbstractAction("Redo") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(undoManager.canRedo()) {
@@ -52,32 +62,32 @@ public class TextRightClickPopup {
             }
         };
 
-        Action copyAction = new AbstractAction("Copy") {
+        final Action copyAction = new AbstractAction("Copy") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 input.copy();
             }
         };
-        Action cutAction = new AbstractAction("Cut") {
+        final Action cutAction = new AbstractAction("Cut") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 input.cut();
             }
         };
-        Action pasteAction = new AbstractAction("Paste") {
+        final Action pasteAction = new AbstractAction("Paste") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 input.paste();
             }
         };
-        Action deleteAction = new AbstractAction("Delete") {
+        final Action deleteAction = new AbstractAction("Delete") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 input.replaceSelection("");
             }
         };
 
-        Action selectAllAction = new AbstractAction("Select All") {
+        final Action selectAllAction = new AbstractAction("Select All") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 input.selectAll();
