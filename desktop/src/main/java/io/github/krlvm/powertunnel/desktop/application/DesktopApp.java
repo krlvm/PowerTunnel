@@ -35,7 +35,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.nio.file.Paths;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public abstract class DesktopApp implements ServerListener {
 
@@ -87,11 +90,13 @@ public abstract class DesktopApp implements ServerListener {
         this.server = new PowerTunnel(
                 address,
                 PowerTunnelPlatform.DESKTOP,
+                Paths.get(""),
                 configuration.getBoolean("transparent_mode", true),
                 MITMAuthority.create(
                         new File("cert"),
                         configuration.get("cert_password", UUID.randomUUID().toString()).toCharArray()
-                )
+                ),
+                getHardcodedSettings()
         );
         this.server.registerServerListener(PLUGIN_INFO, this);
         try {
@@ -172,6 +177,11 @@ public abstract class DesktopApp implements ServerListener {
 
     protected void onUnexpectedProxyInitializationError(Exception ex) {
         LOGGER.error("Unexpected error occurred when initializing proxy server: {}", ex.getMessage(), ex);
+    }
+
+    private Map<String, String> getHardcodedSettings() {
+        return configuration.getImmutableKeys().stream()
+                .collect(Collectors.toMap(key -> key, key -> configuration.get(key, null)));
     }
 
     public Configuration getConfiguration() {

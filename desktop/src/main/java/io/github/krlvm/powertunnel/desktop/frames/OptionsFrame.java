@@ -17,13 +17,13 @@
 
 package io.github.krlvm.powertunnel.desktop.frames;
 
+import io.github.krlvm.powertunnel.configuration.ConfigurationStore;
 import io.github.krlvm.powertunnel.desktop.application.DesktopApp;
 import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
 import io.github.krlvm.powertunnel.desktop.utilities.SystemUtility;
 import io.github.krlvm.powertunnel.preferences.Preference;
 import io.github.krlvm.powertunnel.preferences.PreferenceGroup;
 import io.github.krlvm.powertunnel.preferences.PreferenceType;
-import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
 
 import javax.swing.*;
 import java.awt.*;
@@ -131,7 +131,7 @@ public class OptionsFrame extends PreferencesFrame {
         return groups;
     }
 
-    public OptionsFrame(Configuration configuration) {
+    public OptionsFrame(ConfigurationStore configuration) {
         super("Options", "desktop-app-options",
                 DesktopApp.CONFIGURATION_FILE, configuration,
                 getPreferences()

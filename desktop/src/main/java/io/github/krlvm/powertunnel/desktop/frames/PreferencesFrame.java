@@ -17,6 +17,7 @@
 
 package io.github.krlvm.powertunnel.desktop.frames;
 
+import io.github.krlvm.powertunnel.configuration.ConfigurationStore;
 import io.github.krlvm.powertunnel.desktop.BuildConstants;
 import io.github.krlvm.powertunnel.desktop.ui.ComboBoxScroll;
 import io.github.krlvm.powertunnel.desktop.ui.FieldFilter;
@@ -45,14 +46,14 @@ public class PreferencesFrame extends AppFrame {
     protected static Map<String, PreferencesFrame> OPENED_IDS = new HashMap<>();
 
     private final File configurationFile;
-    private final Configuration configuration;
+    private final ConfigurationStore configuration;
     private final List<PreferenceGroup> preferences;
 
     public PreferencesFrame(
             String title,
             String id,
             File configurationFile,
-            Configuration configuration,
+            ConfigurationStore configuration,
             List<PreferenceGroup> preferences
     ) {
         super(title);

@@ -43,6 +43,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.BindException;
 import java.net.UnknownHostException;
+import java.nio.file.Path;
 import java.util.*;
 
 public class PowerTunnel implements PowerTunnelServer {
@@ -56,20 +57,50 @@ public class PowerTunnel implements PowerTunnelServer {
     private final ProxyAddress address;
 
     private final PowerTunnelPlatform platform;
+    private final Path parentDirectory;
     private final boolean transparent;
     private final Authority mitmAuthority;
 
     private final List<PowerTunnelPlugin> plugins = new ArrayList<>();
+    private final Path pluginsDir;
+
+    private final Map<String, String> inheritedConfiguration;
+    private final Path configsDir;
 
     private final Map<ServerListener, PluginInfo> serverListeners = new HashMap<>();
     private final Map<ProxyListenerInfo, ProxyListener> proxyListeners = new TreeMap<>(Comparator.comparingInt(ProxyListenerInfo::getPriority));
     private static final int DEFAULT_LISTENER_PRIORITY = 0;
 
-    public PowerTunnel(ProxyAddress address, PowerTunnelPlatform platform, boolean transparent, Authority mitmAuthority) {
+    public PowerTunnel(ProxyAddress address, PowerTunnelPlatform platform, Path parentDirectory, boolean transparent, Authority mitmAuthority) {
+        this(address, platform, parentDirectory, transparent, mitmAuthority, null);
+    }
+    public PowerTunnel(
+            ProxyAddress address,
+            PowerTunnelPlatform platform,
+            Path parentDirectory,
+            boolean transparent,
+            Authority mitmAuthority,
+            Map<String, String> inheritedConfiguration
+    ) {
         this.address = address;
         this.platform = platform;
+        this.parentDirectory = parentDirectory;
         this.transparent = transparent;
         this.mitmAuthority = mitmAuthority;
+
+        this.inheritedConfiguration = inheritedConfiguration;
+
+        pluginsDir = parentDirectory.resolve("plugins");
+        configsDir = parentDirectory.resolve("configs");
+        initializeDirectories();
+    }
+
+    private void initializeDirectories() {
+        final File plugins = pluginsDir.toFile();
+        if(!plugins.exists()) plugins.mkdir();
+
+        final File configs = configsDir.toFile();
+        if(!configs.exists()) configs.mkdir();
     }
 
     @Override
@@ -196,14 +227,35 @@ public class PowerTunnel implements PowerTunnelServer {
     }
 
     @Override
-    public Configuration readConfiguration(@NotNull File file) {
+    public @NotNull Configuration readConfiguration(@NotNull PluginInfo pluginInfo) {
         final ConfigurationStore configuration = new ConfigurationStore();
         try {
-            configuration.read(file);
+            configuration.read(configsDir.resolve(pluginInfo.getId() + Configuration.EXTENSION).toFile());
         } catch (IOException ex) {
-            LOGGER.error("Failed to read configuration file '{}'", file.getName(), ex);
+            LOGGER.error("Failed to read configuration of plugin '{}' ('{}')", pluginInfo.getName(), pluginInfo.getId(), ex);
         }
         return configuration;
+    }
+
+    @Override
+    public void saveConfiguration(@NotNull PluginInfo pluginInfo, @NotNull Configuration configuration) {
+        if(!(configuration instanceof ConfigurationStore))
+            throw new IllegalArgumentException("Unsupported Configuration implementation");
+        try {
+            ((ConfigurationStore) configuration).save(configsDir.resolve(pluginInfo.getId() + Configuration.EXTENSION).toFile());
+        } catch (IOException ex) {
+            LOGGER.error("Failed to save configuration of plugin '{}' ('{}')", pluginInfo.getName(), pluginInfo.getId(), ex);
+        }
+    }
+
+    @Override
+    public @NotNull String readTextFile(@NotNull String filename) throws IOException {
+        return null;
+    }
+
+    @Override
+    public @NotNull void saveTextFile(@NotNull String filename, @NotNull String text) throws IOException {
+
     }
 
     public void registerPlugin(PowerTunnelPlugin plugin) {

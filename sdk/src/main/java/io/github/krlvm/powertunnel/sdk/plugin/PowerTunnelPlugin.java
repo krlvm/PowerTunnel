@@ -18,18 +18,20 @@
 package io.github.krlvm.powertunnel.sdk.plugin;
 
 import io.github.krlvm.powertunnel.sdk.PowerTunnelServer;
-import io.github.krlvm.powertunnel.sdk.ServerListener;
 import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyListener;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyServer;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
 
 public abstract class PowerTunnelPlugin {
 
     private PowerTunnelServer server;
     private PluginInfo info;
+
+    private Configuration configuration;
 
     /**
      * Attaches PowerTunnel server instance to current server instance
@@ -85,7 +87,23 @@ public abstract class PowerTunnelPlugin {
 
     public Configuration readConfiguration() {
         validateServer();
-        return getServer().readConfiguration(getConfiguration(getInfo()));
+        if(configuration == null) configuration = getServer().readConfiguration(getInfo());
+        return configuration;
+    }
+
+    public void saveConfiguration() throws IOException {
+        if(configuration == null) return;
+        getServer().saveConfiguration(getInfo(), configuration);
+    }
+
+    public String readTextFile(@NotNull String filename) throws IOException {
+        validateServer();
+        return getServer().readTextFile(filename);
+    }
+
+    public void saveTextFile(@NotNull String filename, @NotNull String content) throws IOException {
+        validateServer();
+        getServer().saveTextFile(filename, content);
     }
 
 
@@ -102,12 +120,5 @@ public abstract class PowerTunnelPlugin {
         return "PowerTunnelPlugin{" +
                 "info=" + info +
                 '}';
-    }
-
-    public static File getConfiguration(PluginInfo pluginInfo) {
-        return new File(Configuration.getConfigurationDirectory().getPath() +
-                File.separator +
-                pluginInfo.getId() + ".ini"
-        );
     }
 }

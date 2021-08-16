@@ -62,4 +62,8 @@ public class AdvancedConfiguration extends ConfigurationStore {
                 .filter(entry -> !immutableKeys.contains(entry.getKey()))
                 .collect(Collectors.toSet());
     }
+
+    public Collection<String> getImmutableKeys() {
+        return immutableKeys;
+    }
 }

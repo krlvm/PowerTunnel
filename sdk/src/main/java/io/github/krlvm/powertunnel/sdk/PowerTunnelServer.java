@@ -29,6 +29,7 @@ import io.github.krlvm.powertunnel.sdk.types.VersionInfo;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
 
 public interface PowerTunnelServer {
 
@@ -96,12 +97,38 @@ public interface PowerTunnelServer {
     void unregisterServerListener(@NotNull ServerListener listener);
 
     /**
-     * Reads configuration and returns the store
+     * Reads plugin configuration
      *
-     * @param file configuration file
+     * @param pluginInfo plugin info
      * @return configuration store
      */
-    Configuration readConfiguration(@NotNull File file);
+    @NotNull Configuration readConfiguration(@NotNull PluginInfo pluginInfo);
+
+    /**
+     * Saves plugin configuration
+     *
+     * @param pluginInfo plugin info
+     * @param configuration configuration store
+     */
+    void saveConfiguration(@NotNull PluginInfo pluginInfo, @NotNull Configuration configuration);
+
+    /**
+     * Reads file in configurations directory as plain text
+     *
+     * @param filename file name
+     * @return plain text
+     * @throws IOException on file read error
+     */
+    @NotNull String readTextFile(@NotNull String filename) throws IOException;
+
+    /**
+     * Saves file in configurations directory as plain text
+     *
+     * @param filename file name
+     * @param text plain text to write
+     * @throws IOException on file read error
+     */
+    @NotNull void saveTextFile(@NotNull String filename, @NotNull String text) throws IOException;
 
     /**
      * Returns proxy server

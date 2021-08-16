@@ -195,8 +195,8 @@ public class PluginsFrame extends AppFrame {
             return;
         }
 
-        final File configurationFile = PowerTunnelPlugin.getConfiguration(pluginInfo);
-        final Configuration configuration = new ConfigurationStore();
+        final File configurationFile = new File(PluginLoader.PLUGINS_DIR + File.separator + pluginInfo.getId() + Configuration.EXTENSION);
+        final ConfigurationStore configuration = new ConfigurationStore();
         try {
             configuration.read(configurationFile);
         } catch (IOException ex) {
