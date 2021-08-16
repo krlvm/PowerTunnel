@@ -29,6 +29,7 @@ import ru.krlvm.swingdpi.SwingDPI;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.util.Map;
 
 public class Main {
 
@@ -93,6 +94,10 @@ public class Main {
             ex.printStackTrace();
             System.exit(1);
             return;
+        }
+        for (Map.Entry<String, String> entry : cli.getTemporaryConfiguration().entrySet()) {
+            System.out.printf(" [%s] : [%s]%n", entry.getKey(), entry.getValue());
+            configuration.protect(entry.getKey(), entry.getValue());
         }
 
         if(cli.has(ArgumentParser.Arguments.DISABLE_UPDATER)) {

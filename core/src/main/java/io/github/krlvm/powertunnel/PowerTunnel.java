@@ -229,6 +229,11 @@ public class PowerTunnel implements PowerTunnelServer {
     @Override
     public @NotNull Configuration readConfiguration(@NotNull PluginInfo pluginInfo) {
         final ConfigurationStore configuration = new ConfigurationStore();
+        for (Map.Entry<String, String> entry : inheritedConfiguration.entrySet()) {
+            if(entry.getKey().startsWith(pluginInfo.getId() + ".")) {
+                configuration.set(entry.getKey().replaceFirst(pluginInfo.getId() + ".", ""), entry.getValue());
+            }
+        }
         try {
             configuration.read(configsDir.resolve(pluginInfo.getId() + Configuration.EXTENSION).toFile());
         } catch (IOException ex) {

@@ -257,12 +257,15 @@ public class PreferencesFrame extends AppFrame {
     }
 
     private String getStringOption(Preference preference) {
+        if(isProtected(preference)) return GraphicalApp.getInstance().getConfiguration().get(getFullId(preference), preference.getDefaultValue());
         return configuration.get(preference.getKey(), preference.getDefaultValue());
     }
     private int getIntOption(Preference preference) {
+        if(isProtected(preference)) return GraphicalApp.getInstance().getConfiguration().getInt(getFullId(preference), Integer.parseInt(preference.getDefaultValue()));
         return configuration.getInt(preference.getKey(), Integer.parseInt(preference.getDefaultValue()));
     }
     private boolean getBooleanOption(Preference preference) {
+        if(isProtected(preference)) return GraphicalApp.getInstance().getConfiguration().getBoolean(getFullId(preference), Boolean.parseBoolean(preference.getDefaultValue()));
         return configuration.getBoolean(preference.getKey(), Boolean.parseBoolean(preference.getDefaultValue()));
     }
 
@@ -332,8 +335,7 @@ public class PreferencesFrame extends AppFrame {
         }
     }
     private boolean isSatisfied(Preference preference) {
-        if(GraphicalApp.getInstance().getConfiguration().getImmutableKeys()
-                .contains((id.isEmpty() ? "" : id + ".") + preference.getKey())) return false;
+        if(isProtected(preference)) return false;
 
         if(preference.binding == null) return true;
         final String dependency = preference.getDependency();
@@ -343,6 +345,12 @@ public class PreferencesFrame extends AppFrame {
         if(target.binding == null) return true;
 
         return getBindingValue(target).equals(preference.getDependencyValue()) && isSatisfied(target);
+    }
+    private boolean isProtected(Preference preference) {
+        return GraphicalApp.getInstance().getConfiguration().getImmutableKeys().contains(getFullId(preference));
+    }
+    private String getFullId(Preference preference) {
+        return (id.isEmpty() ? preference.getKey() : id + ".") + preference.getKey();
     }
 
 

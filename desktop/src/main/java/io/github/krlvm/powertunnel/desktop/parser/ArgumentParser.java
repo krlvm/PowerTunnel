@@ -22,6 +22,11 @@ import org.apache.commons.cli.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 public class ArgumentParser {
 
     private CommandLine cli;
@@ -85,6 +90,17 @@ public class ArgumentParser {
         }
     }
 
+    public Map<String, String> getTemporaryConfiguration() {
+        final String[] values = cli.getOptionValues("cfg");
+        if (values == null) return Collections.emptyMap();
+
+        final Map<String, String> map = new HashMap<>();
+        for (int i = 1; i < values.length; i += 2) {
+            map.put(values[i - 1], values[i]);
+        }
+        return map;
+    }
+
     public static class Builder {
         private final Options options = new Options();
 
@@ -114,8 +130,6 @@ public class ArgumentParser {
                 boolean required,
                 boolean withArguments
         ) {
-            final boolean hasShortKey = shortKey != null;
-
             final Option option = new Option(shortKey, longKey, withArguments, description);
             option.setRequired(required);
 
@@ -124,7 +138,9 @@ public class ArgumentParser {
         }
 
         public ArgumentParser build() {
-            final Option option = new Option("cfg", "set preference value (for plugins use ID as prefix)");
+            final Option option = new Option("cfg", "set preference value");
+            option.setArgs(2);
+            options.addOption(option);
             return new ArgumentParser(options);
         }
     }
