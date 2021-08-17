@@ -45,15 +45,15 @@ public class ConfigurationStore implements Configuration {
     public void read(Reader source) throws IOException {
         data.clear();
 
-        final BufferedReader reader = new BufferedReader(source);
-        reader.lines().forEach((line) -> {
-            final int pos = line.indexOf(DELIMITER);
-            data.put(
-                line.substring(0, pos),
-                line.substring(pos + DELIMITER_LENGTH)
-            );
-        });
-        reader.close();
+        try(BufferedReader reader = new BufferedReader(source)) {
+            reader.lines().forEach((line) -> {
+                final int pos = line.indexOf(DELIMITER);
+                data.put(
+                        line.substring(0, pos),
+                        line.substring(pos + DELIMITER_LENGTH)
+                );
+            });
+        }
     }
 
     public void save(File file) throws IOException {
