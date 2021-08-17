@@ -114,7 +114,7 @@ public class PreferenceParser {
                 final String ikey = ijo.getString(PreferencesSelectItemSchemaFields.KEY);
                 final String name = ijo.has(PreferencesSelectItemSchemaFields.NAME) ? ijo.getString(PreferencesSelectItemSchemaFields.NAME) :
                         bundle.get(key + ".item." + ikey);
-                items.put(key, name);
+                items.put(ikey, name);
             }
         }
 

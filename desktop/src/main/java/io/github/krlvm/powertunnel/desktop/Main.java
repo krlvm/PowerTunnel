@@ -156,7 +156,10 @@ public class Main {
                 UIUtility.tweakLook();
             }
 
-            I18N.load(cli.get(ArgumentParser.Arguments.LANGUAGE, Locale.getDefault().getLanguage()));
+            I18N.load(cli.has(ArgumentParser.Arguments.LANGUAGE) ?
+                    Locale.forLanguageTag(cli.get(ArgumentParser.Arguments.LANGUAGE)) :
+                    Locale.getDefault()
+            );
 
             new GraphicalApp(
                     configuration,

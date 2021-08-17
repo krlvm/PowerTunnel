@@ -20,13 +20,14 @@ package io.github.krlvm.powertunnel.desktop.ui;
 import io.github.krlvm.powertunnel.i18n.I18NBundle;
 import io.github.krlvm.powertunnel.i18n.UTF8Control;
 
+import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 public class I18N {
 
     private static I18NBundle bundle;
-    private static String locale = null;
+    private static String lang = null;
 
     public static String get(String key) {
         return bundle.get(key);
@@ -36,24 +37,24 @@ public class I18N {
         return bundle.get(key, defaultValue);
     }
 
-    public static void load(String lang) {
+    public static void load(Locale locale) {
         if(bundle != null) throw new IllegalStateException("Bundle is already loaded");
         try {
-            bundle = new I18NBundle(getResourceBundle(lang));
-            locale = lang;
+            bundle = new I18NBundle(getResourceBundle(locale));
+            lang = locale.getLanguage();
         } catch (MissingResourceException ex) {
-            System.err.printf("Locale '%s' is not supported%n", lang);
-            bundle = new I18NBundle(getResourceBundle(null));
+            System.err.printf("Locale '%s' is not supported%n", locale.getLanguage());
+            bundle = new I18NBundle(getResourceBundle(Locale.ENGLISH));
         }
     }
 
-    public static String getLocale() {
-        return locale;
+    public static String getLang() {
+        return lang;
     }
 
 
     private static final String NAME = "messages";
-    public static ResourceBundle getResourceBundle(String lang) {
-        return ResourceBundle.getBundle(I18NBundle.getLocalePath(lang), new UTF8Control());
+    public static ResourceBundle getResourceBundle(Locale locale) {
+        return ResourceBundle.getBundle("locale/" + NAME, locale, new UTF8Control());
     }
 }

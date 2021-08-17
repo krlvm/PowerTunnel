@@ -230,7 +230,7 @@ public class PluginsFrame extends AppFrame {
     }
 
     private static void getJarLocaleBundleInputStream(JarLoader loader, Consumer<InputStream> consumer) throws IOException {
-        loader.open(I18NBundle.getLocaleFilePath(I18N.getLocale()), (in) -> {
+        loader.open(I18NBundle.getLocaleFilePath(I18N.getLang()), (in) -> {
             if(in == null) {
                 loader.open(I18NBundle.getLocaleFilePath(null), consumer::accept, true);
             } else {

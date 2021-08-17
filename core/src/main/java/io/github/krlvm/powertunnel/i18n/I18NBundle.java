@@ -17,8 +17,6 @@
 
 package io.github.krlvm.powertunnel.i18n;
 
-import java.io.InputStream;
-import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
 public class I18NBundle {
