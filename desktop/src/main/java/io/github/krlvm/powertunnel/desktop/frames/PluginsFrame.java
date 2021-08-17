@@ -268,6 +268,8 @@ public class PluginsFrame extends AppFrame {
             return;
         }
 
+        final File configsDir = new File("configs");
+        if(!configsDir.exists()) configsDir.mkdir();
         final File configurationFile = new File("configs" + File.separator + pluginInfo.getId() + Configuration.EXTENSION);
         final ConfigurationStore configuration = new ConfigurationStore();
         try {
