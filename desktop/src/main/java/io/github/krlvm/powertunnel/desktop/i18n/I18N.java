@@ -34,10 +34,15 @@ public class I18N {
 
     public static void load(String lang) {
         try {
-            bundle = new I18NBundle(ResourceBundle.getBundle("locale/messages_" + lang));
+            bundle = new I18NBundle(getResourceBundle(lang));
         } catch (MissingResourceException ex) {
             System.err.printf("Locale '%s' is not supported%n", lang);
-            bundle = new I18NBundle(ResourceBundle.getBundle("locale/messages"));
+            bundle = new I18NBundle(getResourceBundle(null));
         }
+    }
+
+    private static final String NAME = "messages";
+    public static ResourceBundle getResourceBundle(String lang) {
+        return ResourceBundle.getBundle("locale/messages" + (lang != null ? lang : ""), new UTF8Control());
     }
 }
