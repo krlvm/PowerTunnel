@@ -24,6 +24,8 @@ public interface ProxyRequest extends ProxyMessage {
 
     @NotNull HttpMethod getMethod();
     void setMethod(@NotNull HttpMethod method);
+    void setMethod(@NotNull String method);
+
     default boolean isEncrypted() {
         return getMethod() == HttpMethod.CONNECT;
     }
