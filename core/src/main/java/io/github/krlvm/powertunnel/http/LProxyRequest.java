@@ -47,6 +47,11 @@ public class LProxyRequest extends LProxyMessage<HttpRequest> implements ProxyRe
     }
 
     @Override
+    public void setMethod(@NotNull String method) {
+        httpObject.setMethod(new io.netty.handler.codec.http.HttpMethod(method));
+    }
+
+    @Override
     public boolean isEncrypted() {
         return httpObject.method() == io.netty.handler.codec.http.HttpMethod.CONNECT;
     }
