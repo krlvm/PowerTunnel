@@ -20,6 +20,7 @@ package io.github.krlvm.powertunnel.desktop;
 import io.github.krlvm.powertunnel.desktop.application.ConsoleApp;
 import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
 import io.github.krlvm.powertunnel.desktop.configuration.ServerConfiguration;
+import io.github.krlvm.powertunnel.desktop.managers.ApplicationManager;
 import io.github.krlvm.powertunnel.desktop.parser.ArgumentParser;
 import io.github.krlvm.powertunnel.desktop.system.windows.WindowsProxyHandler;
 import io.github.krlvm.powertunnel.desktop.ui.I18N;
@@ -99,8 +100,20 @@ public class Main {
             return;
         }
         for (Map.Entry<String, String> entry : cli.getTemporaryConfiguration().entrySet()) {
-            System.out.printf(" [%s] : [%s]%n", entry.getKey(), entry.getValue());
             configuration.protect(entry.getKey(), entry.getValue());
+        }
+
+        if(BuildConstants.VERSION_CODE != configuration.getInt("version", 0)) {
+            try {
+                ApplicationManager.extractPlugins();
+                configuration.setInt("version", BuildConstants.VERSION_CODE);
+                try {
+                    configuration.save();
+                } catch (IOException ignore) {}
+            } catch (IOException ex) {
+                System.err.println("Failed to install default plugins: " + ex.getMessage());
+                ex.printStackTrace();
+            }
         }
 
         if(cli.has(ArgumentParser.Arguments.DISABLE_UPDATER)) {

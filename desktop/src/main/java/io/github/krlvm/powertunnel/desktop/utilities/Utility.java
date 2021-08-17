@@ -17,12 +17,25 @@
 
 package io.github.krlvm.powertunnel.desktop.utilities;
 
+import io.github.krlvm.powertunnel.desktop.Main;
+
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 public class Utility {
+
+    public static void extractResource(Path destination, String src) throws IOException {
+        try(final InputStream in = Main.class.getResourceAsStream("/" + src)) {
+            Files.copy(in, destination, StandardCopyOption.REPLACE_EXISTING);
+        }
+    }
 
     public static void launchBrowser(String address) {
         if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
