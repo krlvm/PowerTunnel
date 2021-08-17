@@ -49,27 +49,23 @@ public class OptionsFrame extends PreferencesFrame {
             if (SystemUtility.IS_WINDOWS) {
                 preferences.add(pref(
                         "auto_proxy_setup",
-                        true,
                         "true",
                         PreferenceType.SWITCH
                 ));
             }
             preferences.add(pref(
                     "upstream_proxy_enabled",
-                    true,
-                    "true",
+                    "false",
                     PreferenceType.SWITCH
             ));
             preferences.add(pref(
                     "upstream_proxy_host",
-                    false,
                     "",
                     PreferenceType.STRING,
                     "upstream_proxy_enabled", "true", null
             ));
             preferences.add(pref(
                     "upstream_proxy_port",
-                    false,
                     "8080",
                     PreferenceType.NUMBER,
                     "upstream_proxy_enabled", "true", null
@@ -77,21 +73,18 @@ public class OptionsFrame extends PreferencesFrame {
 
             preferences.add(pref(
                     "upstream_proxy_auth_enabled",
-                    true,
                     "8080",
                     PreferenceType.SWITCH,
                     "upstream_proxy_enabled", "true", null
             ));
             preferences.add(pref(
                     "upstream_proxy_auth_username",
-                    false,
                     "",
                     PreferenceType.STRING,
                     "upstream_proxy_auth_enabled", "true", null
             ));
             preferences.add(pref(
                     "upstream_proxy_auth_password",
-                    false,
                     "",
                     PreferenceType.STRING,
                     "upstream_proxy_auth_enabled", "true", null
@@ -105,13 +98,11 @@ public class OptionsFrame extends PreferencesFrame {
 
             preferences.add(pref(
                     "transparent_mode",
-                    true,
                     "true",
                     PreferenceType.SWITCH
             ));
             preferences.add(pref(
                     "allow_requests_to_origin_server",
-                    true,
                     "true",
                     PreferenceType.SWITCH
             ));
@@ -122,14 +113,14 @@ public class OptionsFrame extends PreferencesFrame {
         return groups;
     }
 
-    private static Preference pref(String key, boolean description, String defaultValue, PreferenceType type) {
-        return pref(key, description, defaultValue, type, null, null, null);
+    private static Preference pref(String key, String defaultValue, PreferenceType type) {
+        return pref(key, defaultValue, type, null, null, null);
     }
-    private static Preference pref(String key, boolean description, String defaultValue, PreferenceType type, String dependency, String dependencyValue, Map<String, String> items) {
+    private static Preference pref(String key, String defaultValue, PreferenceType type, String dependency, String dependencyValue, Map<String, String> items) {
         return new Preference(
                 key,
                 I18N.get("options." + key),
-                description ? I18N.get("options." + key + ".desc") : null,
+                I18N.get("options." + key + ".desc", null),
                 defaultValue,
                 type,
                 dependency,
