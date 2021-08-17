@@ -254,7 +254,9 @@ public class PowerTunnel implements PowerTunnelServer {
 
     @Override
     public @NotNull String readTextFile(@NotNull String filename) throws IOException {
-        try(BufferedReader reader = new BufferedReader(new FileReader(configsDir.resolve(filename).toFile()))) {
+        final File file = configsDir.resolve(filename).toFile();
+        if(!file.exists()) file.createNewFile();
+        try(BufferedReader reader = new BufferedReader(new FileReader(file))) {
             return String.join("\n", reader.lines().toArray(String[]::new));
         }
     }
