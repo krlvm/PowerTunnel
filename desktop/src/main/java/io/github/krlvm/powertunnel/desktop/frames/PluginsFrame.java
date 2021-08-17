@@ -269,7 +269,7 @@ public class PluginsFrame extends AppFrame {
             return;
         }
 
-        final File configurationFile = new File(PluginLoader.PLUGINS_DIR + File.separator + pluginInfo.getId() + Configuration.EXTENSION);
+        final File configurationFile = new File("configs" + File.separator + pluginInfo.getId() + Configuration.EXTENSION);
         final ConfigurationStore configuration = new ConfigurationStore();
         try {
             configuration.read(configurationFile);
