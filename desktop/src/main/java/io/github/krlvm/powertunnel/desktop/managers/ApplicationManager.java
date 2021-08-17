@@ -28,7 +28,7 @@ public class ApplicationManager {
 
     private static final String[] PREINSTALLED_PLUGINS = {
             "LibertyTunnel.jar",
-            //"DNSResolver"
+            "DNSResolver.jar"
     };
 
     public static void extractPlugins() throws IOException {
