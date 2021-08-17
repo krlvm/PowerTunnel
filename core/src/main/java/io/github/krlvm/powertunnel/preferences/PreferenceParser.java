@@ -92,6 +92,7 @@ public class PreferenceParser {
         } catch (IllegalArgumentException ex) {
             throw new PreferenceParseException(source, "Unsupported preference type: '" + rawType + '"', ex);
         }
+        final String key = jso.getString(PreferencesSchemaFields.KEY);
 
         Map<String, String> items = null;
         if(type == PreferenceType.SELECT) {
@@ -107,9 +108,13 @@ public class PreferenceParser {
                 if(!(o instanceof JSONObject))
                     throw new PreferenceParseException(source, "Malformed select preference items structure");
                 final JSONObject ijo = ((JSONObject) o);
-                if(!ijo.has(PreferencesSelectItemSchemaFields.KEY) || !ijo.has(PreferencesSelectItemSchemaFields.NAME))
-                    throw new PreferenceParseException(source, "One of select preferences items is incomplete (missing 'key' and (or) 'name')");
-                items.put(ijo.getString(PreferencesSelectItemSchemaFields.KEY), ijo.getString(PreferencesSelectItemSchemaFields.NAME));
+                if(!ijo.has(PreferencesSelectItemSchemaFields.KEY))
+                    throw new PreferenceParseException(source, "One of select preferences items is incomplete (missing 'key')");
+
+                final String ikey = ijo.getString(PreferencesSelectItemSchemaFields.KEY);
+                final String name = ijo.has(PreferencesSelectItemSchemaFields.NAME) ? ijo.getString(PreferencesSelectItemSchemaFields.NAME) :
+                        bundle.get(key + ".item." + ikey);
+                items.put(key, name);
             }
         }
 
@@ -122,7 +127,7 @@ public class PreferenceParser {
                 bundle.get(jso.getString(PreferencesSchemaFields.KEY) + ".desc");
 
         return new Preference(
-                jso.getString(PreferencesSchemaFields.KEY),
+                key,
                 title,
                 description,
                 defaultValue != null ? defaultValue.toString() : type.getDefaultValue(),
