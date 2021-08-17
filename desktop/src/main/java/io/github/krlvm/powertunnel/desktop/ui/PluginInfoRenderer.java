@@ -28,15 +28,16 @@ import java.awt.*;
 // https://stackoverflow.com/a/26476427
 public class PluginInfoRenderer extends JPanel implements ListCellRenderer<PluginInfo> {
 
-    private static final int PADDING = 0;
+    private static final int PADDING = 2;
     private static final Border BORDER = BorderFactory.createCompoundBorder(
-            BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(0, 0, 0, 0.25F)),
+            BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
             BorderFactory.createEmptyBorder(PADDING, PADDING, PADDING, PADDING)
     );
 
     private final JEditorPane infoLabel = new JEditorPane();
 
     public PluginInfoRenderer() {
+        setLayout(new FlowLayout(FlowLayout.LEFT));
         setBorder(BORDER);
         add(infoLabel);
     }
