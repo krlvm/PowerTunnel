@@ -25,6 +25,7 @@ import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpObject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +47,7 @@ public abstract class LProxyMessage<T> implements ProxyMessage {
     }
 
     @Override
-    public @NotNull FullAddress address() {
+    public @Nullable FullAddress address() {
         return address;
     }
 

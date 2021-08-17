@@ -19,10 +19,11 @@ package io.github.krlvm.powertunnel.sdk.http;
 
 import io.github.krlvm.powertunnel.sdk.types.FullAddress;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface ProxyMessage {
 
-    @NotNull FullAddress address();
+    @Nullable FullAddress address();
 
     @NotNull HttpHeaders headers();
 
