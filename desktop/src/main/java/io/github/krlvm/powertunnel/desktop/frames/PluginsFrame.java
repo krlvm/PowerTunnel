@@ -84,7 +84,7 @@ public class PluginsFrame extends AppFrame {
         list.addListSelectionListener(e -> {
             if (e.getValueIsAdjusting()) return;
             homepageButton.setEnabled(list.getSelectedValue().getHomepage() != null);
-            disableButton.setText(I18N.get("plugins.") + (isPluginEnabled(list.getSelectedValue()) ? "disable" : "enable"));
+            disableButton.setText(I18N.get("plugins." + (isPluginEnabled(list.getSelectedValue()) ? "disable" : "enable")));
         });
 
         final JPanel controlPanel = new JPanel(new GridBagLayout());
