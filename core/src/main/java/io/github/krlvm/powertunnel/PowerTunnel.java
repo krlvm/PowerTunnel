@@ -284,7 +284,7 @@ public class PowerTunnel implements PowerTunnelServer {
         return plugins;
     }
 
-    private void callPluginsProxyInitializationCallback() {
+    private void callPluginsProxyInitializationCallback() throws ProxyStartException {
         for (PowerTunnelPlugin plugin : plugins) {
             try {
                 plugin.onProxyInitialization(server);
@@ -294,6 +294,9 @@ public class PowerTunnel implements PowerTunnelServer {
                         plugin.getInfo().getId(), ex.getMessage(),
                         ex
                 );
+                throw new ProxyStartException(String.format(
+                        "Plugin '%s' failed to initialize: %s", plugin.getInfo().getName(), ex.getMessage()
+                ));
             }
         }
     }
