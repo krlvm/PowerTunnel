@@ -39,8 +39,7 @@ import org.littleshoot.proxy.mitm.Authority;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.BindException;
 import java.net.UnknownHostException;
 import java.nio.file.Path;
@@ -255,12 +254,17 @@ public class PowerTunnel implements PowerTunnelServer {
 
     @Override
     public @NotNull String readTextFile(@NotNull String filename) throws IOException {
-        return null;
+        try(BufferedReader reader = new BufferedReader(new FileReader(configsDir.resolve(filename).toFile()))) {
+            return String.join("\n", reader.lines().toArray(String[]::new));
+        }
     }
 
     @Override
     public @NotNull void saveTextFile(@NotNull String filename, @NotNull String text) throws IOException {
-
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(configsDir.resolve(filename).toFile()))) {
+            writer.write(text);
+            writer.flush();
+        }
     }
 
     public void registerPlugin(PowerTunnelPlugin plugin) {

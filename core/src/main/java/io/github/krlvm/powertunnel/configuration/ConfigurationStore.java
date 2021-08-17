@@ -58,15 +58,15 @@ public class ConfigurationStore implements Configuration {
 
     public void save(File file) throws IOException {
         int current = 0;
-        final BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-        for(Map.Entry<String, String> entry : entries()) {
-            writer.write(entry.getKey() + DELIMITER + entry.getValue());
-            if(++current != data.size()) {
-                writer.write("\r\n");
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            for (Map.Entry<String, String> entry : entries()) {
+                writer.write(entry.getKey() + DELIMITER + entry.getValue());
+                if (++current != data.size()) {
+                    writer.write("\r\n");
+                }
             }
+            writer.flush();
         }
-        writer.flush();
-        writer.close();
     }
 
     protected Set<Map.Entry<String, String>> entries() {
