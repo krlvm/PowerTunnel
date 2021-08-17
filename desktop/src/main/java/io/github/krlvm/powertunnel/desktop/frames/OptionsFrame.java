@@ -73,7 +73,7 @@ public class OptionsFrame extends PreferencesFrame {
 
             preferences.add(pref(
                     "upstream_proxy_auth_enabled",
-                    "8080",
+                    "false",
                     PreferenceType.SWITCH,
                     "upstream_proxy_enabled", "true", null
             ));
@@ -95,6 +95,24 @@ public class OptionsFrame extends PreferencesFrame {
 
         {
             preferences = new ArrayList<>();
+
+            preferences.add(pref(
+                    "proxy_auth_enabled",
+                    "false",
+                    PreferenceType.SWITCH
+            ));
+            preferences.add(pref(
+                    "proxy_auth_username",
+                    "",
+                    PreferenceType.STRING,
+                    "proxy_auth_enabled", "true", null
+            ));
+            preferences.add(pref(
+                    "proxy_auth_password",
+                    "",
+                    PreferenceType.STRING,
+                    "proxy_auth_enabled", "true", null
+            ));
 
             preferences.add(pref(
                     "transparent_mode",

@@ -178,6 +178,13 @@ public abstract class DesktopApp implements ServerListener {
                     ));
                 }
 
+                if (configuration.getBoolean("proxy_auth_enabled", false)) {
+                    proxy.setAuthorizationCredentials(new ProxyCredentials(
+                            configuration.get("proxy_auth_username", ""),
+                            configuration.get("proxy_auth_password", "")
+                    ));
+                }
+
                 proxy.setAllowRequestsToOriginServer(configuration.getBoolean("allow_requests_to_origin_server", true));
             } catch (Exception ex) {
                 initializationException = ex;
