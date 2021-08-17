@@ -20,11 +20,12 @@ package io.github.krlvm.powertunnel.desktop.frames;
 import io.github.krlvm.powertunnel.configuration.ConfigurationStore;
 import io.github.krlvm.powertunnel.desktop.application.DesktopApp;
 import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
-import io.github.krlvm.powertunnel.desktop.i18n.I18N;
+import io.github.krlvm.powertunnel.desktop.ui.I18N;
 import io.github.krlvm.powertunnel.desktop.ui.PluginInfoRenderer;
 import io.github.krlvm.powertunnel.desktop.utilities.UIUtility;
 import io.github.krlvm.powertunnel.desktop.utilities.Utility;
 import io.github.krlvm.powertunnel.exceptions.PreferenceParseException;
+import io.github.krlvm.powertunnel.i18n.I18NBundle;
 import io.github.krlvm.powertunnel.plugin.PluginLoader;
 import io.github.krlvm.powertunnel.preferences.PreferenceGroup;
 import io.github.krlvm.powertunnel.preferences.PreferenceParser;
@@ -40,6 +41,7 @@ import java.awt.event.WindowEvent;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.PropertyResourceBundle;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -191,13 +193,31 @@ public class PluginsFrame extends AppFrame {
             return;
         }
 
-        try {
-            JarLoader.open(PluginLoader.getPluginFile(pluginInfo.getSource()), PreferenceParser.FILE, (in) -> {
+        try(final JarLoader loader = new JarLoader(PluginLoader.getPluginFile(pluginInfo.getSource()))) {
+            loader.open(PreferenceParser.FILE, (in) -> {
                 if(in == null) {
                     UIUtility.showInfoDialog(this, I18N.get("plugins.notConfigurable"));
                     return;
                 }
-                openPreferences(pluginInfo, in);
+                getJarLocaleBundleInputStream(loader, (_in) -> {
+                    final PropertyResourceBundle bundle;
+                    if(_in != null) {
+                        try {
+                            bundle = new PropertyResourceBundle(new InputStreamReader(_in, StandardCharsets.UTF_8));
+                        } catch (IOException ex) {
+                            UIUtility.showErrorDialog(
+                                    this, I18N.get("plugins.failedToRead"),
+                                    "Failed to read plugin locale: " + ex.getMessage()
+                            );
+                            System.err.printf("Failed to read '%s' locale: %s%n", pluginInfo.getName(), ex.getMessage());
+                            ex.printStackTrace();
+                            return;
+                        }
+                    } else {
+                        bundle = null;
+                    }
+                    openPreferences(pluginInfo, in, new I18NBundle(bundle));
+                });
             }, true);
         } catch (IOException ex) {
             UIUtility.showErrorDialog(
@@ -209,7 +229,17 @@ public class PluginsFrame extends AppFrame {
         }
     }
 
-    private void openPreferences(PluginInfo pluginInfo, InputStream in) {
+    private static void getJarLocaleBundleInputStream(JarLoader loader, Consumer<InputStream> consumer) throws IOException {
+        loader.open(I18NBundle.getLocaleFilePath(I18N.getLocale()), (in) -> {
+            if(in == null) {
+                loader.open(I18NBundle.getLocaleFilePath(null), consumer::accept, true);
+            } else {
+                consumer.accept(in);
+            }
+        }, true);
+    }
+
+    private void openPreferences(PluginInfo pluginInfo, InputStream in, I18NBundle bundle) {
         final String json;
 
         try(BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
@@ -225,7 +255,7 @@ public class PluginsFrame extends AppFrame {
 
         final List<PreferenceGroup> preferences;
         try {
-            preferences = PreferenceParser.parsePreferences(pluginInfo.getSource(), json);
+            preferences = PreferenceParser.parsePreferences(pluginInfo.getSource(), json, bundle);
         } catch (PreferenceParseException ex) {
             UIUtility.showErrorDialog(
                     this, I18N.get("plugins.failedToOpen"),

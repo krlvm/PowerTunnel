@@ -53,13 +53,6 @@ public class PluginLoader {
         return new File[] {};
     }
 
-    public static InputStream getJarEntry(File jarFile, String entryName) throws IOException {
-        final JarFile jar = new JarFile(jarFile);
-        final JarEntry entry = jar.getJarEntry(entryName);
-        if (entry == null) return null;
-        return jar.getInputStream(entry);
-    }
-
     public static void loadPlugins(PowerTunnel server) throws PluginLoadException {
         loadPlugins(enumeratePlugins(), server);
     }

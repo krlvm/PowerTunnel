@@ -21,7 +21,7 @@ import io.github.krlvm.powertunnel.configuration.ConfigurationStore;
 import io.github.krlvm.powertunnel.desktop.BuildConstants;
 import io.github.krlvm.powertunnel.desktop.application.DesktopApp;
 import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
-import io.github.krlvm.powertunnel.desktop.i18n.I18N;
+import io.github.krlvm.powertunnel.desktop.ui.I18N;
 import io.github.krlvm.powertunnel.desktop.updater.UpdateNotifier;
 import io.github.krlvm.powertunnel.desktop.utilities.SystemUtility;
 import io.github.krlvm.powertunnel.desktop.utilities.UIUtility;

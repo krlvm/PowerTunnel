@@ -18,6 +18,7 @@
 package io.github.krlvm.powertunnel.preferences;
 
 import io.github.krlvm.powertunnel.exceptions.PreferenceParseException;
+import io.github.krlvm.powertunnel.i18n.I18NBundle;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,7 +29,7 @@ public class PreferenceParser {
 
     public static final String FILE = "preferences.json";
 
-    public static List<PreferenceGroup> parsePreferences(String source, String json) throws PreferenceParseException {
+    public static List<PreferenceGroup> parsePreferences(String source, String json, I18NBundle bundle) throws PreferenceParseException {
         final JSONArray array;
         try {
             array = new JSONArray(json);
@@ -42,21 +43,26 @@ public class PreferenceParser {
             if (!(object instanceof JSONObject))
                 throw new PreferenceParseException(source, "Malformed preferences structure");
             final JSONObject jso = ((JSONObject) object);
-            if(jso.has(PreferencesGroupSchemaFields.TITLE)) {
-                if (!jso.has(PreferencesGroupSchemaFields.TITLE) || !jso.has(PreferencesGroupSchemaFields.PREFERENCES))
+            if(jso.has(PreferencesGroupSchemaFields.ID)) {
+                if (!jso.has(PreferencesGroupSchemaFields.PREFERENCES))
                     throw new PreferenceParseException(
                             source,
-                            "One of preference groups is incomplete (missing 'group' and (or) 'preferences')"
+                            "One of preference groups is incomplete (missing 'preferences')"
                     );
                 final Object jsoList = jso.get(PreferencesGroupSchemaFields.PREFERENCES);
                 if(!(jsoList instanceof JSONArray)) throw new PreferenceParseException(source, "Preferences list should be array");
+
+                final String title = jso.has(PreferencesGroupSchemaFields.TITLE) ? jso.getString(PreferencesGroupSchemaFields.TITLE) :
+                        bundle.get(jso.getString(PreferencesGroupSchemaFields.ID));
+                final String description = jso.has(PreferencesGroupSchemaFields.DESCRIPTION) ? jso.getString(PreferencesGroupSchemaFields.DESCRIPTION) :
+                        bundle.get(jso.getString(PreferencesGroupSchemaFields.ID) + ".desc");
                 groups.add(new PreferenceGroup(
-                        getStringOrNull(jso, PreferencesGroupSchemaFields.TITLE),
-                        getStringOrNull(jso, PreferencesGroupSchemaFields.DESCRIPTION),
-                        parsePreferenceList(source, ((JSONArray) jsoList))
+                        title,
+                        description,
+                        parsePreferenceList(source, ((JSONArray) jsoList), bundle)
                 ));
             } else {
-                ungrouped.add(parsePreference(source, jso));
+                ungrouped.add(parsePreference(source, jso, bundle));
             }
         }
         if(!ungrouped.isEmpty()) {
@@ -65,17 +71,17 @@ public class PreferenceParser {
         return groups;
     }
 
-    public static List<Preference> parsePreferenceList(String source, JSONArray array) throws PreferenceParseException {
+    public static List<Preference> parsePreferenceList(String source, JSONArray array, I18NBundle bundle) throws PreferenceParseException {
         final List<Preference> preferences = new ArrayList<>();
         for (Object object : array) {
             if (!(object instanceof JSONObject))
                 throw new PreferenceParseException(source, "Malformed preferences list structure");
-            preferences.add(parsePreference(source, ((JSONObject) object)));
+            preferences.add(parsePreference(source, ((JSONObject) object), bundle));
         }
         return preferences;
     }
 
-    public static Preference parsePreference(String source, JSONObject jso) throws PreferenceParseException {
+    public static Preference parsePreference(String source, JSONObject jso, I18NBundle bundle) throws PreferenceParseException {
         if (!jso.has(PreferencesSchemaFields.KEY) || !jso.has(PreferencesSchemaFields.TYPE))
             throw new PreferenceParseException(source, "One of preferences is incomplete (missing 'key' and (or) 'type')");
 
@@ -110,10 +116,15 @@ public class PreferenceParser {
         final Object defaultValue = getObjectOrNull(jso, PreferencesSchemaFields.DEFAULT_VALUE);
         final Object dependencyValue = getObjectOrNull(jso, PreferencesSchemaFields.DEPENDENCY_VALUE);
 
+        final String title = jso.has(PreferencesSchemaFields.TITLE) ? jso.getString(PreferencesSchemaFields.TITLE) :
+                bundle.get(jso.getString(PreferencesSchemaFields.KEY));
+        final String description = jso.has(PreferencesSchemaFields.DESCRIPTION) ? jso.getString(PreferencesSchemaFields.DESCRIPTION) :
+                bundle.get(jso.getString(PreferencesSchemaFields.KEY) + ".desc");
+
         return new Preference(
                 jso.getString(PreferencesSchemaFields.KEY),
-                getStringOrNull(jso, PreferencesSchemaFields.TITLE),
-                getStringOrNull(jso, PreferencesSchemaFields.DESCRIPTION),
+                title,
+                description,
                 defaultValue != null ? defaultValue.toString() : type.getDefaultValue(),
                 type,
                 getStringOrNull(jso, PreferencesSchemaFields.DEPENDENCY),
@@ -145,7 +156,8 @@ public class PreferenceParser {
     }
 
     static class PreferencesGroupSchemaFields {
-        static final String TITLE = "group";
+        static final String ID = "groupId";
+        static final String TITLE = "title";
         static final String DESCRIPTION = "description";
         static final String PREFERENCES = "preferences";
     }

@@ -21,7 +21,7 @@ import io.github.krlvm.powertunnel.desktop.BuildConstants;
 import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
 import io.github.krlvm.powertunnel.desktop.system.SystemProxy;
 import io.github.krlvm.powertunnel.desktop.ui.FieldFilter;
-import io.github.krlvm.powertunnel.desktop.i18n.I18N;
+import io.github.krlvm.powertunnel.desktop.ui.I18N;
 import io.github.krlvm.powertunnel.desktop.ui.JPanelCallback;
 import io.github.krlvm.powertunnel.desktop.ui.TextRightClickPopup;
 import io.github.krlvm.powertunnel.desktop.utilities.UIUtility;

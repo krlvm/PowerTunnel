@@ -20,7 +20,7 @@ package io.github.krlvm.powertunnel.desktop.frames;
 import io.github.krlvm.powertunnel.configuration.ConfigurationStore;
 import io.github.krlvm.powertunnel.desktop.BuildConstants;
 import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
-import io.github.krlvm.powertunnel.desktop.i18n.I18N;
+import io.github.krlvm.powertunnel.desktop.ui.I18N;
 import io.github.krlvm.powertunnel.desktop.ui.*;
 import io.github.krlvm.powertunnel.desktop.utilities.UIUtility;
 import io.github.krlvm.powertunnel.preferences.Preference;

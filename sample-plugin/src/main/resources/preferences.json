@@ -1,14 +1,11 @@
 [
   {
     "key": "test-check",
-    "title": "Test Preference (check)",
-    "description": "Checkbox Test Preference Description",
     "defaultValue": true,
     "type": "checkbox"
   },
   {
     "key": "test-switch",
-    "title": "Test Preference (switch)",
     "description": "Switch Test Preference Description",
     "defaultValue": false,
     "type": "switch"
@@ -50,7 +47,8 @@
   },
 
   {
-    "group": "Dependent preferences",
+    "groupId": "dependent-preferences",
+    "title": "Dependent preferences",
     "description": "Dependent preferences group description",
     "preferences": [
       {

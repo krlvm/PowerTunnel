@@ -15,8 +15,10 @@
  * along with PowerTunnel.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.krlvm.powertunnel.desktop.i18n;
+package io.github.krlvm.powertunnel.i18n;
 
+import java.io.InputStream;
+import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
 public class I18NBundle {
@@ -32,7 +34,14 @@ public class I18NBundle {
     }
 
     public String get(String key, String defaultValue) {
-        if(!bundle.containsKey(key)) return defaultValue;
+        if(bundle == null || !bundle.containsKey(key)) return defaultValue;
         return bundle.getString(key);
+    }
+
+    public static String getLocalePath(String lang) {
+        return "locale/messages" + (lang != null ? "_" + lang : "");
+    }
+    public static String getLocaleFilePath(String lang) {
+        return getLocalePath(lang) + ".properties";
     }
 }

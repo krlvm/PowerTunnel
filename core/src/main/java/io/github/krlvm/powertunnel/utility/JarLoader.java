@@ -40,7 +40,11 @@ public class JarLoader implements Closeable {
 
     public void open(String entryName, InputStreamConsumer consumer, boolean acceptNull) throws IOException {
         final JarEntry entry = this.jar.getJarEntry(entryName);
-        if (entry == null && !acceptNull) return;
+        if (entry == null) {
+            if(!acceptNull) return;
+            consumer.accept(null);
+            return;
+        }
         try(InputStream in = jar.getInputStream(entry)) {
             consumer.accept(in);
         }

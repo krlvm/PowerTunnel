@@ -15,7 +15,10 @@
  * along with PowerTunnel.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.krlvm.powertunnel.desktop.i18n;
+package io.github.krlvm.powertunnel.desktop.ui;
+
+import io.github.krlvm.powertunnel.i18n.I18NBundle;
+import io.github.krlvm.powertunnel.i18n.UTF8Control;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -23,6 +26,7 @@ import java.util.ResourceBundle;
 public class I18N {
 
     private static I18NBundle bundle;
+    private static String locale = null;
 
     public static String get(String key) {
         return bundle.get(key);
@@ -33,16 +37,23 @@ public class I18N {
     }
 
     public static void load(String lang) {
+        if(bundle != null) throw new IllegalStateException("Bundle is already loaded");
         try {
             bundle = new I18NBundle(getResourceBundle(lang));
+            locale = lang;
         } catch (MissingResourceException ex) {
             System.err.printf("Locale '%s' is not supported%n", lang);
             bundle = new I18NBundle(getResourceBundle(null));
         }
     }
 
+    public static String getLocale() {
+        return locale;
+    }
+
+
     private static final String NAME = "messages";
     public static ResourceBundle getResourceBundle(String lang) {
-        return ResourceBundle.getBundle("locale/messages" + (lang != null ? lang : ""), new UTF8Control());
+        return ResourceBundle.getBundle(I18NBundle.getLocalePath(lang), new UTF8Control());
     }
 }

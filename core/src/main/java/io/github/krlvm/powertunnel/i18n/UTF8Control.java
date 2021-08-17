@@ -15,7 +15,7 @@
  * along with PowerTunnel.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.krlvm.powertunnel.desktop.i18n;
+package io.github.krlvm.powertunnel.i18n;
 
 import java.io.IOException;
 import java.io.InputStream;

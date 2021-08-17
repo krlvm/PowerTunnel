@@ -19,7 +19,7 @@ package io.github.krlvm.powertunnel.desktop.managers;
 
 import io.github.krlvm.powertunnel.desktop.BuildConstants;
 import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
-import io.github.krlvm.powertunnel.desktop.i18n.I18N;
+import io.github.krlvm.powertunnel.desktop.ui.I18N;
 import ru.krlvm.swingdpi.SwingDPI;
 
 import java.awt.*;

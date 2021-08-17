@@ -18,7 +18,7 @@
 package io.github.krlvm.powertunnel.desktop.utilities;
 
 import io.github.krlvm.powertunnel.desktop.BuildConstants;
-import io.github.krlvm.powertunnel.desktop.i18n.I18N;
+import io.github.krlvm.powertunnel.desktop.ui.I18N;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.krlvm.swingdpi.SwingDPI;

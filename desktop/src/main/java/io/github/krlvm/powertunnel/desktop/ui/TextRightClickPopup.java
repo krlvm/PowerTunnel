@@ -17,8 +17,6 @@
 
 package io.github.krlvm.powertunnel.desktop.ui;
 
-import io.github.krlvm.powertunnel.desktop.i18n.I18N;
-
 import javax.swing.*;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
