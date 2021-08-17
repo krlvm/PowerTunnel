@@ -81,7 +81,6 @@ public class PluginsFrame extends AppFrame {
 
         final JButton settingsButton = new JButton(I18N.get("plugins.settings"));
         settingsButton.addActionListener(e -> withSelectedValue(this::openPreferences));
-        settingsButton.setEnabled(!GraphicalApp.getInstance().isRunning());
 
         list.addListSelectionListener(e -> {
             if (e.getValueIsAdjusting()) return;

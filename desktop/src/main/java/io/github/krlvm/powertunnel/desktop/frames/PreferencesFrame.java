@@ -319,6 +319,16 @@ public class PreferencesFrame extends AppFrame {
             System.err.println("Failed to save preferences: " + ex.getMessage());
             ex.printStackTrace();
         }
+
+        if(GraphicalApp.getInstance().isRunning()) {
+            final int result = UIUtility.showYesNoDialog(PreferencesFrame.this, I18N.get("preferences.restartProxyPrompt"));
+            if (result == JOptionPane.YES_OPTION) {
+                SwingUtilities.invokeLater(() -> {
+                    GraphicalApp.getInstance().stop();
+                    GraphicalApp.getInstance().start();
+                });
+            }
+        }
     }
 
     private void updateDependencies() {
