@@ -20,10 +20,8 @@ package io.github.krlvm.powertunnel.desktop.frames;
 import io.github.krlvm.powertunnel.configuration.ConfigurationStore;
 import io.github.krlvm.powertunnel.desktop.BuildConstants;
 import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
-import io.github.krlvm.powertunnel.desktop.ui.ComboBoxScroll;
-import io.github.krlvm.powertunnel.desktop.ui.FieldFilter;
-import io.github.krlvm.powertunnel.desktop.ui.SelectPreferenceRenderer;
-import io.github.krlvm.powertunnel.desktop.ui.TextRightClickPopup;
+import io.github.krlvm.powertunnel.desktop.i18n.I18N;
+import io.github.krlvm.powertunnel.desktop.ui.*;
 import io.github.krlvm.powertunnel.desktop.utilities.UIUtility;
 import io.github.krlvm.powertunnel.preferences.Preference;
 import io.github.krlvm.powertunnel.preferences.PreferenceGroup;
@@ -109,7 +107,7 @@ public class PreferencesFrame extends AppFrame {
                             } catch (NumberFormatException ex) {
                                 ex.printStackTrace();
                                 showResetPrompt(
-                                        "Incorrect configuration detected, do you want to reset it?",
+                                        I18N.get("preferences.incorrectConfiguration"),
                                         null
                                 );
                                 onFailedToInitialize();
@@ -168,9 +166,7 @@ public class PreferencesFrame extends AppFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                final int result = JOptionPane.showConfirmDialog(PreferencesFrame.this,
-                        "Do you want to save changes?", BuildConstants.NAME, JOptionPane.YES_NO_CANCEL_OPTION
-                );
+                final int result = UIUtility.showYesNoCancelDialog(PreferencesFrame.this, I18N.get("preferences.exitConfirmation"));
                 if (result == JOptionPane.YES_OPTION) {
                     save();
                 } else if(result == JOptionPane.NO_OPTION) {
@@ -187,7 +183,7 @@ public class PreferencesFrame extends AppFrame {
         if(!GraphicalApp.getInstance().getConfiguration().getImmutableKeys().isEmpty()) {
             final JPanel notePanel = new JPanel();
             notePanel.setBorder(BorderFactory.createEmptyBorder(4, 0, 4, 0));
-            notePanel.add(new JLabel("<html>Some preferences may not be available<br>because they were set from the CLI</html>"));
+            notePanel.add(new JLabel("<html>" + I18N.get("preferences.note") + "</html>"));
             insertComponent(notePanel);
         }
 
@@ -203,13 +199,13 @@ public class PreferencesFrame extends AppFrame {
     protected void frameInitialized() {
         final JPanel actionPanel = new JPanel(new BorderLayout());
 
-        final JButton resetButton = new JButton("Reset");
-        resetButton.addActionListener(e -> showResetPrompt("Do you want to reset configuration?", this));
+        final JButton resetButton = new JButton(I18N.get("reset"));
+        resetButton.addActionListener(e -> showResetPrompt(I18N.get("preferences.resetConfirmation"), this));
 
-        final JButton cancelButton = new JButton("Cancel");
+        final JButton cancelButton = new JButton(I18N.get("cancel"));
         cancelButton.addActionListener(e -> dispose());
 
-        final JButton saveButton = new JButton("Save");
+        final JButton saveButton = new JButton(I18N.get("save"));
         saveButton.addActionListener(e -> {
             save();
             dispose();
@@ -298,7 +294,6 @@ public class PreferencesFrame extends AppFrame {
                 message, BuildConstants.NAME, JOptionPane.YES_NO_OPTION
         );
         if (result == JOptionPane.YES_OPTION) {
-            System.out.println("RESET");
             reset();
             dispose();
         }
@@ -320,7 +315,7 @@ public class PreferencesFrame extends AppFrame {
         try {
             configuration.save(configurationFile);
         } catch (IOException ex) {
-            UIUtility.showErrorDialog(this, "Failed to save preferences: " + ex.getMessage());
+            UIUtility.showErrorDialog(this, I18N.get("preferences.failedToSave") + ": " + ex.getMessage());
             System.err.println("Failed to save preferences: " + ex.getMessage());
             ex.printStackTrace();
         }

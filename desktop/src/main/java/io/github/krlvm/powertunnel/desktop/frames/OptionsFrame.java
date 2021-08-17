@@ -21,6 +21,7 @@ import io.github.krlvm.powertunnel.configuration.ConfigurationStore;
 import io.github.krlvm.powertunnel.desktop.BuildConstants;
 import io.github.krlvm.powertunnel.desktop.application.DesktopApp;
 import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
+import io.github.krlvm.powertunnel.desktop.i18n.I18N;
 import io.github.krlvm.powertunnel.desktop.updater.UpdateNotifier;
 import io.github.krlvm.powertunnel.desktop.utilities.SystemUtility;
 import io.github.krlvm.powertunnel.desktop.utilities.UIUtility;
@@ -34,6 +35,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class OptionsFrame extends PreferencesFrame {
 
@@ -45,87 +47,73 @@ public class OptionsFrame extends PreferencesFrame {
             preferences = new ArrayList<>();
 
             if (SystemUtility.IS_WINDOWS) {
-                preferences.add(new Preference(
+                preferences.add(pref(
                         "auto_proxy_setup",
-                        "Auto proxy setup",
-                        "Automatically setting up system proxy server configuration..\n\nWindows: Internet Explorer can be started for a few seconds to apply changes.",
+                        true,
                         "true",
-                        PreferenceType.SWITCH,
-                        null, null, null
+                        PreferenceType.SWITCH
                 ));
             }
-
-            preferences.add(new Preference(
+            preferences.add(pref(
                     "upstream_proxy_enabled",
-                    "Connect via upstream proxy server",
-                    "Use a proxy server to connect to the Internet",
-                    "false",
-                    PreferenceType.SWITCH,
-                    null, null, null
+                    true,
+                    "true",
+                    PreferenceType.SWITCH
             ));
-            preferences.add(new Preference(
+            preferences.add(pref(
                     "upstream_proxy_host",
-                    "Upstream proxy host",
-                    null,
+                    false,
                     "",
                     PreferenceType.STRING,
                     "upstream_proxy_enabled", "true", null
             ));
-            preferences.add(new Preference(
+            preferences.add(pref(
                     "upstream_proxy_port",
-                    "Upstream proxy port",
-                    null,
+                    false,
                     "8080",
                     PreferenceType.NUMBER,
                     "upstream_proxy_enabled", "true", null
             ));
 
-            preferences.add(new Preference(
+            preferences.add(pref(
                     "upstream_proxy_auth_enabled",
-                    "Upstream proxy authorization",
-                    "Authenticate on upstream proxy server",
-                    "false",
+                    true,
+                    "8080",
                     PreferenceType.SWITCH,
                     "upstream_proxy_enabled", "true", null
             ));
-            preferences.add(new Preference(
+            preferences.add(pref(
                     "upstream_proxy_auth_username",
-                    "Upstream proxy username",
-                    null,
+                    false,
                     "",
                     PreferenceType.STRING,
                     "upstream_proxy_auth_enabled", "true", null
             ));
-            preferences.add(new Preference(
+            preferences.add(pref(
                     "upstream_proxy_auth_password",
-                    "Upstream proxy password",
-                    null,
+                    false,
                     "",
                     PreferenceType.STRING,
                     "upstream_proxy_auth_enabled", "true", null
             ));
 
-            groups.add(new PreferenceGroup("Proxy connection", null, preferences));
+            groups.add(new PreferenceGroup(I18N.get("options.group.proxyConnection"), null, preferences));
         }
 
         {
             preferences = new ArrayList<>();
 
-            preferences.add(new Preference(
+            preferences.add(pref(
                     "transparent_mode",
-                    "Run proxy in transparent mode (recommended)",
-                    "When proxy server is in transparent mode, it declares that it does not modify requests and responses and does not set 'Via' header",
+                    true,
                     "true",
-                    PreferenceType.SWITCH,
-                    null, null, null
+                    PreferenceType.SWITCH
             ));
-            preferences.add(new Preference(
+            preferences.add(pref(
                     "allow_requests_to_origin_server",
-                    "Allow requests to origin server (recommended)",
-                    "Experimental option, fixed many connectivity issues.",
+                    true,
                     "true",
-                    PreferenceType.SWITCH,
-                    null, null, null
+                    PreferenceType.SWITCH
             ));
 
             groups.add(new PreferenceGroup("Proxy settings", null, preferences));
@@ -134,8 +122,24 @@ public class OptionsFrame extends PreferencesFrame {
         return groups;
     }
 
+    private static Preference pref(String key, boolean description, String defaultValue, PreferenceType type) {
+        return pref(key, description, defaultValue, type, null, null, null);
+    }
+    private static Preference pref(String key, boolean description, String defaultValue, PreferenceType type, String dependency, String dependencyValue, Map<String, String> items) {
+        return new Preference(
+                key,
+                I18N.get("options." + key),
+                description ? I18N.get("options." + key + ".desc") : null,
+                defaultValue,
+                type,
+                dependency,
+                dependencyValue,
+                items
+        );
+    }
+
     public OptionsFrame(ConfigurationStore configuration) {
-        super("Options", "",
+        super(I18N.get("options.title"), "",
                 DesktopApp.CONFIGURATION_FILE, configuration,
                 getPreferences()
         );
@@ -152,20 +156,20 @@ public class OptionsFrame extends PreferencesFrame {
     protected void frameInitialized() {
         final JPanel notePanel = new JPanel();
         notePanel.setBorder(BorderFactory.createEmptyBorder(4, 0, 4, 0));
-        notePanel.add(new JLabel("<html><b>NOTE:</b> Some features have been moved to plugins,<br>so you need to open their settings for configuring</html>"));
+        notePanel.add(new JLabel(I18N.get("options.note")));
         insertComponent(notePanel);
 
         if(UpdateNotifier.ENABLED) {
             final JPanel updatePanel = new JPanel(new BorderLayout());
             final JLabel updateLabel = new JLabel();
-            final JButton updateButton = new JButton("Check for updates");
+            final JButton updateButton = new JButton(I18N.get("updater.checkForUpdates"));
 
             updateButton.addActionListener(e -> {
                 updateButton.setEnabled(false);
                 setUpdateInfo(updateLabel, true);
                 new Thread(() -> {
                     if(!UpdateNotifier.checkAndNotify(BuildConstants.NAME, BuildConstants.REPO, true)) {
-                        UIUtility.showErrorDialog(OptionsFrame.this, "Failed to check for updates");
+                        UIUtility.showErrorDialog(OptionsFrame.this, I18N.get("updater.failedToCheck"));
                     }
                     setUpdateInfo(updateLabel, false);
                     updateButton.setEnabled(true);
@@ -185,8 +189,8 @@ public class OptionsFrame extends PreferencesFrame {
 
     private void setUpdateInfo(JLabel label, boolean checking) {
         label.setText("<html><b>" +
-                (checking ? "Checking for updates..." : (UpdateNotifier.NEW_VERSION == null ?
-                        "No updates are available" : "An update is available: " + UpdateNotifier.NEW_VERSION
+                (checking ? I18N.get("updater.checkingForUpdates") : (UpdateNotifier.NEW_VERSION == null ?
+                        I18N.get("updater.noUpdates"): I18N.get("updater.updateAvailable") + ": " + UpdateNotifier.NEW_VERSION
                 )) +
                 "</b></html>"
         );

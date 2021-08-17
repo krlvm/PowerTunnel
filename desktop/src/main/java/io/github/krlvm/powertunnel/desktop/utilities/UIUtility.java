@@ -18,6 +18,7 @@
 package io.github.krlvm.powertunnel.desktop.utilities;
 
 import io.github.krlvm.powertunnel.desktop.BuildConstants;
+import io.github.krlvm.powertunnel.desktop.i18n.I18N;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.krlvm.swingdpi.SwingDPI;
@@ -30,6 +31,34 @@ import java.awt.*;
 public class UIUtility {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UIUtility.class);
+
+    public static int showYesNoDialog(JFrame parent, String message) {
+        final Object[] options = { I18N.get("yes"), I18N.get("no") };
+        return JOptionPane.showOptionDialog(
+                parent,
+                message,
+                BuildConstants.NAME,
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+    }
+
+    public static int showYesNoCancelDialog(JFrame parent, String message) {
+        final Object[] options = { I18N.get("yes"), I18N.get("no"), I18N.get("cancel") };
+        return JOptionPane.showOptionDialog(
+                parent,
+                message,
+                BuildConstants.NAME,
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+    }
 
     public static void showInfoDialog(JFrame parent, String message) {
         showInfoDialog(parent, BuildConstants.NAME, message);

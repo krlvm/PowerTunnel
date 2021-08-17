@@ -148,6 +148,7 @@ public class ArgumentParser {
     public static class Arguments {
         public static final String HELP = "help";
         public static final String VERSION = "version";
+        public static final String LANGUAGE = "lang";
 
         public static final String START = "start";
         public static final String IP = "ip";

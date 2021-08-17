@@ -22,6 +22,7 @@ import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
 import io.github.krlvm.powertunnel.desktop.configuration.ServerConfiguration;
 import io.github.krlvm.powertunnel.desktop.parser.ArgumentParser;
 import io.github.krlvm.powertunnel.desktop.system.windows.WindowsProxyHandler;
+import io.github.krlvm.powertunnel.desktop.i18n.I18N;
 import io.github.krlvm.powertunnel.desktop.updater.UpdateNotifier;
 import io.github.krlvm.powertunnel.desktop.utilities.SystemUtility;
 import io.github.krlvm.powertunnel.desktop.utilities.UIUtility;
@@ -29,6 +30,7 @@ import ru.krlvm.swingdpi.SwingDPI;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Map;
 
 public class Main {
@@ -64,7 +66,8 @@ public class Main {
                     .option(ArgumentParser.Arguments.DISABLE_TRAY, "disable tray mode")
                     .argument(ArgumentParser.Arguments.DISABLE_NATIVE_SKIN, "disable platform native UI skin")
                     .argument(ArgumentParser.Arguments.SET_UI_SCALE_FACTOR, "set UI scale factor")
-                    .argument(ArgumentParser.Arguments.DISABLE_UI_SCALING, "disable UI scaling");
+                    .argument(ArgumentParser.Arguments.DISABLE_UI_SCALING, "disable UI scaling")
+                    .argument(ArgumentParser.Arguments.LANGUAGE, "set UI language");
         }
         builder.option(ArgumentParser.Arguments.DISABLE_UPDATER, "disable the Update Notifier");
 
@@ -139,6 +142,8 @@ public class Main {
             if(!cli.has(ArgumentParser.Arguments.DISABLE_NATIVE_SKIN)) {
                 UIUtility.tweakLook();
             }
+
+            I18N.load(cli.get(ArgumentParser.Arguments.LANGUAGE, Locale.getDefault().getLanguage()));
 
             new GraphicalApp(
                     configuration,

@@ -20,6 +20,7 @@ package io.github.krlvm.powertunnel.desktop.frames;
 import io.github.krlvm.powertunnel.configuration.ConfigurationStore;
 import io.github.krlvm.powertunnel.desktop.application.DesktopApp;
 import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
+import io.github.krlvm.powertunnel.desktop.i18n.I18N;
 import io.github.krlvm.powertunnel.desktop.ui.PluginInfoRenderer;
 import io.github.krlvm.powertunnel.desktop.utilities.UIUtility;
 import io.github.krlvm.powertunnel.desktop.utilities.Utility;
@@ -50,7 +51,7 @@ public class PluginsFrame extends AppFrame {
     private final JList<PluginInfo> list;
 
     public PluginsFrame() {
-        super("Plugins");
+        super(I18N.get("plugins.title"));
 
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -58,32 +59,32 @@ public class PluginsFrame extends AppFrame {
         list.setCellRenderer(new PluginInfoRenderer());
 
 
-        final JButton homepageButton = new JButton("Homepage");
+        final JButton homepageButton = new JButton(I18N.get("plugins.homepage"));
         homepageButton.addActionListener(e -> withSelectedValue(pluginInfo -> {
             if(pluginInfo.getHomepage() != null) Utility.launchBrowser(pluginInfo.getHomepage());
         }));
         homepageButton.setEnabled(false);
 
-        final JButton disableButton = new JButton("Disable");
+        final JButton disableButton = new JButton(I18N.get("plugins.disable"));
         disableButton.addActionListener(e -> withSelectedValue(pluginInfo -> {
             if(isPluginEnabled(pluginInfo)) {
                 disablePlugin(pluginInfo);
-                disableButton.setText("Enable");
+                disableButton.setText(I18N.get("plugins.enable"));
             } else {
                 enablePlugin(pluginInfo);
-                disableButton.setText("Disable");
+                disableButton.setText(I18N.get("plugins.disable"));
             }
         }));
         disableButton.setEnabled(!GraphicalApp.getInstance().isRunning());
 
-        final JButton settingsButton = new JButton("Settings");
+        final JButton settingsButton = new JButton(I18N.get("plugins.settings"));
         settingsButton.addActionListener(e -> withSelectedValue(this::openPreferences));
         settingsButton.setEnabled(!GraphicalApp.getInstance().isRunning());
 
         list.addListSelectionListener(e -> {
             if (e.getValueIsAdjusting()) return;
             homepageButton.setEnabled(list.getSelectedValue().getHomepage() != null);
-            disableButton.setText(isPluginEnabled(list.getSelectedValue()) ? "Disable" : "Enable");
+            disableButton.setText(I18N.get("plugins.") + (isPluginEnabled(list.getSelectedValue()) ? "disable" : "enable"));
         });
 
         final JPanel controlPanel = new JPanel(new GridBagLayout());
@@ -99,9 +100,8 @@ public class PluginsFrame extends AppFrame {
         final JPanel notePanel = new JPanel();
         notePanel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
         notePanel.add(UIUtility.getLabelWithHyperlinkSupport("<html><center>" +
-                "Plugins can't be configured when server is running<br>" +
-                "Verify before installing as they may be malicious<br>" +
-                "<a href=\"https://github.com/krlvm/PowerTunnel-Plugins\">Visit official plugins registry</a>" +
+                I18N.get("plugins.note") +
+                "<br><a href=\"https://github.com/krlvm/PowerTunnel=Plugins/blob/master/README.md\">" + I18N.get("plugins.visitRegistry") + "</a>" +
                 "</center></html>")
         );
 
@@ -194,14 +194,14 @@ public class PluginsFrame extends AppFrame {
         try {
             JarLoader.open(PluginLoader.getPluginFile(pluginInfo.getSource()), PreferenceParser.FILE, (in) -> {
                 if(in == null) {
-                    UIUtility.showInfoDialog(this, "Plugin is not configurable");
+                    UIUtility.showInfoDialog(this, I18N.get("plugins.notConfigurable"));
                     return;
                 }
                 openPreferences(pluginInfo, in);
             }, true);
         } catch (IOException ex) {
             UIUtility.showErrorDialog(
-                    this, "Failed to read plugin preferences",
+                    this, I18N.get("plugins.failedToRead"),
                     "Failed to open plugin jar file: " + ex.getMessage()
             );
             System.err.printf("Failed to open plugin '%s' jar file: %s%n", pluginInfo.getName(), ex.getMessage());
@@ -216,7 +216,7 @@ public class PluginsFrame extends AppFrame {
             json = reader.lines().collect(Collectors.joining(""));
         } catch (IOException ex) {
             UIUtility.showErrorDialog(
-                    this, "Failed to open plugin preferences",
+                    this, I18N.get("plugins.failedToOpen"),
                     "Failed to read preferences schema: " + ex.getMessage()
             );
             ex.printStackTrace();
@@ -228,14 +228,14 @@ public class PluginsFrame extends AppFrame {
             preferences = PreferenceParser.parsePreferences(pluginInfo.getSource(), json);
         } catch (PreferenceParseException ex) {
             UIUtility.showErrorDialog(
-                    this, "Failed to open plugin preferences",
+                    this, I18N.get("plugins.failedToOpen"),
                     "Failed to parse preferences: " + ex.getMessage()
             );
             return;
         }
 
         if(preferences.isEmpty()) {
-            UIUtility.showInfoDialog(this, "Plugin preferences is empty");
+            UIUtility.showInfoDialog(this, I18N.get("plugins.emptyPreferences"));
             return;
         }
 
@@ -245,7 +245,7 @@ public class PluginsFrame extends AppFrame {
             configuration.read(configurationFile);
         } catch (IOException ex) {
             UIUtility.showErrorDialog(
-                    this, "Failed to open plugin preferences",
+                    this, I18N.get("plugins.failedToOpen"),
                     "Failed to load configuration: " + ex.getMessage()
             );
             ex.printStackTrace();
@@ -253,7 +253,7 @@ public class PluginsFrame extends AppFrame {
         }
 
         new PreferencesFrame(
-                pluginInfo.getName() + " preferences",
+                pluginInfo.getName() + " " + I18N.get("preferences.subtitle"),
                 pluginInfo.getId(), configurationFile, configuration, preferences
         ).showFrame(this);
     }

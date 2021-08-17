@@ -17,6 +17,8 @@
 
 package io.github.krlvm.powertunnel.desktop.ui;
 
+import io.github.krlvm.powertunnel.desktop.i18n.I18N;
+
 import javax.swing.*;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
@@ -45,7 +47,7 @@ public class TextRightClickPopup {
         final UndoManager undoManager = new UndoManager();
         input.getDocument().addUndoableEditListener(undoManager);
 
-        final Action undoAction = new AbstractAction("Undo") {
+        final Action undoAction = new AbstractAction(I18N.get("menu.undo")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(undoManager.canUndo()) {
@@ -53,7 +55,7 @@ public class TextRightClickPopup {
                 }
             }
         };
-        final Action redoAction = new AbstractAction("Redo") {
+        final Action redoAction = new AbstractAction(I18N.get("menu.redo")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(undoManager.canRedo()) {
@@ -62,32 +64,32 @@ public class TextRightClickPopup {
             }
         };
 
-        final Action copyAction = new AbstractAction("Copy") {
+        final Action copyAction = new AbstractAction(I18N.get("menu.copy")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 input.copy();
             }
         };
-        final Action cutAction = new AbstractAction("Cut") {
+        final Action cutAction = new AbstractAction(I18N.get("menu.cut")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 input.cut();
             }
         };
-        final Action pasteAction = new AbstractAction("Paste") {
+        final Action pasteAction = new AbstractAction(I18N.get("menu.paste")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 input.paste();
             }
         };
-        final Action deleteAction = new AbstractAction("Delete") {
+        final Action deleteAction = new AbstractAction(I18N.get("menu.delete")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 input.replaceSelection("");
             }
         };
 
-        final Action selectAllAction = new AbstractAction("Select All") {
+        final Action selectAllAction = new AbstractAction(I18N.get("menu.selectAll")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 input.selectAll();

@@ -19,6 +19,7 @@ package io.github.krlvm.powertunnel.desktop.managers;
 
 import io.github.krlvm.powertunnel.desktop.BuildConstants;
 import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
+import io.github.krlvm.powertunnel.desktop.i18n.I18N;
 import ru.krlvm.swingdpi.SwingDPI;
 
 import java.awt.*;
@@ -47,21 +48,21 @@ public class TrayManager {
         PopupMenu popup = new PopupMenu();
 
         popup.add(getItem(BuildConstants.NAME, null, true));
-        popup.add(getItem("Version " + BuildConstants.VERSION, null, true));
+        popup.add(getItem(I18N.get("tray.version") + " " + BuildConstants.VERSION, null, true));
         popup.add(getItem("(c) krlvm, 2019-2021", null, true));
 
         popup.addSeparator();
 
-        popup.add(getItem("Open", openAppListener));
+        popup.add(getItem(I18N.get("tray.open"), openAppListener));
 
         popup.addSeparator();
 
-        popup.add(getItem("Plugins", e -> app.showOptionsFrame()));
-        popup.add(getItem("Options", e -> app.showOptionsFrame()));
+        popup.add(getItem(I18N.get("main.plugins"), e -> app.showPluginsFrame()));
+        popup.add(getItem(I18N.get("main.options"), e -> app.showOptionsFrame()));
 
         popup.addSeparator();
 
-        popup.add(getItem("Exit", e -> app.dispose()));
+        popup.add(getItem(I18N.get("tray.exit"), e -> app.dispose()));
 
         trayIcon = new TrayIcon(GraphicalApp.ICON, BuildConstants.NAME, popup);
         trayIcon.setImageAutoSize(true);

@@ -21,6 +21,7 @@ import io.github.krlvm.powertunnel.desktop.BuildConstants;
 import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
 import io.github.krlvm.powertunnel.desktop.system.SystemProxy;
 import io.github.krlvm.powertunnel.desktop.ui.FieldFilter;
+import io.github.krlvm.powertunnel.desktop.i18n.I18N;
 import io.github.krlvm.powertunnel.desktop.ui.JPanelCallback;
 import io.github.krlvm.powertunnel.desktop.ui.TextRightClickPopup;
 import io.github.krlvm.powertunnel.desktop.utilities.UIUtility;
@@ -104,9 +105,7 @@ public class MainFrame extends AppFrame {
                 app.setAddress(new ProxyAddress(ip, port));
 
                 if(SystemProxy.isSupported() && app.getConfiguration().getBoolean("auto_proxy_setup_ask", true)) {
-                    final int result = JOptionPane.showConfirmDialog(this,
-                            "Configure system proxy automatically?", BuildConstants.NAME, JOptionPane.YES_NO_OPTION
-                    );
+                    final int result = UIUtility.showYesNoDialog(this, I18N.get("main.configureAutomaticallyPrompt"));
                     app.getConfiguration().setBoolean("auto_proxy_setup", result == JOptionPane.YES_OPTION);
                     app.getConfiguration().setBoolean("auto_proxy_setup_ask", false);
                 }
@@ -124,13 +123,13 @@ public class MainFrame extends AppFrame {
 
         // region Second Row Buttons
 
-        final JButton pluginsButton = new JButton("Plugins");
+        final JButton pluginsButton = new JButton(I18N.get("main.plugins"));
         pluginsButton.addActionListener(e -> app.showPluginsFrame());
 
-        final JButton optionsButton = new JButton("Options");
+        final JButton optionsButton = new JButton(I18N.get("main.options"));
         optionsButton.addActionListener(e -> app.showOptionsFrame());
 
-        final JButton aboutButton = new JButton("About");
+        final JButton aboutButton = new JButton(I18N.get("main.about"));
         aboutButton.addActionListener(e -> {
             JEditorPane message = UIUtility.getLabelWithHyperlinkSupport(ABOUT_MESSAGE, null, 3);
             JOptionPane.showMessageDialog(this, message,
@@ -156,7 +155,7 @@ public class MainFrame extends AppFrame {
         panel.add(proxyControlPanel, gbc);
         panel.add(buttonsPanel, gbc);
         panel.add(UIUtility.getLabelWithHyperlinkSupport(
-                "<a href=\"" + BuildConstants.REPO + "/issues\">Report a bug</a> | <a href=\"https://t.me/powertunnel_dpi\">Telegram Channel</a> | " + "<a href=\"" + BuildConstants.REPO + "/wiki\">Help</a>" +
+                "<a href=\"" + BuildConstants.REPO + "/issues\">" + I18N.get("main.reportBug") + "</a> | <a href=\"https://t.me/powertunnel_dpi\">Telegram Channel</a> | " + "<a href=\"" + BuildConstants.REPO + "/wiki\">" + I18N.get("main.help") + "</a>" +
                         "<br>" +
                         "<b><a style=\"color: black\" href=\"" + BuildConstants.REPO + "\">" + BuildConstants.REPO + "</a></b>" +
                         "<br><br>" +
@@ -182,7 +181,7 @@ public class MainFrame extends AppFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 if(app.getStatus() != ProxyStatus.NOT_RUNNING && app.isTrayAvailable()) {
-                    app.showNotification(BuildConstants.NAME + " is still running in tray mode");
+                    app.showNotification(BuildConstants.NAME + " " + I18N.get("tray.stillRunning"));
                     return;
                 }
                 app.dispose();
@@ -197,7 +196,7 @@ public class MainFrame extends AppFrame {
             header.setText(getHeaderText());
 
             final ProxyStatus status = app.getStatus();
-            stateButton.setText((app.isRunning() ? "Stop" : "Start") + " server");
+            stateButton.setText(I18N.get("main." + (app.isRunning() ? "stop" : "start")));
             stateButton.setEnabled(status != ProxyStatus.STARTING && status != ProxyStatus.STOPPING);
 
             final boolean notRunning = status == ProxyStatus.NOT_RUNNING;
@@ -215,8 +214,7 @@ public class MainFrame extends AppFrame {
     private String getHeaderText() {
         return UIUtility.getCenteredLabel("" +
                 "<b>" + BuildConstants.NAME + " v" + BuildConstants.VERSION + "</b>" +
-                "<br>" +
-                "Server " + status(app.getStatus())
+                "<br>" + I18N.get("main.status." + app.getStatus().name())
         );
     }
 
@@ -248,15 +246,5 @@ public class MainFrame extends AppFrame {
         UIUtility.setTooltip(field, tooltip);
 
         return field;
-    }
-
-    private static String status(ProxyStatus status) {
-        switch (status) {
-            case NOT_RUNNING: return "not running";
-            case STARTING: return "is starting";
-            case RUNNING: return "is running";
-            case STOPPING: return "is stopping";
-            default: return "UNKNOWN_STATUS";
-        }
     }
 }
