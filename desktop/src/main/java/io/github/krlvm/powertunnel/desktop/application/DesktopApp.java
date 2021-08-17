@@ -20,10 +20,10 @@ package io.github.krlvm.powertunnel.desktop.application;
 import io.github.krlvm.powertunnel.PowerTunnel;
 import io.github.krlvm.powertunnel.desktop.BuildConstants;
 import io.github.krlvm.powertunnel.desktop.configuration.ServerConfiguration;
+import io.github.krlvm.powertunnel.desktop.utilities.SystemUtility;
 import io.github.krlvm.powertunnel.mitm.MITMAuthority;
 import io.github.krlvm.powertunnel.plugin.PluginLoader;
 import io.github.krlvm.powertunnel.sdk.ServerListener;
-import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
 import io.github.krlvm.powertunnel.sdk.exceptions.PluginLoadException;
 import io.github.krlvm.powertunnel.sdk.exceptions.ProxyStartException;
 import io.github.krlvm.powertunnel.sdk.plugin.PluginInfo;
@@ -35,6 +35,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Map;
@@ -67,6 +70,7 @@ public abstract class DesktopApp implements ServerListener {
     protected PowerTunnel server;
     protected ProxyAddress address;
 
+    private final Path certificateDirectory = Paths.get("cert");
     private Exception initializationException = null;
 
     public DesktopApp(ServerConfiguration configuration, boolean start) {
@@ -94,7 +98,7 @@ public abstract class DesktopApp implements ServerListener {
                 Paths.get(""),
                 configuration.getBoolean("transparent_mode", true),
                 MITMAuthority.create(
-                        new File("cert"),
+                        certificateDirectory.toFile(),
                         configuration.get("cert_password", UUID.randomUUID().toString()).toCharArray()
                 ),
                 getHardcodedSettings()
@@ -115,6 +119,18 @@ public abstract class DesktopApp implements ServerListener {
             LOGGER.error("Failed to start PowerTunnel: {}", ex.getMessage(), ex);
             return ex;
         }
+
+        if(this.server.getProxyServer().isMITMEnabled() && SystemUtility.IS_WINDOWS) {
+            try {
+                Files.copy(
+                        certificateDirectory.resolve(MITMAuthority.CERTIFICATE_ALIAS + ".pem"),
+                        certificateDirectory.resolve(MITMAuthority.CERTIFICATE_ALIAS + ".cer")
+                );
+            } catch (IOException ex) {
+                LOGGER.warn("Failed to copy the certificate from .pem to .cer: {}", ex.getMessage(), ex);
+            }
+        }
+
         return null;
     }
 
