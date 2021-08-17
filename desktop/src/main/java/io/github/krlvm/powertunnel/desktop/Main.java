@@ -69,7 +69,7 @@ public class Main {
                     .argument(ArgumentParser.Arguments.DISABLE_UI_SCALING, "disable UI scaling")
                     .argument(ArgumentParser.Arguments.LANGUAGE, "set UI language");
         }
-        builder.option(ArgumentParser.Arguments.DISABLE_UPDATER, "disable the Update Notifier");
+        builder.option(ArgumentParser.Arguments.DISABLE_UPDATER, "disable Update Notifier");
 
         final ArgumentParser cli = builder.build();
         if (!cli.parse(args)) {

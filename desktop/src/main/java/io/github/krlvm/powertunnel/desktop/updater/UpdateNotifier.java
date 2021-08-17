@@ -63,7 +63,9 @@ public class UpdateNotifier {
     }
 
     public static UpdateInfo checkForUpdates(String product, String repo, boolean loadChangelog) throws IOException {
-        final String[] arr = fetch(repo + "/VERSION").split(";");
+        final String base = "https://raw.githubusercontent.com/" + repo.substring(18) + "/master";
+
+        final String[] arr = fetch(base + "/VERSION").split(";");
 
         final String version = arr[0];
         final int versionCode;
@@ -72,7 +74,7 @@ public class UpdateNotifier {
         } catch (NumberFormatException ex) {
             return new UpdateInfo(null, 0, null, null, null);
         }
-        final String changelog = loadChangelog ? fetch(repo + "/CHANGELOG") : null;
+        final String changelog = loadChangelog ? fetch(base + "/CHANGELOG") : null;
 
         return new UpdateInfo(
                 arr[0],
