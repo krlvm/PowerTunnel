@@ -156,7 +156,7 @@ public class PreferenceParser {
     }
 
     static class PreferencesGroupSchemaFields {
-        static final String ID = "groupId";
+        static final String ID = "group";
         static final String TITLE = "title";
         static final String DESCRIPTION = "description";
         static final String PREFERENCES = "preferences";

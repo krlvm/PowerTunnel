@@ -47,7 +47,7 @@
   },
 
   {
-    "groupId": "dependent-preferences",
+    "group": "dependent-preferences",
     "title": "Dependent preferences",
     "description": "Dependent preferences group description",
     "preferences": [
