@@ -28,23 +28,23 @@ import java.awt.*;
 // https://stackoverflow.com/a/26476427
 public class PluginInfoRenderer extends JPanel implements ListCellRenderer<PluginInfo> {
 
-    private static final int PADDING = 2;
-    private static final Border BORDER = BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
-            BorderFactory.createEmptyBorder(PADDING, PADDING, PADDING, PADDING)
-    );
-
     private final JEditorPane infoLabel = new JEditorPane();
 
     public PluginInfoRenderer() {
-        setLayout(new FlowLayout(FlowLayout.LEFT));
-        setBorder(BORDER);
-        add(infoLabel);
+        setLayout(new BorderLayout());
+
+        add(infoLabel, BorderLayout.NORTH);
+
+        final JPanel separator = new JPanel();
+        separator.setBackground(Color.LIGHT_GRAY);
+        separator.setPreferredSize(new Dimension(separator.getWidth(), 1));
+
+        add(separator, BorderLayout.SOUTH);
     }
 
     @Override
     public Dimension getMinimumSize() {
-        return SwingDPI.scale(100, 72);
+        return SwingDPI.scale(100, 76);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class PluginInfoRenderer extends JPanel implements ListCellRenderer<Plugi
                 value.getDescription() != null ? value.getDescription() + "<br>" : "",
                 value.getVersion(),
                 value.getAuthor() != null ? "<br><i>by " + value.getAuthor() + "</i>" : ""
-        ), null, 0, false);
+        ), "padding: 5px;", 0, false);
         infoLabel.setBackground(getBackground());
         infoLabel.setForeground(getForeground());
 
