@@ -124,7 +124,7 @@ public class PreferenceParser {
         final String title = jso.has(PreferencesSchemaFields.TITLE) ? jso.getString(PreferencesSchemaFields.TITLE) :
                 bundle.get(jso.getString(PreferencesSchemaFields.KEY));
         final String description = jso.has(PreferencesSchemaFields.DESCRIPTION) ? jso.getString(PreferencesSchemaFields.DESCRIPTION) :
-                bundle.get(jso.getString(PreferencesSchemaFields.KEY) + ".desc");
+                bundle.get(jso.getString(PreferencesSchemaFields.KEY) + ".desc", null);
 
         return new Preference(
                 key,
