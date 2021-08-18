@@ -102,7 +102,7 @@ public class PluginsFrame extends AppFrame {
         notePanel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
         notePanel.add(UIUtility.getLabelWithHyperlinkSupport("<html><center>" +
                 I18N.get("plugins.note") +
-                "<br><a href=\"https://github.com/krlvm/PowerTunnel=Plugins/blob/master/README.md\">" + I18N.get("plugins.visitRegistry") + "</a>" +
+                "<br><a href=\"https://github.com/krlvm/PowerTunnel-Plugins/blob/master/README.md\">" + I18N.get("plugins.visitRegistry") + "</a>" +
                 "</center></html>")
         );
 
