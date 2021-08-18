@@ -88,6 +88,12 @@ public abstract class DesktopApp implements ServerListener {
     }
 
     protected ProxyStartException startInternal() {
+        final ProxyStartException ex = _startInternal();
+        if(ex != null) this.server = null;
+        return ex;
+    }
+
+    private ProxyStartException _startInternal() {
         if(this.server != null) {
             LOGGER.warn("Attempted to start server when it is already running");
             return null;
