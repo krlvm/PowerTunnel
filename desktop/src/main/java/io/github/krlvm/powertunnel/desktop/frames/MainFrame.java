@@ -91,7 +91,7 @@ public class MainFrame extends AppFrame {
 
         stateButton = new JButton("Start server");
         stateButton.setPreferredSize(new Dimension(
-                (int) stateButton.getPreferredSize().getWidth(),
+                (int) stateButton.getPreferredSize().getWidth() + 8,
                 (int) portField.getPreferredSize().getHeight()
         ));
         stateButton.addActionListener(e -> new Thread(() -> {
