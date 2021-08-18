@@ -32,23 +32,28 @@ You can specify some params that will override settings through CLI:
 ```
 $ java -jar PowerTunnel.jar -help
 
-    --auto-proxy-setup-ie         setup proxy using Internet Explorer
-    --cfg <arg>                   set preference value
-    --console                     run application in console mode
-    --disable-auto-proxy-setup    disable auto proxy setup
-    --disable-native-skin <arg>   disable platform native UI skin
-    --disable-tray                disable tray mode
-    --disable-ui-scaling <arg>    disable UI scaling
-    --disable-updater             disable Update Notifier
-    --enable-logging              enable logging to file
-    --help                        display help
-    --ip <arg>                    set proxy server IP address [127.0.0.1]
-    --lang <arg>                  set UI language
-    --minimized                   minimize UI to tray after start
-    --port <arg>                  set proxy server port [8085]
-    --set-ui-scale-factor <arg>   set UI scale factor
-    --start                       start proxy server after load
-    --version                     print version details
+    --auth-password <arg>            set proxy authorization password
+    --auth-username <arg>            set proxy authorization username
+    --auto-proxy-setup-ie            setup proxy using Internet Explorer
+    --cfg <arg>                      set preference value
+    --console                        run application in console mode
+    --disable-auto-proxy-setup       disable auto proxy setup
+    --disable-native-skin <arg>      disable platform native UI skin
+    --disable-tray                   disable tray mode
+    --disable-ui-scaling <arg>       disable UI scaling
+    --disable-updater                disable Update Notifier
+    --enable-logging                 enable logging to file
+    --help                           display help
+    --ip <arg>                       set proxy server IP address
+    --lang <arg>                     set UI language
+    --minimized                      minimize UI to tray after start
+    --port <arg>                     set proxy server port
+    --set-ui-scale-factor <arg>      set UI scale factor
+    --start                          start proxy server after load
+    --upstream-auth-username <arg>   set upstream proxy password
+    --upstream-proxy-host <arg>      set upstream proxy host
+    --upstream-proxy-port <arg>      set upstream proxy port
+    --version                        print version details
 ```
 
 If you need to set a certain plugin preference, use `-cfg pluginID.preferenceKey [value]`
