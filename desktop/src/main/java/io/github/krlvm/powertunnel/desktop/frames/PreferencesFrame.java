@@ -205,6 +205,7 @@ public class PreferencesFrame extends AppFrame {
     @Override
     protected void frameInitialized() {
         final JPanel actionPanel = new JPanel(new BorderLayout());
+        actionPanel.setBorder(BorderFactory.createEmptyBorder(PADDING, 0, 0, 0));
 
         final JButton resetButton = new JButton(I18N.get("reset"));
         resetButton.addActionListener(e -> showResetPrompt(I18N.get("preferences.resetConfirmation"), this));
@@ -246,11 +247,11 @@ public class PreferencesFrame extends AppFrame {
         final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
         final double screenWidth = screenResolution.getWidth();
         final double screenHeight = screenResolution.getHeight();
-        System.out.println(getHeight() + " & " + (2 + getWidth() - width) + " / " + (0.9 * screenHeight));
+
         setSize(
                 (int) (Math.min(width + SwingDPI.scale(75), 0.9 * screenWidth)),
                 (int) (Math.min(
-                        getHeight() + 2 + (0.1 * (getWidth() - width)),
+                        getHeight() + (PADDING * 0.5) + (0.1 * (getWidth() - width)),
                         0.9 * screenHeight
                 ))
         );
