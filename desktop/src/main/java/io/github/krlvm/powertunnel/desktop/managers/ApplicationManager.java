@@ -20,6 +20,7 @@ package io.github.krlvm.powertunnel.desktop.managers;
 import io.github.krlvm.powertunnel.desktop.utilities.Utility;
 import io.github.krlvm.powertunnel.plugin.PluginLoader;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,6 +34,8 @@ public class ApplicationManager {
 
     public static void extractPlugins() throws IOException {
         final Path pluginsDir = Paths.get(PluginLoader.PLUGINS_DIR);
+        final File pluginsDirFile = pluginsDir.toFile();
+        if(!pluginsDirFile.exists()) pluginsDirFile.mkdir();
         for (String plugin : PREINSTALLED_PLUGINS) {
             Utility.extractResource(pluginsDir.resolve(plugin), "plugins/" + plugin);
         }
