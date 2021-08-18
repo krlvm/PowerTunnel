@@ -5,3 +5,6 @@
 # Build Files
 /build/
 /.gradle/
+
+key.properties
+keystore.jks
