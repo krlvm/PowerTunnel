@@ -47,6 +47,7 @@ public class PreferencesFrame extends AppFrame {
     private final File configurationFile;
     private final ConfigurationStore configuration;
     private final List<PreferenceGroup> preferences;
+    private Set<JEditorPane> groupDescriptions = new HashSet<>();
 
     public PreferencesFrame(
             String title,
@@ -156,7 +157,7 @@ public class PreferencesFrame extends AppFrame {
                 list.add(panel);
             }
 
-            insertComponent(createBlock(group.getTitle(), list));
+            insertComponent(createBlock(group, list));
             if(len > 1 && i != len-1) {
                 insertComponent(Box.createVerticalStrut(SwingDPI.scale(4)));
             }
@@ -227,13 +228,17 @@ public class PreferencesFrame extends AppFrame {
         getRootPane().setDefaultButton(saveButton);
 
         updateDependencies();
+
         pack();
+        final int width = getWidth() + ((!groupDescriptions.isEmpty()) ? SwingDPI.scale(10) : 0);
+        groupDescriptions.forEach(groupDescription -> groupDescription.setVisible(true));
+        groupDescriptions.clear();
 
         final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
         final double screenWidth = screenResolution.getWidth();
         final double screenHeight = screenResolution.getHeight();
         setSize(
-                (int)(Math.min(getWidth() + SwingDPI.scale(75), screenWidth)),
+                (int)(Math.min(width + SwingDPI.scale(75), screenWidth)),
                 (int)(Math.min(getHeight(), screenHeight - (screenHeight * 0.1)))
         );
 
@@ -359,14 +364,20 @@ public class PreferencesFrame extends AppFrame {
     }
 
 
-    private static JPanel createBlock(String title, List<JComponent> components) {
+    private JPanel createBlock(PreferenceGroup group, List<JComponent> components) {
         gbc.ipady = SwingDPI.scale(3);
         final JPanel panel = new JPanel(new GridBagLayout());
 
-        if(title != null) {
-            final TitledBorder border = BorderFactory.createTitledBorder(title);
+        if(group != null && group.getTitle() != null) {
+            final TitledBorder border = BorderFactory.createTitledBorder(group.getTitle());
             border.setTitleJustification(TitledBorder.LEADING);
             panel.setBorder(BorderFactory.createCompoundBorder(border, GROUP_BORDER));
+            if(group.getDescription() != null) {
+                final JEditorPane descriptionPane = UIUtility.getLabelWithHyperlinkSupport(group.getDescription());
+                panel.add(descriptionPane, gbc);
+                descriptionPane.setVisible(false);
+                groupDescriptions.add(descriptionPane);
+            }
         }
 
         for (JComponent component : components) {

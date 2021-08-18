@@ -90,7 +90,7 @@ public class OptionsFrame extends PreferencesFrame {
                     "upstream_proxy_auth_enabled", "true", null
             ));
 
-            groups.add(new PreferenceGroup(I18N.get("options.group.proxyConnection"), null, preferences));
+            groups.add(new PreferenceGroup(I18N.get("options.group.proxyConnection"), "test <a href=\"https://google.com\">link</a>", preferences));
         }
 
         {

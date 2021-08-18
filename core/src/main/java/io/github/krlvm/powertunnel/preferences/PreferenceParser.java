@@ -55,7 +55,7 @@ public class PreferenceParser {
                 final String title = jso.has(PreferencesGroupSchemaFields.TITLE) ? jso.getString(PreferencesGroupSchemaFields.TITLE) :
                         bundle.get(jso.getString(PreferencesGroupSchemaFields.ID));
                 final String description = jso.has(PreferencesGroupSchemaFields.DESCRIPTION) ? jso.getString(PreferencesGroupSchemaFields.DESCRIPTION) :
-                        bundle.get(jso.getString(PreferencesGroupSchemaFields.ID) + ".desc");
+                        bundle.get(jso.getString(PreferencesGroupSchemaFields.ID) + ".desc", null);
                 groups.add(new PreferenceGroup(
                         title,
                         description,
