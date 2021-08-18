@@ -138,9 +138,10 @@ public class ArgumentParser {
         }
 
         public ArgumentParser build() {
-            final Option option = new Option("cfg", "set preference value");
+            final Option option = new Option(null, "cfg", true,"set preference value");
             option.setArgs(2);
             options.addOption(option);
+
             return new ArgumentParser(options);
         }
     }
@@ -149,6 +150,7 @@ public class ArgumentParser {
         public static final String HELP = "help";
         public static final String VERSION = "version";
         public static final String LANGUAGE = "lang";
+        public static final String LOGGING = "enable-logging";
 
         public static final String START = "start";
         public static final String IP = "ip";

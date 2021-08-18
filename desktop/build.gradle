@@ -81,8 +81,6 @@ task releaseJar(group: 'build', description: 'Assembles a signed jar archive con
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'org.slf4j:slf4j-simple:1.7.32' // TODO: fix log4j and remove this
-
     implementation project(':core')
     implementation 'commons-cli:commons-cli:1.4'
     implementation 'net.java.dev.jna:jna:3.2.5'

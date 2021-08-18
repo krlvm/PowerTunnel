@@ -27,6 +27,10 @@ import io.github.krlvm.powertunnel.desktop.ui.I18N;
 import io.github.krlvm.powertunnel.desktop.updater.UpdateNotifier;
 import io.github.krlvm.powertunnel.desktop.utilities.SystemUtility;
 import io.github.krlvm.powertunnel.desktop.utilities.UIUtility;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.Configurator;
 import ru.krlvm.swingdpi.SwingDPI;
 
 import javax.swing.*;
@@ -53,6 +57,7 @@ public class Main {
                 .option(ArgumentParser.Arguments.HELP, "display help")
                 .option(ArgumentParser.Arguments.VERSION, "print version details")
                 .option(ArgumentParser.Arguments.START, "start proxy server after load")
+                .option(ArgumentParser.Arguments.LOGGING, "enable logging to file")
                 .argument(ArgumentParser.Arguments.IP, "set proxy server IP address [127.0.0.1]")
                 .argument(ArgumentParser.Arguments.PORT, "set proxy server port [8085]");
         if (SystemUtility.IS_WINDOWS) {
@@ -88,6 +93,13 @@ public class Main {
             System.out.printf("[Core] Version: %s, code: %s%n", io.github.krlvm.powertunnel.BuildConstants.VERSION, io.github.krlvm.powertunnel.BuildConstants.VERSION_CODE);
             System.exit(0);
             return;
+        }
+
+        if(!cli.has(ArgumentParser.Arguments.LOGGING)) {
+            final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+            final Configuration config = ctx.getConfiguration();
+            config.getRootLogger().removeAppender("LogFile");
+            ctx.updateLoggers();
         }
 
         final ServerConfiguration configuration = new ServerConfiguration();
