@@ -191,7 +191,6 @@ public abstract class DesktopApp implements ServerListener {
             }
         } else if(status == ProxyStatus.RUNNING) {
             if(initializationException != null) {
-                stop(false);
                 onUnexpectedProxyInitializationError(initializationException);
                 initializationException = null;
             }
