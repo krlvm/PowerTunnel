@@ -47,6 +47,10 @@ public class PreferencesFrame extends AppFrame {
     private final File configurationFile;
     private final ConfigurationStore configuration;
     private final List<PreferenceGroup> preferences;
+
+    private final ScrollablePanel root = new ScrollablePanel();
+    private final JScrollPane scroll = new JScrollPane(root);
+
     private Set<JEditorPane> groupDescriptions = new HashSet<>();
 
     public PreferencesFrame(
@@ -63,7 +67,6 @@ public class PreferencesFrame extends AppFrame {
         this.configuration = configuration;
         this.preferences = preferences;
 
-        final JRootPane root = getRootPane();
         root.setLayout(new GridBagLayout());
         root.setBorder(BORDER);
 
@@ -188,12 +191,15 @@ public class PreferencesFrame extends AppFrame {
             insertComponent(notePanel);
         }
 
+        scroll.setBorder(BorderFactory.createEmptyBorder());
+        add(scroll);
+
         requestSpacing();
         frameInitialized();
     }
 
     public void insertComponent(Component component) {
-        getRootPane().add(component, gbc);
+        root.add(component, gbc);
     }
 
     @Override
@@ -230,16 +236,23 @@ public class PreferencesFrame extends AppFrame {
         updateDependencies();
 
         pack();
-        final int width = getWidth() + ((!groupDescriptions.isEmpty()) ? SwingDPI.scale(10) : 0);
+        final int width = getWidth();
         groupDescriptions.forEach(groupDescription -> groupDescription.setVisible(true));
         groupDescriptions.clear();
+        groupDescriptions = null;
+        root.setScrollableWidth(ScrollablePanel.ScrollableSizeHint.FIT);
+        pack();
 
         final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
         final double screenWidth = screenResolution.getWidth();
         final double screenHeight = screenResolution.getHeight();
+        System.out.println(getHeight() + " & " + (2 + getWidth() - width) + " / " + (0.9 * screenHeight));
         setSize(
-                (int)(Math.min(width + SwingDPI.scale(75), screenWidth)),
-                (int)(Math.min(getHeight(), screenHeight - (screenHeight * 0.1)))
+                (int) (Math.min(width + SwingDPI.scale(75), 0.9 * screenWidth)),
+                (int) (Math.min(
+                        getHeight() + 2 + (0.1 * (getWidth() - width)),
+                        0.9 * screenHeight
+                ))
         );
 
         super.frameInitialized();
@@ -249,7 +262,7 @@ public class PreferencesFrame extends AppFrame {
         final GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.BOTH;
         c.weighty = 1;
-        getRootPane().add(Box.createHorizontalGlue(), c);
+        root.add(Box.createHorizontalGlue(), c);
     }
 
     private void onMalformedPreferences() {
