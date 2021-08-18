@@ -151,7 +151,7 @@ public class UIUtility {
 
         pane.setEditable(false);
         pane.setBorder(BorderFactory.createEmptyBorder(padding, padding, padding, padding));
-        pane.setBackground(label.getBackground());
+        if(setBackground) pane.setBackground(label.getBackground());
         pane.setHighlighter(null);
     }
 }

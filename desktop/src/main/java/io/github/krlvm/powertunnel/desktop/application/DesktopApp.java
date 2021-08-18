@@ -20,6 +20,7 @@ package io.github.krlvm.powertunnel.desktop.application;
 import io.github.krlvm.powertunnel.PowerTunnel;
 import io.github.krlvm.powertunnel.desktop.BuildConstants;
 import io.github.krlvm.powertunnel.desktop.configuration.ServerConfiguration;
+import io.github.krlvm.powertunnel.desktop.updater.UpdateNotifier;
 import io.github.krlvm.powertunnel.desktop.utilities.SystemUtility;
 import io.github.krlvm.powertunnel.mitm.MITMAuthority;
 import io.github.krlvm.powertunnel.plugin.PluginLoader;
@@ -124,6 +125,10 @@ public abstract class DesktopApp implements ServerListener {
         } catch (ProxyStartException ex) {
             LOGGER.error("Failed to start PowerTunnel: {}", ex.getMessage(), ex);
             return ex;
+        }
+        if(UpdateNotifier.ENABLED) {
+            this.server.getPlugins().stream().filter(plugin -> plugin.getInfo().getHomepage().startsWith("https://github.com/krlvm/"))
+                    .forEach(plugin -> UpdateNotifier.checkAndNotify(plugin.getInfo().getName(), plugin.getInfo().getHomepage(), true));
         }
 
         if(this.server.getProxyServer().isMITMEnabled() && SystemUtility.IS_WINDOWS) {

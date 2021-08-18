@@ -123,7 +123,7 @@ public class GraphicalApp extends DesktopApp {
         if(isTrayAvailable()) trayManager.showNotification(message);
     }
 
-    private JFrame getVisibleMainFrame() {
+    public JFrame getVisibleMainFrame() {
         return frame;
     }
 

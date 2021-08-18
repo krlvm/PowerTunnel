@@ -18,9 +18,15 @@
 package io.github.krlvm.powertunnel.desktop.updater;
 
 import io.github.krlvm.powertunnel.desktop.BuildConstants;
+import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
+import io.github.krlvm.powertunnel.desktop.ui.I18N;
+import io.github.krlvm.powertunnel.desktop.utilities.UIUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.krlvm.swingdpi.SwingDPI;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -58,6 +64,27 @@ public class UpdateNotifier {
         LOGGER.info("Changelog: {}", info.getReleasePage());
         LOGGER.info("Download: {}", info.getDownloadUrl());
         System.out.println();
+
+        if(GraphicalApp.getInstance() != null) {
+            final JPanel panel = new JPanel(new BorderLayout());
+
+            panel.add(UIUtility.getLabelWithHyperlinkSupport(String.format(
+                I18N.get("updater.dialog") + "<br> ",
+                product,
+                info.getVersion(),
+                "<a href=\"" + info.getReleasePage() + "\">" + info.getReleasePage() + "</a>",
+                "<a href=\"" + info.getDownloadUrl() + "\">" + info.getDownloadUrl() + "</a>"
+            )), BorderLayout.NORTH);
+
+            final JEditorPane changelogPane = new JEditorPane();
+            UIUtility.setEditorPaneContent(changelogPane, info.getChangelog().replace("\n", "<br>"), "background-color: #FFFFFF", 5, false);
+            final JScrollPane scrollPane = new JScrollPane(changelogPane);
+            scrollPane.setMaximumSize(SwingDPI.scale(90, 600));
+            panel.add(scrollPane, BorderLayout.SOUTH);
+
+            JOptionPane.showMessageDialog(GraphicalApp.getInstance().getVisibleMainFrame(), panel,
+                    I18N.get("updater.updateAvailable"), JOptionPane.INFORMATION_MESSAGE);
+        }
 
         return true;
     }
