@@ -346,6 +346,8 @@ public class PreferencesFrame extends AppFrame {
                     GraphicalApp.getInstance().stop();
                     GraphicalApp.getInstance().start();
                 });
+            } else {
+                dispose();
             }
         }
     }
