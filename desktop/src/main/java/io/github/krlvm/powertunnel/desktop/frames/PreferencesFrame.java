@@ -309,9 +309,7 @@ public class PreferencesFrame extends AppFrame {
     }
 
     private void showResetPrompt(String message, JFrame parent) {
-        final int result = JOptionPane.showConfirmDialog(parent,
-                message, BuildConstants.NAME, JOptionPane.YES_NO_OPTION
-        );
+        final int result = UIUtility.showYesNoDialog(parent, message);
         if (result == JOptionPane.YES_OPTION) {
             reset();
             dispose();
