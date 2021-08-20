@@ -22,10 +22,6 @@ plugins {
 group 'io.github.krlvm.powertunnel.proxy'
 version '2.0-SNAPSHOT'
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     api 'xyz.rogfam:littleproxy:2.0.5'
     api 'org.bouncycastle:bcpkix-jdk15on:1.69'
