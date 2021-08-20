@@ -132,13 +132,16 @@ public abstract class DesktopApp implements ServerListener {
         }
 
         if(this.server.getProxyServer().isMITMEnabled() && SystemUtility.IS_WINDOWS) {
-            try {
-                Files.copy(
-                        certificateDirectory.resolve(MITMAuthority.CERTIFICATE_ALIAS + ".pem"),
-                        certificateDirectory.resolve(MITMAuthority.CERTIFICATE_ALIAS + ".cer")
-                );
-            } catch (IOException ex) {
-                LOGGER.warn("Failed to copy the certificate from .pem to .cer: {}", ex.getMessage(), ex);
+            final Path target = certificateDirectory.resolve(MITMAuthority.CERTIFICATE_ALIAS + ".cer");
+            if(!target.toFile().exists()) {
+                try {
+                    Files.copy(
+                            certificateDirectory.resolve(MITMAuthority.CERTIFICATE_ALIAS + ".pem"),
+                            target
+                    );
+                } catch (IOException ex) {
+                    LOGGER.warn("Failed to copy the certificate from .pem to .cer: {}", ex.getMessage(), ex);
+                }
             }
         }
 
