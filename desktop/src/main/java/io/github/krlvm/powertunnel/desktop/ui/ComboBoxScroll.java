@@ -24,6 +24,7 @@ public class ComboBoxScroll {
 
     public static void register(JComboBox<?> comboBox) {
         comboBox.addMouseWheelListener((MouseWheelEvent e) -> {
+            if(!comboBox.isEnabled()) return;
             final int i = comboBox.getSelectedIndex() + (e.getWheelRotation() < 0 ? -1 : 1);
             if(i < 0 || i >= comboBox.getItemCount()) return;
             comboBox.setSelectedIndex(i);
