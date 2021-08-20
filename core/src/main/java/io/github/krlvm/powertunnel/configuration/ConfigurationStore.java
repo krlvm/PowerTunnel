@@ -46,7 +46,7 @@ public class ConfigurationStore implements Configuration {
         data.clear();
 
         try(BufferedReader reader = new BufferedReader(source)) {
-            reader.lines().forEach((line) -> {
+            reader.lines().filter(line -> line.contains(DELIMITER)).forEach((line) -> {
                 final int pos = line.indexOf(DELIMITER);
                 data.put(
                         line.substring(0, pos),
