@@ -20,7 +20,7 @@ package io.github.krlvm.powertunnel.sdk;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyStatus;
 import org.jetbrains.annotations.NotNull;
 
-public class ServerAdapter implements ServerListener {
+public abstract class ServerAdapter implements ServerListener {
 
     @Override
     public void beforeProxyStatusChanged(@NotNull ProxyStatus status) {}
