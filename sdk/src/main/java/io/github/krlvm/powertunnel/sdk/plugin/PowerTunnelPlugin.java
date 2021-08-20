@@ -18,6 +18,7 @@
 package io.github.krlvm.powertunnel.sdk.plugin;
 
 import io.github.krlvm.powertunnel.sdk.PowerTunnelServer;
+import io.github.krlvm.powertunnel.sdk.ServerListener;
 import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyListener;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyServer;
@@ -83,6 +84,11 @@ public abstract class PowerTunnelPlugin {
     public void registerProxyListener(@NotNull ProxyListener listener, int priority) {
         validateServer();
         getServer().registerProxyListener(getInfo(), listener, priority);
+    }
+
+    public void registerServerListener(@NotNull ServerListener listener) {
+        validateServer();
+        getServer().registerServerListener(getInfo(), listener);
     }
 
     public Configuration readConfiguration() {
