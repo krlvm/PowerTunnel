@@ -92,7 +92,6 @@ public class GraphicalApp extends DesktopApp {
     @Override
     public void beforeProxyStatusChanged(@NotNull ProxyStatus status) {
         super.beforeProxyStatusChanged(status);
-        frame.update();
     }
 
     @Override
