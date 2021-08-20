@@ -22,6 +22,17 @@ plugins {
 
 version '2.0-SNAPSHOT'
 
+task fatJar(type: Jar, group: 'build', description: 'Assembles a jar archive containing the main classes and all dependencies.') {
+    archiveClassifier = 'all'
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
+    from {
+        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+    } {
+        exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+    }
+    with jar
+}
+
 dependencies {
     api project(':sdk')
     api project(':littleproxy')
