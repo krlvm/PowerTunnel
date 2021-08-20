@@ -71,6 +71,12 @@ public class CoreProxyListener implements ProxyListener {
     }
 
     @Override
+    public boolean isMITMAllowed(@NotNull FullAddress address) {
+        Object result = callProxyListeners(listener -> listener.isFullChunking(address));
+        return result != null && ((boolean) result);
+    }
+
+    @Override
     public String onGetSNI(@NotNull String hostname) {
         final String sni = ((String) callProxyListeners(listener -> listener.onGetSNI(hostname)));
         return sni != null ? sni : hostname;

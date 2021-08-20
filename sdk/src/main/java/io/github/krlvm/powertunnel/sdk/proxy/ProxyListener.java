@@ -32,5 +32,7 @@ public interface ProxyListener {
 
     int onGetChunkSize(@NotNull FullAddress address);
     boolean isFullChunking(@NotNull FullAddress address);
+
+    boolean isMITMAllowed(@NotNull FullAddress address);
     String onGetSNI(@NotNull String hostname);
 }

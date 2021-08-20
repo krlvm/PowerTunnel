@@ -47,6 +47,11 @@ public abstract class ProxyAdapter implements ProxyListener {
     }
 
     @Override
+    public boolean isMITMAllowed(@NotNull FullAddress address) {
+        return true;
+    }
+
+    @Override
     public String onGetSNI(@NotNull String hostname) {
         return hostname;
     }

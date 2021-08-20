@@ -100,6 +100,11 @@ public class ProxyFilter extends HttpFiltersAdapter {
         return listener.onGetSNI(hostname);
     }
 
+    @Override
+    public boolean proxyToServerAllowMitm() {
+        return super.proxyToServerAllowMitm();
+    }
+
     static {
         System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
     }
