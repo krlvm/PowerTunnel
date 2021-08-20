@@ -85,13 +85,11 @@ public class ProxyFilter extends HttpFiltersAdapter {
 
     @Override
     public int chunkSize() {
-        if(address == null) return super.chunkSize();
         return listener.onGetChunkSize(address);
     }
 
     @Override
     public boolean fullChunking() {
-        if(address == null) return super.fullChunking();
         return listener.isFullChunking(address);
     }
 
@@ -102,7 +100,7 @@ public class ProxyFilter extends HttpFiltersAdapter {
 
     @Override
     public boolean proxyToServerAllowMitm() {
-        return super.proxyToServerAllowMitm();
+        return listener.isMITMAllowed(address);
     }
 
     static {

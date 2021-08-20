@@ -37,22 +37,22 @@ public abstract class ProxyAdapter implements ProxyListener {
     public void onProxyToClientResponse(@NotNull ProxyResponse response) {}
 
     @Override
-    public int onGetChunkSize(@NotNull FullAddress address) {
-        return 0;
+    public Integer onGetChunkSize(@NotNull FullAddress address) {
+        return null;
     }
 
     @Override
-    public boolean isFullChunking(@NotNull FullAddress address) {
-        return false;
+    public Boolean isFullChunking(@NotNull FullAddress address) {
+        return null;
     }
 
     @Override
-    public boolean isMITMAllowed(@NotNull FullAddress address) {
-        return true;
+    public Boolean isMITMAllowed(@NotNull FullAddress address) {
+        return null;
     }
 
     @Override
     public String onGetSNI(@NotNull String hostname) {
-        return hostname;
+        return null;
     }
 }

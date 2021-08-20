@@ -59,21 +59,21 @@ public class CoreProxyListener implements ProxyListener {
     }
 
     @Override
-    public int onGetChunkSize(final @NotNull FullAddress address) {
-        Object result = callProxyListeners(listener -> listener.onGetChunkSize(address));
+    public Integer onGetChunkSize(final @NotNull FullAddress address) {
+        final Object result = callProxyListeners(listener -> listener.onGetChunkSize(address));
         return result != null ? ((int) result) : 0;
     }
 
     @Override
-    public boolean isFullChunking(@NotNull FullAddress address) {
-        Object result = callProxyListeners(listener -> listener.isFullChunking(address));
+    public Boolean isFullChunking(@NotNull FullAddress address) {
+        final Object result = callProxyListeners(listener -> listener.isFullChunking(address));
         return result != null && ((boolean) result);
     }
 
     @Override
-    public boolean isMITMAllowed(@NotNull FullAddress address) {
-        Object result = callProxyListeners(listener -> listener.isFullChunking(address));
-        return result != null && ((boolean) result);
+    public Boolean isMITMAllowed(@NotNull FullAddress address) {
+        final Object result = callProxyListeners(listener -> listener.isMITMAllowed(address));
+        return result == null || ((boolean) result);
     }
 
     @Override
@@ -86,7 +86,8 @@ public class CoreProxyListener implements ProxyListener {
         Object result = null;
         for (Map.Entry<ProxyListenerInfo, ProxyListener> entry : proxyListeners.entrySet()) {
             try {
-                result = callback.call(entry.getValue());
+                final Object res = callback.call(entry.getValue());
+                if(res != null) result = res;
             } catch (Exception ex) {
                 LOGGER.error(
                         "An error occurred in ProxyListener of '{}' [{}, priority={}]: {}",

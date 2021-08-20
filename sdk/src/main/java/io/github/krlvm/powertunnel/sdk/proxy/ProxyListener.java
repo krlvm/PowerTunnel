@@ -30,9 +30,9 @@ public interface ProxyListener {
     void onServerToProxyResponse(@NotNull ProxyResponse response);
     void onProxyToClientResponse(@NotNull ProxyResponse response);
 
-    int onGetChunkSize(@NotNull FullAddress address);
-    boolean isFullChunking(@NotNull FullAddress address);
+    Integer onGetChunkSize(@NotNull FullAddress address);
+    Boolean isFullChunking(@NotNull FullAddress address);
 
-    boolean isMITMAllowed(@NotNull FullAddress address);
+    Boolean isMITMAllowed(@NotNull FullAddress address);
     String onGetSNI(@NotNull String hostname);
 }
