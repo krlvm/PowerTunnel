@@ -186,7 +186,7 @@ public abstract class DesktopApp implements ServerListener {
                     proxy.setUpstreamProxyServer(new UpstreamProxyServer(
                             new ProxyAddress(
                                     configuration.get("upstream_proxy_host", ""),
-                                    configuration.getInt("upstream_proxy_port", 0)
+                                    configuration.getInt("upstream_proxy_port", 8080)
                             ),
                             credentials
                     ));
