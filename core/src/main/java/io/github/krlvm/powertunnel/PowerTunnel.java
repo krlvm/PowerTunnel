@@ -33,7 +33,6 @@ import io.github.krlvm.powertunnel.sdk.proxy.ProxyServer;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyStatus;
 import io.github.krlvm.powertunnel.sdk.types.PowerTunnelPlatform;
 import io.github.krlvm.powertunnel.sdk.types.VersionInfo;
-import io.github.krlvm.powertunnel.utilities.Utility;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.littleshoot.proxy.mitm.Authority;
@@ -87,8 +86,8 @@ public class PowerTunnel implements PowerTunnelServer {
 
         this.inheritedConfiguration = inheritedConfiguration;
 
-        pluginsDir = Utility.resolveFile(parentDirectory, "plugins");
-        configsDir = Utility.resolveFile(parentDirectory, "configs");
+        pluginsDir = new File(parentDirectory, "plugins");
+        configsDir = new File(parentDirectory, "configs");
         initializeDirectories();
     }
 
@@ -229,7 +228,7 @@ public class PowerTunnel implements PowerTunnelServer {
             }
         }
         try {
-            configuration.read(Utility.resolveFile(configsDir, pluginInfo.getId() + Configuration.EXTENSION));
+            configuration.read(new File(configsDir, pluginInfo.getId() + Configuration.EXTENSION));
         } catch (IOException ex) {
             LOGGER.error("Failed to read configuration of plugin '{}' ('{}')", pluginInfo.getName(), pluginInfo.getId(), ex);
         }
@@ -241,7 +240,7 @@ public class PowerTunnel implements PowerTunnelServer {
         if(!(configuration instanceof ConfigurationStore))
             throw new IllegalArgumentException("Unsupported Configuration implementation");
         try {
-            ((ConfigurationStore) configuration).save(Utility.resolveFile(configsDir, pluginInfo.getId() + Configuration.EXTENSION));
+            ((ConfigurationStore) configuration).save(new File(configsDir, pluginInfo.getId() + Configuration.EXTENSION));
         } catch (IOException ex) {
             LOGGER.error("Failed to save configuration of plugin '{}' ('{}')", pluginInfo.getName(), pluginInfo.getId(), ex);
         }
@@ -249,7 +248,7 @@ public class PowerTunnel implements PowerTunnelServer {
 
     @Override
     public @NotNull String readTextFile(@NotNull String filename) throws IOException {
-        final File file = Utility.resolveFile(configsDir, filename);
+        final File file = new File(configsDir, filename);
         if(!file.exists()) file.createNewFile();
         try(BufferedReader reader = new BufferedReader(new FileReader(file))) {
             return String.join("\n", reader.lines().toArray(String[]::new));
@@ -258,7 +257,7 @@ public class PowerTunnel implements PowerTunnelServer {
 
     @Override
     public @NotNull void saveTextFile(@NotNull String filename, @NotNull String text) throws IOException {
-        try(BufferedWriter writer = new BufferedWriter(new FileWriter(Utility.resolveFile(configsDir, filename)))) {
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(new File(configsDir, filename)))) {
             writer.write(text);
             writer.flush();
         }
