@@ -102,7 +102,7 @@ public abstract class DesktopApp implements ServerListener {
         this.server = new PowerTunnel(
                 address,
                 PowerTunnelPlatform.DESKTOP,
-                Paths.get(""),
+                new File("."),
                 configuration.getBoolean("transparent_mode", true),
                 MITMAuthority.create(
                         certificateDirectory.toFile(),
