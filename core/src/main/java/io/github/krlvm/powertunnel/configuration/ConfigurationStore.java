@@ -117,6 +117,11 @@ public class ConfigurationStore implements Configuration {
     }
 
     @Override
+    public Map<String, String> toMap() {
+        return data;
+    }
+
+    @Override
     public Collection<String> keys() {
         return data.keySet();
     }

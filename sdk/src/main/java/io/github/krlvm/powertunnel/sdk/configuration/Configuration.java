@@ -18,6 +18,7 @@
 package io.github.krlvm.powertunnel.sdk.configuration;
 
 import java.util.Collection;
+import java.util.Map;
 
 public interface Configuration {
 
@@ -33,6 +34,7 @@ public interface Configuration {
     boolean contains(String key);
     void remove(String key);
 
+    Map<String, String> toMap();
     Collection<String> keys();
     void clear();
 
