@@ -43,6 +43,9 @@ public class PluginLoader {
     public static File getPluginFile(String fileName) {
         return new File(PluginLoader.PLUGINS_DIR, fileName);
     }
+    public static File getPluginFile(File parentDir, String fileName) {
+        return new File(new File(parentDir, PluginLoader.PLUGINS_DIR), fileName);
+    }
 
     public static File[] enumeratePlugins() {
         return enumeratePlugins(new File(PLUGINS_DIR));
