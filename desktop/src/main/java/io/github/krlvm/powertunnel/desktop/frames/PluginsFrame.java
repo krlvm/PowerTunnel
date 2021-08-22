@@ -32,6 +32,7 @@ import io.github.krlvm.powertunnel.preferences.PreferenceParser;
 import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
 import io.github.krlvm.powertunnel.sdk.exceptions.PluginLoadException;
 import io.github.krlvm.powertunnel.sdk.plugin.PluginInfo;
+import io.github.krlvm.powertunnel.sdk.utiities.Consumer;
 import io.github.krlvm.powertunnel.utility.JarLoader;
 
 import javax.swing.*;
@@ -42,7 +43,6 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.PropertyResourceBundle;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class PluginsFrame extends AppFrame {
