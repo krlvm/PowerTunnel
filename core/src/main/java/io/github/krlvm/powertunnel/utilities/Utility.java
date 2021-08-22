@@ -15,7 +15,7 @@
  * along with PowerTunnel.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.krlvm.powertunnel.utility;
+package io.github.krlvm.powertunnel.utilities;
 
 import java.io.File;
 

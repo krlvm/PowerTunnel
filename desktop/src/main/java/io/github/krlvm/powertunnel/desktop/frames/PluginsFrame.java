@@ -33,7 +33,7 @@ import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
 import io.github.krlvm.powertunnel.sdk.exceptions.PluginLoadException;
 import io.github.krlvm.powertunnel.sdk.plugin.PluginInfo;
 import io.github.krlvm.powertunnel.sdk.utiities.Consumer;
-import io.github.krlvm.powertunnel.utility.JarLoader;
+import io.github.krlvm.powertunnel.utilities.JarLoader;
 
 import javax.swing.*;
 import java.awt.*;

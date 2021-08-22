@@ -33,7 +33,7 @@ import io.github.krlvm.powertunnel.sdk.proxy.ProxyServer;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyStatus;
 import io.github.krlvm.powertunnel.sdk.types.PowerTunnelPlatform;
 import io.github.krlvm.powertunnel.sdk.types.VersionInfo;
-import io.github.krlvm.powertunnel.utility.Utility;
+import io.github.krlvm.powertunnel.utilities.Utility;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.littleshoot.proxy.mitm.Authority;
