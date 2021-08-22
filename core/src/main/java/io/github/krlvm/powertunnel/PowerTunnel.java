@@ -33,6 +33,7 @@ import io.github.krlvm.powertunnel.sdk.proxy.ProxyServer;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyStatus;
 import io.github.krlvm.powertunnel.sdk.types.PowerTunnelPlatform;
 import io.github.krlvm.powertunnel.sdk.types.VersionInfo;
+import io.github.krlvm.powertunnel.utility.Utility;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.littleshoot.proxy.mitm.Authority;
@@ -42,7 +43,6 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.net.BindException;
 import java.net.UnknownHostException;
-import java.nio.file.Path;
 import java.util.*;
 
 public class PowerTunnel implements PowerTunnelServer {
@@ -56,50 +56,45 @@ public class PowerTunnel implements PowerTunnelServer {
     private final ProxyAddress address;
 
     private final PowerTunnelPlatform platform;
-    private final Path parentDirectory;
     private final boolean transparent;
     private final Authority mitmAuthority;
 
     private final List<PowerTunnelPlugin> plugins = new ArrayList<>();
-    private final Path pluginsDir;
+    private final File pluginsDir;
 
     private final Map<String, String> inheritedConfiguration;
-    private final Path configsDir;
+    private final File configsDir;
 
     private final Map<ServerListener, PluginInfo> serverListeners = new HashMap<>();
     private final Map<ProxyListenerInfo, ProxyListener> proxyListeners = new TreeMap<>(Comparator.comparingInt(ProxyListenerInfo::getPriority));
     private static final int DEFAULT_LISTENER_PRIORITY = 0;
 
-    public PowerTunnel(ProxyAddress address, PowerTunnelPlatform platform, Path parentDirectory, boolean transparent, Authority mitmAuthority) {
+    public PowerTunnel(ProxyAddress address, PowerTunnelPlatform platform, File parentDirectory, boolean transparent, Authority mitmAuthority) {
         this(address, platform, parentDirectory, transparent, mitmAuthority, null);
     }
     public PowerTunnel(
             ProxyAddress address,
             PowerTunnelPlatform platform,
-            Path parentDirectory,
+            File parentDirectory,
             boolean transparent,
             Authority mitmAuthority,
             Map<String, String> inheritedConfiguration
     ) {
         this.address = address;
         this.platform = platform;
-        this.parentDirectory = parentDirectory;
         this.transparent = transparent;
         this.mitmAuthority = mitmAuthority;
 
         this.inheritedConfiguration = inheritedConfiguration;
 
-        pluginsDir = parentDirectory.resolve("plugins");
-        configsDir = parentDirectory.resolve("configs");
+        pluginsDir = Utility.resolveFile(parentDirectory, "plugins");
+        configsDir = Utility.resolveFile(parentDirectory, "configs");
         initializeDirectories();
     }
 
     private void initializeDirectories() {
-        final File plugins = pluginsDir.toFile();
-        if(!plugins.exists()) plugins.mkdir();
-
-        final File configs = configsDir.toFile();
-        if(!configs.exists()) configs.mkdir();
+        if(!pluginsDir.exists()) pluginsDir.mkdir();
+        if(!configsDir.exists()) configsDir.mkdir();
     }
 
     @Override
@@ -234,7 +229,7 @@ public class PowerTunnel implements PowerTunnelServer {
             }
         }
         try {
-            configuration.read(configsDir.resolve(pluginInfo.getId() + Configuration.EXTENSION).toFile());
+            configuration.read(Utility.resolveFile(configsDir, pluginInfo.getId() + Configuration.EXTENSION));
         } catch (IOException ex) {
             LOGGER.error("Failed to read configuration of plugin '{}' ('{}')", pluginInfo.getName(), pluginInfo.getId(), ex);
         }
@@ -246,7 +241,7 @@ public class PowerTunnel implements PowerTunnelServer {
         if(!(configuration instanceof ConfigurationStore))
             throw new IllegalArgumentException("Unsupported Configuration implementation");
         try {
-            ((ConfigurationStore) configuration).save(configsDir.resolve(pluginInfo.getId() + Configuration.EXTENSION).toFile());
+            ((ConfigurationStore) configuration).save(Utility.resolveFile(configsDir, pluginInfo.getId() + Configuration.EXTENSION));
         } catch (IOException ex) {
             LOGGER.error("Failed to save configuration of plugin '{}' ('{}')", pluginInfo.getName(), pluginInfo.getId(), ex);
         }
@@ -254,7 +249,7 @@ public class PowerTunnel implements PowerTunnelServer {
 
     @Override
     public @NotNull String readTextFile(@NotNull String filename) throws IOException {
-        final File file = configsDir.resolve(filename).toFile();
+        final File file = Utility.resolveFile(configsDir, filename);
         if(!file.exists()) file.createNewFile();
         try(BufferedReader reader = new BufferedReader(new FileReader(file))) {
             return String.join("\n", reader.lines().toArray(String[]::new));
@@ -263,7 +258,7 @@ public class PowerTunnel implements PowerTunnelServer {
 
     @Override
     public @NotNull void saveTextFile(@NotNull String filename, @NotNull String text) throws IOException {
-        try(BufferedWriter writer = new BufferedWriter(new FileWriter(configsDir.resolve(filename).toFile()))) {
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(Utility.resolveFile(configsDir, filename)))) {
             writer.write(text);
             writer.flush();
         }
