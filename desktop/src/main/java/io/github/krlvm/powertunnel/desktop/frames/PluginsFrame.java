@@ -260,6 +260,7 @@ public class PluginsFrame extends AppFrame {
                     this, I18N.get("plugins.failedToOpen"),
                     "Failed to parse preferences: " + ex.getMessage()
             );
+            ex.printStackTrace();
             return;
         }
 
