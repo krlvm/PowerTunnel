@@ -271,7 +271,7 @@ public class PluginsFrame extends AppFrame {
 
         final File configsDir = new File("configs");
         if(!configsDir.exists()) configsDir.mkdir();
-        final File configurationFile = new File("configs" + File.separator + pluginInfo.getId() + Configuration.EXTENSION);
+        final File configurationFile = new File("configs", pluginInfo.getId() + Configuration.EXTENSION);
         final ConfigurationStore configuration = new ConfigurationStore();
         try {
             configuration.read(configurationFile);
