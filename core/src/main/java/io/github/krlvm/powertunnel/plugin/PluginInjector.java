@@ -15,13 +15,10 @@
  * along with PowerTunnel.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.krlvm.powertunnel.utilities;
+package io.github.krlvm.powertunnel.plugin;
 
 import java.io.File;
 
-public class Utility {
-
-    public static File resolveFile(File directory, String file) {
-        return new File(directory.getPath() + File.separator + file);
-    }
+public interface PluginInjector {
+    Class<?> inject(File file, String mainClass) throws Exception;
 }

@@ -38,29 +38,39 @@ public class PluginLoader {
     public static final String PLUGINS_DIR = "plugins";
     public static final String PLUGIN_MANIFEST = "plugin.ini";
 
+    private static final PluginInjector DEFAULT_INJECTOR = PluginLoader::injectPlugin;
+
     public static File getPluginFile(String fileName) {
-        return new File(PluginLoader.PLUGINS_DIR + File.separator + fileName);
+        return new File(PluginLoader.PLUGINS_DIR, fileName);
     }
 
     public static File[] enumeratePlugins() {
-        final File folder = new File(PLUGINS_DIR);
-        if(!folder.exists()) {
-            folder.mkdir();
+        return enumeratePlugins(new File(PLUGINS_DIR));
+    }
+    public static File[] enumeratePlugins(File dir) {
+        if(!dir.exists()) {
+            dir.mkdir();
         } else {
-            final File[] result = folder.listFiles(file -> file.getName().toLowerCase().endsWith(".jar"));
+            final File[] result = dir.listFiles(file -> file.getName().toLowerCase().endsWith(".jar"));
             if(result != null) return result;
         }
         return new File[] {};
     }
 
     public static void loadPlugins(PowerTunnel server) throws PluginLoadException {
+        loadPlugins(server, DEFAULT_INJECTOR);
+    }
+    public static void loadPlugins(PowerTunnel server, PluginInjector injector) throws PluginLoadException {
         loadPlugins(enumeratePlugins(), server);
     }
 
     public static void loadPlugins(File[] files, PowerTunnel server) throws PluginLoadException {
+        loadPlugins(files, server, DEFAULT_INJECTOR);
+    }
+    public static void loadPlugins(File[] files, PowerTunnel server, PluginInjector injector) throws PluginLoadException {
         for (File file : files) {
             if(file.isDirectory()) continue;
-            server.registerPlugin(PluginLoader.loadPlugin(file));
+            server.registerPlugin(PluginLoader.loadPlugin(file, injector));
         }
     }
 
@@ -91,6 +101,10 @@ public class PluginLoader {
     }
 
     public static PowerTunnelPlugin loadPlugin(File file) throws PluginLoadException {
+        return loadPlugin(file, DEFAULT_INJECTOR);
+    }
+
+    public static PowerTunnelPlugin loadPlugin(File file, PluginInjector injector) throws PluginLoadException {
         final String jarName = file.getName();
 
         final PluginInfo info;
@@ -111,16 +125,17 @@ public class PluginLoader {
         if(info.getTargetCoreVersion() > PowerTunnel.VERSION.getVersionCode())
             throw new PluginLoadException(jarName, "Plugin requires a newer PowerTunnel version to run");
 
-        try {
-            injectPlugin(file);
-        } catch (MalformedURLException | ReflectiveOperationException ex) {
-            throw new PluginLoadException(jarName, "Failed to load plugin .jar file", ex);
-        }
         final Class<?> clazz;
         try {
-            clazz = Class.forName(info.getMainClass());
+            clazz = injector.inject(file, info.getMainClass());
+        } catch (MalformedURLException ex) {
+            throw new PluginLoadException(jarName, "Failed to load plugin .jar file", ex);
         } catch (ClassNotFoundException ex) {
             throw new PluginLoadException(jarName, "Can't load plugin main class", ex);
+        } catch (ReflectiveOperationException ex) {
+            throw new PluginLoadException(jarName, "Failed to inject plugin .jar file", ex);
+        } catch (Exception ex) {
+            throw new PluginLoadException(jarName, "Unexpected error: " + ex.getMessage(), ex);
         }
         final Object instance;
         try {
@@ -137,7 +152,12 @@ public class PluginLoader {
     }
 
     // https://stackoverflow.com/a/27187663
-    private static synchronized void injectPlugin(File jar) throws MalformedURLException, ReflectiveOperationException {
+    private static synchronized Class<?> injectPlugin(File jar, String mainClass) throws MalformedURLException, ReflectiveOperationException {
+        injectJar(jar);
+        return Class.forName(mainClass);
+    }
+
+    private static synchronized void injectJar(File jar) throws MalformedURLException, ReflectiveOperationException {
         URLClassLoader loader = (URLClassLoader) ClassLoader.getSystemClassLoader();
         URL url = jar.toURI().toURL();
         for (URL it : loader.getURLs()) {
