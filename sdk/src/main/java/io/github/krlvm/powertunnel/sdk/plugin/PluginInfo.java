@@ -17,7 +17,9 @@
 
 package io.github.krlvm.powertunnel.sdk.plugin;
 
-public class PluginInfo {
+import java.io.Serializable;
+
+public class PluginInfo implements Serializable {
 
     private final String id;
     private final String version;

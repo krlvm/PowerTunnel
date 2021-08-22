@@ -17,9 +17,10 @@
 
 package io.github.krlvm.powertunnel.preferences;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class PreferenceGroup {
+public class PreferenceGroup implements Serializable {
 
     private final String title;
     private final String description;
