@@ -33,6 +33,9 @@ public interface ProxyRequest extends ProxyMessage {
     void setBlocked(boolean blocked);
     boolean isBlocked();
 
+    @NotNull String getUri();
+    void setUri(@NotNull String uri);
+
     @Nullable ProxyResponse getResponse();
     void setResponse(@NotNull ProxyResponse response);
 }

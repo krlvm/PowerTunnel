@@ -74,6 +74,16 @@ public class LProxyRequest extends LProxyMessage<HttpRequest> implements ProxyRe
     }
 
     @Override
+    public @NotNull String getUri() {
+        return httpObject.uri();
+    }
+
+    @Override
+    public void setUri(@NotNull String uri) {
+        httpObject.setUri(uri);
+    }
+
+    @Override
     public @Nullable ProxyResponse getResponse() {
         return this.response;
     }
