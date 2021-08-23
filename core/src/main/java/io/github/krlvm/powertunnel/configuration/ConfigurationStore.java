@@ -18,9 +18,9 @@
 package io.github.krlvm.powertunnel.configuration;
 
 import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
+import io.github.krlvm.powertunnel.sdk.utiities.PTCharsets;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,20 +39,22 @@ public class ConfigurationStore implements Configuration {
     }
 
     public void read(InputStream in) throws IOException {
-        this.read(new InputStreamReader(in, StandardCharsets.UTF_8));
+        this.read(new InputStreamReader(in, PTCharsets.UTF_8));
     }
 
     public void read(Reader source) throws IOException {
         data.clear();
 
         try(BufferedReader reader = new BufferedReader(source)) {
-            reader.lines().filter(line -> line.contains(DELIMITER)).forEach((line) -> {
+            String line;
+            while((line = reader.readLine()) != null) {
+                if (!line.contains(DELIMITER)) continue;
                 final int pos = line.indexOf(DELIMITER);
                 data.put(
                         line.substring(0, pos),
                         line.substring(pos + DELIMITER_LENGTH)
                 );
-            });
+            }
         }
     }
 

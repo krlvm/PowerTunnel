@@ -19,11 +19,10 @@ package io.github.krlvm.powertunnel.http;
 
 import io.github.krlvm.powertunnel.sdk.http.ProxyResponse;
 import io.github.krlvm.powertunnel.sdk.types.FullAddress;
+import io.github.krlvm.powertunnel.sdk.utiities.PTCharsets;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.*;
 import org.jetbrains.annotations.NotNull;
-
-import java.nio.charset.StandardCharsets;
 
 public class LProxyResponse extends LProxyMessage<HttpResponse> implements ProxyResponse {
 
@@ -70,7 +69,7 @@ public class LProxyResponse extends LProxyMessage<HttpResponse> implements Proxy
         }
 
         public Builder(HttpResponseStatus status, String content) {
-            final byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
+            final byte[] bytes = content.getBytes(PTCharsets.UTF_8);
             response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status, Unpooled.copiedBuffer(bytes));
             response.headers().set(HttpHeaderNames.CONTENT_LENGTH, bytes.length);
             response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
