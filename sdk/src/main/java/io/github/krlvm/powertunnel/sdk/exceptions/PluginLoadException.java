@@ -21,7 +21,7 @@ public class PluginLoadException extends ProxyStartException {
 
     private final String jarFile;
 
-    public PluginLoadException(String message, String jarFile, Throwable cause) {
+    public PluginLoadException(String jarFile, String message, Throwable cause) {
         super(message, cause);
         this.jarFile = jarFile;
     }
