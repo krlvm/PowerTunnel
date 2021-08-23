@@ -66,7 +66,7 @@ public class PowerTunnel implements PowerTunnelServer {
     private final File configsDir;
 
     private final Map<ServerListener, PluginInfo> serverListeners = new HashMap<>();
-    private final Map<ProxyListenerInfo, ProxyListener> proxyListeners = new TreeMap<>(Comparator.comparingInt(ProxyListenerInfo::getPriority));
+    private final Map<ProxyListenerInfo, ProxyListener> proxyListeners = new TreeMap<>((o1, o2) -> o1.getPriority() - o2.getPriority());
     private static final int DEFAULT_LISTENER_PRIORITY = 0;
 
     public PowerTunnel(ProxyAddress address, PowerTunnelPlatform platform, File parentDirectory, boolean transparent, Authority mitmAuthority) {
