@@ -64,7 +64,7 @@ public class PluginLoader {
         loadPlugins(server, DEFAULT_INJECTOR);
     }
     public static void loadPlugins(PowerTunnel server, PluginInjector injector) throws PluginLoadException {
-        loadPlugins(enumeratePlugins(), server);
+        loadPlugins(enumeratePlugins(), server, injector);
     }
 
     public static void loadPlugins(File[] files, PowerTunnel server) throws PluginLoadException {
