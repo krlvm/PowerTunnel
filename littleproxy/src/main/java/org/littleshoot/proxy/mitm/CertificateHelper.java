@@ -260,6 +260,7 @@ public final class CertificateHelper {
     private static final Logger log = LoggerFactory.getLogger(CertificateHelper.class);
 
     public static final String PROVIDER_NAME = BouncyCastleProvider.PROVIDER_NAME;
+    public static boolean ANDROID_P_DISABLE_PROVIDER = false;
 
     static {
         Security.addProvider(new BouncyCastleProvider());
@@ -473,10 +474,21 @@ public final class CertificateHelper {
             X509v3CertificateBuilder certificateBuilder,
             PrivateKey signedWithPrivateKey) throws OperatorCreationException,
             CertificateException {
-        ContentSigner signer = new JcaContentSignerBuilder(SIGNATURE_ALGORITHM)
-                .setProvider(PROVIDER_NAME).build(signedWithPrivateKey);
-        return new JcaX509CertificateConverter().setProvider(
-                PROVIDER_NAME).getCertificate(certificateBuilder.build(signer));
+
+
+        if (ANDROID_P_DISABLE_PROVIDER) {
+            ContentSigner signer = new JcaContentSignerBuilder(SIGNATURE_ALGORITHM)
+                    .build(signedWithPrivateKey);
+            return new JcaX509CertificateConverter()
+                    .getCertificate(certificateBuilder.build(signer));
+        } else {
+            ContentSigner signer = new JcaContentSignerBuilder(SIGNATURE_ALGORITHM)
+                    .setProvider(PROVIDER_NAME)
+                    .build(signedWithPrivateKey);
+            return new JcaX509CertificateConverter()
+                    .setProvider(PROVIDER_NAME)
+                    .getCertificate(certificateBuilder.build(signer));
+        }
     }
 
     public static TrustManager[] getTrustManagers(KeyStore keyStore)
