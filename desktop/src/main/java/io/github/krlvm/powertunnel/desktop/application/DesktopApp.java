@@ -126,10 +126,10 @@ public abstract class DesktopApp implements ServerListener {
             LOGGER.error("Failed to start PowerTunnel: {}", ex.getMessage(), ex);
             return ex;
         }
-        if(UpdateNotifier.ENABLED) {
-            this.server.getPlugins().stream().filter(plugin -> plugin.getInfo().getHomepage().startsWith("https://github.com/krlvm/"))
-                    .forEach(plugin -> UpdateNotifier.checkAndNotify(plugin.getInfo().getName(), plugin.getInfo().getHomepage(), true));
-        }
+        //if(UpdateNotifier.ENABLED) {
+        //    this.server.getPlugins().stream().filter(plugin -> plugin.getInfo().getHomepage().startsWith("https://github.com/krlvm/"))
+        //            .forEach(plugin -> UpdateNotifier.checkAndNotify(plugin.getInfo().getName(), plugin.getInfo().getHomepage(), true));
+        //}
 
         if(this.server.getProxyServer().isMITMEnabled() && SystemUtility.IS_WINDOWS) {
             final Path target = certificateDirectory.resolve(MITMAuthority.CERTIFICATE_ALIAS + ".cer");
