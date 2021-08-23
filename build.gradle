@@ -32,7 +32,7 @@ dependencies {
 
     implementation 'xyz.rogfam:littleproxy:2.0.5'
     implementation 'org.slf4j:slf4j-simple:1.7.32'
-    implementation 'net.java.dev.jna:jna:3.2.5'
+    implementation 'net.java.dev.jna:jna:5.9.0'
 
     /* dnsjava */
     implementation 'dnsjava:dnsjava:3.4.1'
