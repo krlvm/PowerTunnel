@@ -43,6 +43,8 @@ public class MainFrame extends AppFrame {
             "<br><br>" +
             " • <a href=\"https://github.com/adamfisk/LittleProxy\">LittleProxy</a> - proxy server, <a href=\"https://github.com/mrog/LittleProxy\">forked</a> version<br>" +
             " • <a href=\"https://github.com/ganskef/LittleProxy-mitm\">LittleProxy-MITM</a> - LittleProxy SSL extension<br>" +
+            " • <a href=\"https://github.com/dnsjava/dnsjava\">dnsjava</a> - DNS and DoH library<br>" +
+            " • <a href=\"https://github.com/ibauersachs/dnssecjava\">dnssecjava</a> - DNSSec implementation for dnsjava<br>" +
             " • <a href=\"http://www.slf4j.org/\">SLF4J</a> - logging facade API<br>" +
             " • <a href=\"https://logging.apache.org/log4j/2.x/\">Log4j</a> - logger implementation<br>" +
             " • <a href=\"https://github.com/java-native-access/jna\">Java Native Access</a> - accessing system native API<br>" +

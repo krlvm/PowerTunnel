@@ -61,6 +61,8 @@ If you need to set a certain plugin preference, use `-cfg pluginID.preferenceKey
 ## Dependencies
 * [LittleProxy](https://github.com/adamfisk/LittleProxy) - proxy server, [forked version](https://github.com/mrog/LittleProxy)
 * [LittleProxy-MITM](https://github.com/ganskef/LittleProxy-mitm) - LittleProxy SSL extension
+* [dnsjava](https://github.com/dnsjava/dnsjava) - DNS and DoH library
+* [dnssecjava](https://github.com/ibauersachs/dnssecjava) - DNSSec implementation for dnsjava
 * [SLF4J](http://www.slf4j.org/) - logging facade API
 * [Log4j](https://logging.apache.org/log4j/2.x/) - logger implementation
 * [Java Native Access](https://github.com/java-native-access/jna) - accessing system native API
