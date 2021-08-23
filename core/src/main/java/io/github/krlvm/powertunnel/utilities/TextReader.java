@@ -37,6 +37,10 @@ public class TextReader {
                 builder.append(line).append('\n');
             }
         }
-        return builder.substring(0, builder.lastIndexOf("\n"));
+        if(builder.length() > 2) {
+            return builder.substring(0, builder.lastIndexOf("\n"));
+        } else {
+            return builder.toString();
+        }
     }
 }
