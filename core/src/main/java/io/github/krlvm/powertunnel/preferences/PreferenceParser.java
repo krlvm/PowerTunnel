@@ -127,7 +127,8 @@ public class PreferenceParser {
                 key,
                 title,
                 description,
-                defaultValue != null ? defaultValue.getAsString() : type.getDefaultValue(),
+                defaultValue != null ? defaultValue.getAsString() :
+                        (type == PreferenceType.SELECT ? items.keySet().iterator().next() : type.getDefaultValue()),
                 type,
                 getStringOrNull(jso, PreferencesSchemaFields.DEPENDENCY),
                 dependencyValue != null ? dependencyValue.getAsString() : "true",
