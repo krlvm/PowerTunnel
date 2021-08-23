@@ -103,7 +103,12 @@ public class PowerTunnel implements PowerTunnelServer {
         this.server = new LittleProxyServer(transparent, mitmAuthority);
 
         setStatus(ProxyStatus.STARTING);
-        callPluginsProxyInitializationCallback();
+        try {
+            callPluginsProxyInitializationCallback();
+        } catch (ProxyStartException ex) {
+            setStatus(ProxyStatus.NOT_RUNNING);
+            throw ex;
+        }
         try {
             this.startServer();
             setStatus(ProxyStatus.RUNNING);
