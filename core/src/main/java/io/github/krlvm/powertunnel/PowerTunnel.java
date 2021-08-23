@@ -126,6 +126,9 @@ public class PowerTunnel implements PowerTunnelServer {
         this.server.stop(graceful);
         setStatus(ProxyStatus.NOT_RUNNING);
 
+        serverListeners.clear();
+        proxyListeners.clear();
+
         this.server = null;
     }
 
