@@ -33,6 +33,7 @@ import io.github.krlvm.powertunnel.sdk.proxy.ProxyServer;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyStatus;
 import io.github.krlvm.powertunnel.sdk.types.PowerTunnelPlatform;
 import io.github.krlvm.powertunnel.sdk.types.VersionInfo;
+import io.github.krlvm.powertunnel.utilities.TextReader;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.littleshoot.proxy.mitm.Authority;
@@ -250,15 +251,7 @@ public class PowerTunnel implements PowerTunnelServer {
     public @NotNull String readTextFile(@NotNull String filename) throws IOException {
         final File file = new File(configsDir, filename);
         if(!file.exists()) file.createNewFile();
-
-        final StringBuilder builder = new StringBuilder();
-        try(BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                builder.append(line).append('\n');
-            }
-        }
-        return builder.substring(0, builder.lastIndexOf("\n"));
+        return TextReader.read(file);
     }
 
     @Override
