@@ -18,6 +18,7 @@
 package io.github.krlvm.powertunnel.sdk.types;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -48,5 +49,17 @@ public class FullAddress implements Cloneable {
     @Override
     public String toString() {
         return host + ":" + port;
+    }
+
+    @Nullable
+    public static FullAddress fromString(String input) {
+        if(!input.contains(":")) return new FullAddress(input, -1);
+
+        final String[] arr = input.split(":");
+        try {
+            return new FullAddress(arr[0], Integer.parseInt(arr[1]));
+        } catch (NumberFormatException ex) {
+            return null;
+        }
     }
 }

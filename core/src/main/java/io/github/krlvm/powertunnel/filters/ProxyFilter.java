@@ -17,7 +17,6 @@
 
 package io.github.krlvm.powertunnel.filters;
 
-import com.google.common.net.HostAndPort;
 import io.github.krlvm.powertunnel.http.LProxyRequest;
 import io.github.krlvm.powertunnel.http.LProxyResponse;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyListener;
@@ -46,8 +45,7 @@ public class ProxyFilter extends HttpFiltersAdapter {
 
     @Override
     public InetSocketAddress proxyToServerResolutionStarted(String resolvingServerHostAndPort) {
-        final HostAndPort hostAndPort = HostAndPort.fromString(resolvingServerHostAndPort);
-        this.address = new FullAddress(hostAndPort.getHost(), hostAndPort.hasPort() ? hostAndPort.getPort() : -1);
+        this.address = FullAddress.fromString(resolvingServerHostAndPort);
         return null;
     }
 
