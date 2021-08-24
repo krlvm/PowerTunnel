@@ -154,12 +154,17 @@ public class PluginLoader {
         return plugin;
     }
 
-    // https://stackoverflow.com/a/27187663
+    private static final boolean USE_JAVA_11_LOAD_METHOD = true;
     private static synchronized Class<?> injectPlugin(File jar, String mainClass) throws MalformedURLException, ReflectiveOperationException {
-        injectJar(jar);
-        return Class.forName(mainClass);
+        if(USE_JAVA_11_LOAD_METHOD) {
+            return injectJarJava11(jar, mainClass);
+        } else {
+            injectJar(jar);
+            return Class.forName(mainClass);
+        }
     }
 
+    // https://stackoverflow.com/a/27187663
     private static synchronized void injectJar(File jar) throws MalformedURLException, ReflectiveOperationException {
         URLClassLoader loader = (URLClassLoader) ClassLoader.getSystemClassLoader();
         URL url = jar.toURI().toURL();
@@ -169,6 +174,12 @@ public class PluginLoader {
         Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
         method.setAccessible(true);
         method.invoke(loader, new Object[]{url});
+    }
+
+    private static synchronized Class<?> injectJarJava11(File jar, String mainClass) throws MalformedURLException, ReflectiveOperationException {
+        final ClassLoader loader = URLClassLoader.newInstance(new URL[]{ jar.toURI().toURL() },
+                PluginLoader.class.getClassLoader());
+        return Class.forName(mainClass, true, loader);
     }
 
 
