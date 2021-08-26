@@ -59,7 +59,7 @@ public class GraphicalApp extends DesktopApp {
             trayManager = new TrayManager(this);
             try {
                 trayManager.load();
-            } catch (AWTException ex) {
+            } catch (Exception ex) {
                 System.err.println("Tray is not available: " + ex.getMessage());
                 ex.printStackTrace();
             }
