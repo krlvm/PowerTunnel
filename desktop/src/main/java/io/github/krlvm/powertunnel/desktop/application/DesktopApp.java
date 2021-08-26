@@ -74,14 +74,12 @@ public abstract class DesktopApp implements ServerListener {
     private final Path certificateDirectory = Paths.get("cert");
     private Exception initializationException = null;
 
-    public DesktopApp(ServerConfiguration configuration, boolean start) {
+    public DesktopApp(ServerConfiguration configuration) {
         this.configuration = configuration;
         this.address = new ProxyAddress(
                 configuration.get("ip", "127.0.0.1"),
                 configuration.getInt("port", 8085)
         );
-
-        if(start) start();
     }
 
     public void start() {

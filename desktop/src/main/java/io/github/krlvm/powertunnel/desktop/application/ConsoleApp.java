@@ -22,6 +22,6 @@ import io.github.krlvm.powertunnel.desktop.configuration.ServerConfiguration;
 public class ConsoleApp extends DesktopApp {
 
     public ConsoleApp(ServerConfiguration configuration) {
-        super(configuration, true);
+        super(configuration);
     }
 }

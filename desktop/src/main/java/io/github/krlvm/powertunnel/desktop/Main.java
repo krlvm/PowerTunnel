@@ -216,12 +216,12 @@ public class Main {
                     Locale.getDefault()
             );
 
-            new GraphicalApp(
+            final GraphicalApp app = new GraphicalApp(
                     configuration,
-                    cli.has(Arguments.START),
                     cli.has(Arguments.MINIMIZED),
                     !cli.has(Arguments.DISABLE_TRAY)
             );
+            if(cli.has(Arguments.START)) app.start();
         }
 
         if(UpdateNotifier.ENABLED) {

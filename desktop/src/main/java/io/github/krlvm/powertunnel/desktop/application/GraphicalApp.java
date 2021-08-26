@@ -50,8 +50,8 @@ public class GraphicalApp extends DesktopApp {
     public PluginsFrame pluginsFrame = null;
     public OptionsFrame optionsFrame = null;
 
-    public GraphicalApp(ServerConfiguration configuration, boolean start, boolean minimized, boolean tray) {
-        super(configuration, start);
+    public GraphicalApp(ServerConfiguration configuration, boolean minimized, boolean tray) {
+        super(configuration);
         instance = this;
 
         frame = new MainFrame(this);
