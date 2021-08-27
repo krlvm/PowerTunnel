@@ -26,6 +26,7 @@ import io.github.krlvm.powertunnel.sdk.plugin.PowerTunnelPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -135,17 +136,20 @@ public class PluginLoader {
             throw new PluginLoadException(jarName, "Failed to load plugin .jar file", ex);
         } catch (ClassNotFoundException ex) {
             throw new PluginLoadException(jarName, "Can't load plugin main class", ex);
-        } catch (ReflectiveOperationException ex) {
-            throw new PluginLoadException(jarName, "Failed to inject plugin .jar file", ex);
+        //} catch (ReflectiveOperationException ex) {
+        //    throw new PluginLoadException(jarName, "Failed to inject plugin .jar file", ex);
         } catch (Exception ex) {
             throw new PluginLoadException(jarName, "Unexpected error: " + ex.getMessage(), ex);
         }
         final Object instance;
         try {
             instance = clazz.newInstance();
-        } catch (ReflectiveOperationException ex) {
+        } catch (InstantiationException | IllegalAccessException ex) {
             throw new PluginLoadException(jarName, "Can't instantiate plugin main class", ex);
         }
+        //} catch (ReflectiveOperationException ex) {
+        //    throw new PluginLoadException(jarName, "Can't instantiate plugin main class", ex);
+        //}
         if(!(instance instanceof PowerTunnelPlugin)) {
             throw new PluginLoadException(jarName, "Plugin main class doesn't extend PowerTunnelPlugin");
         }
@@ -154,8 +158,9 @@ public class PluginLoader {
         return plugin;
     }
 
-    private static final boolean USE_JAVA_11_LOAD_METHOD = true;
-    private static synchronized Class<?> injectPlugin(File jar, String mainClass) throws MalformedURLException, ReflectiveOperationException {
+        private static final boolean USE_JAVA_11_LOAD_METHOD = true;
+    private static synchronized Class<?> injectPlugin(File jar, String mainClass)
+            throws MalformedURLException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException { //, ReflectiveOperationException {
         if(USE_JAVA_11_LOAD_METHOD) {
             return injectJarJava11(jar, mainClass);
         } else {
@@ -165,7 +170,8 @@ public class PluginLoader {
     }
 
     // https://stackoverflow.com/a/27187663
-    private static synchronized void injectJar(File jar) throws MalformedURLException, ReflectiveOperationException {
+    private static synchronized void injectJar(File jar)
+            throws MalformedURLException, NoSuchMethodException, InvocationTargetException, IllegalAccessException { //, ReflectiveOperationException {
         URLClassLoader loader = (URLClassLoader) ClassLoader.getSystemClassLoader();
         URL url = jar.toURI().toURL();
         for (URL it : loader.getURLs()) {
@@ -176,7 +182,8 @@ public class PluginLoader {
         method.invoke(loader, new Object[]{url});
     }
 
-    private static synchronized Class<?> injectJarJava11(File jar, String mainClass) throws MalformedURLException, ReflectiveOperationException {
+    private static synchronized Class<?> injectJarJava11(File jar, String mainClass)
+            throws MalformedURLException, ClassNotFoundException { //, ReflectiveOperationException {
         final ClassLoader loader = URLClassLoader.newInstance(new URL[]{ jar.toURI().toURL() },
                 PluginLoader.class.getClassLoader());
         return Class.forName(mainClass, true, loader);
