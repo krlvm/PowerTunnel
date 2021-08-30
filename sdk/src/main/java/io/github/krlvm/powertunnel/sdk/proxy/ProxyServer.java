@@ -140,42 +140,6 @@ public interface ProxyServer {
 
     // endregion
 
-    // region Resolver
-
-    /**
-     * Sets DNS Resolver
-     * @param resolver DNS Resolver
-     */
-    void setResolver(@Nullable DNSResolver resolver);
-
-    /**
-     * Returns DNS Resolver
-     * @return DNS Resolver
-     */
-    @Nullable DNSResolver getResolver();
-
-    // endregion
-
-    // region Allow Fallback DNS Resolver
-
-    /**
-     * Sets whether it is allowed to resolve DNS by a standard resolver
-     * if the custom resolver cannot resolve the domain name
-     *
-     * @param allow whether it is allowed to resolve DNS by a standard resolver
-     */
-    void setAllowFallbackDNSResolver(boolean allow);
-
-    /**
-     * Returns whether it is allowed to resolve DNS by a standard resolver
-     * if the custom resolver cannot resolve the domain name
-     *
-     * @return whether it is allowed to resolve DNS by a standard resolver
-     */
-    boolean isAllowFallbackDNSResolver();
-
-    // endregion
-
     // region Upstream Proxy Server
 
     /**

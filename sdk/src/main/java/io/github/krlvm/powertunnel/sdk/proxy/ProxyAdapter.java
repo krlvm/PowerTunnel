@@ -37,6 +37,11 @@ public abstract class ProxyAdapter implements ProxyListener {
     public void onProxyToClientResponse(@NotNull ProxyResponse response) {}
 
     @Override
+    public boolean onResolutionRequest(@NotNull DNSRequest request) {
+        return true;
+    }
+
+    @Override
     public Integer onGetChunkSize(@NotNull FullAddress address) {
         return null;
     }

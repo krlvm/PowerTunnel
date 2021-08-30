@@ -22,6 +22,8 @@ import io.github.krlvm.powertunnel.sdk.http.ProxyResponse;
 import io.github.krlvm.powertunnel.sdk.types.FullAddress;
 import org.jetbrains.annotations.NotNull;
 
+import java.net.UnknownHostException;
+
 public interface ProxyListener {
 
     void onClientToProxyRequest(@NotNull ProxyRequest request);
@@ -29,6 +31,8 @@ public interface ProxyListener {
 
     void onServerToProxyResponse(@NotNull ProxyResponse response);
     void onProxyToClientResponse(@NotNull ProxyResponse response);
+
+    boolean onResolutionRequest(@NotNull DNSRequest request);
 
     Integer onGetChunkSize(@NotNull FullAddress address);
     Boolean isFullChunking(@NotNull FullAddress address);
