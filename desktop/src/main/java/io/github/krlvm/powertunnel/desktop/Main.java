@@ -81,10 +81,10 @@ public class Main {
                     .option(Arguments.CONSOLE, "run application in console mode")
                     .option(Arguments.MINIMIZED, "minimize UI to tray after start")
                     .option(Arguments.DISABLE_TRAY, "disable tray mode")
+                    .option(Arguments.DISABLE_NATIVE_SKIN, "disable platform native UI skin")
+                    .option(Arguments.DISABLE_UI_SCALING, "disable UI scaling")
 
-                    .argument(Arguments.DISABLE_NATIVE_SKIN, "disable platform native UI skin")
                     .argument(Arguments.SET_UI_SCALE_FACTOR, "set UI scale factor")
-                    .argument(Arguments.DISABLE_UI_SCALING, "disable UI scaling")
                     .argument(Arguments.LANGUAGE, "set UI language");
         }
         builder.option(Arguments.DISABLE_UPDATER, "disable Update Notifier");
