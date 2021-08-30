@@ -210,6 +210,7 @@ public class Main {
             if(!cli.has(Arguments.DISABLE_NATIVE_SKIN)) {
                 UIUtility.tweakLook();
             }
+            UIUtility.setAWTName();
 
             I18N.load(cli.has(Arguments.LANGUAGE) ?
                     Locale.forLanguageTag(cli.get(Arguments.LANGUAGE)) :

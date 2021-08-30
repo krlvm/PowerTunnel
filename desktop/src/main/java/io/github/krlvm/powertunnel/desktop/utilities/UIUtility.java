@@ -27,6 +27,7 @@ import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.plaf.ColorUIResource;
 import java.awt.*;
+import java.lang.reflect.Field;
 
 public class UIUtility {
 
@@ -88,13 +89,12 @@ public class UIUtility {
     }
 
     public static void setAWTName() {
-        Toolkit xToolkit = Toolkit.getDefaultToolkit();
+        final Toolkit xToolkit = Toolkit.getDefaultToolkit();
         try {
-            java.lang.reflect.Field awtAppClassNameField =
-                    xToolkit.getClass().getDeclaredField("awtAppClassName");
-            awtAppClassNameField.setAccessible(true);
-            awtAppClassNameField.set(xToolkit, BuildConstants.NAME);
-        } catch (ReflectiveOperationException ex) {
+            final Field f = xToolkit.getClass().getDeclaredField("awtAppClassName");
+            f.setAccessible(true);
+            f.set(xToolkit, BuildConstants.NAME);
+        } catch (ReflectiveOperationException | SecurityException ex) {
             LOGGER.error("Failed to set AWT app name: {}", ex.getMessage(), ex);
         }
     }
