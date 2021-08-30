@@ -150,7 +150,7 @@ public class UIUtility {
         });
 
         pane.setEditable(false);
-        pane.setBorder(BorderFactory.createEmptyBorder(padding, padding, padding, padding));
+        pane.setBorder(BorderFactory.createLineBorder(label.getBackground(), padding));
         if(setBackground) pane.setBackground(label.getBackground());
         pane.setHighlighter(null);
     }
