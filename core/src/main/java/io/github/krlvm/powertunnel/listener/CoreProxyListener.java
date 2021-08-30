@@ -19,6 +19,7 @@ package io.github.krlvm.powertunnel.listener;
 
 import io.github.krlvm.powertunnel.sdk.http.ProxyRequest;
 import io.github.krlvm.powertunnel.sdk.http.ProxyResponse;
+import io.github.krlvm.powertunnel.sdk.proxy.DNSRequest;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyListener;
 import io.github.krlvm.powertunnel.sdk.types.FullAddress;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class CoreProxyListener implements ProxyListener {
 
@@ -59,6 +59,12 @@ public class CoreProxyListener implements ProxyListener {
     }
 
     @Override
+    public boolean onResolutionRequest(@NotNull DNSRequest request) {
+        final Object result = callProxyListeners(listener -> listener.onResolutionRequest(request), false);
+        return result == null || ((boolean) result);
+    }
+
+    @Override
     public Integer onGetChunkSize(final @NotNull FullAddress address) {
         final Object result = callProxyListeners(listener -> listener.onGetChunkSize(address));
         return result != null ? ((int) result) : 0;
@@ -83,11 +89,15 @@ public class CoreProxyListener implements ProxyListener {
     }
 
     private Object callProxyListeners(ProxyListenerCallback callback) {
+        return callProxyListeners(callback, null);
+    }
+
+    private Object callProxyListeners(ProxyListenerCallback callback, Object errVal) {
         Object result = null;
         for (Map.Entry<ProxyListenerInfo, ProxyListener> entry : proxyListeners.entrySet()) {
+            Object res;
             try {
-                final Object res = callback.call(entry.getValue());
-                if(res != null) result = res;
+                res = callback.call(entry.getValue());
             } catch (Exception ex) {
                 LOGGER.error(
                         "An error occurred in ProxyListener of '{}' [{}, priority={}]: {}",
@@ -96,7 +106,9 @@ public class CoreProxyListener implements ProxyListener {
                         ex.getMessage(),
                         ex
                 );
+                res = errVal;
             }
+            if(res != null) result = res;
         }
         return result;
     }

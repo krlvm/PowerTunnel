@@ -17,7 +17,9 @@
 
 package io.github.krlvm.powertunnel.resolver;
 
-import io.github.krlvm.powertunnel.sdk.proxy.DNSResolver;
+import io.github.krlvm.powertunnel.sdk.proxy.DNSRequest;
+import io.github.krlvm.powertunnel.sdk.proxy.ProxyListener;
+import org.littleshoot.proxy.DefaultHostResolver;
 import org.littleshoot.proxy.HostResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,26 +31,23 @@ public class LDNSResolver implements HostResolver {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LDNSResolver.class);
 
-    private final DNSResolver resolver;
-    private final HostResolver fallbackResolver;
+    private final ProxyListener listener;
+    private final boolean allowFallbackResolver;
 
-    public LDNSResolver(DNSResolver resolver, HostResolver fallbackResolver) {
-        this.resolver = resolver;
-        this.fallbackResolver = fallbackResolver;
+    private final HostResolver resolver = new DefaultHostResolver();
+
+    public LDNSResolver(ProxyListener listener, boolean allowFallbackResolver) {
+        this.listener = listener;
+        this.allowFallbackResolver = allowFallbackResolver;
     }
 
     @Override
     public InetSocketAddress resolve(String host, int port) throws UnknownHostException {
-        try {
-            return resolver.resolve(host, port);
-        } catch (UnknownHostException ex) {
-            LOGGER.error(
-                    "DNS Resolver [{}] has failed to resolve hostname: {}",
-                    resolver.getClass().getSimpleName(), ex.getMessage(),
-                    ex)
-            ;
-            if(this.fallbackResolver != null) return this.fallbackResolver.resolve(host, port);
-            return null;
+        final DNSRequest request = new DNSRequest(host, port);
+        if(!listener.onResolutionRequest(request)) {
+            LOGGER.error("Resolution of hostname '{}' failed", host);
+            if(!this.allowFallbackResolver) throw new UnknownHostException();
         }
+        return request.getResponse() == null ? this.resolver.resolve(host, port) : request.getResponse();
     }
 }

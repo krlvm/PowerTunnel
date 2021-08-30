@@ -22,7 +22,6 @@ import io.github.krlvm.powertunnel.adapters.UpstreamChainedProxyAdapter;
 import io.github.krlvm.powertunnel.http.LProxyResponse;
 import io.github.krlvm.powertunnel.managers.ProxyAuthenticationManager;
 import io.github.krlvm.powertunnel.managers.UpstreamProxyChainedProxyManager;
-import io.github.krlvm.powertunnel.resolver.DNSResolverWrapper;
 import io.github.krlvm.powertunnel.resolver.LDNSResolver;
 import io.github.krlvm.powertunnel.sdk.exceptions.ProxyStartException;
 import io.github.krlvm.powertunnel.sdk.http.ProxyResponse;
@@ -51,18 +50,17 @@ public class LittleProxyServer implements ProxyServer {
     private ProxyCredentials credentials;
     private UpstreamProxyServer upstreamProxyServer;
 
-    private DNSResolver resolver;
-    private boolean allowFallbackResolver;
-
-    private boolean mitmEnabled = false;
+    private final boolean allowFallbackResolver;
     private final Authority mitmAuthority;
 
+    private boolean mitmEnabled = false;
     private boolean isFullRequest = false, isFullResponse = false;
 
-    protected LittleProxyServer(boolean transparent, Authority mitmAuthority) {
+    protected LittleProxyServer(boolean transparent, boolean allowFallbackDnsResolver, Authority mitmAuthority) {
         this.bootstrap = DefaultHttpProxyServer.bootstrap()
                 .withTransparent(transparent)
                 .withAllowRequestToOriginServer(true);
+        this.allowFallbackResolver = allowFallbackDnsResolver;
         this.mitmAuthority = mitmAuthority;
     }
 
@@ -73,6 +71,7 @@ public class LittleProxyServer implements ProxyServer {
         ensureBootstrapAvailable();
 
         LOGGER.info("Starting LittleProxy Server...");
+        this.bootstrap.withServerResolver(new LDNSResolver(listener, this.allowFallbackResolver));
         if(this.upstreamProxyServer != null) {
             try {
                 this.bootstrap.withChainProxyManager(new UpstreamProxyChainedProxyManager(
@@ -81,11 +80,6 @@ public class LittleProxyServer implements ProxyServer {
             } catch (UnknownHostException ex) {
                 throw new ProxyStartException("Failed to resolve upstream proxy server address", ex);
             }
-        }
-        if(this.resolver != null) {
-            this.bootstrap.withServerResolver(new LDNSResolver(
-                    this.resolver, this.allowFallbackResolver ? new DefaultHostResolver() : null
-            ));
         }
         if(mitmEnabled) {
             try {
@@ -231,30 +225,6 @@ public class LittleProxyServer implements ProxyServer {
     @Override
     public @Nullable ProxyCredentials getAuthorizationCredentials() {
         return this.credentials;
-    }
-
-    @Override
-    public void setResolver(@Nullable DNSResolver resolver) {
-        ensureBootstrapAvailable();
-        this.resolver = resolver;
-    }
-
-    @Override
-    public @Nullable DNSResolver getResolver() {
-        ensureServerAvailable();
-        final HostResolver resolver = server.getServerResolver();
-        return resolver != null ? new DNSResolverWrapper(resolver) : null;
-    }
-
-    @Override
-    public void setAllowFallbackDNSResolver(boolean allow) {
-        ensureBootstrapAvailable();
-        this.allowFallbackResolver = allow;
-    }
-
-    @Override
-    public boolean isAllowFallbackDNSResolver() {
-        return this.allowFallbackResolver;
     }
 
     @Override
