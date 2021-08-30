@@ -120,6 +120,11 @@ public class OptionsFrame extends PreferencesFrame {
                     PreferenceType.SWITCH
             ));
             preferences.add(pref(
+                    "strict_dns",
+                    "false",
+                    PreferenceType.SWITCH
+            ));
+            preferences.add(pref(
                     "allow_requests_to_origin_server",
                     "true",
                     PreferenceType.SWITCH

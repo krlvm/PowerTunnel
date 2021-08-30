@@ -102,6 +102,7 @@ public abstract class DesktopApp implements ServerListener {
                 PowerTunnelPlatform.DESKTOP,
                 new File("."),
                 configuration.getBoolean("transparent_mode", true),
+                !configuration.getBoolean("strict_dns", false),
                 MITMAuthority.create(
                         certificateDirectory.toFile(),
                         configuration.get("cert_password", UUID.randomUUID().toString()).toCharArray()
