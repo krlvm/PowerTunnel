@@ -31,7 +31,7 @@ public class PluginInfo implements Serializable {
     private final String homepage;
 
     private final String mainClass;
-    private final int targetCoreVersion;
+    private final int targetSdkVersion;
 
     private final String source;
 
@@ -42,7 +42,7 @@ public class PluginInfo implements Serializable {
      * @param author plugin author
      * @param homepage plugin homepage
      * @param mainClass plugin main class
-     * @param targetCoreVersion plugin target Core version
+     * @param targetSdkVersion plugin target SDK version
      * @param source source jar
      */
     public PluginInfo(
@@ -54,7 +54,7 @@ public class PluginInfo implements Serializable {
             String author,
             String homepage,
             String mainClass,
-            int targetCoreVersion,
+            int targetSdkVersion,
             String source
     ) {
         this.id = id;
@@ -66,7 +66,7 @@ public class PluginInfo implements Serializable {
         this.homepage = homepage;
 
         this.mainClass = mainClass;
-        this.targetCoreVersion = targetCoreVersion;
+        this.targetSdkVersion = targetSdkVersion;
 
         this.source = source;
     }
@@ -103,8 +103,8 @@ public class PluginInfo implements Serializable {
         return mainClass;
     }
 
-    public int getTargetCoreVersion() {
-        return targetCoreVersion;
+    public int getTargetSdkVersion() {
+        return targetSdkVersion;
     }
 
     public String getSource() {

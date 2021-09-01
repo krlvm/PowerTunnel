@@ -17,6 +17,7 @@
 
 package io.github.krlvm.powertunnel.plugin;
 
+import io.github.krlvm.powertunnel.BuildConstants;
 import io.github.krlvm.powertunnel.PowerTunnel;
 import io.github.krlvm.powertunnel.configuration.ConfigurationStore;
 import io.github.krlvm.powertunnel.sdk.exceptions.PluginLoadException;
@@ -126,7 +127,7 @@ public class PluginLoader {
             throw new PluginLoadException(jarName, "Failed to read plugin .jar file", ex);
         }
 
-        if(info.getTargetCoreVersion() > PowerTunnel.VERSION.getVersionCode())
+        if(info.getTargetSdkVersion() > BuildConstants.SDK)
             throw new PluginLoadException(jarName, "Plugin requires a newer PowerTunnel version to run");
 
         final Class<?> clazz;
@@ -199,6 +200,6 @@ public class PluginLoader {
         static final String AUTHOR = "author";
         static final String HOMEPAGE = "homepage";
         static final String MAIN_CLASS = "mainClass";
-        static final String TARGET_VERSION = "targetCoreVersion";
+        static final String TARGET_VERSION = "targetSdkVersion";
     }
 }
