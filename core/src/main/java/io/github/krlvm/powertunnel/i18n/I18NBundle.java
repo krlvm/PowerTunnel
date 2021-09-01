@@ -37,7 +37,7 @@ public class I18NBundle {
     }
 
     public static String getLocalePath(String lang) {
-        return "locale/messages" + (lang != null ? "_" + lang : "");
+        return "locale/messages_" + (lang != null ? lang : "en");
     }
     public static String getLocaleFilePath(String lang) {
         return getLocalePath(lang) + ".properties";
