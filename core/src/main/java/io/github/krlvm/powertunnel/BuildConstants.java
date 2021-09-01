@@ -20,9 +20,9 @@ package io.github.krlvm.powertunnel;
 public class BuildConstants {
     public static final String NAME = "PowerTunnel";
     public static final String REPO = "https://github.com/krlvm/PowerTunnel/tree/next";
-    public static final String VERSION = "2.0-rc4u1";
-    public static final int VERSION_CODE = 98;
-    public static final int SDK = 98;
+    public static final String VERSION = "2.0-rc5";
+    public static final int VERSION_CODE = 99;
+    public static final int SDK = 99;
 
     public static boolean IS_RELEASE = isReleaseVersion(VERSION);
     public static final boolean DEBUG = !IS_RELEASE;
