@@ -17,6 +17,7 @@
 
 package io.github.krlvm.powertunnel.sdk.http;
 
+import io.github.krlvm.powertunnel.sdk.types.FullAddress;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,6 +29,17 @@ public interface ProxyRequest extends ProxyMessage {
 
     default boolean isEncrypted() {
         return getMethod() == HttpMethod.CONNECT;
+    }
+
+    default String getHost() {
+        if(address() != null) {
+            return address().getHost();
+        } else if(getUri() != null) {
+            return FullAddress.fromString(getUri()).getHost();
+        } else if(headers().contains("Host")) {
+            return headers().get("Host");
+        }
+        return null;
     }
 
     void setBlocked(boolean blocked);
