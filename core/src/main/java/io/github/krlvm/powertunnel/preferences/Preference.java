@@ -35,7 +35,7 @@ public class Preference implements Serializable {
 
     private final Map<String, String> items;
 
-    public Object binding;
+    public transient Object binding;
 
     public Preference(
             String key,
