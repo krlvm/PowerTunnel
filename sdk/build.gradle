@@ -28,3 +28,16 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
 }
+
+task fatJar(type: Jar, group: 'build', description: 'Assembles a jar archive containing the main classes and all dependencies.') {
+    archiveClassifier = 'all'
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
+
+    from {
+        configurations.runtimeClasspath.findAll {it.name.endsWith('jar') }.collect { zipTree(it) }
+    } {
+        exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+    }
+
+    with jar
+}
