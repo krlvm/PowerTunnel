@@ -41,13 +41,19 @@ public class LProxyResponse extends LProxyMessage<HttpResponse> implements Proxy
     }
 
     @Override
+    public boolean isDataPacket() {
+        return httpObject instanceof FullHttpResponse;
+    }
+
+    @Override
     public void setRaw(@NotNull String raw) {
+        if(!isDataPacket()) throw new IllegalStateException("Can't set raw content of HttpResponse chunk");
         LProxyMessage.setHttpObjectContent(httpObject, raw);
     }
 
     @Override
     public @NotNull String raw() {
-        if(!(httpObject instanceof FullHttpResponse)) throw new IllegalStateException("Can't get raw content of HttpResponse chunk");
+        if(!isDataPacket()) throw new IllegalStateException("Can't get raw content of HttpResponse chunk");
         return this.httpObject.toString();
     }
 

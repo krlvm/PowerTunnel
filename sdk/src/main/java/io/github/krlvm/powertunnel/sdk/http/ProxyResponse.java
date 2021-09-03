@@ -18,8 +18,11 @@
 package io.github.krlvm.powertunnel.sdk.http;
 
 public interface ProxyResponse extends ProxyMessage {
+
     int code();
     void setCode(int code);
+
+    boolean isDataPacket();
 
     interface Builder {
         Builder code(int code);
