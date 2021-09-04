@@ -20,7 +20,6 @@ package io.github.krlvm.powertunnel.http;
 import io.github.krlvm.powertunnel.sdk.http.HttpHeaders;
 import io.github.krlvm.powertunnel.sdk.http.ProxyMessage;
 import io.github.krlvm.powertunnel.sdk.types.FullAddress;
-import io.github.krlvm.powertunnel.sdk.utiities.PTCharsets;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpMessage;
@@ -31,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 
 public abstract class LProxyMessage<T> implements ProxyMessage {
 
@@ -82,6 +82,6 @@ public abstract class LProxyMessage<T> implements ProxyMessage {
         }
     }
     public static void setHttpObjectContent(HttpObject httpObject, String content) {
-        setHttpObjectContent(httpObject, content.getBytes(PTCharsets.UTF_8));
+        setHttpObjectContent(httpObject, content.getBytes(StandardCharsets.UTF_8));
     }
 }
