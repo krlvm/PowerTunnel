@@ -77,7 +77,7 @@ public abstract class LProxyMessage<T> implements ProxyMessage {
             contentField.setAccessible(true);
             contentField.set(httpObject, Unpooled.copiedBuffer(bytes));
             ((HttpMessage) httpObject).headers().set(HttpHeaderNames.CONTENT_LENGTH, bytes.length);
-        } catch (ReflectiveOperationException ex) {
+        } catch (IllegalAccessException | NoSuchFieldException ex) {
             LOGGER.error("Failed to set HttpObject content: {}", ex.getMessage(), ex);
         }
     }
