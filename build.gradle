@@ -35,7 +35,7 @@ dependencies {
     implementation 'net.java.dev.jna:jna:3.2.5'
 
     /* dnsjava */
-    implementation 'dnsjava:dnsjava:3.4.1'
+    implementation 'dnsjava:dnsjava:3.4.2'
     implementation 'org.jitsi:dnssecjava:2.0.0'
 
     /* LittleProxy-MITM Dependencies */
