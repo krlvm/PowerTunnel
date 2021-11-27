@@ -53,6 +53,8 @@ public class PreferencesFrame extends AppFrame {
 
     private Set<JEditorPane> groupDescriptions = new HashSet<>();
 
+    private boolean hasModified = false;
+
     public PreferencesFrame(
             String title,
             String id,
@@ -71,7 +73,10 @@ public class PreferencesFrame extends AppFrame {
         root.setBorder(BORDER);
 
         final ActionListener actionlistener = e -> updateDependencies();
-        final ItemListener itemListener = e -> updateDependencies();
+        final ItemListener itemListener = e -> {
+            updateDependencies();
+            hasModified = true;
+        };
 
         final int len = preferences.size();
         for(int i = 0; i < len; i++) {
@@ -170,6 +175,10 @@ public class PreferencesFrame extends AppFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
+                if (!hasModified) {
+                    dispose();
+                    return;
+                }
                 final int result = UIUtility.showYesNoCancelDialog(PreferencesFrame.this, I18N.get("preferences.exitConfirmation"));
                 if (result == JOptionPane.YES_OPTION) {
                     save();
