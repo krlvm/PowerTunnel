@@ -173,6 +173,7 @@ public class PreferencesFrame extends AppFrame {
                 final int result = UIUtility.showYesNoCancelDialog(PreferencesFrame.this, I18N.get("preferences.exitConfirmation"));
                 if (result == JOptionPane.YES_OPTION) {
                     save();
+                    dispose();
                 } else if(result == JOptionPane.NO_OPTION) {
                     dispose();
                 }
