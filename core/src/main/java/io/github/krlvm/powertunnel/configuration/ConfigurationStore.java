@@ -98,6 +98,17 @@ public class ConfigurationStore implements Configuration {
     }
 
     @Override
+    public long getLong(String key, long defaultValue) {
+        if (!data.containsKey(key)) setLong(key, defaultValue);
+        return Long.parseLong(data.get(key));
+    }
+
+    @Override
+    public void setLong(String key, long value) {
+        data.put(key, String.valueOf(value));
+    }
+
+    @Override
     public boolean getBoolean(String key, boolean defaultValue) {
         if (!data.containsKey(key)) setBoolean(key, defaultValue);
         return Boolean.parseBoolean(data.get(key));
