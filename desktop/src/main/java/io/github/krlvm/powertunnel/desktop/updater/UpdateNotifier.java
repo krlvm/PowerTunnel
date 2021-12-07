@@ -21,6 +21,7 @@ import io.github.krlvm.powertunnel.desktop.BuildConstants;
 import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
 import io.github.krlvm.powertunnel.desktop.ui.I18N;
 import io.github.krlvm.powertunnel.desktop.utilities.UIUtility;
+import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.krlvm.swingdpi.SwingDPI;
@@ -37,6 +38,11 @@ public class UpdateNotifier {
     private static final Logger LOGGER = LoggerFactory.getLogger(UpdateNotifier.class);
     public static boolean ENABLED = true;
     public static String NEW_VERSION = null;
+
+    public static boolean isExpired(Configuration configuration) {
+        return System.currentTimeMillis()
+                - configuration.getLong("last_update_check", 0) > 24 * 60 * 60 * 1000;
+    }
 
     public static boolean checkAndNotify(String product, String repo, boolean loadChangelog) {
         final UpdateInfo info;
@@ -69,7 +75,7 @@ public class UpdateNotifier {
             final JPanel panel = new JPanel(new BorderLayout());
 
             panel.add(UIUtility.getLabelWithHyperlinkSupport(String.format(
-                I18N.get("updater.dialog") + "<br> ",
+                I18N.get("updater.dialog") + "<br>",
                 product,
                 info.getVersion(),
                 "<a href=\"" + info.getReleasePage() + "\">" + info.getReleasePage() + "</a>",

@@ -225,13 +225,17 @@ public class Main {
             if(cli.has(Arguments.START)) app.start();
         }
 
-        if(UpdateNotifier.ENABLED) {
+        if(UpdateNotifier.ENABLED && UpdateNotifier.isExpired(configuration)) {
             final Thread updateThread = new Thread(
                     () -> UpdateNotifier.checkAndNotify(BuildConstants.NAME, BuildConstants.REPO, false),
                     "Main App Update Checking Thread"
             );
             updateThread.setDaemon(true);
             updateThread.start();
+            configuration.setLong("last_update_check", System.currentTimeMillis());
+            try {
+                configuration.save();
+            } catch (IOException ignore) {}
         }
     }
 }
