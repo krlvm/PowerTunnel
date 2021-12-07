@@ -53,7 +53,8 @@ public class MainFrame extends AppFrame {
             "Get <a href=\"https://github.com/krlvm/PowerTunnel-Android\">version for Android</a>" +
             "<br><br>" +
             "Version %s [%s]<br>" +
-            "Core version: %s [%s]" +
+            "Core version: %s [%s]<br>" +
+            "SDK Version %s" +
             "<br><br>" +
             "Licensed under the<br>" +
             "<a href=\"https://raw.githubusercontent.com/krlvm/PowerTunnel/master/LICENSE\">GNU General Public License v3</a>" +
@@ -62,7 +63,8 @@ public class MainFrame extends AppFrame {
 
             BuildConstants.DESCRIPTION, BuildConstants.REPO, BuildConstants.NAME,
             BuildConstants.VERSION, BuildConstants.VERSION_CODE,
-            io.github.krlvm.powertunnel.BuildConstants.VERSION, io.github.krlvm.powertunnel.BuildConstants.VERSION_CODE
+            io.github.krlvm.powertunnel.BuildConstants.VERSION, io.github.krlvm.powertunnel.BuildConstants.VERSION_CODE,
+            io.github.krlvm.powertunnel.BuildConstants.SDK
     );
     private final JLabel header;
     private final JButton stateButton;
