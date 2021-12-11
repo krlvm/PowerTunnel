@@ -22,11 +22,11 @@ plugins {
 version '2.0-SNAPSHOT'
 
 dependencies {
-    api 'org.jetbrains:annotations:16.0.2'
+    api 'org.jetbrains:annotations:22.0.0'
     api 'org.slf4j:slf4j-api:1.7.32'
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 }
 
 task fatJar(type: Jar, group: 'build', description: 'Assembles a jar archive containing the main classes and all dependencies.') {
