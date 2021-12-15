@@ -30,7 +30,7 @@ repositories {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'xyz.rogfam:littleproxy:2.0.5'
+    implementation 'xyz.rogfam:littleproxy:2.0.6'
     implementation 'org.slf4j:slf4j-simple:1.7.32'
     implementation 'net.java.dev.jna:jna:3.2.5'
 
