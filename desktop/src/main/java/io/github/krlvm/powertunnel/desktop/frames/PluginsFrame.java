@@ -20,6 +20,7 @@ package io.github.krlvm.powertunnel.desktop.frames;
 import io.github.krlvm.powertunnel.configuration.ConfigurationStore;
 import io.github.krlvm.powertunnel.desktop.application.DesktopApp;
 import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
+import io.github.krlvm.powertunnel.desktop.configuration.ServerConfiguration;
 import io.github.krlvm.powertunnel.desktop.ui.I18N;
 import io.github.krlvm.powertunnel.desktop.ui.PluginInfoRenderer;
 import io.github.krlvm.powertunnel.desktop.utilities.UIUtility;
@@ -33,6 +34,8 @@ import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
 import io.github.krlvm.powertunnel.sdk.exceptions.PluginLoadException;
 import io.github.krlvm.powertunnel.sdk.plugin.PluginInfo;
 import io.github.krlvm.powertunnel.utilities.JarLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -46,6 +49,8 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class PluginsFrame extends AppFrame {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PluginsFrame.class);
 
     private static final int PADDING = 8;
     private final DefaultListModel<PluginInfo> model = new DefaultListModel<>();
@@ -150,11 +155,21 @@ public class PluginsFrame extends AppFrame {
         final Configuration configuration = GraphicalApp.getInstance().getConfiguration();
         final String val = configuration.get("disabled_plugins", "");
         configuration.set("disabled_plugins", val.replace(";" + plugin.getSource(), ""));
+        pluginToggleSaveConfiguration();
     }
     private void disablePlugin(PluginInfo plugin) {
-        final Configuration configuration = GraphicalApp.getInstance().getConfiguration();
+        final ServerConfiguration configuration = GraphicalApp.getInstance().getConfiguration();
         final String val = configuration.get("disabled_plugins", "");
         configuration.set("disabled_plugins", val + ";" + plugin.getSource());
+        pluginToggleSaveConfiguration();
+    }
+    private void pluginToggleSaveConfiguration() {
+        try {
+            GraphicalApp.getInstance().getConfiguration().save();
+        } catch (IOException ex) {
+            LOGGER.warn("Failed to save configuration: {}", ex.getMessage(), ex);
+            UIUtility.showErrorDialog(this, "Failed to save configuration");
+        }
     }
 
     private void withSelectedValue(Consumer<PluginInfo> consumer) {
