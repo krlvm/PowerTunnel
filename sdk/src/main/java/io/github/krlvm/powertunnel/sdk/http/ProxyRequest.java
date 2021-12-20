@@ -32,12 +32,12 @@ public interface ProxyRequest extends ProxyMessage {
     }
 
     default String getHost() {
-        if(address() != null) {
+        if (address() != null) {
             return address().getHost();
-        } else if(getUri() != null) {
-            return FullAddress.fromString(getUri()).getHost();
-        } else if(headers().contains("Host")) {
+        } else if (headers().contains("Host")) {
             return headers().get("Host");
+        } else if (getUri() != null) {
+            return FullAddress.fromString(getUri()).getHost();
         }
         return null;
     }
