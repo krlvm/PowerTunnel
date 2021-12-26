@@ -81,8 +81,17 @@ public class PluginsFrame extends AppFrame {
                 enablePlugin(pluginInfo);
                 disableButton.setText(I18N.get("plugins.disable"));
             }
+            if(GraphicalApp.getInstance().isRunning()) {
+                final int result = UIUtility.showYesNoDialog(PluginsFrame.this, I18N.get("preferences.restartProxyPrompt"));
+                if (result == JOptionPane.YES_OPTION) {
+                    SwingUtilities.invokeLater(() -> {
+                        GraphicalApp.getInstance().stop();
+                        GraphicalApp.getInstance().start();
+                    });
+                }
+            }
         }));
-        disableButton.setEnabled(!GraphicalApp.getInstance().isRunning());
+        //disableButton.setEnabled(!GraphicalApp.getInstance().isRunning());
 
         final JButton settingsButton = new JButton(I18N.get("plugins.settings"));
         settingsButton.addActionListener(e -> withSelectedValue(this::openPreferences));
