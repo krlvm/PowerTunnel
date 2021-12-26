@@ -32,6 +32,8 @@ import ru.krlvm.swingdpi.SwingDPI;
 import javax.swing.*;
 import javax.swing.text.PlainDocument;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -116,6 +118,17 @@ public class MainFrame extends AppFrame {
                 app.start();
             }
         }).start());
+        stateButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.getButton() != MouseEvent.BUTTON3) return;
+                if (!GraphicalApp.getInstance().isRunning()) return;
+                SwingUtilities.invokeLater(() -> {
+                    GraphicalApp.getInstance().stop();
+                    GraphicalApp.getInstance().start();
+                });
+            }
+        });
 
         // endregion
 
