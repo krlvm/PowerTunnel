@@ -145,6 +145,8 @@ public class PowerTunnel implements PowerTunnelServer {
         proxyListeners.clear();
 
         this.server = null;
+
+        System.gc();
     }
 
     private void startServer() throws ProxyStartException {

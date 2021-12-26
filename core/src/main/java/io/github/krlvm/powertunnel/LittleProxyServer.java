@@ -123,7 +123,6 @@ public class LittleProxyServer implements ProxyServer {
         }
         this.server = null;
 
-        System.gc();
         LOGGER.info("LittleProxy Server has stopped");
     }
 
