@@ -20,7 +20,7 @@ plugins {
 }
 
 group 'io.github.krlvm.powertunnel.plugins'
-version '2.0-SNAPSHOT'
+version '2.0'
 
 jar {
     destinationDirectory.set(file("$rootDir/desktop/build/run/plugins"))

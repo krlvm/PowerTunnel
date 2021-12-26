@@ -19,7 +19,7 @@ plugins {
     id 'java-library'
 }
 
-version '2.0-SNAPSHOT'
+version '2.0'
 
 dependencies {
     api 'org.jetbrains:annotations:22.0.0'
