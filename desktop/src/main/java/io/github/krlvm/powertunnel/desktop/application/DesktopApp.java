@@ -20,7 +20,7 @@ package io.github.krlvm.powertunnel.desktop.application;
 import io.github.krlvm.powertunnel.PowerTunnel;
 import io.github.krlvm.powertunnel.desktop.BuildConstants;
 import io.github.krlvm.powertunnel.desktop.configuration.ServerConfiguration;
-import io.github.krlvm.powertunnel.desktop.updater.UpdateNotifier;
+import io.github.krlvm.powertunnel.desktop.managers.ConsoleReader;
 import io.github.krlvm.powertunnel.desktop.utilities.SystemUtility;
 import io.github.krlvm.powertunnel.mitm.MITMAuthority;
 import io.github.krlvm.powertunnel.plugin.PluginLoader;
@@ -28,10 +28,12 @@ import io.github.krlvm.powertunnel.sdk.ServerListener;
 import io.github.krlvm.powertunnel.sdk.exceptions.PluginLoadException;
 import io.github.krlvm.powertunnel.sdk.exceptions.ProxyStartException;
 import io.github.krlvm.powertunnel.sdk.plugin.PluginInfo;
+import io.github.krlvm.powertunnel.sdk.plugin.PowerTunnelPlugin;
 import io.github.krlvm.powertunnel.sdk.proxy.*;
 import io.github.krlvm.powertunnel.sdk.types.PowerTunnelPlatform;
 import io.github.krlvm.powertunnel.sdk.types.VersionInfo;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +45,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public abstract class DesktopApp implements ServerListener {
@@ -66,7 +69,10 @@ public abstract class DesktopApp implements ServerListener {
             null
     );
 
+    private static DesktopApp instance;
+
     protected final ServerConfiguration configuration;
+    protected ConsoleReader consoleReader;
 
     protected PowerTunnel server;
     protected ProxyAddress address;
@@ -75,11 +81,15 @@ public abstract class DesktopApp implements ServerListener {
     private Exception initializationException = null;
 
     public DesktopApp(ServerConfiguration configuration) {
+        instance = this;
+
         this.configuration = configuration;
         this.address = new ProxyAddress(
                 configuration.get("ip", "127.0.0.1"),
                 configuration.getInt("port", 8085)
         );
+
+        registerAppCommands();
     }
 
     public void start() {
@@ -211,10 +221,58 @@ public abstract class DesktopApp implements ServerListener {
     }
 
     @Override
-    public void onProxyStatusChanged(@NotNull ProxyStatus status) {}
+    public void onProxyStatusChanged(@NotNull ProxyStatus status) {
+        if (status == ProxyStatus.STOPPING || status == ProxyStatus.NOT_RUNNING) {
+            if (consoleReader != null) consoleReader.reset();
+        }
+    }
 
     protected void onUnexpectedProxyInitializationError(Exception ex) {
         LOGGER.error("Unexpected error occurred when initializing proxy server: {}", ex.getMessage(), ex);
+    }
+
+    protected ConsoleReader getConsoleReader() {
+        if (consoleReader == null) consoleReader = new ConsoleReader();
+        return consoleReader;
+    }
+
+    public void registerConsoleCommand(
+            @NotNull PowerTunnelPlugin plugin,
+            @NotNull String command,
+            @NotNull Consumer<String[]> handler,
+            @Nullable String usage,
+            @Nullable String description) {
+        getConsoleReader().registerCommand(plugin.getInfo().getId().toLowerCase(), command.toLowerCase(),
+                handler, usage, description);
+    }
+
+    private void registerAppCommands() {
+        getConsoleReader().registerAppCommand("version", args -> {
+            System.out.println();
+            System.out.println("Running " + BuildConstants.NAME + " version " + BuildConstants.VERSION + " (code " + BuildConstants.VERSION_CODE + ")");
+            System.out.println("Core version " + io.github.krlvm.powertunnel.BuildConstants.VERSION + " (code " + io.github.krlvm.powertunnel.BuildConstants.VERSION_CODE + "), SDK " + io.github.krlvm.powertunnel.BuildConstants.SDK);
+            System.out.println("(c) krlvm, 2019-2021");
+            System.out.println();
+        }, "", "print version details");
+        if (this instanceof GraphicalApp) {
+            getConsoleReader().registerAppCommand("start", args -> {
+                if (!isRunning()) {
+                    System.err.println("Proxy Server is already running");
+                } else {
+                    start();
+                }
+            }, "", "start proxy server");
+        }
+        getConsoleReader().registerAppCommand("stop", args -> {
+            if (!isRunning()) {
+                System.err.println("Proxy Server is not running");
+            } else {
+                stop();
+            }
+        }, "", "shutdown proxy server");
+        getConsoleReader().registerAppCommand("exit", args -> {
+            System.exit(0);
+        }, "", "terminate proxy server and exit");
     }
 
     private Map<String, String> getHardcodedSettings() {
@@ -236,5 +294,9 @@ public abstract class DesktopApp implements ServerListener {
 
     public void setAddress(ProxyAddress address) {
         this.address = address;
+    }
+
+    public static DesktopApp getInstance() {
+        return instance;
     }
 }
