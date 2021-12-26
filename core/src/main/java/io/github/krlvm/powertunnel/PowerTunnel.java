@@ -283,6 +283,17 @@ public class PowerTunnel implements PowerTunnelServer {
     }
 
     public void registerPlugin(PowerTunnelPlugin plugin) {
+        for (PowerTunnelPlugin p : this.plugins) {
+            if (p.getInfo().getId().equals(plugin.getInfo().getId())) {
+                LOGGER.warn(
+                        "Detected duplicate of plugin '{}' [{}] with version {} ({}) in '{}', version {} ({}) has already been loaded from '{}'",
+                        p.getInfo().getName(), p.getInfo().getId(), p.getInfo().getVersion(), p.getInfo().getVersionCode(), p.getInfo().getSource(),
+                        plugin.getInfo().getVersion(), plugin.getInfo().getVersionCode(), plugin.getInfo().getSource()
+                );
+                return;
+            }
+        }
+
         this.plugins.add(plugin);
         plugin.attachServer(this);
 
