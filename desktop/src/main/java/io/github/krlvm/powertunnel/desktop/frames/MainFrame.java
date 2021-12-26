@@ -22,7 +22,6 @@ import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
 import io.github.krlvm.powertunnel.desktop.system.SystemProxy;
 import io.github.krlvm.powertunnel.desktop.ui.FieldFilter;
 import io.github.krlvm.powertunnel.desktop.ui.I18N;
-import io.github.krlvm.powertunnel.desktop.ui.JPanelCallback;
 import io.github.krlvm.powertunnel.desktop.ui.TextRightClickPopup;
 import io.github.krlvm.powertunnel.desktop.utilities.UIUtility;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyAddress;
@@ -36,6 +35,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.function.Consumer;
 
 public class MainFrame extends AppFrame {
 
@@ -76,6 +76,7 @@ public class MainFrame extends AppFrame {
 
     private final JPanel buttonsPanel;
     private final JPanel extensibleButtonsPanel;
+    private JPopupMenu extensiblePopupMenu = null;
 
     public MainFrame(GraphicalApp app) {
         super(null, app);
@@ -215,6 +216,15 @@ public class MainFrame extends AppFrame {
             stateButton.setText(I18N.get("main." + (app.isRunning() ? "stop" : "start")));
             stateButton.setEnabled(status != ProxyStatus.STARTING && status != ProxyStatus.STOPPING);
 
+            if (status == ProxyStatus.STOPPING || status == ProxyStatus.NOT_RUNNING) {
+                extensibleButtonsPanel.removeAll();
+                extensibleButtonsPanel.setLayout(new GridLayout(1, 1));
+                extensibleButtonsPanel.setVisible(false);
+                buttonsPanel.remove(extensibleButtonsPanel);
+                extensiblePopupMenu = null;
+                pack();
+            }
+
             final boolean notRunning = status == ProxyStatus.NOT_RUNNING;
             ipField.setEnabled(notRunning && !app.getConfiguration().getImmutableKeys().contains("ip"));
             portField.setEnabled(notRunning && !app.getConfiguration().getImmutableKeys().contains("port"));
@@ -234,14 +244,34 @@ public class MainFrame extends AppFrame {
         );
     }
 
-    public void getExtensibleButtonsPanel(JPanelCallback callback) {
+    public void getExtensibleButtonsPanel(Consumer<JPanel> consumer) {
         buttonsPanel.setLayout(new GridLayout(2, 1));
         if(!extensibleButtonsPanel.isVisible()) {
             buttonsPanel.add(extensibleButtonsPanel, 0);
             extensibleButtonsPanel.setVisible(true);
         }
-        callback.call(extensibleButtonsPanel);
+        consumer.accept(extensibleButtonsPanel);
         pack();
+    }
+
+    public void getExtensiblePopupMenu(Consumer<JPopupMenu> consumer) {
+        if (extensiblePopupMenu != null) {
+            consumer.accept(extensiblePopupMenu);
+            return;
+        }
+        extensiblePopupMenu = new JPopupMenu();
+        getExtensibleButtonsPanel(panel -> {
+            final JButton button = new JButton("…");
+            button.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    if (e.getButton() != MouseEvent.BUTTON1) return;
+                    SwingUtilities.invokeLater(() -> extensiblePopupMenu.show(e.getComponent(), 0,0));
+                }
+            });
+            panel.add(button);
+            consumer.accept(extensiblePopupMenu);
+        });
     }
 
     private static JTextField createField(String tooltip, int width, int height) {

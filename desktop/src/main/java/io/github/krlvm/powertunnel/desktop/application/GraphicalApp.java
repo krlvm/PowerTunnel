@@ -26,7 +26,6 @@ import io.github.krlvm.powertunnel.desktop.frames.PluginsFrame;
 import io.github.krlvm.powertunnel.desktop.managers.TrayManager;
 import io.github.krlvm.powertunnel.desktop.system.SystemProxy;
 import io.github.krlvm.powertunnel.desktop.ui.I18N;
-import io.github.krlvm.powertunnel.desktop.ui.JPanelCallback;
 import io.github.krlvm.powertunnel.desktop.utilities.UIUtility;
 import io.github.krlvm.powertunnel.sdk.exceptions.ProxyStartException;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyStatus;
@@ -35,6 +34,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.function.Consumer;
 
 public class GraphicalApp extends DesktopApp {
 
@@ -144,8 +144,11 @@ public class GraphicalApp extends DesktopApp {
         optionsFrame.showFrame(getVisibleMainFrame());
     }
 
-    public void extendButtonsPanel(JPanelCallback callback) {
-        frame.getExtensibleButtonsPanel(callback);
+    public void extendButtonsPanel(Consumer<JPanel> consumer) {
+        frame.getExtensibleButtonsPanel(consumer);
+    }
+    public void extendPopupMenu(Consumer<JPopupMenu> consumer) {
+        frame.getExtensiblePopupMenu(consumer);
     }
 
     public void dispose() {
