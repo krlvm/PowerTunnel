@@ -1,72 +1,47 @@
+/*
+ * This file is part of PowerTunnel.
+ *
+ * PowerTunnel is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * PowerTunnel is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with PowerTunnel.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 plugins {
-    id 'java'
-    id 'application'
-    id 'distribution'
+    id 'idea'
 }
 
-group 'io.github.krlvm'
-version '1.15-SNAPSHOT'
-ext {
-    isReleaseVersion = !version.endsWith('SNAPSHOT')
-}
+subprojects {
+    apply plugin: 'java'
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-    options.compilerArgs += ['-Xlint:deprecation']
-}
+    group 'io.github.krlvm.powertunnel'
 
-application {
-    mainClass = 'ru.krlvm.powertunnel.PowerTunnel'
-}
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    implementation 'xyz.rogfam:littleproxy:2.0.5'
-    implementation 'org.slf4j:slf4j-simple:1.7.32'
-    implementation 'net.java.dev.jna:jna:3.2.5'
-
-    /* dnsjava */
-    implementation 'dnsjava:dnsjava:3.4.1'
-    implementation 'org.jitsi:dnssecjava:2.0.0'
-
-    /* LittleProxy-MITM Dependencies */
-    implementation 'org.bouncycastle:bcpkix-jdk15on:1.65'
-
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
-}
-
-test {
-    useJUnitPlatform()
-}
-
-run {
-    File wd = new File('build/run/')
-    wd.mkdirs()
-    workingDir = wd
-}
-
-task fatJar(type: Jar) {
-    archiveClassifier = 'all'
-    duplicatesStrategy DuplicatesStrategy.EXCLUDE
-    manifest {
-        attributes(
-            'Main-Class': application.mainClass
-        )
+    ext {
+        isReleaseVersion = !version.endsWith('SNAPSHOT')
     }
-    from {
-        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
-    } {
-        exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
-    with jar
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+        options.compilerArgs += ['-Xlint:deprecation']
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    test {
+        useJUnitPlatform()
+    }
 }

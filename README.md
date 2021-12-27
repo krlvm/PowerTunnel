@@ -1,9 +1,7 @@
 <div align="center">
 <img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/.github/images/logo.png" height="192px" width="192px" />
 <br><h1>PowerTunnel</h1>
-Simple, scalable, cross-platform and effective solution against government censorship
-<!-- That does not mean the battle is finished -->
-<!--<h3><b>Please, read <a href="https://gist.github.com/krlvm/76595f2fec7e23cf5e20f8ccfa43997a">important announcement</a></b></h3>-->
+Powerful and extensible proxy server
 
 <a href="https://t.me/powertunnel_dpi">Telegram channel</a>
 <br>
@@ -17,112 +15,97 @@ Simple, scalable, cross-platform and effective solution against government censo
 <img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/.github/images/ui.png" alt="PowerTunnel User Interface" style="max-width: 90%; height: auto"/>
 </div>
 
-### What is it
-Nowadays Internet censorship is introducing in many countries: governments analyze and block traffic to this sites using DPI - Deep Packet Inspection systems, forcing you using circumvention utilities like VPN, for example. That approach have many disadvantages, most noticeable - connection speed slowdown. In addition, these services cannot guarantee work stability and your data confidence.
+## What is it
 
-PowerTunnel is active DPI circumvention utility, that works only on your PC and don't send your traffic to third-party servers, respecting your privacy and do not slowing down your internet connection.
+PowerTunnel is an extensible proxy server built on top of [LittleProxy](https://github.com/adamfisk/LittleProxy).
 
-PowerTunnel is more than a regular anti-censorship utility - using it, you can monitor your traffic and block any connection, advertising, for example.
+PowerTunnel provides an SDK that allows you to extend its functionality however you like, and even handle encrypted HTTPS traffic (powered by [LittleProxy-MITM](https://github.com/ganskef/LittleProxy-mitm)), which can be especially useful in web development. PowerTunnel has an Android version, so any plugin you write can work on almost all devices.
 
-### How does it work?
-PowerTunnel establishes a transparent proxy server on your PC and directs your traffic through it, applying DPI circumvention tricks.
 
-PowerTunnel never decrypts your traffic, all code is open-source.\
-You should install Root CA only in case you enabled [some specific options](https://github.com/krlvm/PowerTunnel/wiki/SNI-Tricks).
+PowerTunnel was originally developed and is best known as a censorship bypass tool. This functionality has been spun off in the [LibertyTunnel](https://github.com/krlvm/LibertyTunnel) plugin which is installed by default, just like [DNS Resolver](https://github.com/krlvm/PowerTunnel-DNS) with DNS over HTTPS support.
 
-## How can I get it?
-You can compile a binary yourself or download prepared binary [here](https://github.com/krlvm/PowerTunnel/releases).
+#### Anti-censorship tool
 
-### Setup
-The installation process is described in detail [on the Wiki](https://github.com/krlvm/PowerTunnel/wiki/Installation).
+Digital censorship has become widespread in authoritarian and developing countries: governments install DPI - Deep Packet Inspection systems - for Internet Service Providers, which allows analyzing and blocking traffic to websites they don't want you to see, forcing you to use slow and often paid proxies or VPN services with dubious privacy policy.
 
-### Doesn't work
-Try to disable chunking mode and enable SNI Spoil.
+PowerTunnel is an active DPI circumvention utility - it works only on your PC and do not route your traffic through some third-party webservers. It creates a local proxy server on your device and diverts your HTTP(S) traffic there, where PowerTunnel modifies your traffic in a special way to exploit bugs in DPI systems which makes it possible to bypass the lock - without (significantly) slowing down your Internet connection.
 
-Most likely your ISP blocked the website you need by IP address, so only encrypted tunnel (VPN/Tor) can help you.
+Anti-censorship module can be configured in Plugins window - it is called LibertyTunnel.
 
-## User interface
-You can monitor network activity, block and whitelist websites through Java Swing-based user interface when console mode is off or through [PowerTunnel Monitor](https://github.com/krlvm/PowerTunnel/wiki/PowerTunnel-Monitor).
+In this sense, PowerTunnel is a free cross-platform implementation of [GoodbyeDPI](https://github.com/ValdikSS/GoodbyeDPI) written in Java.
 
-## Configuring PowerTunnel
-### DNS over HTTPS
-PowerTunnel supports DNS over HTTPS (DoH) - secure and fast DNS protocol.
+Please, note that PowerTunnel does not change your IP address.
 
-DoH servers tested with PowerTunnel:
-* Google (recommended):
-  * https://dns.google/dns-query
-  * https://8.8.8.8/dns-query
-* Cloudflare - https://cloudflare-dns.com/dns-query (unstable)
+## Configuring
 
-You can test if you're using DoH [here](http://www.whatsmydnsserver.com/). If you have problems with DoH on PowerTunnel try disabling DNSSec mode.
+### Downloading PowerTunnel
 
-### From User Interface
+PowerTunnel binary can be downloaded from the [Releases](https://github.com/krlvm/PowerTunnel/releases) page.
 
-<img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/.github/images/options.png" alt="User Interface for configuring the application" style="max-height: 600px; width: auto"/>
+If you don't trust the prebuilt binaries, you can build PowerTunnel from source - it is using Gradle build system.
 
-Hover over option to get details
-### Launch arguments
+### Launching PowerTunnel
+
+PowerTunnel is a portable Java application, and it does not require additional steps to get it working.
+
+You need to install [Java](https://java.com) to run PowerTunnel.
+
+PowerTunnel can be started by double-clicking the executable .jar file or by starting it from command line ([see below](#launch-arguments)).
+
+After the first launch, PowerTunnel will create directories for storing plugins and configuration files. 
+
+### Installing plugins
+
+To install a plugin, just place its .jar file into `plugins` directory.
+
+Please, make sure you do not have installed different versions of the same plugin.
+
+### Configuring plugins
+
+Installed plugins can be configured from the user interface - click the "Plugins" button of main window to see the list of plugins.
+
+## Launch arguments
 You can specify some params that will override settings through CLI:
 
 ```
 $ java -jar PowerTunnel.jar -help
 
-Available arguments:
- -help                                   display help
- -start                                  starts server right after load
- -console                                console mode, without UI
- -government-blacklist-from [URL]        automatically fill government blacklist from URL
- -use-dns-sec                            enables DNSSec mode with the Google DNS servers
- -use-dns-server [URL]                   overrides DNS settings (DNS over HTTPS supported)
- -disallow-invalid-packets               HTTP packets without Host header will be thrown out (unrecommended)
- -disable-chunking                       HTTPS: disables packet chunking (fragmentation)
- -full-chunking                          HTTPS: enables chunking the whole packets (requires chunking enabled)
- -chunk-size [size]                      HTTPS: sets size of one chunk
- -sni-trick [trick]                      HTTPS: enable SNI tricks: 1 - spoil, 2 - erase, 3 - fake. Requires Root CA installation.
- -sni-trick-fake-host [host]             HTTPS: host that will used with 'fake' SNI Trick
- -line-break-get                         HTTP:  inserts a line break before 'GET' method
- -space-after-get                        HTTP:  inserts a space after 'GET' method
- -apply-http-https                       HTTP:  apply enabled HTTP tricks to HTTPS
- -mix-host-case                          HTTP:  enables 'Host' header value case mix
- -complete-mix-host-case                 HTTP:  complete 'Host' header value case mix
- -disable-mix-host-header-case           HTTP:  disables 'Host' header case mix
- -disable-dot-after-host-header          HTTP:  disables dot after host header
- -send-payload [length]                  HTTP:  sends payload to bypass blocking, 21 is recommended
- -ip [IP Address]                        sets IP Address
- -port [Port]                            sets port
- -upstream [ip:port]                     enables upstream proxy and sets its address
- -upstream-auth [user:password]          sets upstream proxy authorization credentials
- -port [Port]                            sets port
- -enable-journal                         enables PowerTunnel journal (when UI enabled)
- -enable-logs                            enables PowerTunnel logs (when UI enabled)
- -enable-log-to-file                     enables PowerTunnel logger and log file
- -with-web-ui [appendix]                 enables Web UI at http://powertunnelmonitor[appendix].info
- -disable-auto-proxy-setup               disables auto proxy setup (supported OS: Windows)
- -enable-proxy-pac                       enables generation of PAC file on startup
- -auto-proxy-setup-win-ie                auto proxy setup using IE instead of native API on Windows
- -full-output-mirroring                  fully mirrors system output to the log
- -set-scale-factor [n]                   sets DPI scale factor (for testing purposes)
- -disable-tray                           disables tray icon
- -disable-native-lf                      disables native L&F (when UI enabled)
- -disable-ui-scaling                     disables UI scaling (when UI enabled, Java 9 scaling will be applied)
- -disable-updater                        disables the update notifier
- -debug                                  enables debug
+    --auth-password <arg>            set proxy authorization password
+    --auth-username <arg>            set proxy authorization username
+    --auto-proxy-setup-ie            setup proxy using Internet Explorer
+    --cfg <arg>                      set preference value
+    --console                        run application in console mode
+    --disable-auto-proxy-setup       disable auto proxy setup
+    --disable-native-skin            disable platform native UI skin
+    --disable-tray                   disable tray mode
+    --disable-ui-scaling             disable UI scaling
+    --disable-updater                disable Update Notifier
+    --enable-logging                 enable logging to file
+    --help                           display help
+    --ip <arg>                       set proxy server IP address
+    --lang <arg>                     set UI language
+    --minimized                      minimize UI to tray after start
+    --port <arg>                     set proxy server port
+    --set-ui-scale-factor <arg>      set UI scale factor
+    --start                          start proxy server after load
+    --upstream-auth-username <arg>   set upstream proxy password
+    --upstream-proxy-host <arg>      set upstream proxy host
+    --upstream-proxy-port <arg>      set upstream proxy port
+    --version                        print version details
 ```
 
-## Spin-off projects
-* [PowerTunnel for Android](https://github.com/krlvm/PowerTunnel-Android) - an Android port
-* [Invader](https://github.com/krlvm/Invader) - an effective MITM utility and script injector
-* [LibertyTunnel](https://github.com/krlvm/PowerTunnel/tree/libertytunnel) - a lightweight edition of PowerTunnel 
+If you need to set a certain plugin preference, use `-cfg pluginID.preferenceKey [value]`
+
+## Bundled Plugins
+* [LibertyTunnel](https://github.com/krlvm/LibertyTunnel) - anti-censorship plugin for PowerTunnel
+* [DNS Resolver](https://github.com/krlvm/PowerTunnel-DNS) - DNS Resolver with DNS over HTTPS (DoH) support
 
 ## Dependencies
-* [LittleProxy](https://github.com/adamfisk/LittleProxy) - proxy server
-  * Replaced with a [forked version](https://github.com/mrog/LittleProxy) since v1.11
+* [LittleProxy](https://github.com/adamfisk/LittleProxy) - proxy server, [forked version](https://github.com/mrog/LittleProxy)
 * [LittleProxy-MITM](https://github.com/ganskef/LittleProxy-mitm) - LittleProxy SSL extension
-* [dnsjava](https://github.com/dnsjava/dnsjava) - DNS library, DoH realization
-* [dnssecjava](https://github.com/ibauersachs/dnssecjava) - DNSSec realization for dnsjava
-* [DNSSEC4J](https://github.com/adamfisk/DNSSEC4J) - DNSSec realization for LittleProxy
-* [Java Native Access](https://github.com/java-native-access/jna) - library for accessing system native API
+* [dnsjava](https://github.com/dnsjava/dnsjava) - DNS and DoH library
+* [dnssecjava](https://github.com/ibauersachs/dnssecjava) - DNSSec implementation for dnsjava
+* [SLF4J](http://www.slf4j.org/) - logging facade API
+* [Log4j](https://logging.apache.org/log4j/2.x/) - logger implementation
+* [Java Native Access](https://github.com/java-native-access/jna) - accessing system native API
 * [SwingDPI](https://github.com/krlvm/SwingDPI) - High DPI scaling
-
-### Credits
-* [blockcheck](https://github.com/ValdikSS/blockcheck)

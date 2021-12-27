@@ -1,0 +1,51 @@
+/*
+ * This file is part of PowerTunnel.
+ *
+ * PowerTunnel is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * PowerTunnel is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with PowerTunnel.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+plugins {
+    id 'java-library'
+    id 'application'
+}
+
+version '2.0'
+
+configurations {
+    runtimeClasspath {
+        exclude group: 'com.google.guava', module: 'guava'
+    }
+}
+task fatJar(type: Jar, group: 'build', description: 'Assembles a jar archive containing the main classes and all dependencies.') {
+    archiveClassifier = 'all'
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
+
+    from {
+        configurations.runtimeClasspath.findAll {it.name.endsWith('jar') }.collect { zipTree(it) }
+    } {
+        exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+    }
+
+    with jar
+}
+
+dependencies {
+    api project(':sdk')
+    api project(':littleproxy')
+    api 'org.jetbrains:annotations:16.0.2'
+    implementation 'com.google.code.gson:gson:2.8.8'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
+}

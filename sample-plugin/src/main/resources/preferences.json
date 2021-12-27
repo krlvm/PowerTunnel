@@ -1,0 +1,87 @@
+[
+  {
+    "key": "test-check",
+    "defaultValue": true,
+    "type": "checkbox"
+  },
+  {
+    "key": "test-switch",
+    "description": "Switch Test Preference Description",
+    "defaultValue": false,
+    "type": "switch"
+  },
+  {
+    "key": "test-str",
+    "title": "Test Preference (str)",
+    "description": "String Test Preference Description",
+    "defaultValue": "default value of test-str",
+    "type": "string"
+  },
+  {
+    "key": "test-number",
+    "title": "Test Preference (number)",
+    "description": "Number Test Preference Description",
+    "defaultValue": 5,
+    "type": "number"
+  },
+  {
+    "key": "test-select",
+    "title": "Test Preference (select)",
+    "description": "Select Test Preference Description",
+    "defaultValue": "opt1",
+    "type": "select",
+    "items": [
+      {
+        "key": "opt1",
+        "name": "Option 1 Name"
+      },
+      {
+        "key": "opt2",
+        "name": "Option 2 Name"
+      },
+      {
+        "key": "opt3",
+        "name": "Option 3 Name"
+      }
+    ]
+  },
+
+  {
+    "group": "dependent-preferences",
+    "title": "Dependent preferences",
+    "description": "Dependent preferences group description",
+    "preferences": [
+      {
+        "key": "test-number-d",
+        "title": "Test Preference (number) dependent on 'test-check'",
+        "description": "Number Test-C Preference Description",
+        "type": "number",
+        "dependency": "test-check"
+      },
+      {
+        "key": "test-number-d",
+        "title": "Test Preference (number) dependent on 'test-str' (val='value')",
+        "description": "Number Test-S Preference Description",
+        "type": "number",
+        "dependency": "test-str",
+        "dependencyValue": "value"
+      },
+      {
+        "key": "test-number-n",
+        "title": "Test Preference (number) dependent on 'test-number' (val='5')",
+        "description": "Number Test-N Preference Description",
+        "type": "number",
+        "dependency": "test-number",
+        "dependencyValue": 5
+      },
+      {
+        "key": "test-number-n",
+        "title": "Test Preference (number) dependent on 'test-select' (val='opt2')",
+        "description": "Number Test-SEL Preference Description",
+        "type": "number",
+        "dependency": "test-select",
+        "dependencyValue": "opt2"
+      }
+    ]
+  }
+]

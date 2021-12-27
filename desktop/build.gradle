@@ -1,0 +1,94 @@
+/*
+ * This file is part of PowerTunnel.
+ *
+ * PowerTunnel is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * PowerTunnel is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with PowerTunnel.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+plugins {
+    id 'application'
+    id 'distribution'
+}
+
+version '2.0'
+
+run {
+    workingDir = new File('build/run')
+    workingDir.mkdirs()
+}
+
+application {
+    mainClass = 'io.github.krlvm.powertunnel.desktop.Main'
+}
+
+jar {
+    if (!project.version.endsWith('SNAPSHOT')) {
+        exclude 'icon_dev.png'
+    }
+}
+
+task fatJar(type: Jar, group: 'build', description: 'Assembles a jar archive containing the main classes and all dependencies.') {
+    archiveClassifier = 'all'
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes(
+                'Main-Class': application.mainClass
+        )
+    }
+    from {
+        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+    } {
+        exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+    }
+    with jar
+}
+
+task releaseJar(group: 'build', description: 'Assembles a signed jar archive containing the main classes and all dependencies.') {
+    dependsOn fatJar
+    doLast {
+        println 'Loading signing properties...'
+        def keystoreProperties = new Properties()
+        def keystorePropertiesFile = rootProject.file('key.properties')
+        if(!keystorePropertiesFile.exists()) throw new GradleException('key.properties does not exist')
+        keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+        println 'Signing fatJar...'
+
+        def stdout = new ByteArrayOutputStream()
+        exec {
+            workingDir rootProject.rootDir
+            commandLine 'cmd', '/c', keystoreProperties.getProperty("jarsigner"),
+                    "-keystore", keystoreProperties.getProperty('storeFile'),
+                    "-storepass", keystoreProperties.getProperty('storePassword'),
+                    "-keypass", keystoreProperties.getProperty('keyPassword'),
+                    "-tsa", keystoreProperties.getProperty('tsa'), "-verbose",
+                    "$buildDir/libs/*-all.jar", keystoreProperties.getProperty('keyAlias')
+            standardOutput = System.out;
+        }
+        println stdout
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation project(':core')
+    implementation 'commons-cli:commons-cli:1.5.0'
+    implementation 'net.java.dev.jna:jna:3.2.5'
+
+    implementation 'org.apache.logging.log4j:log4j-api:2.17.0'
+    implementation 'org.apache.logging.log4j:log4j-core:2.17.0'
+    implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.17.0'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+}
