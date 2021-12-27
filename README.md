@@ -22,11 +22,49 @@ PowerTunnel is an extensible proxy server built on top of [LittleProxy](https://
 PowerTunnel provides an SDK that allows you to extend its functionality however you like, and even handle encrypted HTTPS traffic (powered by [LittleProxy-MITM](https://github.com/ganskef/LittleProxy-mitm)), which can be especially useful in web development. PowerTunnel has an Android version, so any plugin you write can work on almost all devices.
 
 
-PowerTunnel was originally developed and is best known as a censorship bypass tool. This functionality has been spun off in the [LibertyTunnel](https://github.com/krlvm/LibertyTunnel) plugin, it is installed by default, just like [DNS Resolver](https://github.com/krlvm/PowerTunnel-DNS) with DNS over HTTPS support.
+PowerTunnel was originally developed and is best known as a censorship bypass tool. This functionality has been spun off in the [LibertyTunnel](https://github.com/krlvm/LibertyTunnel) plugin which is installed by default, just like [DNS Resolver](https://github.com/krlvm/PowerTunnel-DNS) with DNS over HTTPS support.
 
-Version 2.0 is currently in Beta, the SDK Documentation is coming soon.
+#### Anti-censorship tool
 
-### Launch arguments
+Digital censorship has become widespread in authoritarian and developing countries: governments install DPI - Deep Packet Inspection systems - for Internet Service Providers, which allows analyzing and blocking traffic to websites they don't want you to see, forcing you to use slow and often paid proxies or VPN services with dubious privacy policy.
+
+PowerTunnel is an active DPI circumvention utility - it works only on your PC and do not route your traffic through some third-party webservers. It creates a local proxy server on your device and diverts your HTTP(S) traffic there, where PowerTunnel modifies your traffic in a special way to exploit bugs in DPI systems which makes it possible to bypass the lock - without (significantly) slowing down your Internet connection.
+
+Anti-censorship module can be configured in Plugins window - it is called LibertyTunnel.
+
+In this sense, PowerTunnel is a free cross-platform implementation of [GoodbyeDPI](https://github.com/ValdikSS/GoodbyeDPI) written in Java.
+
+Please, note that PowerTunnel does not change your IP address.
+
+## Configuring
+
+### Downloading PowerTunnel
+
+PowerTunnel binary can be downloaded from the [Releases](https://github.com/krlvm/PowerTunnel/releases) page.
+
+If you don't trust the prebuilt binaries, you can build PowerTunnel from source - it is using Gradle build system.
+
+### Launching PowerTunnel
+
+PowerTunnel is a portable Java application, and it does not require additional steps to get it working.
+
+You need to install [Java](https://java.com) to run PowerTunnel.
+
+PowerTunnel can be started by double-clicking the executable .jar file or by starting it from command line ([see below](#launch-arguments)).
+
+After the first launch, PowerTunnel will create directories for storing plugins and configuration files. 
+
+### Installing plugins
+
+To install a plugin, just place its .jar file into `plugins` directory.
+
+Please, make sure you do not have installed different versions of the same plugin.
+
+### Configuring plugins
+
+Installed plugins can be configured from the user interface - click the "Plugins" button of main window to see the list of plugins.
+
+## Launch arguments
 You can specify some params that will override settings through CLI:
 
 ```
@@ -38,9 +76,9 @@ $ java -jar PowerTunnel.jar -help
     --cfg <arg>                      set preference value
     --console                        run application in console mode
     --disable-auto-proxy-setup       disable auto proxy setup
-    --disable-native-skin <arg>      disable platform native UI skin
+    --disable-native-skin            disable platform native UI skin
     --disable-tray                   disable tray mode
-    --disable-ui-scaling <arg>       disable UI scaling
+    --disable-ui-scaling             disable UI scaling
     --disable-updater                disable Update Notifier
     --enable-logging                 enable logging to file
     --help                           display help
@@ -57,6 +95,10 @@ $ java -jar PowerTunnel.jar -help
 ```
 
 If you need to set a certain plugin preference, use `-cfg pluginID.preferenceKey [value]`
+
+## Bundled Plugins
+* [LibertyTunnel](https://github.com/krlvm/LibertyTunnel) - anti-censorship plugin for PowerTunnel
+* [DNS Resolver](https://github.com/krlvm/PowerTunnel-DNS) - DNS Resolver with DNS over HTTPS (DoH) support
 
 ## Dependencies
 * [LittleProxy](https://github.com/adamfisk/LittleProxy) - proxy server, [forked version](https://github.com/mrog/LittleProxy)
