@@ -76,9 +76,10 @@ public class PowerTunnel implements PowerTunnelServer {
             File parentDirectory,
             boolean transparent,
             boolean allowFallbackDnsResolver,
-            Authority mitmAuthority
+            Authority mitmAuthority,
+            File configsDirectory
     ) {
-        this(address, platform, parentDirectory, transparent, allowFallbackDnsResolver, mitmAuthority, null);
+        this(address, platform, parentDirectory, transparent, allowFallbackDnsResolver, mitmAuthority, configsDirectory, null);
     }
     public PowerTunnel(
             ProxyAddress address,
@@ -87,6 +88,7 @@ public class PowerTunnel implements PowerTunnelServer {
             boolean transparent,
             boolean allowFallbackDnsResolver,
             Authority mitmAuthority,
+            File configsDirectory,
             Map<String, String> inheritedConfiguration
     ) {
         this.address = address;
@@ -98,7 +100,7 @@ public class PowerTunnel implements PowerTunnelServer {
         this.inheritedConfiguration = inheritedConfiguration;
 
         pluginsDir = new File(parentDirectory, "plugins");
-        configsDir = new File(parentDirectory, "configs");
+        configsDir = configsDirectory == null ? new File(parentDirectory, "configs") : configsDirectory;
         initializeDirectories();
     }
 
