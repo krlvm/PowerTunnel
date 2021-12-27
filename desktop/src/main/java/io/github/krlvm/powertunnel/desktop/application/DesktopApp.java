@@ -117,6 +117,7 @@ public abstract class DesktopApp implements ServerListener {
                         certificateDirectory.toFile(),
                         configuration.get("cert_password", UUID.randomUUID().toString()).toCharArray()
                 ),
+                null,
                 getHardcodedSettings()
         );
         this.server.registerServerListener(PLUGIN_INFO, this);
@@ -256,7 +257,7 @@ public abstract class DesktopApp implements ServerListener {
         }, "", "print version details");
         if (this instanceof GraphicalApp) {
             getConsoleReader().registerAppCommand("start", args -> {
-                if (!isRunning()) {
+                if (isRunning()) {
                     System.err.println("Proxy Server is already running");
                 } else {
                     start();
