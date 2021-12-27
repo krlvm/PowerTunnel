@@ -252,7 +252,7 @@ public abstract class DesktopApp implements ServerListener {
             System.out.println();
             System.out.println("Running " + BuildConstants.NAME + " version " + BuildConstants.VERSION + " (code " + BuildConstants.VERSION_CODE + ")");
             System.out.println("Core version " + io.github.krlvm.powertunnel.BuildConstants.VERSION + " (code " + io.github.krlvm.powertunnel.BuildConstants.VERSION_CODE + "), SDK " + io.github.krlvm.powertunnel.BuildConstants.SDK);
-            System.out.println("(c) krlvm, 2019-2021");
+            System.out.println("(c) krlvm, 2019-2022");
             System.out.println();
         }, "", "print version details");
         if (this instanceof GraphicalApp) {

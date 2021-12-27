@@ -49,7 +49,7 @@ public class TrayManager {
 
         popup.add(getItem(BuildConstants.NAME, null, true));
         popup.add(getItem(I18N.get("tray.version") + " " + BuildConstants.VERSION, null, true));
-        popup.add(getItem("(c) krlvm, 2019-2021", null, true));
+        popup.add(getItem("(c) krlvm, 2019-2022", null, true));
 
         popup.addSeparator();
 

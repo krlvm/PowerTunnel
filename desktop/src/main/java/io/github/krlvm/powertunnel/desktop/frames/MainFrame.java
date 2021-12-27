@@ -61,7 +61,7 @@ public class MainFrame extends AppFrame {
             "Licensed under the<br>" +
             "<a href=\"https://raw.githubusercontent.com/krlvm/PowerTunnel/master/LICENSE\">GNU General Public License v3</a>" +
             "<br><br>" +
-            "(c) krlvm, 2019-2021",
+            "(c) krlvm, 2019-2022",
 
             BuildConstants.DESCRIPTION, BuildConstants.REPO, BuildConstants.NAME,
             BuildConstants.VERSION, BuildConstants.VERSION_CODE,
@@ -176,7 +176,7 @@ public class MainFrame extends AppFrame {
                         "<br>" +
                         "<b><a style=\"color: black\" href=\"" + BuildConstants.REPO + "\">" + BuildConstants.REPO + "</a></b>" +
                         "<br><br>" +
-                        "(c) krlvm, 2019-2021",
+                        "(c) krlvm, 2019-2022",
                 "text-align: center"
         ), gbc);
 

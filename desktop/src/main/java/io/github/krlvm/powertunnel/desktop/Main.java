@@ -45,7 +45,7 @@ public class Main {
         System.out.printf("" +
                         "%s version %s%n" +
                         "%s%n" +
-                        "(c) krlvm, 2019-2021%n",
+                        "(c) krlvm, 2019-2022%n",
                 BuildConstants.NAME, BuildConstants.VERSION, BuildConstants.DESCRIPTION
         );
         System.out.println();
