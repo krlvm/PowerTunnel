@@ -87,7 +87,7 @@ public class PreferenceParser {
         try {
             type = PreferenceType.valueOf(rawType.toUpperCase());
         } catch (IllegalArgumentException ex) {
-            throw new PreferenceParseException(source, "Unsupported preference type: '" + rawType + '"', ex);
+            throw new PreferenceParseException(source, "Unsupported preference type: '" + rawType + "'", ex);
         }
         final String key = jso.get(PreferencesSchemaFields.KEY).getAsString();
 
