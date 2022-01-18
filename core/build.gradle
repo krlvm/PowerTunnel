@@ -43,7 +43,7 @@ task fatJar(type: Jar, group: 'build', description: 'Assembles a jar archive con
 dependencies {
     api project(':sdk')
     api project(':littleproxy')
-    api 'org.jetbrains:annotations:16.0.2'
+    api 'org.jetbrains:annotations:23.0.0'
     implementation 'com.google.code.gson:gson:2.8.9'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
