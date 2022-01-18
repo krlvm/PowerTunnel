@@ -22,7 +22,7 @@ plugins {
 version '2.0'
 
 dependencies {
-    api 'org.jetbrains:annotations:22.0.0'
+    api 'org.jetbrains:annotations:23.0.0'
     api 'org.slf4j:slf4j-api:1.7.32'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
