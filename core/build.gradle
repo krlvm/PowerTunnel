@@ -20,7 +20,7 @@ plugins {
     id 'application'
 }
 
-version '2.0'
+version '2.0.1'
 
 configurations {
     runtimeClasspath {
