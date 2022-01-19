@@ -95,7 +95,7 @@ public class UIUtility {
             f.setAccessible(true);
             f.set(xToolkit, BuildConstants.NAME);
         } catch (ReflectiveOperationException | SecurityException ex) {
-            LOGGER.error("Failed to set AWT app name: {}", ex.getMessage(), ex);
+            LOGGER.debug("Failed to set AWT app name: {}", ex.getMessage(), ex);
         }
     }
 
