@@ -56,6 +56,8 @@ public class LittleProxyServer implements ProxyServer {
     private boolean mitmEnabled = false;
     private boolean isFullRequest = false, isFullResponse = false;
 
+    private boolean areHostnamesAvailable = true;
+
     protected LittleProxyServer(boolean transparent, boolean allowFallbackDnsResolver, Authority mitmAuthority) {
         this.bootstrap = DefaultHttpProxyServer.bootstrap()
                 .withTransparent(transparent)
@@ -315,5 +317,14 @@ public class LittleProxyServer implements ProxyServer {
     @Override
     public boolean isMITMEnabled() {
         return mitmEnabled;
+    }
+
+    public void setHostnamesAvailability(boolean availability) {
+        this.areHostnamesAvailable = availability;
+    }
+
+    @Override
+    public boolean areHostnamesAvailable() {
+        return areHostnamesAvailable;
     }
 }

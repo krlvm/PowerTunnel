@@ -282,4 +282,14 @@ public interface ProxyServer {
     boolean isMITMEnabled();
 
     // endregion
+
+    // region Hostnames Availability
+
+    /**
+     * Returns whether hostnames are available
+     * @return whether hostnames are available
+     */
+    boolean areHostnamesAvailable();
+
+    // endregion
 }
