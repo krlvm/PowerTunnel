@@ -34,4 +34,14 @@ public class PluginLoadException extends ProxyStartException {
     public String getJarFile() {
         return jarFile;
     }
+
+    @Override
+    public String getMessage() {
+        return super.getMessage() + " (" + jarFile + ")";
+    }
+
+    @Override
+    public String getLocalizedMessage() {
+        return super.getLocalizedMessage() + " (" + jarFile + ")";
+    }
 }
