@@ -94,8 +94,8 @@ public class UIUtility {
             final Field f = xToolkit.getClass().getDeclaredField("awtAppClassName");
             f.setAccessible(true);
             f.set(xToolkit, BuildConstants.NAME);
-        } catch (ReflectiveOperationException | SecurityException ex) {
-            LOGGER.debug("Failed to set AWT app name: {}", ex.getMessage(), ex);
+        } catch (Throwable t) {
+            LOGGER.debug("Failed to set AWT app name: {}", t.getMessage(), t);
         }
     }
 
