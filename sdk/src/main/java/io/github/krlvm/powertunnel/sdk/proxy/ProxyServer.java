@@ -289,6 +289,7 @@ public interface ProxyServer {
      * Returns whether hostnames are available
      * @return whether hostnames are available
      */
+    @Deprecated
     boolean areHostnamesAvailable();
 
     // endregion
