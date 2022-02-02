@@ -44,7 +44,7 @@ public class PluginInfoRenderer extends JPanel implements ListCellRenderer<Plugi
 
     @Override
     public Dimension getMinimumSize() {
-        return SwingDPI.scale(100, 76);
+        return SwingDPI.scale(100, 12 + infoLabel.getFont().getSize()*4);
     }
 
     @Override
