@@ -53,6 +53,7 @@ public class Main {
             System.out.println("WARNING: Running a pre-release version of " + BuildConstants.NAME);
             System.out.println();
         }
+        SwingDPI.disableJava9NativeScaling();
 
         final ArgumentParser.Builder builder = new ArgumentParser.Builder()
                 .option(Arguments.HELP, "display help")
