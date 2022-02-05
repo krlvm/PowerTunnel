@@ -17,8 +17,12 @@
 
 package io.github.krlvm.powertunnel.desktop.utilities;
 
+import sun.net.dns.ResolverConfiguration;
+
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SystemUtility {
 
@@ -38,5 +42,13 @@ public class SystemUtility {
 
     public static Process executeWindowsCommand(String handler, String command) throws IOException {
         return Runtime.getRuntime().exec(handler + ".exe /C " + command);
+    }
+
+    public static List<String> getDNSServers() {
+        List<String> list = null;
+        try {
+            list = ResolverConfiguration.open().nameservers();
+        } catch (Throwable ignored) {}
+        return list == null ? new ArrayList<>() : new ArrayList<>(list);
     }
 }

@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.util.List;
 
 public interface ProxyServer {
 
@@ -282,6 +283,20 @@ public interface ProxyServer {
     boolean isMITMEnabled();
 
     // endregion
+
+    // region DNS Configuration
+
+    /**
+     * Returns base DNS servers
+     * @return base DNS servers
+     */
+    List<String> getDNSServers();
+
+    /**
+     * Returns DNS domains search path
+     * @return DNS domains search path
+     */
+    @Nullable String getDNSDomainsSearchPath();
 
     // region Hostnames Availability
 

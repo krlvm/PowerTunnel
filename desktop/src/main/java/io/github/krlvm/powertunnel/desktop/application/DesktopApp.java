@@ -113,6 +113,8 @@ public abstract class DesktopApp implements ServerListener {
                 new File("."),
                 configuration.getBoolean("transparent_mode", true),
                 !configuration.getBoolean("strict_dns", false),
+                SystemUtility.getDNSServers(),
+                null,
                 MITMAuthority.create(
                         certificateDirectory.toFile(),
                         configuration.get("cert_password", UUID.randomUUID().toString()).toCharArray()

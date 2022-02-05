@@ -38,6 +38,8 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.util.Collections;
+import java.util.List;
 
 public class LittleProxyServer implements ProxyServer {
 
@@ -56,14 +58,20 @@ public class LittleProxyServer implements ProxyServer {
     private boolean mitmEnabled = false;
     private boolean isFullRequest = false, isFullResponse = false;
 
+    private final List<String> dnsServers;
+    private final String dnsDomainsSearchPath;
+
     private boolean areHostnamesAvailable = true;
 
-    protected LittleProxyServer(boolean transparent, boolean allowFallbackDnsResolver, Authority mitmAuthority) {
+    protected LittleProxyServer(boolean transparent, boolean allowFallbackDnsResolver, Authority mitmAuthority,
+                                List<String> dnsServers, String dnsDomainsSearchPath) {
         this.bootstrap = DefaultHttpProxyServer.bootstrap()
                 .withTransparent(transparent)
                 .withAllowRequestToOriginServer(true);
         this.allowFallbackResolver = allowFallbackDnsResolver;
         this.mitmAuthority = mitmAuthority;
+        this.dnsServers = dnsServers;
+        this.dnsDomainsSearchPath = dnsDomainsSearchPath;
     }
 
     /**
@@ -321,6 +329,16 @@ public class LittleProxyServer implements ProxyServer {
 
     public void setHostnamesAvailability(boolean availability) {
         this.areHostnamesAvailable = availability;
+    }
+
+    @Override
+    public List<String> getDNSServers() {
+        return Collections.unmodifiableList(dnsServers);
+    }
+
+    @Override
+    public @Nullable String getDNSDomainsSearchPath() {
+        return dnsDomainsSearchPath;
     }
 
     @Override

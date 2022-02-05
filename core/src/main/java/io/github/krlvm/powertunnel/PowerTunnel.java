@@ -58,6 +58,8 @@ public class PowerTunnel implements PowerTunnelServer {
     private final PowerTunnelPlatform platform;
     private final boolean transparent;
     private final boolean allowFallbackDnsResolver;
+    private final List<String> dnsServers;
+    private final String dnsDomainsSearchPath;
     private final Authority mitmAuthority;
 
     private final List<PowerTunnelPlugin> plugins = new ArrayList<>();
@@ -76,17 +78,8 @@ public class PowerTunnel implements PowerTunnelServer {
             File parentDirectory,
             boolean transparent,
             boolean allowFallbackDnsResolver,
-            Authority mitmAuthority,
-            File configsDirectory
-    ) {
-        this(address, platform, parentDirectory, transparent, allowFallbackDnsResolver, mitmAuthority, configsDirectory, null);
-    }
-    public PowerTunnel(
-            ProxyAddress address,
-            PowerTunnelPlatform platform,
-            File parentDirectory,
-            boolean transparent,
-            boolean allowFallbackDnsResolver,
+            List<String> dnsServers,
+            String dnsDomainsSearchPath,
             Authority mitmAuthority,
             File configsDirectory,
             Map<String, String> inheritedConfiguration
@@ -95,6 +88,8 @@ public class PowerTunnel implements PowerTunnelServer {
         this.platform = platform;
         this.transparent = transparent;
         this.allowFallbackDnsResolver = allowFallbackDnsResolver;
+        this.dnsServers = dnsServers;
+        this.dnsDomainsSearchPath = dnsDomainsSearchPath;
         this.mitmAuthority = mitmAuthority;
 
         this.inheritedConfiguration = inheritedConfiguration;
@@ -112,7 +107,7 @@ public class PowerTunnel implements PowerTunnelServer {
     @Override
     public void start() throws ProxyStartException {
         if(this.server != null) throw new IllegalStateException("Proxy Server is already running");
-        this.server = new LittleProxyServer(transparent, allowFallbackDnsResolver, mitmAuthority);
+        this.server = new LittleProxyServer(transparent, allowFallbackDnsResolver, mitmAuthority, dnsServers, dnsDomainsSearchPath);
 
         setStatus(ProxyStatus.STARTING);
         try {
