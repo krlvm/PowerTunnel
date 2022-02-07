@@ -61,7 +61,7 @@ public class CoreProxyListener implements ProxyListener {
     @Override
     public Boolean onResolutionRequest(@NotNull DNSRequest request) {
         final Object result = callProxyListeners(listener -> listener.onResolutionRequest(request), false);
-        return result == null || ((boolean) result);
+        return ((Boolean) result);
     }
 
     @Override

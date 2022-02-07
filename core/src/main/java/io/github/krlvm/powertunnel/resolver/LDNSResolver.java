@@ -44,7 +44,8 @@ public class LDNSResolver implements HostResolver {
     @Override
     public InetSocketAddress resolve(String host, int port) throws UnknownHostException {
         final DNSRequest request = new DNSRequest(host, port);
-        if(!listener.onResolutionRequest(request)) {
+        final Boolean result = listener.onResolutionRequest(request);
+        if(result != null && !result) {
             LOGGER.error("Resolution of hostname '{}' failed", host);
             if(!this.allowFallbackResolver) throw new UnknownHostException();
         }
