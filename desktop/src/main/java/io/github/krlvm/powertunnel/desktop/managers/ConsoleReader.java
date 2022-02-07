@@ -28,13 +28,15 @@ public class ConsoleReader {
     private final Map<String, ConsoleCommand> commands = new TreeMap<>(String::compareTo);
 
     public ConsoleReader() {
-        new Thread(() -> {
+        final Thread thread = new Thread(() -> {
             final Scanner scanner = new Scanner(System.in);
             String input;
             while ((input = scanner.nextLine()) != null) {
                 lookupCommand(input.trim());
             }
-        }, "Console Reader Thread").start();
+        }, "Console Reader Thread");
+        thread.setDaemon(true);
+        thread.start();
     }
 
     private void lookupCommand(String input) {
