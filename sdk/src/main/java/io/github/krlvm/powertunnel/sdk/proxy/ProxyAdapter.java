@@ -37,8 +37,8 @@ public abstract class ProxyAdapter implements ProxyListener {
     public void onProxyToClientResponse(@NotNull ProxyResponse response) {}
 
     @Override
-    public boolean onResolutionRequest(@NotNull DNSRequest request) {
-        return true;
+    public Boolean onResolutionRequest(@NotNull DNSRequest request) {
+        return null;
     }
 
     @Override
