@@ -45,10 +45,15 @@ public class SystemUtility {
     }
 
     public static List<String> getDNSServers() {
-        List<String> list = null;
         try {
-            list = ResolverConfiguration.open().nameservers();
-        } catch (Throwable ignored) {}
-        return list == null ? new ArrayList<>() : new ArrayList<>(list);
+            Class.forName("sun.net.dns.ResolverConfiguration");
+            List<String> list = null;
+            try {
+                list = ResolverConfiguration.open().nameservers();
+            } catch (Throwable ignored) {}
+            return list == null ? new ArrayList<>() : new ArrayList<>(list);
+        } catch (ClassNotFoundException ex) {
+            return new ArrayList<>();
+        }
     }
 }
