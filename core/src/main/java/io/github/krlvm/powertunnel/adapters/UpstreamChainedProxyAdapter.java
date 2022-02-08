@@ -20,10 +20,12 @@ package io.github.krlvm.powertunnel.adapters;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyAddress;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyCredentials;
 import io.github.krlvm.powertunnel.sdk.proxy.UpstreamProxyServer;
+import io.github.krlvm.powertunnel.sdk.types.UpstreamProxyType;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
 import org.littleshoot.proxy.ChainedProxyAdapter;
+import org.littleshoot.proxy.ChainedProxyType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +44,8 @@ public class UpstreamChainedProxyAdapter extends ChainedProxyAdapter {
      */
     private ProxyAddress upstreamProxyAddress;
 
+    private final ChainedProxyType type;
+
     /**
      * Creates a new adapter from given UpstreamProxyServer
      * Caching enabled
@@ -50,7 +54,7 @@ public class UpstreamChainedProxyAdapter extends ChainedProxyAdapter {
      * @throws UnknownHostException if hostname resolving failed
      */
     public UpstreamChainedProxyAdapter(UpstreamProxyServer proxy) throws UnknownHostException {
-        this(proxy.getAddress(), proxy.getCredentials(), true);
+        this(proxy.getAddress(), proxy.getCredentials(), proxy.getType(), true);
     }
 
     /**
@@ -61,7 +65,7 @@ public class UpstreamChainedProxyAdapter extends ChainedProxyAdapter {
      * @throws UnknownHostException if hostname resolving failed
      */
     public UpstreamChainedProxyAdapter(UpstreamProxyServer proxy, boolean caching) throws UnknownHostException {
-        this(proxy.getAddress(), proxy.getCredentials(), caching);
+        this(proxy.getAddress(), proxy.getCredentials(), proxy.getType(), caching);
     }
 
     /**
@@ -72,8 +76,8 @@ public class UpstreamChainedProxyAdapter extends ChainedProxyAdapter {
      * @param credentials upstream proxy server credentials
      * @throws UnknownHostException if hostname resolving failed
      */
-    public UpstreamChainedProxyAdapter(ProxyAddress address, ProxyCredentials credentials) throws UnknownHostException {
-        this(address, credentials, true);
+    public UpstreamChainedProxyAdapter(ProxyAddress address, ProxyCredentials credentials, UpstreamProxyType type) throws UnknownHostException {
+        this(address, credentials, type, true);
     }
 
     /**
@@ -84,8 +88,8 @@ public class UpstreamChainedProxyAdapter extends ChainedProxyAdapter {
      * @param caching whether InetSocketAddress should be cached
      * @throws UnknownHostException if hostname resolving failed
      */
-    public UpstreamChainedProxyAdapter(ProxyAddress address, ProxyCredentials credentials, boolean caching) throws UnknownHostException {
-        this(address, credentials != null ? credentials.toAuthorizationCode() : null, caching);
+    public UpstreamChainedProxyAdapter(ProxyAddress address, ProxyCredentials credentials, UpstreamProxyType type, boolean caching) throws UnknownHostException {
+        this(address, credentials != null ? credentials.toAuthorizationCode() : null, type, caching);
     }
 
     /**
@@ -96,8 +100,8 @@ public class UpstreamChainedProxyAdapter extends ChainedProxyAdapter {
      * @param authorizationCode upstream proxy server authorization code
      * @throws UnknownHostException if hostname resolving failed
      */
-    public UpstreamChainedProxyAdapter(ProxyAddress address, String authorizationCode) throws UnknownHostException {
-        this(address, authorizationCode, true);
+    public UpstreamChainedProxyAdapter(ProxyAddress address, String authorizationCode, UpstreamProxyType type) throws UnknownHostException {
+        this(address, authorizationCode, type, true);
     }
 
     /**
@@ -109,8 +113,8 @@ public class UpstreamChainedProxyAdapter extends ChainedProxyAdapter {
      * @param caching whether InetSocketAddress should be cached
      * @throws UnknownHostException if hostname resolving failed
      */
-    public UpstreamChainedProxyAdapter(ProxyAddress address, String authorizationCode, boolean caching) throws UnknownHostException {
-        this(caching ? address.resolve() : null, authorizationCode);
+    public UpstreamChainedProxyAdapter(ProxyAddress address, String authorizationCode, UpstreamProxyType type, boolean caching) throws UnknownHostException {
+        this(caching ? address.resolve() : null, authorizationCode, type);
         if(!caching) this.upstreamProxyAddress = address;
     }
 
@@ -123,8 +127,8 @@ public class UpstreamChainedProxyAdapter extends ChainedProxyAdapter {
      * @param address upstream proxy server address
      * @param credentials upstream proxy server credentials
      */
-    public UpstreamChainedProxyAdapter(InetSocketAddress address, ProxyCredentials credentials) {
-        this(address, credentials != null ? credentials.toAuthorizationCode() : null);
+    public UpstreamChainedProxyAdapter(InetSocketAddress address, ProxyCredentials credentials, UpstreamProxyType type) {
+        this(address, credentials != null ? credentials.toAuthorizationCode() : null, null);
     }
 
     /**
@@ -136,9 +140,10 @@ public class UpstreamChainedProxyAdapter extends ChainedProxyAdapter {
      * @param address upstream proxy server address
      * @param authorizationCode upstream proxy server authorization code
      */
-    public UpstreamChainedProxyAdapter(InetSocketAddress address, String authorizationCode) {
+    public UpstreamChainedProxyAdapter(InetSocketAddress address, String authorizationCode, UpstreamProxyType type) {
         this.address = address;
         this.authorizationCode = authorizationCode == null ? null : "Basic " + authorizationCode;
+        this.type = ChainedProxyType.valueOf(type != null ? type.name() : UpstreamProxyType.HTTP.name());
     }
 
     @Override
@@ -161,5 +166,10 @@ public class UpstreamChainedProxyAdapter extends ChainedProxyAdapter {
     @Override
     public String getUsername() {
         return super.getUsername();
+    }
+
+    @Override
+    public ChainedProxyType getChainedProxyType() {
+        return type;
     }
 }
