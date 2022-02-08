@@ -17,6 +17,7 @@
 
 package io.github.krlvm.powertunnel.sdk.proxy;
 
+import io.github.krlvm.powertunnel.sdk.types.UpstreamProxyType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,6 +28,7 @@ public class UpstreamProxyServer {
 
     private ProxyAddress address;
     private ProxyCredentials credentials;
+    private UpstreamProxyType type;
 
     private InetSocketAddress inetSocketAddress;
 
@@ -35,8 +37,13 @@ public class UpstreamProxyServer {
     }
 
     public UpstreamProxyServer(@NotNull ProxyAddress address, @Nullable ProxyCredentials credentials) {
+        this(address, credentials, null);
+    }
+
+    public UpstreamProxyServer(@NotNull ProxyAddress address, @Nullable ProxyCredentials credentials, @Nullable UpstreamProxyType type) {
         this.address = address;
         this.credentials = credentials;
+        this.type = type != null ? type : UpstreamProxyType.HTTP;
     }
 
     public @NotNull ProxyAddress getAddress() {
@@ -57,6 +64,15 @@ public class UpstreamProxyServer {
 
     public void setCredentials(@Nullable ProxyCredentials credentials) {
         this.credentials = credentials;
+    }
+
+    @NotNull
+    public UpstreamProxyType getType() {
+        return type;
+    }
+
+    public void setType(@NotNull UpstreamProxyType type) {
+        this.type = type;
     }
 
     public InetSocketAddress resolve() throws UnknownHostException {
