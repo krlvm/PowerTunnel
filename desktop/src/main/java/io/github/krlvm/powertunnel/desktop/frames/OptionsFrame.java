@@ -34,6 +34,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -69,6 +70,17 @@ public class OptionsFrame extends PreferencesFrame {
                     "8080",
                     PreferenceType.NUMBER,
                     "upstream_proxy_enabled", "true", null
+            ));
+            preferences.add(pref(
+                    "upstream_proxy_protocol",
+                    "HTTP",
+                    PreferenceType.SELECT,
+                    "upstream_proxy_enabled", "true",
+                    new HashMap<String, String>() {{
+                        put("HTTP", "HTTP/HTTPS");
+                        put("SOCKS4", "SOCKS4");
+                        put("SOCKS5", "SOCKS5");
+                    }}
             ));
 
             preferences.add(pref(

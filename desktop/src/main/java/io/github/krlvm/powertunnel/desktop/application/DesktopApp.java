@@ -31,6 +31,7 @@ import io.github.krlvm.powertunnel.sdk.plugin.PluginInfo;
 import io.github.krlvm.powertunnel.sdk.plugin.PowerTunnelPlugin;
 import io.github.krlvm.powertunnel.sdk.proxy.*;
 import io.github.krlvm.powertunnel.sdk.types.PowerTunnelPlatform;
+import io.github.krlvm.powertunnel.sdk.types.UpstreamProxyType;
 import io.github.krlvm.powertunnel.sdk.types.VersionInfo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -200,7 +201,8 @@ public abstract class DesktopApp implements ServerListener {
                                     configuration.get("upstream_proxy_host", ""),
                                     configuration.getInt("upstream_proxy_port", 8080)
                             ),
-                            credentials
+                            credentials,
+                            UpstreamProxyType.valueOf(configuration.get("upstream_proxy_protocol", "HTTP"))
                     ));
                 }
 
