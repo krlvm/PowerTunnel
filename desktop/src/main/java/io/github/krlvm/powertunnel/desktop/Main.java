@@ -185,7 +185,7 @@ public class Main {
         }
 
         if(consoleMode) {
-            new ConsoleApp(configuration);
+            new ConsoleApp(configuration).start();
         } else {
             if (cli.has(Arguments.DISABLE_AUTO_PROXY_STARTUP)) {
                 configuration.protectBoolean("auto_proxy_setup", false);

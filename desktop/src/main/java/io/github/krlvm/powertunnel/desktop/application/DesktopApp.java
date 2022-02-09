@@ -20,7 +20,7 @@ package io.github.krlvm.powertunnel.desktop.application;
 import io.github.krlvm.powertunnel.PowerTunnel;
 import io.github.krlvm.powertunnel.desktop.BuildConstants;
 import io.github.krlvm.powertunnel.desktop.configuration.ServerConfiguration;
-import io.github.krlvm.powertunnel.desktop.managers.ConsoleReader;
+import io.github.krlvm.powertunnel.desktop.managers.ConsoleHandler;
 import io.github.krlvm.powertunnel.desktop.utilities.SystemUtility;
 import io.github.krlvm.powertunnel.mitm.MITMAuthority;
 import io.github.krlvm.powertunnel.plugin.PluginLoader;
@@ -73,7 +73,7 @@ public abstract class DesktopApp implements ServerListener {
     private static DesktopApp instance;
 
     protected final ServerConfiguration configuration;
-    protected ConsoleReader consoleReader;
+    protected ConsoleHandler consoleHandler;
 
     protected PowerTunnel server;
     protected ProxyAddress address;
@@ -158,6 +158,8 @@ public abstract class DesktopApp implements ServerListener {
             }
         }
 
+        LOGGER.info("Serving at {}:{}", address.getHost(), address.getPort());
+
         return null;
     }
 
@@ -228,7 +230,7 @@ public abstract class DesktopApp implements ServerListener {
     @Override
     public void onProxyStatusChanged(@NotNull ProxyStatus status) {
         if (status == ProxyStatus.STOPPING || status == ProxyStatus.NOT_RUNNING) {
-            if (consoleReader != null) consoleReader.reset();
+            if (consoleHandler != null) consoleHandler.reset();
         }
     }
 
@@ -236,9 +238,9 @@ public abstract class DesktopApp implements ServerListener {
         LOGGER.error("Unexpected error occurred when initializing proxy server: {}", ex.getMessage(), ex);
     }
 
-    protected ConsoleReader getConsoleReader() {
-        if (consoleReader == null) consoleReader = new ConsoleReader();
-        return consoleReader;
+    protected ConsoleHandler getConsoleReader() {
+        if (consoleHandler == null) consoleHandler = new ConsoleHandler();
+        return consoleHandler;
     }
 
     public void registerConsoleCommand(
