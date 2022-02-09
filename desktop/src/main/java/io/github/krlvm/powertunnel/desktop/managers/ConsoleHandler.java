@@ -17,24 +17,25 @@
 
 package io.github.krlvm.powertunnel.desktop.managers;
 
+import io.github.krlvm.powertunnel.desktop.system.ConsoleReader;
 import io.github.krlvm.powertunnel.desktop.types.ConsoleCommand;
 
 import java.util.*;
 import java.util.function.Consumer;
 
-public class ConsoleReader {
+public class ConsoleHandler {
 
     private final Map<String, ConsoleCommand> appCommands = new TreeMap<>((String::compareTo));
     private final Map<String, ConsoleCommand> commands = new TreeMap<>(String::compareTo);
 
-    public ConsoleReader() {
+    public ConsoleHandler() {
+        final ConsoleReader reader = ConsoleReader.get();
         final Thread thread = new Thread(() -> {
-            final Scanner scanner = new Scanner(System.in);
             String input;
-            while ((input = scanner.nextLine()) != null) {
+            while ((input = reader.readLine()) != null) {
                 lookupCommand(input.trim());
             }
-        }, "Console Reader Thread");
+        }, "Console Handler Thread");
         thread.setDaemon(true);
         thread.start();
     }
