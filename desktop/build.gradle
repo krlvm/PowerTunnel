@@ -20,7 +20,7 @@ plugins {
     id 'distribution'
 }
 
-version '2.2'
+version '2.2.1'
 
 run {
     workingDir = new File('build/run')
