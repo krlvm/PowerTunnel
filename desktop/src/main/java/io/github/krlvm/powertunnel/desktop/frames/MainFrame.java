@@ -78,6 +78,8 @@ public class MainFrame extends AppFrame {
     private final JPanel extensibleButtonsPanel;
     private JPopupMenu extensiblePopupMenu = null;
 
+    private boolean bTrayStillRunningNotify = false;
+
     public MainFrame(GraphicalApp app) {
         super(null, app);
 
@@ -198,7 +200,10 @@ public class MainFrame extends AppFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 if(app.getStatus() != ProxyStatus.NOT_RUNNING && app.isTrayAvailable()) {
-                    app.showNotification(BuildConstants.NAME + " " + I18N.get("tray.stillRunning"));
+                    if (!bTrayStillRunningNotify) {
+                        app.showNotification(BuildConstants.NAME + " " + I18N.get("tray.stillRunning"));
+                        bTrayStillRunningNotify = true;
+                    }
                     return;
                 }
                 app.dispose();
