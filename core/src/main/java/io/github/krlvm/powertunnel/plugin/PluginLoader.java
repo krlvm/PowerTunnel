@@ -91,6 +91,8 @@ public class PluginLoader {
                 !store.contains(PluginInfoFields.TARGET_VERSION)
         ) throw new PluginLoadException(fileName, "Incomplete manifest");
 
+        String configurationFiles = store.get(PluginInfoFields.CONFIGURATION_FILES, null);
+
         return new PluginInfo(
                 store.get(PluginInfoFields.ID, null),
                 store.get(PluginInfoFields.VERSION, null),
@@ -99,6 +101,7 @@ public class PluginLoader {
                 store.get(PluginInfoFields.DESCRIPTION, null),
                 store.get(PluginInfoFields.AUTHOR, null),
                 store.get(PluginInfoFields.HOMEPAGE, null),
+                configurationFiles == null ? new String[0] : configurationFiles.split(", "),
                 store.get(PluginInfoFields.MAIN_CLASS, null),
                 store.getInt(PluginInfoFields.TARGET_VERSION, 0),
                 fileName
@@ -199,6 +202,7 @@ public class PluginLoader {
         static final String DESCRIPTION = "description";
         static final String AUTHOR = "author";
         static final String HOMEPAGE = "homepage";
+        static final String CONFIGURATION_FILES = "configurationFiles";
         static final String MAIN_CLASS = "mainClass";
         static final String TARGET_VERSION = "targetSdkVersion";
     }

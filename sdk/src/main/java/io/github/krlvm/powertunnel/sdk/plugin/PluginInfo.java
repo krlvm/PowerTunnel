@@ -30,6 +30,8 @@ public class PluginInfo implements Serializable {
     private final String author;
     private final String homepage;
 
+    private final String[] configurationFiles;
+
     private final String mainClass;
     private final int targetSdkVersion;
 
@@ -41,6 +43,7 @@ public class PluginInfo implements Serializable {
      * @param version plugin version
      * @param author plugin author
      * @param homepage plugin homepage
+     * @param configurationFiles plugin additional configuration files
      * @param mainClass plugin main class
      * @param targetSdkVersion plugin target SDK version
      * @param source source jar
@@ -53,6 +56,7 @@ public class PluginInfo implements Serializable {
             String description,
             String author,
             String homepage,
+            String[] configurationFiles,
             String mainClass,
             int targetSdkVersion,
             String source
@@ -64,6 +68,8 @@ public class PluginInfo implements Serializable {
         this.description = description;
         this.author = author;
         this.homepage = homepage;
+
+        this.configurationFiles = configurationFiles;
 
         this.mainClass = mainClass;
         this.targetSdkVersion = targetSdkVersion;
@@ -97,6 +103,10 @@ public class PluginInfo implements Serializable {
 
     public String getHomepage() {
         return homepage;
+    }
+
+    public String[] getConfigurationFiles() {
+        return configurationFiles;
     }
 
     public String getMainClass() {

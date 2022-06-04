@@ -65,6 +65,7 @@ public abstract class DesktopApp implements ServerListener {
             BuildConstants.DESCRIPTION,
             "krlvm",
             BuildConstants.REPO,
+            new String[0],
             null,
             io.github.krlvm.powertunnel.BuildConstants.VERSION_CODE,
             null
