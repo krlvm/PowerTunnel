@@ -199,7 +199,7 @@ public class MainFrame extends AppFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                if(app.getStatus() != ProxyStatus.NOT_RUNNING && app.isTrayAvailable()) {
+                if(app.getStatus() != ProxyStatus.NOT_RUNNING && app.getStatus() != ProxyStatus.STOPPING && app.isTrayAvailable()) {
                     if (!bTrayStillRunningNotify) {
                         app.showNotification(BuildConstants.NAME + " " + I18N.get("tray.stillRunning"));
                         bTrayStillRunningNotify = true;
