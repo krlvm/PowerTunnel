@@ -39,8 +39,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -92,6 +91,29 @@ public class PluginsFrame extends AppFrame {
             }
         }));
         //disableButton.setEnabled(!GraphicalApp.getInstance().isRunning());
+
+        list.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent event) {
+                showMenu(event);
+            }
+            @Override
+            public void mouseReleased(MouseEvent event) {
+                showMenu(event);
+            }
+            private void showMenu(MouseEvent event) {
+                if (!event.isPopupTrigger()) return;
+                showAdditionalConfigurationContextMenu(event.getComponent(), event.getX(), event.getY());
+            }
+        });
+        list.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_CONTEXT_MENU) {
+                    showAdditionalConfigurationContextMenu(PluginsFrame.this, list.getX(), list.getY());
+                }
+            }
+        });
 
         final JButton settingsButton = new JButton(I18N.get("plugins.settings"));
         settingsButton.addActionListener(e -> withSelectedValue(this::openPreferences));
@@ -154,6 +176,48 @@ public class PluginsFrame extends AppFrame {
         });
 
         update();
+    }
+
+    private void showAdditionalConfigurationContextMenu(Component component, int x, int y) {
+        withSelectedValue(pluginInfo -> {
+            if (pluginInfo.getConfigurationFiles().length == 0) return;
+
+            JPopupMenu menu = new JPopupMenu();
+
+            JMenuItem item = new JMenuItem(I18N.get("plugins.additionalConfiguration"));
+            item.setEnabled(false);
+            menu.add(item);
+            item = new JMenuItem(" " + pluginInfo.getName());
+            item.setEnabled(false);
+            menu.add(item);
+
+            menu.addSeparator();
+
+            for (String targetFile : pluginInfo.getConfigurationFiles()) {
+                item = new JMenuItem(targetFile);
+                item.addActionListener(e -> {
+                    File file = new File("configs" + File.separator + targetFile.replace("/", File.separator));
+                    if (!file.exists()) {
+                        try {
+                            file.createNewFile();
+                        } catch (IOException ex) {
+                            LOGGER.error("Failed to create configuration '{}' for plugin '{}'", targetFile, pluginInfo.getId(), ex);
+                            UIUtility.showErrorDialog(PluginsFrame.this, "Failed to initialize configuration file: " + ex.getMessage());
+                            return;
+                        }
+                    }
+                    try {
+                        Desktop.getDesktop().open(file);
+                    } catch (IOException ex) {
+                        LOGGER.error("Failed to externally open configuration file '{}' of plugin '{}'", targetFile, pluginInfo.getId(), ex);
+                        UIUtility.showErrorDialog(PluginsFrame.this, "Failed to launch text editor: " + ex.getMessage());
+                    }
+                });
+                menu.add(item);
+            }
+
+            menu.show(component, x, y);
+        });
     }
 
     private boolean isPluginEnabled(PluginInfo plugin) {
