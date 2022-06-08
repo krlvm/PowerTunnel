@@ -101,7 +101,7 @@ If you need to set a certain plugin preference, use `-cfg pluginID.preferenceKey
 * [DNS Resolver](https://github.com/krlvm/PowerTunnel-DNS) - DNS Resolver with DNS over HTTPS (DoH) support
 
 ## Dependencies
-* [LittleProxy](https://github.com/adamfisk/LittleProxy) - proxy server, [forked version](https://github.com/mrog/LittleProxy)
+* [LittleProxy](https://github.com/adamfisk/LittleProxy) - proxy server, [forked version](https://github.com/LittleProxy/LittleProxy)
 * [LittleProxy-MITM](https://github.com/ganskef/LittleProxy-mitm) - LittleProxy SSL extension
 * [dnsjava](https://github.com/dnsjava/dnsjava) - DNS and DoH library
 * [dnssecjava](https://github.com/ibauersachs/dnssecjava) - DNSSec implementation for dnsjava
