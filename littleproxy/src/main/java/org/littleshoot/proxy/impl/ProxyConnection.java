@@ -493,22 +493,24 @@ abstract class ProxyConnection<I extends HttpObject> extends
     }
     protected int _powerTunnelGetChunkSize() { return 0; } // 0 to disable
     protected boolean _powerTunnelIsFullChunking() { return false; }
-    public static Collection<byte[]> _powerTunnelChunk(ByteBuf buf, int chunkSize, boolean fullChunking) {
-        byte[] bytes = new byte[buf.readableBytes()];
+    public static byte[][] _powerTunnelChunk(ByteBuf buf, int chunkSize, boolean fullChunking) {
+        final byte[] bytes = new byte[buf.readableBytes()];
         buf.readBytes(bytes);
-        int len = bytes.length;
-        Collection<byte[]> byteChunks = new ArrayList<>();
+        final int len = bytes.length;
+
         if(fullChunking) {
-            // Full Chunking
-            int i = 0;
+            final byte[][] chunks = new byte[(int)Math.ceil((double)len/chunkSize)][];
+            int i = 0, j = 0;
             while (i < len) {
-                byteChunks.add(Arrays.copyOfRange(bytes, i, i += chunkSize));
+                chunks[j++] = Arrays.copyOfRange(bytes, i, i += chunkSize);
             }
+            return chunks;
         } else {
-            byteChunks.add(Arrays.copyOfRange(bytes, 0, chunkSize));
-            byteChunks.add(Arrays.copyOfRange(bytes, chunkSize, len));
+            return new byte[][] {
+                    Arrays.copyOfRange(bytes, 0, chunkSize),
+                    Arrays.copyOfRange(bytes, chunkSize, len)
+            };
         }
-        return byteChunks;
     }
 
     // MODIFIED
