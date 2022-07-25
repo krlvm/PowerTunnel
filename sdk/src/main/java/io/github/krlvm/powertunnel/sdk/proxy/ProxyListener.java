@@ -39,4 +39,8 @@ public interface ProxyListener {
 
     Boolean isMITMAllowed(@NotNull FullAddress address);
     String onGetSNI(@NotNull String hostname);
+
+    int PRIORITY_HIGH   = -5;
+    int PRIORITY_NORMAL =  0;
+    int PRIORITY_LOW    =  5;
 }
