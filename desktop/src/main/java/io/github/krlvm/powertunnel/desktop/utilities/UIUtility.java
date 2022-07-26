@@ -77,6 +77,10 @@ public class UIUtility {
         JOptionPane.showMessageDialog(parent, message, title, JOptionPane.ERROR_MESSAGE);
     }
 
+    public static boolean isMinimized(JFrame frame) {
+        return (frame.getExtendedState() & Frame.ICONIFIED) != 0;
+    }
+
     public static void setTooltip(JComponent component, String tooltip) {
         component.setToolTipText("<html>" + tooltip.replace("\n", "<br>") + "</html>");
     }

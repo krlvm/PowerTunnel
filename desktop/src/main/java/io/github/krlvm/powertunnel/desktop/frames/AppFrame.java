@@ -19,6 +19,7 @@ package io.github.krlvm.powertunnel.desktop.frames;
 
 import io.github.krlvm.powertunnel.desktop.BuildConstants;
 import io.github.krlvm.powertunnel.desktop.application.GraphicalApp;
+import io.github.krlvm.powertunnel.desktop.utilities.UIUtility;
 import ru.krlvm.swingdpi.ScalableJFrame;
 
 import javax.swing.*;
@@ -62,7 +63,7 @@ public abstract class AppFrame extends ScalableJFrame {
     }
     public void showFrame(JFrame parent) {
         if(failedToInitialize) return;
-        setLocationRelativeTo(parent);
+        setLocationRelativeTo((parent == null || UIUtility.isMinimized(parent)) ? null : parent);
         setVisible(true);
         setState(Frame.NORMAL);
         toFront();
