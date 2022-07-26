@@ -239,7 +239,6 @@ import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateEncodingException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -392,29 +391,28 @@ public class BouncyCastleSslEngineSource implements SslEngineSource {
         return sslEngine;
     }
 
-    private boolean tryHostNameVerificationJava7(SSLEngine sslEngine) {
+    private static Method methodSetEndpointIdentificationAlgorithm = null;
+    static {
         for (Method method : SSLParameters.class.getMethods()) {
-            // method is available since Java 7
             if ("setEndpointIdentificationAlgorithm".equals(method.getName())) {
-                SSLParameters sslParams = new SSLParameters();
-                try {
-                    method.invoke(sslParams, "HTTPS");
-                } catch (IllegalAccessException e) {
-                    LOG.debug(
-                            "SSLParameters#setEndpointIdentificationAlgorithm",
-                            e);
-                    return false;
-                } catch (InvocationTargetException e) {
-                    LOG.debug(
-                            "SSLParameters#setEndpointIdentificationAlgorithm",
-                            e);
-                    return false;
-                }
-                sslEngine.setSSLParameters(sslParams);
-                return true;
+                methodSetEndpointIdentificationAlgorithm = method;
             }
         }
-        return false;
+    }
+    private boolean tryHostNameVerificationJava7(SSLEngine sslEngine) {
+        if (methodSetEndpointIdentificationAlgorithm == null) return false;
+
+        SSLParameters sslParams = new SSLParameters();
+        try {
+            methodSetEndpointIdentificationAlgorithm.invoke(sslParams, "HTTPS");
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            LOG.debug(
+                    "SSLParameters#setEndpointIdentificationAlgorithm",
+                    e);
+            return false;
+        }
+        sslEngine.setSSLParameters(sslParams);
+        return true;
     }
 
     private void initializeKeyStore() throws RootCertificateException,
@@ -423,11 +421,11 @@ public class BouncyCastleSslEngineSource implements SslEngineSource {
                 && authority.aliasFile(".pem").exists()) {
             return;
         }
-        MillisecondsDuration duration = new MillisecondsDuration();
+        final long startMs = System.currentTimeMillis();
         KeyStore keystore = CertificateHelper.createRootCertificate(authority,
                 KEY_STORE_TYPE);
         LOG.info("Created root certificate authority key store in {}ms",
-                duration);
+                System.currentTimeMillis()-startMs);
 
         OutputStream os = null;
         try {
@@ -442,8 +440,7 @@ public class BouncyCastleSslEngineSource implements SslEngineSource {
         exportPem(authority.aliasFile(".pem"), cert);
     }
 
-    private void initializeSSLContext() throws GeneralSecurityException,
-            IOException {
+    private void initializeSSLContext() throws GeneralSecurityException, IOException {
         KeyStore ks = loadKeyStore();
         caCert = ks.getCertificate(authority.alias());
         caPrivKey = (PrivateKey) ks.getKey(authority.alias(),
@@ -472,8 +469,7 @@ public class BouncyCastleSslEngineSource implements SslEngineSource {
         }
     }
 
-    private KeyStore loadKeyStore() throws GeneralSecurityException,
-            IOException {
+    private KeyStore loadKeyStore() throws GeneralSecurityException, IOException {
         KeyStore ks = KeyStore.getInstance(KEY_STORE_TYPE);
         FileInputStream is = null;
         try {
@@ -535,7 +531,7 @@ public class BouncyCastleSslEngineSource implements SslEngineSource {
             throws GeneralSecurityException, IOException,
             OperatorCreationException {
 
-        MillisecondsDuration duration = new MillisecondsDuration();
+        final long startMs = System.currentTimeMillis();
 
         KeyStore ks = CertificateHelper.createServerCertificate(commonName,
                 subjectAlternativeNames, authority, caCert, caPrivKey);
@@ -544,7 +540,7 @@ public class BouncyCastleSslEngineSource implements SslEngineSource {
 
         SSLContext result = CertificateHelper.newServerContext(keyManagers);
 
-        LOG.info("Impersonated {} in {}ms", commonName, duration);
+        LOG.info("Impersonated {} in {}ms", commonName, System.currentTimeMillis()-startMs);
         return result;
     }
 
@@ -564,8 +560,7 @@ public class BouncyCastleSslEngineSource implements SslEngineSource {
         exportPem(authority.aliasFile("-" + commonName + "-cert.pem"), certs);
     }
 
-    private void exportPem(File exportFile, Object... certs)
-            throws IOException, CertificateEncodingException {
+    private void exportPem(File exportFile, Object... certs) throws IOException {
         Writer sw = null;
         JcaPEMWriter pw = null;
         try {
@@ -581,13 +576,4 @@ public class BouncyCastleSslEngineSource implements SslEngineSource {
         }
     }
 
-}
-
-class MillisecondsDuration {
-    private final long mStartTime = System.currentTimeMillis();
-
-    @Override
-    public String toString() {
-        return String.valueOf(System.currentTimeMillis() - mStartTime);
-    }
 }

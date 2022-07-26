@@ -407,25 +407,6 @@ public final class CertificateHelper {
         }
     }
 
-    /**
-     * Closes the given {@link Closeable} as a null-safe operation while consuming IOException by the given {@code consumer}.
-     *
-     * @param closeable The resource to close, may be null.
-     * @param consumer Consumes the IOException thrown by {@link Closeable#close()}.
-     * @since 2.7
-     */
-    public static void closeQuietly(final Closeable closeable, final Consumer<IOException> consumer) {
-        if (closeable != null) {
-            try {
-                closeable.close();
-            } catch (IOException e) {
-                if (consumer != null) {
-                    consumer.accept(e);
-                }
-            }
-        }
-    }
-
     public static KeyStore createServerCertificate(String commonName,
             SubjectAlternativeNameHolder subjectAlternativeNames,
             Authority authority, Certificate caCert, PrivateKey caPrivKey)
@@ -514,14 +495,14 @@ public final class CertificateHelper {
 
     public static SSLContext newClientContext(KeyManager[] keyManagers,
             TrustManager[] trustManagers) throws NoSuchAlgorithmException,
-            KeyManagementException, NoSuchProviderException {
+            KeyManagementException {
         SSLContext result = newSSLContext();
         result.init(keyManagers, trustManagers, null);
         return result;
     }
 
     public static SSLContext newServerContext(KeyManager[] keyManagers)
-            throws NoSuchAlgorithmException, NoSuchProviderException,
+            throws NoSuchAlgorithmException,
             KeyManagementException {
         SSLContext result = newSSLContext();
         SecureRandom random = new SecureRandom();
