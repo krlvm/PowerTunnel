@@ -27,8 +27,6 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 import org.littleshoot.proxy.HttpFiltersAdapter;
 
-import java.net.InetSocketAddress;
-
 public class ProxyFilter extends HttpFiltersAdapter {
 
     private final ProxyListener listener;
@@ -44,9 +42,8 @@ public class ProxyFilter extends HttpFiltersAdapter {
     }
 
     @Override
-    public InetSocketAddress proxyToServerResolutionStarted(String resolvingServerHostAndPort) {
-        this.address = FullAddress.fromString(resolvingServerHostAndPort);
-        return null;
+    public void saveAddress(String hostAndPort, boolean isCONNECT) {
+        this.address = FullAddress.fromString(hostAndPort, isCONNECT ? 443 : 80);
     }
 
     @Override

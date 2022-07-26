@@ -441,6 +441,7 @@ public interface HttpFilters {
     boolean proxyToServerAllowMitm();
 
     // MODIFIED
+    void saveAddress(String hostAndPort, boolean isCONNECT);
     int chunkSize();
     boolean fullChunking();
     String mitmGetSNI(String hostname);

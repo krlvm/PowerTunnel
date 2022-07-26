@@ -52,8 +52,8 @@ public class FullAddress implements Cloneable {
     }
 
     @Nullable
-    public static FullAddress fromString(String input) {
-        if(!input.contains(":")) return new FullAddress(input, -1);
+    public static FullAddress fromString(String input, int defaultPort) {
+        if(!input.contains(":")) return new FullAddress(input, defaultPort);
 
         final String[] arr = input.split(":");
         try {
@@ -61,5 +61,10 @@ public class FullAddress implements Cloneable {
         } catch (NumberFormatException ex) {
             return null;
         }
+    }
+
+    @Nullable
+    public static FullAddress fromString(String input) {
+        return fromString(input, -1);
     }
 }

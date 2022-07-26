@@ -328,6 +328,10 @@ public class HttpFiltersAdapter implements HttpFilters {
     }
 
     @Override
+    public void saveAddress(String hostAndPort, boolean isCONNECT) {
+    }
+
+    @Override
     public boolean proxyToServerAllowMitm() {
         return true;
     }
