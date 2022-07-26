@@ -23,7 +23,7 @@ group 'io.github.krlvm.powertunnel.proxy'
 version '2.0'
 
 dependencies {
-    api 'xyz.rogfam:littleproxy:2.0.5'
+    api 'xyz.rogfam:littleproxy:2.0.10'
     api 'org.bouncycastle:bcpkix-jdk15on:1.69'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
