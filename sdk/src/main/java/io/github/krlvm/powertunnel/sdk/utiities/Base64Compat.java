@@ -17,7 +17,6 @@
 
 package io.github.krlvm.powertunnel.sdk.utiities;
 
-import java.lang.reflect.Method;
 import java.util.Base64;
 
 public final class Base64Compat {
@@ -45,28 +44,17 @@ public final class Base64Compat {
         }
     }
     private static final class AndroidBase64Provider implements Base64Provider {
-        private final Method method;
-
-        public AndroidBase64Provider(Class<?> clazz) throws ReflectiveOperationException {
-            method = clazz.getDeclaredMethod("encodeToString", byte[].class, int.class);
-        }
-
         @Override
         public String encodeToString(byte[] data) {
-            try {
-                return ((String) method.invoke(null, data, 0));
-            } catch (Throwable t) {
-                throw new RuntimeException("Failed to invoke Base64.encodeToString", t);
-            }
+            return android.util.Base64.encodeToString(data, 0);
         }
         @Override
         public String encodeURLToString(byte[] data) {
-            try {
-                // URL_SAFE | NO_PADDING | NO_WRAP
-                return ((String) method.invoke(null, data, 0x00000008 | 0x00000001 | 0x00000002));
-            } catch (Throwable t) {
-                throw new RuntimeException("Failed to invoke Base64.encodeToString", t);
-            }
+            return android.util.Base64.encodeToString(data,
+                    android.util.Base64.URL_SAFE |
+                            android.util.Base64.NO_PADDING |
+                            android.util.Base64.NO_WRAP
+            );
         }
     }
     private static final class DummyBase64Provider implements Base64Provider {
@@ -85,7 +73,8 @@ public final class Base64Compat {
             provider = new Java8Base64Provider();
         } catch (ClassNotFoundException ex) {
             try {
-                provider = new AndroidBase64Provider(Class.forName("android.util.Base64"));
+                Class.forName("android.util.Base64");
+                provider = new AndroidBase64Provider();
             } catch (ReflectiveOperationException aex) {
                 System.err.println("Base64 is not supported on your platform\nSome functionality can be unavailable");
                 provider = new DummyBase64Provider();

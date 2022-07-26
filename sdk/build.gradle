@@ -22,6 +22,10 @@ plugins {
 version '2.0'
 
 dependencies {
+    // Include single class from Android SDK (Base64) as a runtime dependency
+    // to avoid using reflection and speed up performance by using direct calls
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
     api 'org.jetbrains:annotations:23.0.0'
     api 'org.slf4j:slf4j-api:1.7.35'
 
