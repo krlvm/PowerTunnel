@@ -90,7 +90,7 @@ public class ProxyFilter extends HttpFiltersAdapter {
 
     @Override
     public String mitmGetSNI(String hostname) {
-        return listener.onGetSNI(hostname);
+        return (String)listener.onGetSNI(hostname);
     }
 
     @Override

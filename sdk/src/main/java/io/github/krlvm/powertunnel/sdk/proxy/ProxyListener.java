@@ -22,8 +22,6 @@ import io.github.krlvm.powertunnel.sdk.http.ProxyResponse;
 import io.github.krlvm.powertunnel.sdk.types.FullAddress;
 import org.jetbrains.annotations.NotNull;
 
-import java.net.UnknownHostException;
-
 public interface ProxyListener {
 
     void onClientToProxyRequest(@NotNull ProxyRequest request);
@@ -38,7 +36,7 @@ public interface ProxyListener {
     Boolean isFullChunking(@NotNull FullAddress address);
 
     Boolean isMITMAllowed(@NotNull FullAddress address);
-    String onGetSNI(@NotNull String hostname);
+    Object onGetSNI(@NotNull String hostname);
 
     int PRIORITY_HIGH   = -5;
     int PRIORITY_NORMAL =  0;

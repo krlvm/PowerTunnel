@@ -83,9 +83,9 @@ public class CoreProxyListener implements ProxyListener {
     }
 
     @Override
-    public String onGetSNI(@NotNull String hostname) {
-        final String sni = ((String) callProxyListeners(listener -> listener.onGetSNI(hostname)));
-        return sni != null ? sni : hostname;
+    public Object onGetSNI(@NotNull String hostname) {
+        final Object result = callProxyListeners(listener -> listener.onGetSNI(hostname), null, Void.TYPE);
+        return result != Void.TYPE ? result : hostname;
     }
 
     private Object callProxyListeners(ProxyListenerCallback callback) {
@@ -93,7 +93,11 @@ public class CoreProxyListener implements ProxyListener {
     }
 
     private Object callProxyListeners(ProxyListenerCallback callback, Object errVal) {
-        Object result = null;
+        return callProxyListeners(callback, errVal, null);
+    }
+
+    private Object callProxyListeners(ProxyListenerCallback callback, Object errVal, Object defObj) {
+        Object result = defObj;
         for (Map.Entry<ProxyListenerInfo, ProxyListener> entry : proxyListeners.entrySet()) {
             Object res;
             try {
@@ -108,7 +112,7 @@ public class CoreProxyListener implements ProxyListener {
                 );
                 res = errVal;
             }
-            if(res != null) result = res;
+            if(res != defObj) result = res;
         }
         return result;
     }

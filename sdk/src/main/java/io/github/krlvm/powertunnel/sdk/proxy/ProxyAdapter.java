@@ -57,7 +57,7 @@ public abstract class ProxyAdapter implements ProxyListener {
     }
 
     @Override
-    public String onGetSNI(@NotNull String hostname) {
-        return null;
+    public Object onGetSNI(@NotNull String hostname) {
+        return Void.TYPE;
     }
 }
