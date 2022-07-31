@@ -162,7 +162,7 @@ public class ArgumentParser {
         public static final String UPSTREAM_PROXY_HOST = "upstream-proxy-host";
         public static final String UPSTREAM_PROXY_PORT = "upstream-proxy-port";
         public static final String UPSTREAM_AUTH_USERNAME = "upstream-auth-username";
-        public static final String UPSTREAM_AUTH_PASSWORD = "upstream-auth-username";
+        public static final String UPSTREAM_AUTH_PASSWORD = "upstream-auth-password";
 
         public static final String DISABLE_AUTO_PROXY_STARTUP = "disable-auto-proxy-setup";
         public static final String AUTO_PROXY_STARTUP_IE = "auto-proxy-setup-ie";

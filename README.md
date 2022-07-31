@@ -88,7 +88,8 @@ $ java -jar PowerTunnel.jar -help
     --port <arg>                     set proxy server port
     --set-ui-scale-factor <arg>      set UI scale factor
     --start                          start proxy server after load
-    --upstream-auth-username <arg>   set upstream proxy password
+    --upstream-auth-password <arg>   set upstream proxy password
+    --upstream-auth-username <arg>   set upstream proxy username
     --upstream-proxy-host <arg>      set upstream proxy host
     --upstream-proxy-port <arg>      set upstream proxy port
     --version                        print version details
