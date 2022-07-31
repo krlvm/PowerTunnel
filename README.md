@@ -70,29 +70,30 @@ You can specify some params that will override settings through CLI:
 ```
 $ java -jar PowerTunnel.jar -help
 
-    --auth-password <arg>            set proxy authorization password
-    --auth-username <arg>            set proxy authorization username
-    --auto-proxy-setup-ie            setup proxy using Internet Explorer
-    --cfg <arg>                      set preference value
-    --console                        run application in console mode
-    --disable-auto-proxy-setup       disable auto proxy setup
-    --disable-native-skin            disable platform native UI skin
-    --disable-tray                   disable tray mode
-    --disable-ui-scaling             disable UI scaling
-    --disable-updater                disable Update Notifier
-    --enable-logging                 enable logging to file
-    --help                           display help
-    --ip <arg>                       set proxy server IP address
-    --lang <arg>                     set UI language
-    --minimized                      minimize UI to tray after start
-    --port <arg>                     set proxy server port
-    --set-ui-scale-factor <arg>      set UI scale factor
-    --start                          start proxy server after load
-    --upstream-auth-password <arg>   set upstream proxy password
-    --upstream-auth-username <arg>   set upstream proxy username
-    --upstream-proxy-host <arg>      set upstream proxy host
-    --upstream-proxy-port <arg>      set upstream proxy port
-    --version                        print version details
+    --help                            display help
+    --start                           start proxy server after load
+    --console                         run application in console mode
+    --ip <arg>                        set proxy server IP address
+    --port <arg>                      set proxy server port
+    --auth-username <arg>             set proxy authorization username
+    --auth-password <arg>             set proxy authorization password
+    --upstream-proxy-host <arg>       set upstream proxy host
+    --upstream-proxy-port <arg>       set upstream proxy port
+    --upstream-auth-password <arg>    set upstream proxy password
+    --upstream-auth-username <arg>    set upstream proxy username
+    --upstream-proxy-protocol <arg>   set upstream proxy protocol [HTTP/SOCKS4/SOCKS5]
+    --minimized                       minimize UI to tray after start
+    --set-ui-scale-factor <arg>       set UI scale factor
+    --auto-proxy-setup-ie             setup proxy using Internet Explorer [Windows]
+    --disable-auto-proxy-setup        disable auto proxy setup
+    --disable-native-skin             disable platform native UI skin
+    --disable-tray                    disable tray mode
+    --disable-ui-scaling              disable UI scaling
+    --disable-updater                 disable Update Notifier
+    --enable-logging                  enable logging to file
+    --lang <arg>                      set UI language
+    --cfg <arg>                       set preference value
+    --version                         print version details
 ```
 
 If you need to set a certain plugin preference, use `-cfg pluginID.preferenceKey [value]`
