@@ -27,6 +27,7 @@ import io.github.krlvm.powertunnel.desktop.ui.I18N;
 import io.github.krlvm.powertunnel.desktop.updater.UpdateNotifier;
 import io.github.krlvm.powertunnel.desktop.utilities.SystemUtility;
 import io.github.krlvm.powertunnel.desktop.utilities.UIUtility;
+import io.github.krlvm.powertunnel.sdk.types.UpstreamProxyType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -71,7 +72,9 @@ public class Main {
                 .argument(Arguments.UPSTREAM_PROXY_PORT, "set upstream proxy port")
 
                 .argument(Arguments.UPSTREAM_AUTH_USERNAME, "set upstream proxy username")
-                .argument(Arguments.UPSTREAM_AUTH_PASSWORD, "set upstream proxy password");
+                .argument(Arguments.UPSTREAM_AUTH_PASSWORD, "set upstream proxy password")
+
+                .argument(Arguments.UPSTREAM_PROXY_PROTOCOL, "set upstream proxy protocol");
         if (SystemUtility.IS_WINDOWS) {
             builder
                     .option(Arguments.DISABLE_AUTO_PROXY_STARTUP, "disable auto proxy setup")
@@ -160,7 +163,7 @@ public class Main {
                 configuration.protect("proxy_auth_username", cli.get(Arguments.AUTH_USERNAME));
                 configuration.protect("proxy_auth_password", cli.get(Arguments.AUTH_PASSWORD));
             } else {
-                System.err.printf("Missing '%s' option", Arguments.AUTH_PASSWORD);
+                System.err.printf("Missing '%s' option%n", Arguments.AUTH_PASSWORD);
             }
         }
 
@@ -170,7 +173,7 @@ public class Main {
                 configuration.protect("upstream_proxy_host", cli.get(Arguments.UPSTREAM_PROXY_HOST));
                 configuration.protect("upstream_proxy_port", cli.get(Arguments.UPSTREAM_PROXY_PORT));
             } else {
-                System.err.printf("Missing '%s' option", Arguments.UPSTREAM_PROXY_PORT);
+                System.err.printf("Missing '%s' option%n", Arguments.UPSTREAM_PROXY_PORT);
             }
         }
         
@@ -180,7 +183,17 @@ public class Main {
                 configuration.protect("upstream_proxy_auth_username", cli.get(Arguments.UPSTREAM_AUTH_USERNAME));
                 configuration.protect("upstream_proxy_auth_password", cli.get(Arguments.UPSTREAM_AUTH_PASSWORD));
             } else {
-                System.err.printf("Missing '%s' option", Arguments.UPSTREAM_AUTH_PASSWORD);
+                System.err.printf("Missing '%s' option%n", Arguments.UPSTREAM_AUTH_PASSWORD);
+            }
+        }
+
+        if(cli.has(Arguments.UPSTREAM_PROXY_PROTOCOL)) {
+            try {
+                configuration.protect("upstream_proxy_protocol",
+                        UpstreamProxyType.valueOf(cli.get(Arguments.UPSTREAM_PROXY_PROTOCOL).toUpperCase()).toString());
+            } catch (IllegalArgumentException ex) {
+                System.err.printf("Invalid or unsupported upstream proxy protocol: '%s'%n",
+                        cli.get(Arguments.UPSTREAM_PROXY_PROTOCOL).toUpperCase());
             }
         }
 
