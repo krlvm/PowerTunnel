@@ -835,15 +835,19 @@ public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
             boolean isMitmEnabled = currentFilters.proxyToServerAllowMitm() && mitmManager != null;
 
             if (isMitmEnabled) {
+                // SNI may be disabled for this request due to a previous failed attempt to connect to the server
+                // with SNI enabled.
+
                 // When MITM is enabled and when chained proxy is set up, remoteAddress
                 // will be the chained proxy's address. So we use serverHostAndPort
                 // which is the end server's address.
-                HostAndPort parsedHostAndPort = HostAndPort.fromString(serverHostAndPort);
+                HostAndPort parsedHostAndPort = disableSni ? null : // MODIFIED
+                        HostAndPort.fromString(serverHostAndPort);  // MODIFIED
 
-                final String sniHost = currentFilters.mitmGetSNI(parsedHostAndPort.getHost()); // MODIFIED
-                // SNI may be disabled for this request due to a previous failed attempt to connect to the server
-                // with SNI enabled.
-                if (disableSni || sniHost == null) { // MODIFIED
+                final String sniHost = disableSni ? null :                      // MODIFIED
+                        currentFilters.mitmGetSNI(parsedHostAndPort.getHost()); // MODIFIED
+
+                if (sniHost == null) { // MODIFIED
                     connectionFlow.then(serverConnection.EncryptChannel(proxyServer.getMitmManager()
                             .serverSslEngine()));
                 } else {
