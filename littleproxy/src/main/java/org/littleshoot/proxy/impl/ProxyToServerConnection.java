@@ -226,6 +226,7 @@ package org.littleshoot.proxy.impl;
 import com.google.common.net.HostAndPort;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -1514,12 +1515,43 @@ public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
     };
 
     // MODIFIED
+
+    private boolean _powerTunnelIsChunked = false;
+
     @Override
-    protected int _powerTunnelGetChunkSize() {
-        return currentFilters.chunkSize();
+    protected void writeRaw(ByteBuf buf) {
+        if(!_powerTunnelIsChunked) {
+            final int chunkSize = currentFilters.chunkSize();
+            if(chunkSize > 0) {
+                _powerTunnelIsChunked = true;
+                for (byte[] byteChunk : _powerTunnelChunk(buf, chunkSize, currentFilters.fullChunking())) {
+                    writeToChannel(Unpooled.wrappedBuffer(byteChunk));
+                }
+                return;
+            }
+        }
+        writeToChannel(buf);
     }
-    @Override
-    protected boolean _powerTunnelIsFullChunking() {
-        return currentFilters.fullChunking();
+
+    public static byte[][] _powerTunnelChunk(ByteBuf buf, int chunkSize, boolean fullChunking) {
+        final byte[] bytes = new byte[buf.readableBytes()];
+        buf.readBytes(bytes);
+        final int len = bytes.length;
+
+        if(fullChunking) {
+            final byte[][] chunks = new byte[(int)Math.ceil((double)len/chunkSize)][];
+            int i = 0, j = 0;
+            while (i < len) {
+                chunks[j++] = Arrays.copyOfRange(bytes, i, i += chunkSize);
+            }
+            return chunks;
+        } else {
+            return new byte[][] {
+                    Arrays.copyOfRange(bytes, 0, chunkSize),
+                    Arrays.copyOfRange(bytes, chunkSize, len)
+            };
+        }
     }
+
+    // MODIFIED
 }
