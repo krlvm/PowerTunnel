@@ -1524,33 +1524,25 @@ public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
             final int chunkSize = currentFilters.chunkSize();
             if(chunkSize > 0) {
                 _powerTunnelIsChunked = true;
-                for (byte[] byteChunk : _powerTunnelChunk(buf, chunkSize, currentFilters.fullChunking())) {
-                    writeToChannel(Unpooled.wrappedBuffer(byteChunk));
+
+                final byte[] bytes = new byte[buf.readableBytes()];
+                buf.readBytes(bytes);
+                final int len = bytes.length;
+
+                if (currentFilters.fullChunking()) {
+                    int i = 0;
+                    while (i < len) {
+                        writeToChannel(Unpooled.wrappedBuffer(Arrays.copyOfRange(bytes, i, i += chunkSize)));
+                    }
+                } else {
+                    writeToChannel(Unpooled.wrappedBuffer(Arrays.copyOfRange(bytes, 0, chunkSize)));
+                    writeToChannel(Unpooled.wrappedBuffer(Arrays.copyOfRange(bytes, chunkSize, len)));
                 }
+
                 return;
             }
         }
         writeToChannel(buf);
-    }
-
-    public static byte[][] _powerTunnelChunk(ByteBuf buf, int chunkSize, boolean fullChunking) {
-        final byte[] bytes = new byte[buf.readableBytes()];
-        buf.readBytes(bytes);
-        final int len = bytes.length;
-
-        if(fullChunking) {
-            final byte[][] chunks = new byte[(int)Math.ceil((double)len/chunkSize)][];
-            int i = 0, j = 0;
-            while (i < len) {
-                chunks[j++] = Arrays.copyOfRange(bytes, i, i += chunkSize);
-            }
-            return chunks;
-        } else {
-            return new byte[][] {
-                    Arrays.copyOfRange(bytes, 0, chunkSize),
-                    Arrays.copyOfRange(bytes, chunkSize, len)
-            };
-        }
     }
 
     // MODIFIED
