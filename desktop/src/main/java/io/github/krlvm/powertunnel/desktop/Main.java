@@ -206,8 +206,12 @@ public class Main {
                 WindowsProxyHandler.USE_IE = true;
             }
             if(!cli.has(Arguments.DISABLE_NATIVE_SKIN)) {
+                String nativeLookAndFeel = UIManager.getSystemLookAndFeelClassName();
+                if ("javax.swing.plaf.metal.MetalLookAndFeel".equals(nativeLookAndFeel) && !SystemUtility.IS_WINDOWS) {
+                    nativeLookAndFeel = "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
+                }
                 try {
-                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                    UIManager.setLookAndFeel(nativeLookAndFeel);
                 } catch (Exception ex) {
                     System.err.println("Failed to set native Look and Feel: " + ex.getMessage());
                     ex.printStackTrace();
