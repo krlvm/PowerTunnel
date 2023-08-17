@@ -20,23 +20,12 @@ package io.github.krlvm.powertunnel.http;
 import io.github.krlvm.powertunnel.sdk.http.HttpHeaders;
 import io.github.krlvm.powertunnel.sdk.http.ProxyMessage;
 import io.github.krlvm.powertunnel.sdk.types.FullAddress;
-import io.netty.buffer.Unpooled;
-import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpMessage;
-import io.netty.handler.codec.http.HttpObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Field;
-import java.nio.charset.StandardCharsets;
 
 public abstract class LProxyMessage<T> implements ProxyMessage {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LProxyMessage.class);
-
-    protected final T httpObject;
+    protected T httpObject;
     protected HttpHeaders headers;
 
     protected final FullAddress address;
@@ -61,27 +50,5 @@ public abstract class LProxyMessage<T> implements ProxyMessage {
 
     public T getLittleProxyObject() {
         return httpObject;
-    }
-
-
-    // TODO: Support for setting HttpRequest content
-    public static void setHttpObjectContent(HttpObject httpObject, byte[] bytes) {
-        if(!(httpObject instanceof HttpMessage)) return;
-        try {
-            Field contentField;
-            if (httpObject.getClass().getSimpleName().equals("DefaultHttpContent") || httpObject.getClass().getSimpleName().equals("DefaultFullHttpResponse")) {
-                contentField = httpObject.getClass().getDeclaredField("content");
-            } else {
-                contentField = httpObject.getClass().getSuperclass().getDeclaredField("content");
-            }
-            contentField.setAccessible(true);
-            contentField.set(httpObject, Unpooled.copiedBuffer(bytes));
-            ((HttpMessage) httpObject).headers().set(HttpHeaderNames.CONTENT_LENGTH, bytes.length);
-        } catch (IllegalAccessException | NoSuchFieldException ex) {
-            LOGGER.error("Failed to set HttpObject content: {}", ex.getMessage(), ex);
-        }
-    }
-    public static void setHttpObjectContent(HttpObject httpObject, String content) {
-        setHttpObjectContent(httpObject, content.getBytes(StandardCharsets.UTF_8));
     }
 }

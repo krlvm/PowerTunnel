@@ -19,9 +19,10 @@ package io.github.krlvm.powertunnel.http;
 
 import io.github.krlvm.powertunnel.sdk.http.ProxyResponse;
 import io.github.krlvm.powertunnel.sdk.types.FullAddress;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.*;
-import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
 
@@ -47,15 +48,27 @@ public class LProxyResponse extends LProxyMessage<HttpResponse> implements Proxy
     }
 
     @Override
-    public void setRaw(@NotNull String raw) {
-        if(!isDataPacket()) throw new IllegalStateException("Can't set raw content of HttpResponse chunk");
-        LProxyMessage.setHttpObjectContent(httpObject, raw);
+    public byte[] content() {
+        if(!isDataPacket()) throw new IllegalStateException("Can't get raw content of HttpResponse chunk");
+
+        final ByteBuf buf = ((FullHttpResponse) httpObject).content();
+        return ByteBufUtil.getBytes(buf, 0, buf.readableBytes(), false);
     }
 
     @Override
-    public @NotNull String raw() {
-        if(!isDataPacket()) throw new IllegalStateException("Can't get raw content of HttpResponse chunk");
-        return this.httpObject.toString();
+    public void setContent(byte[] content) {
+        if(!isDataPacket()) throw new IllegalStateException("Can't set raw content of HttpResponse chunk");
+
+        final HttpResponse response = new DefaultFullHttpResponse(
+                httpObject.protocolVersion(),
+                httpObject.status(),
+                Unpooled.wrappedBuffer(content));
+        response.headers().set(httpObject.headers());
+
+        //HttpObjectAggregator
+        response.headers().set(HttpHeaderNames.CONTENT_LENGTH, content.length);
+
+        httpObject = response;
     }
 
     @Override
@@ -65,7 +78,7 @@ public class LProxyResponse extends LProxyMessage<HttpResponse> implements Proxy
 
     public static class Builder implements ProxyResponse.Builder {
 
-        private final HttpResponse response;
+        private final DefaultFullHttpResponse response;
 
         public Builder(String content) {
             this(HttpResponseStatus.OK, content);
@@ -85,12 +98,6 @@ public class LProxyResponse extends LProxyMessage<HttpResponse> implements Proxy
         @Override
         public ProxyResponse.Builder code(int code) {
             response.setStatus(HttpResponseStatus.valueOf(code));
-            return this;
-        }
-
-        @Override
-        public ProxyResponse.Builder content(String content) {
-            LProxyMessage.setHttpObjectContent(response, content);
             return this;
         }
 

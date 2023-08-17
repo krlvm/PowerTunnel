@@ -21,10 +21,10 @@ import io.github.krlvm.powertunnel.sdk.http.HttpMethod;
 import io.github.krlvm.powertunnel.sdk.http.ProxyRequest;
 import io.github.krlvm.powertunnel.sdk.http.ProxyResponse;
 import io.github.krlvm.powertunnel.sdk.types.FullAddress;
-import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.HttpHeaders;
-import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.HttpResponse;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.Unpooled;
+import io.netty.handler.codec.http.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -94,14 +94,32 @@ public class LProxyRequest extends LProxyMessage<HttpRequest> implements ProxyRe
     }
 
     @Override
-    public void setRaw(@NotNull String raw) {
-        throw new UnsupportedOperationException();
+    public boolean isDataPacket() {
+        return httpObject instanceof FullHttpRequest;
     }
 
     @Override
-    public @NotNull String raw() {
-        if(!(httpObject instanceof FullHttpRequest)) throw new IllegalStateException("Can't get raw content of HttpRequest chunk");
-        return this.httpObject.toString();
+    public byte[] content() {
+        if(!isDataPacket()) throw new IllegalStateException("Can't get raw content of HttpRequest chunk");
+
+        final ByteBuf buf = ((FullHttpRequest) httpObject).content();
+        return ByteBufUtil.getBytes(buf, 0, buf.readableBytes(), false);
+    }
+
+    @Override
+    public void setContent(byte[] content) {
+        if(!isDataPacket()) throw new IllegalStateException("Can't set raw content of HttpRequest chunk");
+
+        final HttpRequest response = new DefaultFullHttpRequest(
+                httpObject.protocolVersion(),
+                httpObject.method(),
+                httpObject.uri(),
+                Unpooled.wrappedBuffer(content));
+        response.headers().set(httpObject.headers());
+
+        response.headers().set(HttpHeaderNames.CONTENT_LENGTH, content.length);
+
+        httpObject = response;
     }
 
     @Override
