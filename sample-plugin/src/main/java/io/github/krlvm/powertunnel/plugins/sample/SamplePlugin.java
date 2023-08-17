@@ -22,21 +22,43 @@ import io.github.krlvm.powertunnel.sdk.http.ProxyResponse;
 import io.github.krlvm.powertunnel.sdk.plugin.PowerTunnelPlugin;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyAdapter;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyServer;
+import org.jetbrains.annotations.NotNull;
+
+import java.nio.charset.StandardCharsets;
 
 public class SamplePlugin extends PowerTunnelPlugin {
 
     @Override
     public void onProxyInitialization(ProxyServer proxy) {
+        proxy.setMITMEnabled(true);
+        proxy.setFullResponse(true);
+        proxy.setFullRequest(true);
+
         this.registerProxyListener(new ProxyAdapter() {
             @Override
-            public void onClientToProxyRequest(ProxyRequest request) {
-                if(request.isEncrypted()) return;
+            public void onClientToProxyRequest(@NotNull ProxyRequest request) {
+                if (request.isEncrypted()) return;
+                if (!request.getHost().equals("github.com")) return;
+
                 final ProxyResponse response = getServer()
                         .getProxyServer()
                         .getResponseBuilder("PowerTunnel Test Plugin")
                         .header("X-PT-Test", "OK")
                         .build();
                 request.setResponse(response);
+            }
+
+            @Override
+            public void onProxyToClientResponse(@NotNull ProxyResponse response) {
+                if (!proxy.isMITMEnabled()) return;
+                if (!response.isDataPacket()) return;
+
+                if (!"text/html; charset=utf-8".equals(response.headers().get("Content-Type"))) return;
+
+                final byte[] raw = response.content();
+                final String str = new String(raw, StandardCharsets.UTF_8);
+
+                response.setContent(("<b>Injected response part</b>" + str).getBytes(StandardCharsets.UTF_8));
             }
         });
     }
