@@ -65,7 +65,6 @@ public class LProxyResponse extends LProxyMessage<HttpResponse> implements Proxy
                 Unpooled.wrappedBuffer(content));
         response.headers().set(httpObject.headers());
 
-        //HttpObjectAggregator
         response.headers().set(HttpHeaderNames.CONTENT_LENGTH, content.length);
 
         httpObject = response;
