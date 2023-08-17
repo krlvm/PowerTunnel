@@ -27,6 +27,5 @@ public interface ProxyMessage {
 
     @NotNull HttpHeaders headers();
 
-    void setRaw(@NotNull String raw);
-    @NotNull String raw();
+    byte[] content();
 }

@@ -42,6 +42,8 @@ public interface ProxyRequest extends ProxyMessage {
         return null;
     }
 
+    boolean isDataPacket();
+
     void setBlocked(boolean blocked);
     boolean isBlocked();
 
@@ -50,4 +52,7 @@ public interface ProxyRequest extends ProxyMessage {
 
     @Nullable ProxyResponse getResponse();
     void setResponse(@NotNull ProxyResponse response);
+
+    @NotNull
+    void setContent(byte[] content);
 }

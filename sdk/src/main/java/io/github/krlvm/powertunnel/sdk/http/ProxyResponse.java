@@ -17,6 +17,8 @@
 
 package io.github.krlvm.powertunnel.sdk.http;
 
+import org.jetbrains.annotations.NotNull;
+
 public interface ProxyResponse extends ProxyMessage {
 
     int code();
@@ -24,9 +26,10 @@ public interface ProxyResponse extends ProxyMessage {
 
     boolean isDataPacket();
 
+    void setContent(byte[] content);
+
     interface Builder {
         Builder code(int code);
-        Builder content(String content);
         Builder contentType(String contentType);
         Builder header(String name, String value);
         Builder header(String name, int value);
