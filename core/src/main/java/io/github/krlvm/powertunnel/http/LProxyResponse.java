@@ -90,7 +90,7 @@ public class LProxyResponse extends LProxyMessage<HttpResponse> implements Proxy
 
         public Builder(HttpResponseStatus status, String content) {
             final byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
-            response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status, Unpooled.copiedBuffer(bytes));
+            response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status, Unpooled.wrappedBuffer(bytes));
             response.headers().set(HttpHeaderNames.CONTENT_LENGTH, bytes.length);
             response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
         }
