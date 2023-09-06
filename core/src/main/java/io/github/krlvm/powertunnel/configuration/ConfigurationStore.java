@@ -48,8 +48,8 @@ public class ConfigurationStore implements Configuration {
         try(BufferedReader reader = new BufferedReader(source)) {
             String line;
             while((line = reader.readLine()) != null) {
-                if (!line.contains(DELIMITER)) continue;
                 final int pos = line.indexOf(DELIMITER);
+                if (pos == -1) continue;
                 data.put(
                         line.substring(0, pos),
                         line.substring(pos + DELIMITER_LENGTH)
