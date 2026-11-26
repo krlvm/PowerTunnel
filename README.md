@@ -1,11 +1,11 @@
 <div align="center">
 <img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/.github/images/logo.png" height="192px" width="192px" />
 <br><h1>PowerTunnel</h1>
-Powerful and extensible proxy server
+A Powerful and extensible proxy server
 
 <a href="https://t.me/powertunnel_dpi">Telegram channel</a>
 <br>
-<a href="https://github.com/krlvm/PowerTunnel-Android">Check out the Android version!<a/>
+<a href="https://github.com/krlvm/PowerTunnel-Android">Check out the Android version!</a>
 <br><br>
 <a href="https://github.com/krlvm/PowerTunnel/blob/master/LICENSE"><img src="https://img.shields.io/github/license/krlvm/PowerTunnel?style=flat-square" alt="License"/></a>
 <a href="https://github.com/krlvm/PowerTunnel/releases/latest"><img src="https://img.shields.io/github/v/release/krlvm/PowerTunnel?style=flat-square" alt="Latest release"/></a>
@@ -15,7 +15,7 @@ Powerful and extensible proxy server
 <img src="https://raw.githubusercontent.com/krlvm/PowerTunnel/master/.github/images/ui.png" alt="PowerTunnel User Interface" style="max-width: 90%; height: auto"/>
 </div>
 
-## What is it
+## What is PowerTunnel?
 
 PowerTunnel is an extensible proxy server built on top of [LittleProxy](https://github.com/adamfisk/LittleProxy).
 
@@ -26,15 +26,15 @@ PowerTunnel was originally developed and is best known as a censorship bypass to
 
 #### Anti-censorship tool
 
-Digital censorship has become widespread in authoritarian and developing countries: governments install DPI - Deep Packet Inspection systems - for Internet Service Providers, which allows analyzing and blocking traffic to websites they don't want you to see, forcing you to use slow and often paid proxies or VPN services with dubious privacy policy.
+Digital censorship has become widespread in authoritarian and developing countries: governments install DPI - Deep Packet Inspection systems - for Internet Service Providers, which allows analyzing and blocking traffic to websites they don't want you to see, forcing you to use slow and often paid proxies or VPN services with dubious privacy policies.
 
-PowerTunnel is an active DPI circumvention utility - it works only on your PC and do not route your traffic through some third-party webservers. It creates a local proxy server on your device and diverts your HTTP(S) traffic there, where PowerTunnel modifies your traffic in a special way to exploit bugs in DPI systems which makes it possible to bypass the lock - without (significantly) slowing down your Internet connection.
+PowerTunnel is an active DPI circumvention utility. It runs locally on your PC and does not route your traffic through third-party web servers. It creates a local proxy server on your device and diverts your HTTP(S) traffic there, where PowerTunnel modifies your traffic in a special way to exploit bugs in DPI systems which makes it possible to bypass the lock - without (significantly) slowing down your Internet connection.
 
 Anti-censorship module can be configured in Plugins window - it is called LibertyTunnel.
 
 In this sense, PowerTunnel is a free cross-platform implementation of [GoodbyeDPI](https://github.com/ValdikSS/GoodbyeDPI) written in Java.
 
-Please, note that PowerTunnel does not change your IP address.
+Please note that PowerTunnel does not change your IP address.
 
 ## Configuring
 
@@ -62,7 +62,7 @@ Please, make sure you do not have installed different versions of the same plugi
 
 ### Configuring plugins
 
-Installed plugins can be configured from the user interface - click the "Plugins" button of main window to see the list of plugins.
+Installed plugins can be configured from the user interface - click the "Plugins" button in the main window to see the list of plugins.
 
 ## Launch arguments
 You can specify some params that will override settings through CLI:
@@ -71,9 +71,9 @@ You can specify some params that will override settings through CLI:
 $ java -jar PowerTunnel.jar -help
 
     --help                            display help
-    --start                           start proxy server after load
+    --start                           start proxy server after loading
     --console                         run application in console mode
-    --ip <arg>                        set proxy server IP address
+    --ip <arg>                        set the proxy server IP address
     --port <arg>                      set proxy server port
     --auth-username <arg>             set proxy authorization username
     --auth-password <arg>             set proxy authorization password
